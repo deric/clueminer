@@ -84,7 +84,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      */
     public static final String NUM_PARTITIONS = "num_partitions";
     @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 500)
-    private int numberOfPartitions;
+    private int numPartitions;
 
     public static final String REDUCE_FACTOR = "reduce_factor";
     @Param(name = REDUCE_FACTOR, description = "reduce factor for each partition", min = 1, max = 1000)
@@ -122,7 +122,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         n = dataset.size();
         k = props.getInt(K);
         representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
-        numberOfPartitions = props.getInt(NUM_PARTITIONS, 1);
+        numPartitions = props.getInt(NUM_PARTITIONS, 1);
         reducingFactor = props.getInt(REDUCE_FACTOR, 2);
 
         currentRepAdditionCount = n;
@@ -163,11 +163,11 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         Dataset<E> partition;
 
         Iterator<E> iter = randomPointSet.iterator();
-        for (int i = 0; i < numberOfPartitions; i++) {
-            partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
+        for (int i = 0; i < numPartitions; i++) {
+            partition = new ArrayDataset<>(randomPointSet.size() / numPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
             int pointIndex = 0;
-            while (pointIndex < randomPointSet.size() / numberOfPartitions) {
+            while (pointIndex < randomPointSet.size() / numPartitions) {
                 partition.add(iter.next());
                 pointIndex++;
             }
@@ -176,7 +176,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         }
 
         if (iter.hasNext()) {
-            partition = new ArrayDataset<>(randomPointSet.size() / numberOfPartitions, dataset.attributeCount());
+            partition = new ArrayDataset<>(randomPointSet.size() / numPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
             while (iter.hasNext()) {
                 partition.add(iter.next());
