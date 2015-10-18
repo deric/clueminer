@@ -51,6 +51,7 @@ public class CureDialog extends JPanel implements ClusteringDialog {
     private JTextField tfMinRepresent;
     private JTextField tfShrink;
     private JTextField tfRepresentationProb;
+    private JTextField tfReduceFactor;
     private JCheckBox chckSample;
 
     public CureDialog() {
@@ -144,6 +145,14 @@ public class CureDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         add(tfRepresentationProb, c);
 
+        //reduce factor
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Reduce factor (min cluster size):"), c);
+        tfReduceFactor = new JTextField("3", 5);
+        c.gridx = 1;
+        add(tfReduceFactor, c);
+
     }
 
     @Override
@@ -154,6 +163,7 @@ public class CureDialog extends JPanel implements ClusteringDialog {
         params.putDouble(CURE.SHRINK_FACTOR, Double.parseDouble(tfShrink.getText()));
         params.putBoolean(CURE.SAMPLING, chckSample.isSelected());
         params.putDouble(CURE.REPRESENTATION_PROBABILITY, Double.valueOf(tfRepresentationProb.getText()));
+        params.putInt(CURE.REDUCE_FACTOR, Integer.valueOf(tfReduceFactor.getText()));
 
         return params;
     }

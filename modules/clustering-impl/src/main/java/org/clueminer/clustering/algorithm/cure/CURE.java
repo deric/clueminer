@@ -86,9 +86,12 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 500)
     private int numPartitions;
 
+    /**
+     * Minimal cluster size for not being considered as an outlier
+     */
     public static final String REDUCE_FACTOR = "reduce_factor";
     @Param(name = REDUCE_FACTOR, description = "reduce factor for each partition", min = 1, max = 1000)
-    private int reducingFactor;
+    private int reduceFactor;
 
     private static int currentRepAdditionCount;
     private HashSet<Integer> blacklist;
@@ -123,7 +126,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         k = props.getInt(K);
         representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
         numPartitions = props.getInt(NUM_PARTITIONS, 1);
-        reducingFactor = props.getInt(REDUCE_FACTOR, 2);
+        reduceFactor = props.getInt(REDUCE_FACTOR, 3);
 
         currentRepAdditionCount = n;
         blacklist = new HashSet<>();
@@ -148,6 +151,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         if (!outliers.isEmpty()) {
             outliers.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
             outliers.setClusterId(clustering.size());
+            if (colorGenerator != null) {
+                outliers.setColor(colorGenerator.next());
+            }
             clustering.add((C) outliers);
         }
         clustering.lookupAdd(dataset);
@@ -207,11 +213,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         //int numPartition = n / (numberOfPartitions * reducingFactor * k);
         //logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
         ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction);
-        if (reducingFactor >= 10) {
-            eliminateOutliers(clusterSet, 1, clustering, outliers);
-        } else {
-            eliminateOutliers(clusterSet, 0, clustering, outliers);
-        }
+
+        eliminateOutliers(clusterSet, clustering, outliers);
     }
 
     /**
@@ -255,15 +258,14 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * Eliminates outliers after pre-clustering
      *
      * @param clusters Clusters present
-     * @param outlierEligibilityCount Min Threshold count for not being outlier
      * cluster
      */
-    private void eliminateOutliers(ClusterSet<E, C> clusterSet, int outlierEligibilityCount, Clustering<E, C> clustering, CureCluster<E> outliers) {
+    private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CureCluster<E> outliers) {
         logger.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
         C cluster;
         while (clusterSet.hasClusters()) {
             cluster = clusterSet.remove();
-            if (cluster.size() > outlierEligibilityCount) {
+            if (cluster.size() >= reduceFactor) {
                 cluster.setClusterId(clusterCnt++);
                 cluster.setName("cluster " + clusterCnt);
                 if (colorGenerator != null) {
