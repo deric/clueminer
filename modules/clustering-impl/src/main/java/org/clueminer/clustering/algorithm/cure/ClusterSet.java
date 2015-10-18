@@ -69,8 +69,8 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private static int clusterCnt;
 
     public ClusterSet(Dataset<E> dataset, int numberOfClusters, Props props, Distance dist) {
-        numberofRepInCluster = props.getInt(CURE.MIN_REPRESENTATIVES, 5);
-        shrinkFactor = props.getDouble(CURE.SHRINK_FACTOR, 0.5);
+        numberofRepInCluster = props.getInt(CURE.NUM_REPRESENTATIVES, 10);
+        shrinkFactor = props.getDouble(CURE.SHRINK_FACTOR, 0.3);
         clusterCnt = 0;
         dm = dist;
         cc = new CureComparator<>();

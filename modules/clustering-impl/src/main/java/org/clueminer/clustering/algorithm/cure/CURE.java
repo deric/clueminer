@@ -64,8 +64,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
     @Param(name = K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int k;
 
-    public static final String MIN_REPRESENTATIVES = "min_representatives";
-    @Param(name = MIN_REPRESENTATIVES, description = "minimum number of representatives", required = false, min = 1, max = 1000)
+    public static final String NUM_REPRESENTATIVES = "num_representatives";
+    @Param(name = NUM_REPRESENTATIVES, description = "number of representatives", required = false, min = 1, max = 1000)
     int minRepresentativeCount;
 
     public static final String SHRINK_FACTOR = "shrink_factor";
@@ -83,7 +83,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
      * split in so many parts, that each partition will fit into memory
      */
     public static final String NUM_PARTITIONS = "num_partitions";
-    @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 1000)
+    @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 500)
     private int numberOfPartitions;
 
     public static final String REDUCE_FACTOR = "reduce_factor";
@@ -150,6 +150,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
             outliers.setClusterId(clustering.size());
             clustering.add((C) outliers);
         }
+        clustering.lookupAdd(dataset);
+        clustering.setParams(props);
         return clustering;
     }
 

@@ -121,7 +121,7 @@ public class CureDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.putInt(CURE.K, sliderK.getValue());
-        params.putInt(CURE.MIN_REPRESENTATIVES, Integer.valueOf(tfMinRepresent.getText()));
+        params.putInt(CURE.NUM_REPRESENTATIVES, Integer.valueOf(tfMinRepresent.getText()));
 
         return params;
     }
