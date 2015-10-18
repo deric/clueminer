@@ -135,8 +135,8 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
 
         //final clustering to be returned
         Clustering<E, C> clustering = new ClusterList<>(k);
-        boolean subsampling = props.getBoolean(SAMPLING, true);
-        if (subsampling) {
+        //use part of dataset to create initial clustering
+        if (props.getBoolean(SAMPLING, true)) {
             sampleData(dataset, clustering, outliers, props);
             labelRemainingDataPoints(dataset, clustering);
         } else {

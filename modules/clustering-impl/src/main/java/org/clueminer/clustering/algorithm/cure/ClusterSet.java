@@ -66,10 +66,12 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     int newPointCount;
     private Distance dm;
     private Clustering<E, C> clustering;
+    private static int clusterCnt;
 
     public ClusterSet(Dataset<E> dataset, int numberOfClusters, Props props, Distance dist) {
         numberofRepInCluster = props.getInt(CURE.MIN_REPRESENTATIVES, 5);
         shrinkFactor = props.getDouble(CURE.SHRINK_FACTOR, 0.5);
+        clusterCnt = 0;
         dm = dist;
         cc = new CureComparator<>();
         k = numberOfClusters;
@@ -85,7 +87,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 
     private C createCluster(Dataset<E> dataset) {
         CureCluster<E> cluster = new CureCluster<>();
-        //numbering for humans (start from 0)
+        cluster.setClusterId(clusterCnt++);
         cluster.setAttributes(dataset.getAttributes());
         return (C) cluster;
     }
@@ -162,18 +164,40 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private C nearest(E needle, int k) {
         List<C> nn;
         C nearest = null;
+        int upBound = 1;
         try {
-            nn = kdtree.nearest(needle.arrayCopy(), k + 1);
+            nn = kdtree.nearest(needle.arrayCopy(), k + upBound);
             if (nn.isEmpty()) {
                 return null;
             }
             //exclude needle from the nearest neighbors
+            //nearest could be other representatives from the very same cluster
             nearest = nn.get(0);
 
         } catch (KeySizeException | IllegalArgumentException ex) {
             Exceptions.printStackTrace(ex);
         }
         return nearest;
+    }
+
+    private C nearest(E needle, double maxDist, int excludeClusterId) {
+        List<C> nn;
+        try {
+            nn = kdtree.nearestEuclidean(needle.arrayCopy(), maxDist);
+            if (nn.isEmpty()) {
+                return null;
+            }
+            //TODO: maybe we should iterate in reverse order
+            for (C near : nn) {
+                if (near.getClusterId() != excludeClusterId) {
+                    return near;
+                }
+            }
+
+        } catch (KeySizeException | IllegalArgumentException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return null;
     }
 
     /**
@@ -191,6 +215,9 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 //extract_min(Q)
                 u = heap.remove();
                 v = (C) u.closest;
+                if (u.equals(v)) {
+                    System.out.println("merging same clusters!!! " + u.getClusterId());
+                }
                 heap.remove(v);
                 w = merge(u, v);
                 CURE.logger.log(Level.FINEST, "merged {0} with {1}", new Object[]{u.getClusterId(), v.getClusterId()});
@@ -203,7 +230,6 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 w.closest = heap.peek();
                 updateHeap(u, v, w);
                 heap.add(w);
-                //adjustHeap(w, u, v);
             } catch (KeySizeException | KeyDuplicateException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -215,14 +241,20 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         Iterator<C> iter = heap.iterator();
         C x;
         LinkedList<C> toUpdate = new LinkedList<>();
+        double xclosest;
         while (iter.hasNext()) {
             x = iter.next();
             if (w.dist(x, dm) < w.dist(w.closest, dm)) {
                 w.closest = x;
             }
             if (x.closest.equals(u) || x.closest.equals(v)) {
-                if (x.dist(x.closest, dm) < x.dist(w, dm)) {
-                    x.closest = closestCluster(x);
+                xclosest = x.dist(x.closest, dm);
+                if (xclosest < x.dist(w, dm)) {
+                    x.closest = closestCluster(x, xclosest);
+                    if (x.closest == null) {
+                        //we weren't able to find closer cluster
+                        x.closest = w;
+                    }
                 } else {
                     x.closest = w;
                 }
@@ -240,47 +272,49 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 
     /**
      * Any cluster might be the closest one, we have to search through all
-     * points in rep
+     * points in rep and find a cluster that is closest to one of
+     * representatives. But not further than maxDist.
      *
      * @param x
-     * @return
+     * @param maxDist distance to another cluster which will be considered as
+     * closest if we don't find closer cluster
+     * @return null if neighbor can't be found in maxDist (Euclidean distance)
      */
-    private CureCluster<E> closestCluster(C x) {
+    private CureCluster<E> closestCluster(C x, double maxDist) {
         double min = Double.POSITIVE_INFINITY;
         C minClust = null;
         double dist;
         C nn = null;
-        int currK;
         int eq;
         for (E rep : x.rep) {
-            currK = 1;
             eq = 1;
             //make sure nn is not in rep
             while (eq > 0) {
                 eq = 0;
-                nn = nearest(rep, currK);
+                nn = nearest(rep, maxDist, x.getClusterId());
                 if (nn == null) {
-                    return null;
+                    break;
                 }
-                for (E r1 : x.rep) {
-                    //nn is same as of representatives
-                    if (nn.equals(r1)) {
-                        eq++;
+                if (nn.getClusterId() == x.getClusterId()) {
+                    eq++;
+                } else {
+                    for (E r1 : x.rep) {
+                        //nn is same as of representatives
+                        if (nn.equals(r1)) {
+                            eq++;
+                        }
                     }
                 }
-
-                currK++;
             }
-            dist = dist(nn, rep);
-            if (dist < min) {
-                min = dist;
-                minClust = nn;
+            if (nn != null) {
+                dist = dist(nn, rep);
+                if (dist < min) {
+                    min = dist;
+                    minClust = nn;
+                }
             }
         }
-        if (minClust != null) {
-            return minClust;
-        }
-        throw new RuntimeException("could not find closest cluster to " + x.toString());
+        return minClust;
     }
 
     private void relocate(C x) {
@@ -356,12 +390,6 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      */
     public C merge(CureCluster<E> u, CureCluster<E> v) {
         CureCluster<E> w = createCluster(u);
-        for (E inst : u) {
-            w.add(inst);
-        }
-        for (E inst : v) {
-            w.add(inst);
-        }
         E m1 = u.getCentroid();
         E m2 = v.getCentroid();
         E mean = w.builder().build();
@@ -369,6 +397,13 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
             mean.set(i, (m1.get(i) + m2.get(i)) / 2.0);
         }
         w.setCentroid(mean);
+
+        for (E inst : u) {
+            w.add(inst);
+        }
+        for (E inst : v) {
+            w.add(inst);
+        }
 
         CureCluster<E> tmpSet = new CureCluster<>();
         tmpSet.setAttributes(u.getAttributes());
@@ -405,7 +440,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
 //        clustering.remove((C) u);
 //        clustering.remove((C) v);
         C cw = (C) w;
-        clustering.add(cw);
+        //clustering.add(cw);
         return cw;
     }
 

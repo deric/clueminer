@@ -49,7 +49,6 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
     public ArrayList<E> rep = new ArrayList();
     public double distClosest = 0;
     public CureCluster<E> closest;
-    public E closestClusterRep;
 
     /**
      * Distance between clusters. Distance function doesn't have to be a metric.
