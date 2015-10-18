@@ -36,13 +36,14 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * multi-objective merger (heap sorting)
  *
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
 public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "multi-objective merger (heap sorting)";
+    public static final String name = "MOM-HS";
 
     private FrontHeapQueue<E, C, P> queue;
 
