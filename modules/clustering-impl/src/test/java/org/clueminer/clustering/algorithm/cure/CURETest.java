@@ -75,7 +75,27 @@ public class CURETest {
         Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
         assertEquals(2, clustering.size());
-        System.out.println("total instances: " + clustering.instancesCount());
+        printClustering(clustering);
+        assertEquals(17, clustering.instancesCount());
+        for (CureCluster c : clustering) {
+            if (c.size() < 5) {
+                assertEquals(2, c.size());
+            } else {
+                assertEquals(15, c.size());
+            }
+        }
+    }
+
+    @Test
+    public void testSubsampling() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        Props params = new Props();
+        params.putInt(CURE.K, 2);
+        //cluster all data, no subsets
+        params.putBoolean(CURE.SAMPLING, true);
+        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+        assertNotNull(clustering);
+        assertEquals(2, clustering.size());
         printClustering(clustering);
         assertEquals(17, clustering.instancesCount());
 

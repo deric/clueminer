@@ -147,7 +147,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
             cluster = clustering.get(i);
 
             nn = nearest(cluster.get(0), 1);
-            //cluster.distClosest = dm.measure(instance, nn);
+            cluster.distClosest = dm.measure(cluster.get(0), nn.rep.get(0));
             //cluster.closestClusterRep = nn;
             cluster.closest = nn;
             heap.add(cluster);
@@ -241,26 +241,30 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         Iterator<C> iter = heap.iterator();
         C x;
         LinkedList<C> toUpdate = new LinkedList<>();
-        double xclosest;
+        double dist;
         while (iter.hasNext()) {
             x = iter.next();
-            if (w.dist(x, dm) < w.dist(w.closest, dm)) {
+            dist = w.dist(x, dm);
+            if (dist < w.dist(w.closest, dm)) {
                 w.closest = x;
+                w.distClosest = dist;
             }
             if (x.closest.equals(u) || x.closest.equals(v)) {
-                xclosest = x.dist(x.closest, dm);
-                if (xclosest < x.dist(w, dm)) {
-                    x.closest = closestCluster(x, xclosest);
+                if (x.distClosest < dist) {
+                    x.closest = closestCluster(x, x.distClosest);
                     if (x.closest == null) {
                         //we weren't able to find closer cluster
                         x.closest = w;
+                        x.distClosest = dist;
                     }
                 } else {
                     x.closest = w;
+                    x.distClosest = dist;
                 }
                 toUpdate.add(x);
-            } else if (x.dist(x.closest, dm) > x.dist(w, dm)) {
+            } else if (dist < x.distClosest) {
                 x.closest = w;
+                x.distClosest = dist;
                 toUpdate.add(x);
             }
         }
@@ -313,6 +317,9 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                     minClust = nn;
                 }
             }
+        }
+        if (minClust != null) {
+            x.distClosest = min;
         }
         return minClust;
     }
