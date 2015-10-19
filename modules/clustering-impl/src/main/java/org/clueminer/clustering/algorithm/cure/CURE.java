@@ -16,7 +16,6 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
@@ -294,8 +293,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
             int nearestClusterIndex = -1;
             double distance;
             for (int i = 0; i < clusters.size(); i++) {
-                ArrayList<E> rep = clusters.get(i).rep;
-                for (E other : rep) {
+                for (E other : clusters.get(i).rep) {
                     distance = distanceFunction.measure(inst, other);
                     if (distance < smallestDistance) {
                         smallestDistance = distance;
