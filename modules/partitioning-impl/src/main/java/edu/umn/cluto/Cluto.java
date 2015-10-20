@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -127,18 +128,29 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
 
     private Clustering<E, C> parseResult(File result, Dataset<E> dataset, Props props) throws FileNotFoundException, IOException {
         Clustering<E, C> clustering = new ClusterList();
+        Cluster<E> noise = new BaseCluster<>(5, dataset.attributeCount());
+        noise.setAttributes(dataset.getAttributes());
         try (BufferedReader br = new BufferedReader(new FileReader(result))) {
 
             String line = br.readLine();
             int i = 0;
             int cluster;
+
             while (line != null) {
-                cluster = Integer.valueOf(line);
-                //assign item given by line number to a cluster
-                assign(clustering, dataset, i, cluster);
+                cluster = Integer.valueOf(line) - 1;
+                if (cluster >= 0) {
+                    //assign item given by line number to a cluster
+                    assign(clustering, dataset, i, cluster);
+                } else {
+                    noise.add(dataset.get(i));
+                }
                 line = br.readLine();
                 i++;
             }
+        }
+        if (!noise.isEmpty()) {
+            noise.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            clustering.add((C) noise);
         }
         clustering.setParams(props);
         clustering.lookupAdd(dataset);

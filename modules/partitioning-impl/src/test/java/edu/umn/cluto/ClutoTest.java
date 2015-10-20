@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.cluto;
 
-import edu.umn.cluto.Cluto;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -46,6 +45,5 @@ public class ClutoTest {
         assertEquals(2, clustering.size());
         assertEquals(dataset.size(), clustering.instancesCount());
     }
-
 
 }
