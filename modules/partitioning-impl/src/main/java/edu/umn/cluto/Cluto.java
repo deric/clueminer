@@ -94,7 +94,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
 
             File output = new File(result);
             if (output.exists()) {
-                clustering = parseResult(output, dataset);
+                clustering = parseResult(output, dataset, props);
             } else {
                 helper.readStderr(p);
                 throw new RuntimeException("no output was written");
@@ -125,7 +125,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         sb.append(" -").append(key).append("=").append(props.get(key, def));
     }
 
-    private Clustering<E, C> parseResult(File result, Dataset<E> dataset) throws FileNotFoundException, IOException {
+    private Clustering<E, C> parseResult(File result, Dataset<E> dataset, Props props) throws FileNotFoundException, IOException {
         Clustering<E, C> clustering = new ClusterList();
         try (BufferedReader br = new BufferedReader(new FileReader(result))) {
 
@@ -140,6 +140,8 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
                 i++;
             }
         }
+        clustering.setParams(props);
+        clustering.lookupAdd(dataset);
         return clustering;
     }
 
@@ -147,6 +149,9 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         C clust;
         if (!clustering.hasAt(clusterId)) {
             clust = clustering.createCluster(clusterId);
+            if (colorGenerator != null) {
+                clust.setColor(colorGenerator.next());
+            }
         } else {
             clust = clustering.get(clusterId);
         }
