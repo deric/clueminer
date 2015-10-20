@@ -139,7 +139,7 @@ public class ExtBinHelper<E extends Instance> {
         return file;
     }
 
-    protected void readStdout(Process p) {
+    public void readStdout(Process p) {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
@@ -151,7 +151,7 @@ public class ExtBinHelper<E extends Instance> {
         }
     }
 
-    protected void readStderr(Process p) {
+    public void readStderr(Process p) {
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;

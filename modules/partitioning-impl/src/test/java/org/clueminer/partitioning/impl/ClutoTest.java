@@ -16,6 +16,7 @@
  */
 package org.clueminer.partitioning.impl;
 
+import edu.umn.cluto.Cluto;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

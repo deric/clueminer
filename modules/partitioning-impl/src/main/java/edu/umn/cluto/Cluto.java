@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.cluto;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +28,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.partitioning.impl.ExtBinHelper;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,6 +48,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
     public static final String name = "CLUTO";
     private final ExtBinHelper<E> helper;
 
+    public static final String K = "k";
     public static final String CLMETHOD = "clmethod";
     public static final String SIM = "sim";
     public static final String AGGLOFROM = "agglofrom";
@@ -110,7 +112,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
     }
 
     private String getParams(StringBuilder sb, Dataset<E> dataset, Props props, String resFile) {
-        sb.append(props.getInt("k", dataset.getClasses().size()));
+        sb.append(props.getInt(K, dataset.getClasses().size()));
         param(sb, props, CLMETHOD, "graph");
         param(sb, props, SIM, "dist");
         param(sb, props, AGGLOFROM, "30");
