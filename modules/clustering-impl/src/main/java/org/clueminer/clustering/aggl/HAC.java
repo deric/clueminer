@@ -293,12 +293,17 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
         Element current;
         double distance;
         Dataset<E> d = (Dataset<E>) dataset;
+
+        E centroid = null;
+        if (linkage.usesCentroids()) {
+            E centroidA = fetchCentroid(leftId, centroids, d);
+            E centroidB = fetchCentroid(rightId, centroids, d);
+            centroid = linkage.updateCentroid(ma, mb, centroidA, centroidB, d);
+            centroids.put(mergedId, centroid);
+        }
+
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
             if (linkage.usesCentroids()) {
-                E centroidA = fetchCentroid(leftId, centroids, d);
-                E centroidB = fetchCentroid(rightId, centroids, d);
-                E centroid = linkage.updateCentroid(ma, mb, centroidA, centroidB, d);
-                centroids.put(mergedId, centroid);
                 distance = linkage.centroidDistance(ma, mb, centroid, fetchCentroid(cluster.getKey(), centroids, d));
             } else {
                 distance = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
