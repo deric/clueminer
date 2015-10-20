@@ -19,20 +19,13 @@ package org.clueminer.partitioning.impl;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
-import org.clueminer.resources.ResourceLoader;
 import org.openide.util.Exceptions;
 
 /**
@@ -42,7 +35,6 @@ import org.openide.util.Exceptions;
 public abstract class AbstractMetis implements Partitioning {
 
     public abstract void runMetis(Graph graph, int k);
-    protected static final String prefix = "/org/clueminer/partitioning/impl";
 
     protected Node[] createMapping(Graph graph) {
         Node[] nodeMapping = new Node[graph.getNodeCount()];
@@ -68,69 +60,7 @@ public abstract class AbstractMetis implements Partitioning {
         return f.findSubgraphs(clusteredGraph);
     }
 
-    /**
-     * Resource packed in jar is not possible to open directly, this method uses
-     * a .tmp file which should be on exit deleted
-     *
-     * @param path
-     * @return
-     */
-    public File resource(String path) {
-        String resource = prefix + File.separatorChar + path;
-        File file;
-        URL url = Metis.class.getResource(resource);
-        if (url == null) {
-            //probably on Windows
-            Collection<String> res = ResourceLoader.getResources(path);
-            if (res.isEmpty()) {
-                throw new RuntimeException("could not find metis binary!");
-            }
-            String fullPath = res.iterator().next();
-            file = new File(fullPath);
-            if (file.exists()) {
-                return file;
-            }
-            //non existing URL
-            //no classpath, compiled as JAR
-            //if path is in form: "jar:path.jar!resource/data"
-            int pos = fullPath.lastIndexOf("!");
-            if (pos > 0) {
-                resource = fullPath.substring(pos + 1);
-                if (!resource.startsWith("/")) {
-                    //necessary for loading as a stream
-                    resource = "/" + resource;
-                }
-            }
-            return loadResource(resource);
-        }
 
-        if (url.toString().startsWith("jar:")) {
-            return loadResource(resource);
-        } else {
-            file = new File(url.getFile());
-        }
-        return file;
-    }
-
-    protected File loadResource(String resource) {
-        File file = null;
-        try {
-            InputStream input = getClass().getResourceAsStream(resource);
-            file = File.createTempFile("metis", ".tmp");
-            try (OutputStream out = new FileOutputStream(file)) {
-                int read;
-                byte[] bytes = new byte[1024];
-
-                while ((read = input.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-            }
-            file.deleteOnExit();
-        } catch (IOException ex) {
-            System.err.println(ex.toString());
-        }
-        return file;
-    }
 
     protected ArrayList<LinkedList<Node>> importMetisResult(int k, Node[] nodeMapping) {
         ArrayList<LinkedList<Node>> result = new ArrayList<>();
@@ -155,17 +85,4 @@ public abstract class AbstractMetis implements Partitioning {
         }
         return result;
     }
-
-    protected void readStdout(Process p) {
-        try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-    }
-
 }

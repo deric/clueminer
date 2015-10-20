@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidParameterException;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
@@ -22,6 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class Metis extends AbstractMetis implements Partitioning {
 
     private String ptype;
+    private final ExtBinHelper<Instance> helper;
 
     public Metis() {
         this("kway");
@@ -32,6 +34,7 @@ public class Metis extends AbstractMetis implements Partitioning {
         if (!"kway".equals(ptype) && !"rb".equals(ptype)) {
             throw new InvalidParameterException("Parameter ptype cannot have " + ptype + " value");
         }
+        helper = new ExtBinHelper<>();
     }
 
     @Override
@@ -47,18 +50,18 @@ public class Metis extends AbstractMetis implements Partitioning {
     @Override
     public void runMetis(Graph graph, int k) {
         String metis = graph.metisExport(false);
-        try (PrintWriter writer = new PrintWriter("inputGraph", "UTF-8")) {
+        File file = new File("inputGraph");
+        try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
             writer.print(metis);
             writer.close();
-            File metisFile = resource("gpmetis");
+            File metisFile = helper.resource("gpmetis");
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
             p.waitFor();
             //run metis
             p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
             p.waitFor();
-            readStdout(p);
-            File file = new File("inputGraph");
+            helper.readStdout(p);
             file.delete();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);

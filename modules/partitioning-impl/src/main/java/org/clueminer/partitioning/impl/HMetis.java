@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
@@ -47,6 +48,11 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected int vcycle = 1;// 0-3
     protected int reconst = 0;// 0-1
     protected int dbglvl = 0;
+    private final ExtBinHelper<Instance> helper;
+
+    public HMetis() {
+        helper = new ExtBinHelper();
+    }
 
     @Override
     public String getName() {
@@ -56,7 +62,8 @@ public class HMetis extends AbstractMetis implements Partitioning {
     @Override
     public void runMetis(Graph graph, int k) {
         String metis = graph.hMetisExport(false);
-        try (PrintWriter writer = new PrintWriter("inputGraph", "UTF-8")) {
+        File file = new File("inputGraph");
+        try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
             writer.print(metis);
             writer.close();
             File metisFile = getBinary();
@@ -66,7 +73,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
 
             p = Runtime.getRuntime().exec("ls -laF " + metisFile.getAbsolutePath());
             p.waitFor();
-            readStdout(p);
+            helper.readStdout(p);
             //run metis
             String space = " ";
             StringBuilder sb = new StringBuilder(metisFile.getAbsolutePath());
@@ -82,8 +89,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
             System.out.println("cmd: " + sb.toString());
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
-            readStdout(p);
-            File file = new File("inputGraph");
+            helper.readStdout(p);
             file.delete();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
@@ -93,7 +99,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     }
 
     protected File getBinary() {
-        return resource("hmetis");
+        return helper.resource("hmetis");
     }
 
     @Override
