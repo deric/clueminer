@@ -10,11 +10,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkageInv;
-import org.clueminer.clustering.aggl.linkage.MedianLinkage;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
@@ -54,12 +54,17 @@ public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> i
      * @param cache
      * @param leftId
      * @param rightId
+     * @param ma
+     * @param mb
+     * @param centroids
+     * @param dataset
      */
     @Override
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            AbstractQueue<Element> pq, ClusterLinkage linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
+            AbstractQueue<Element> pq, ClusterLinkage<E> linkage,
+            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb,
+            HashMap<Integer, E> centroids, Dataset<? extends E> dataset) {
         Element current;
         double distance;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
@@ -82,19 +87,20 @@ public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> i
      *
      *
      * @param r cluster R is created after merging A and B
-     * @param q existing cluster
+     * @param q another existing cluster
      * @param a a cluster that is being merged
      * @param b a cluster that is being merged
      * @param sim similarity matrix
      * @param linkage cluster linkage method
      * @param cache
-     * @param ma
-     * @param mb
-     * @param mq
+     * @param ma size of cluster A
+     * @param mb size of cluster B
+     * @param mq size of cluster Q
      * @return
      */
     public double updateProximity(int r, int q, int a, int b, Matrix sim,
-            ClusterLinkage linkage, HashMap<Integer, Double> cache, int ma, int mb, int mq) {
+            ClusterLinkage linkage, HashMap<Integer, Double> cache,
+            int ma, int mb, int mq) {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
 
@@ -234,7 +240,7 @@ public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> i
     @Override
     public boolean isLinkageSupported(String linkage) {
         switch (linkage) {
-            case MedianLinkage.name:
+            //case MedianLinkage.name:
             case CompleteLinkageInv.name:
                 return false;
             default:

@@ -37,11 +37,15 @@ public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HAC
      * @param sim
      * @param linkage
      * @param cache
+     * @param ma
+     * @param mb
+     * @param mq
      * @return
      */
     @Override
     public double updateProximity(int r, int q, int a, int b, Matrix sim,
-            ClusterLinkage linkage, HashMap<Integer, Double> cache, int ma, int mb, int mq) {
+            ClusterLinkage linkage, HashMap<Integer, Double> cache,
+            int ma, int mb, int mq) {
         double dist = Math.max(fetchDist(a, q, sim, cache), fetchDist(b, q, sim, cache));
         cache.put(map(r, q), dist);
         return dist;

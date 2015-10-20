@@ -20,6 +20,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.AbstractLinkage;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -104,6 +105,21 @@ public class CompleteLinkageInv<E extends Instance> extends AbstractLinkage<E> i
     @Override
     public double gamma() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean usesCentroids() {
+        return false;
+    }
+
+    @Override
+    public E updateCentroid(int ma, int mb, E centroidA, E centroidB, Dataset<E> dataset) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
+    @Override
+    public double centroidDistance(int ma, int mb, E centroidA, E centroidB) {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
 }

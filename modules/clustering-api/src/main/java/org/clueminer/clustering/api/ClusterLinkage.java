@@ -2,11 +2,13 @@ package org.clueminer.clustering.api;
 
 import java.io.Serializable;
 import java.util.Set;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 
 /**
+ * Interface for computing distances between two clusters.
  *
  * @author Tomas Barton
  * @param <E>
@@ -28,7 +30,8 @@ public interface ClusterLinkage<E extends Instance> extends Serializable {
     void setDistanceMeasure(Distance distanceMeasure);
 
     /**
-     * Calculates distance between two clusters
+     * Naive method of calculating distance between two clusters. Usually very
+     * expensive.
      *
      * @param cluster1
      * @param cluster2
@@ -48,6 +51,38 @@ public interface ClusterLinkage<E extends Instance> extends Serializable {
      * @return the similarity of the two clusters
      */
     double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd);
+
+    /**
+     * Some linkage methods (median, Ward's requires computation of centroids)
+     *
+     * @return when true centroid should be updated after each merge
+     */
+    boolean usesCentroids();
+
+    /**
+     * Update centroid of newly merged cluster. Supported only by some methods
+     * (Median, Centroid, Ward's)
+     *
+     * @param ma
+     * @param mb
+     * @param centroidA
+     * @param centroidB
+     * @param dataset
+     *
+     * @return centroid of newly merged cluster
+     */
+    E updateCentroid(int ma, int mb, E centroidA, E centroidB, Dataset<E> dataset);
+
+    /**
+     * Compute distances between centroids
+     *
+     * @param ma
+     * @param mb
+     * @param centroidA
+     * @param centroidB
+     * @return
+     */
+    double centroidDistance(int ma, int mb, E centroidA, E centroidB);
 
     /**
      * We are merging cluster A and cluster B to make a new cluster R. Cluster Q

@@ -60,7 +60,7 @@ public class HACLWMS<E extends Instance, C extends Cluster<E>> extends HAC<E, C>
      * @return
      */
     @Override
-    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AgglParams params, int n) {
         //binary tree, however we store at most n nodes (then rewrite references)
         DendroNode[] nodes = new DendroNode[n];
         //each instance will form a cluster

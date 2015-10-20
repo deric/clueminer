@@ -107,7 +107,7 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
         return hClust(dataset, dataset.asMatrix(), n, pref, params, result);
     }
 
-    private HierarchicalResult hClust(Dataset<? extends Instance> dataset, Matrix input, int n,
+    private HierarchicalResult hClust(Dataset<E> dataset, Matrix input, int n,
             Props pref, AgglParams params, HierarchicalResult result) {
         logger.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
@@ -159,7 +159,7 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
         return pq;
     }
 
-    public HierarchicalResult hierarchy(Matrix input, Dataset<? extends Instance> dataset, Props pref) {
+    public HierarchicalResult hierarchy(Matrix input, Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
         pref.put(AgglParams.ALG, getName());
@@ -189,15 +189,14 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
     /**
      * Find most closest items and merges them into one cluster (subtree)
      *
-     * @param pq queue with sorted distances (lowest distance pops
-     * out first)
+     * @param pq queue with sorted distances (lowest distance pops out first)
      * @param similarityMatrix
      * @param dataset
      * @param params
      * @param n number of items to cluster
      * @return
      */
-    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<? extends Instance> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AgglParams params, int n) {
         //binary tree, we know how many nodes we have
         DendroNode[] nodes = new DendroNode[(2 * n - 1)];
         //each instance will form a cluster
@@ -210,20 +209,19 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
         Set<Integer> left, right;
         int nodeId = n;
         int ma, mb;
+        HashMap<Integer, E> centroids = new HashMap<>();
         /**
          * queue of distances, each time join 2 items together, we should remove
          * (n-1) items from queue (but removing is too expensive)
          */
         while (!pq.isEmpty() && assignments.size() > 1) {
             curr = pq.poll();
-            //System.out.println(curr.toString() + " remain: " + pq.size() + ", height: " + String.format("%.3f", curr.getValue()));
             if (!blacklist.contains(curr.getRow()) && !blacklist.contains(curr.getColumn())) {
                 node = getOrCreate(nodeId++, nodes);
                 node.setLeft(nodes[curr.getRow()]);
                 node.setRight(nodes[curr.getColumn()]);
                 node.setHeight(curr.getValue());
 
-                //System.out.println("node " + node.getId() + " left: " + node.getLeft() + " right: " + node.getRight());
                 blacklist.add(curr.getRow());
                 blacklist.add(curr.getColumn());
 
@@ -235,7 +233,8 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
                 //merge together and add as a new cluster
                 left.addAll(right);
                 updateDistances(node.getId(), left, similarityMatrix, assignments,
-                        pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(), ma, mb);
+                        pq, params.getLinkage(), cache, curr.getRow(), curr.getColumn(),
+                        ma, mb, centroids, dataset);
                 //when assignment have size == 1, all clusters are merged into one
             }
         }
@@ -281,23 +280,47 @@ public class HAC<E extends Instance, C extends Cluster<E>> extends AbstractClust
      * @param cache
      * @param leftId left cluster ID
      * @param rightId right cluster ID
-     * @param ma
-     * @param mb
+     * @param ma size of left cluster
+     * @param mb size of right cluster
+     * @param centroids
+     * @param dataset
      */
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
-            AbstractQueue<Element> pq, ClusterLinkage linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb) {
+            AbstractQueue<Element> pq, ClusterLinkage<E> linkage,
+            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb,
+            HashMap<Integer, E> centroids, Dataset<? extends E> dataset) {
         Element current;
         double distance;
+        Dataset<E> d = (Dataset<E>) dataset;
         for (Map.Entry<Integer, Set<Integer>> cluster : assignments.entrySet()) {
-            distance = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
+            if (linkage.usesCentroids()) {
+                E centroidA = fetchCentroid(leftId, centroids, d);
+                E centroidB = fetchCentroid(rightId, centroids, d);
+                E centroid = linkage.updateCentroid(ma, mb, centroidA, centroidB, d);
+                centroids.put(mergedId, centroid);
+                distance = linkage.centroidDistance(ma, mb, centroid, fetchCentroid(cluster.getKey(), centroids, d));
+            } else {
+                distance = linkage.similarity(similarityMatrix, cluster.getValue(), mergedCluster);
+            }
+
             current = new Element(distance, mergedId, cluster.getKey());
+
             pq.add(current);
         }
         //System.out.println("adding " + mergedId + " -> " + mergedCluster.toString());
         //finaly add merged cluster
         assignments.put(mergedId, mergedCluster);
+    }
+
+    private E fetchCentroid(int idx, HashMap<Integer, E> centroids, Dataset<E> dataset) {
+        E centroid;
+        if (idx < dataset.size()) {
+            centroid = dataset.get(idx);
+        } else {
+            centroid = centroids.get(idx);
+        }
+        return centroid;
     }
 
     /**
