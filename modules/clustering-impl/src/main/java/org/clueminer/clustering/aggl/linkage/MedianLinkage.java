@@ -54,6 +54,15 @@ public class MedianLinkage<E extends Instance> extends AbstractLinkage<E> implem
         return distanceMeasure.measure(cluster1.getCentroid(), cluster2.getCentroid());
     }
 
+    /**
+     * TODO: this is completely wrong - centroids should be used instead of
+     * median in a cluster!
+     *
+     * @param similarityMatrix
+     * @param cluster
+     * @param toAdd
+     * @return
+     */
     @Override
     public double similarity(Matrix similarityMatrix, Set<Integer> cluster, Set<Integer> toAdd) {
         double[] similarities = new double[cluster.size() * toAdd.size()];

@@ -53,7 +53,7 @@ public class CentroidLinkage<E extends Instance> extends AbstractLinkage<E> impl
 
     @Override
     public double distance(Cluster<E> cluster1, Cluster<E> cluster2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return centroidDistance(0, 0, cluster1.getCentroid(), cluster2.getCentroid());
     }
 
     @Override
@@ -63,17 +63,21 @@ public class CentroidLinkage<E extends Instance> extends AbstractLinkage<E> impl
 
     @Override
     public boolean usesCentroids() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public E updateCentroid(int ma, int mb, E centroidA, E centroidB, Dataset<E> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        E res = dataset.builder().build(dataset.attributeCount());
+        for (int i = 0; i < dataset.attributeCount(); i++) {
+            res.set(i, (ma * centroidA.get(i) + mb * centroidB.get(i)) / (double) (ma + mb));
+        }
+        return res;
     }
 
     @Override
     public double centroidDistance(int ma, int mb, E centroidA, E centroidB) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return distanceMeasure.measure(centroidA, centroidB);
     }
 
     @Override

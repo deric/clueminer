@@ -39,10 +39,10 @@ public class CentroidLinkageTest extends AbstractLinkageTest {
         assertEquals(17, dataset.size());
         assertEquals(4, dataset.attributeCount());
 
-//        HierarchicalResult naive = naiveLinkage(dataset);
+        HierarchicalResult naive = naiveLinkage(dataset);
         HierarchicalResult lance = lanceWilliamsLinkage(dataset);
         System.out.println("school - " + subject.getName());
-
+        naive.getTreeData().print();
         System.out.println("lance:");
         lance.getTreeData().print();
         //assertEquals(true, TreeDiff.compare(naive, lance));
