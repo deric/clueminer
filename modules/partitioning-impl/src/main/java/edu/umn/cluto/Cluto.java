@@ -111,6 +111,9 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
+        for (C c : clustering) {
+            System.out.println(c.getName() + ": " + c.size());
+        }
         return clustering;
     }
 
@@ -138,7 +141,6 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         noise.setAttributes(dataset.getAttributes());
         int i = 0;
         int cluster;
-        boolean problem = false;
         try (BufferedReader br = new BufferedReader(new FileReader(result))) {
 
             String line = br.readLine();
@@ -151,19 +153,18 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
                     if (i < dataset.size()) {
                         noise.add(dataset.get(i));
                     } else {
-                        System.err.println("trying to add non-existing instance #" + i);
-                        problem = true;
+                        debug(result);
+                        throw new RuntimeException("trying to add non-existing instance #" + i);
                     }
                 }
                 line = br.readLine();
                 i++;
             }
         }
-        if (problem) {
-            System.out.println("result file:");
-            debug(result);
-        }
         if (!noise.isEmpty()) {
+            if (colorGenerator != null) {
+                noise.setColor(colorGenerator.next());
+            }
             noise.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
             clustering.add((C) noise);
         }

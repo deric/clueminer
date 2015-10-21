@@ -46,4 +46,14 @@ public class ClutoTest {
         assertEquals(dataset.size(), clustering.instancesCount());
     }
 
+    @Test
+    public void testGlass() {
+        Dataset<? extends Instance> dataset = FakeDatasets.glassDataset();
+        Props params = new Props();
+        params.put("k", 9);
+        Clustering clustering = subject.cluster(dataset, params);
+        assertEquals(9, clustering.size());
+        assertEquals(dataset.size(), clustering.instancesCount());
+    }
+
 }
