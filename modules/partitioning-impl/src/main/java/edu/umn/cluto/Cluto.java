@@ -123,7 +123,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         param(sb, props, CLMETHOD, "graph");
         param(sb, props, SIM, "dist");
         param(sb, props, AGGLOFROM, "30");
-        param(sb, props, "clustfile", resFile);
+        sb.append(" -clustfile=").append(resFile);
         //6 -clmethod=graph -sim=dist -agglofrom=30
         return sb.toString();
     }
