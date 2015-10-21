@@ -67,9 +67,13 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
         Clustering<E, C> clustering = null;
         try {
-            File dataFile = new File("data.mat");
+            long current = System.currentTimeMillis();
+            File dataFile = new File("data-" + safeName(dataset.getName()) + "-" + current + ".mat");
             try {
                 helper.exportDataset(dataset, dataFile);
             } catch (FileNotFoundException ex) {
@@ -77,7 +81,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
             }
 
             File metisFile = getBinary();
-            String result = "result.out";
+            String result = "result-" + safeName(dataset.getName()) + "-" + current + ".out";
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
             p.waitFor();
@@ -94,12 +98,14 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
             dataFile.deleteOnExit();
 
             File output = new File(result);
-            if (output.exists()) {
-                clustering = parseResult(output, dataset, props);
-            } else {
+            int repeat = 0;
+            while (!output.exists() && repeat < 5) {
+                System.out.println("waiting for output ... " + repeat);
                 helper.readStderr(p);
-                throw new RuntimeException("no output was written");
+                Thread.sleep(500);
+                repeat++;
             }
+            clustering = parseResult(output, dataset, props);
             output.deleteOnExit();
 
         } catch (IOException | InterruptedException ex) {
@@ -130,23 +136,32 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         Clustering<E, C> clustering = new ClusterList();
         Cluster<E> noise = new BaseCluster<>(5, dataset.attributeCount());
         noise.setAttributes(dataset.getAttributes());
+        int i = 0;
+        int cluster;
+        boolean problem = false;
         try (BufferedReader br = new BufferedReader(new FileReader(result))) {
 
             String line = br.readLine();
-            int i = 0;
-            int cluster;
-
             while (line != null) {
                 cluster = Integer.valueOf(line) - 1;
                 if (cluster >= 0) {
                     //assign item given by line number to a cluster
                     assign(clustering, dataset, i, cluster);
                 } else {
-                    noise.add(dataset.get(i));
+                    if (i < dataset.size()) {
+                        noise.add(dataset.get(i));
+                    } else {
+                        System.err.println("trying to add non-existing instance #" + i);
+                        problem = true;
+                    }
                 }
                 line = br.readLine();
                 i++;
             }
+        }
+        if (problem) {
+            System.out.println("result file:");
+            debug(result);
         }
         if (!noise.isEmpty()) {
             noise.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
@@ -155,6 +170,17 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         clustering.setParams(props);
         clustering.lookupAdd(dataset);
         return clustering;
+    }
+
+    private void debug(File f) throws FileNotFoundException, IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            String line = br.readLine();
+            int i = 0;
+            while (line != null) {
+                System.out.println((i++) + ":" + line);
+                line = br.readLine();
+            }
+        }
     }
 
     private void assign(Clustering<E, C> clustering, Dataset<E> dataset, int idx, int clusterId) {
@@ -167,7 +193,13 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
         } else {
             clust = clustering.get(clusterId);
         }
-        clust.add(dataset.get(idx));
+        if (idx < dataset.size()) {
+            clust.add(dataset.get(idx));
+        }
+    }
+
+    private String safeName(String name) {
+        return name.toLowerCase().replace(" ", "_");
     }
 
 }
