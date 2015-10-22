@@ -20,6 +20,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -40,8 +41,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class ClutoDialog extends JPanel implements ClusteringDialog {
 
     private static final String name = "CLUTO";
+    private static final long serialVersionUID = -3597832454334820059L;
     private JSlider sliderK;
     private JTextField tfK;
+    private JComboBox cmbMethod;
+    private JComboBox cmbDist;
+    private JComboBox cmbCrfun;
 
     public ClutoDialog() {
         initComponents();
@@ -56,6 +61,9 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.putInt(Cluto.K, sliderK.getValue());
+        params.put(Cluto.CLMETHOD, cmbMethod.getSelectedItem().toString());
+        params.put(Cluto.DISTANCE, cmbDist.getSelectedItem().toString());
+        params.put(Cluto.CRFUN, cmbCrfun.getSelectedItem().toString());
 
         return params;
     }
@@ -103,6 +111,34 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
                 updateKSlider();
             }
         });
+
+        //clmethod
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("method:"), c);
+        c.gridx = 1;
+        c.weightx = 0.9;
+        cmbMethod = new JComboBox(new String[]{"graph", "rb", "rbr", "direct", "agglo", "bagglo"});
+        add(cmbMethod, c);
+
+        //dist
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("distance:"), c);
+        c.gridx = 1;
+        c.weightx = 0.9;
+        cmbDist = new JComboBox(new String[]{"dist", "cos", "corr", "jacc"});
+        add(cmbDist, c);
+
+        //crfun
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("criterion:"), c);
+        c.gridx = 1;
+        c.weightx = 0.9;
+        cmbCrfun = new JComboBox(new String[]{"i1", "i2", "e1", "g1", "g1p", "h1", "h2", "slink", "wslink", "clink", "wclink", "upgma"});
+        add(cmbCrfun, c);
+
     }
 
     @Override
