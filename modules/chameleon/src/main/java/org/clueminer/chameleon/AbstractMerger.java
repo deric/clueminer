@@ -14,6 +14,7 @@ import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.partitioning.impl.HMetisBisector;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 
@@ -277,10 +278,35 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected void addIntoTree(PairValue<GraphCluster> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
+        double sim = pair.getValue();
+        if (bisection instanceof HMetisBisector) {
+            stdAdd(left, right, sim);
+        } else {
+            improvedAdd(left, right, sim);
+        }
+    }
+
+    private void stdAdd(DendroNode left, DendroNode right, double sim) {
         DTreeNode newNode = new DTreeNode(clusters.size() - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
-        double sim = pair.getValue();
+        /* if (sim > 10) {
+         sim = 10;
+         }*/
+        if (Double.isNaN(sim) || sim < 0.005) {
+            sim = 0.005;
+        }
+        height += 1 / sim;
+        newNode.setHeight(height);
+        newNode.setLevel(level++);
+        nodes[clusters.size() - 1] = newNode;
+    }
+
+    private void improvedAdd(DendroNode left, DendroNode right, double sim) {
+        DTreeNode newNode = new DTreeNode(clusters.size() - 1);
+        newNode.setLeft(left);
+        newNode.setRight(right);
+
         if (sim > 10) {
             sim = 10;
         }

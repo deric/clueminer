@@ -48,6 +48,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected int reconst = 0;// 0-1
     protected int dbglvl = 0;
     private final ExtBinHelper<Instance> helper;
+    private boolean debug = false;
 
     public HMetis() {
         helper = new ExtBinHelper();
@@ -82,16 +83,19 @@ public class HMetis extends AbstractMetis implements Partitioning {
                     .append(String.valueOf(vcycle)).append(space)
                     .append(String.valueOf(reconst)).append(space)
                     .append(String.valueOf(dbglvl));
-            System.out.println("cmd: " + sb.toString());
+
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
-            System.out.println("exit code: " + p.exitValue());
-            if (p.exitValue() != 1) {
-                //System.out.println(ExtBinHelper.readFile(file));
-            }
+            if (debug) {
+                System.out.println("cmd: " + sb.toString());
+                System.out.println("exit code: " + p.exitValue());
+                if (p.exitValue() != 1) {
+                    //System.out.println(ExtBinHelper.readFile(file));
+                }
 
-            helper.readStdout(p);
-            helper.readStderr(p);
+                helper.readStdout(p);
+                helper.readStderr(p);
+            }
             file.delete();
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
