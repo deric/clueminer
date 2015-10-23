@@ -48,9 +48,11 @@ public class Metis extends AbstractMetis implements Partitioning {
     }
 
     @Override
-    public void runMetis(Graph graph, int k) {
+    public String runMetis(Graph graph, int k) {
         String metis = graph.metisExport(false);
-        File file = new File("inputGraph");
+        long current = System.currentTimeMillis();
+        File file = new File("inputGraph-" + current);
+        String path = file.getName();
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
             writer.print(metis);
             writer.close();
@@ -59,7 +61,7 @@ public class Metis extends AbstractMetis implements Partitioning {
             Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
             p.waitFor();
             //run metis
-            p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " inputGraph " + String.valueOf(k));
+            p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + " -ptype=" + ptype + " " + path + " " + String.valueOf(k));
             p.waitFor();
             helper.readStdout(p);
             file.delete();
@@ -68,6 +70,7 @@ public class Metis extends AbstractMetis implements Partitioning {
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
+        return path;
     }
 
     public void setPtype(String ptype) {

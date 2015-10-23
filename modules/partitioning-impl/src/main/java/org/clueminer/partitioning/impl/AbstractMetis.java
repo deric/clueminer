@@ -34,7 +34,14 @@ import org.openide.util.Exceptions;
  */
 public abstract class AbstractMetis implements Partitioning {
 
-    public abstract void runMetis(Graph graph, int k);
+    /**
+     * Run binary and return name of input file
+     *
+     * @param graph
+     * @param k
+     * @return
+     */
+    public abstract String runMetis(Graph graph, int k);
 
     protected Node[] createMapping(Graph graph) {
         Node[] nodeMapping = new Node[graph.getNodeCount()];
@@ -53,21 +60,19 @@ public abstract class AbstractMetis implements Partitioning {
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);
-        runMetis(g, k);
-        ArrayList<LinkedList<Node>> clusters = importMetisResult(k, nodeMapping);
+        String path = runMetis(g, k);
+        ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
         Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
     }
 
-
-
-    protected ArrayList<LinkedList<Node>> importMetisResult(int k, Node[] nodeMapping) {
+    protected ArrayList<LinkedList<Node>> importMetisResult(String path, int k, Node[] nodeMapping) {
         ArrayList<LinkedList<Node>> result = new ArrayList<>();
         for (int i = 0; i < k; i++) {
             result.add(new LinkedList<Node>());
         }
-        File file = new File("inputGraph.part." + String.valueOf(k));
+        File file = new File(path + ".part." + String.valueOf(k));
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int i = 0;

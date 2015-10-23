@@ -42,8 +42,8 @@ public class HMetisBisector extends HMetis implements Bisection {
         int k = 2;
         Node[] nodeMapping = createMapping(g);
         //we want to split graph into 2 parts
-        runMetis(g, k);
-        ArrayList<LinkedList<Node>> clusters = importMetisResult(k, nodeMapping);
+        String path = runMetis(g, k);
+        ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
         return clusters;
     }
 

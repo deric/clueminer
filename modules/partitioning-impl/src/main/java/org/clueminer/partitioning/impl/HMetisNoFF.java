@@ -53,8 +53,8 @@ public class HMetisNoFF extends HMetis implements Partitioning {
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);
-        runMetis(g, k);
-        return importMetisResult(k, nodeMapping);
+        String path = runMetis(g, k);
+        return importMetisResult(path, k, nodeMapping);
     }
 
 }

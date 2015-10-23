@@ -19,7 +19,6 @@ package org.clueminer.partitioning.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
@@ -60,25 +59,21 @@ public class HMetis extends AbstractMetis implements Partitioning {
     }
 
     @Override
-    public void runMetis(Graph graph, int k) {
-        String metis = graph.hMetisExport(false);
+    public String runMetis(Graph graph, int k) {
         long current = System.currentTimeMillis();
-        File file = new File("inputGraph");
-        try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
-            writer.print(metis);
-            writer.close();
+        File file = new File("inputGraph-" + current);
+        String filename = file.getName();
+        try {
+            graph.hMetisExport(file, false);
             File metisFile = getBinary();
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod ugo+x " + metisFile.getAbsolutePath());
             p.waitFor();
 
-            p = Runtime.getRuntime().exec("ls -laF " + metisFile.getAbsolutePath());
-            p.waitFor();
-            helper.readStdout(p);
             //run metis
             String space = " ";
             StringBuilder sb = new StringBuilder(metisFile.getAbsolutePath());
-            sb.append(" inputGraph ")
+            sb.append(" ").append(filename).append(" ")
                     .append(String.valueOf(k)).append(space)
                     .append(String.valueOf(ubFactor)).append(space)
                     .append(String.valueOf(nruns)).append(space)
@@ -90,13 +85,21 @@ public class HMetis extends AbstractMetis implements Partitioning {
             System.out.println("cmd: " + sb.toString());
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
+            if (p.exitValue() != 0) {
+                System.out.println("input graph:");
+                System.out.println(ExtBinHelper.readFile(file));
+            } else {
+                file.delete();
+            }
             helper.readStdout(p);
-            file.delete();
+            helper.readStderr(p);
+
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
+        return filename;
     }
 
     protected File getBinary() {
