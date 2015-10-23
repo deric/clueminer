@@ -1,5 +1,9 @@
 package org.clueminer.graph.adjacencyMatrix;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +17,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -247,21 +252,26 @@ public class AdjMatrixGraph implements Graph {
      * {@inheritDoc }
      *
      * @param weighted
-     * @return
+     *
      */
     @Override
-    public String hMetisExport(boolean weighted) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
-        for (int i = 0; i < getNodeCount(); i++) {
-            String space = "";
-            for (Node neighbor : getNeighbors(nodes[i])) {
-                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
-                space = " ";
+    public void hMetisExport(File target, boolean weighted) throws FileNotFoundException {
+        StringBuilder sb;
+        try (PrintWriter writer = new PrintWriter(target, "UTF-8")) {
+            sb = new StringBuilder();
+            sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+            for (int i = 0; i < getNodeCount(); i++) {
+                String space = "";
+                for (Node neighbor : getNeighbors(nodes[i])) {
+                    sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
+                    space = " ";
+                }
+                sb.append("\n");
             }
-            sb.append("\n");
+            writer.write(sb.toString());
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
         }
-        return sb.toString();
     }
 
     @Override

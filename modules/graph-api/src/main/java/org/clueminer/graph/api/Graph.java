@@ -1,5 +1,7 @@
 package org.clueminer.graph.api;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Collection;
 import org.openide.util.Lookup;
 
@@ -367,10 +369,11 @@ public interface Graph {
     /**
      * Export a (hyper)graph into hmetis format. Each line is a hyperedge
      *
+     * @param target
      * @param weighted
-     * @return
+     * @throws java.io.FileNotFoundException
      */
-    public String hMetisExport(boolean weighted);
+    public void hMetisExport(File target, boolean weighted) throws FileNotFoundException;
 
     /**
      * Lookup is used for retrieving objects associated with this graph

@@ -163,4 +163,8 @@ public class ExtBinHelper<E extends Instance> {
         }
     }
 
+    public static String safeName(String name) {
+        return name.toLowerCase().replace(" ", "_");
+    }
+
 }

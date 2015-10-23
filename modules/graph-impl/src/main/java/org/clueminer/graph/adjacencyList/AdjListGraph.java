@@ -1,5 +1,9 @@
 package org.clueminer.graph.adjacencyList;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +21,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -452,27 +457,30 @@ public class AdjListGraph implements Graph {
      * //list of hyperedges goes here
      *
      * @param weighted
-     * @return
      */
     @Override
-    public String hMetisExport(boolean weighted) {
-        Node[] nodeMapping = new Node[getNodeCount()];
-        for (Node node : getNodes()) {
-            nodeMapping[idToIndex.get(node.getId())] = node;
-        }
-        StringBuilder sb = new StringBuilder();
-
-        //same number of nodes as hyperedges - a hyperedge is formed by node's neighbourhood
-        sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
-        for (int i = 0; i < getNodeCount(); i++) {
-            String space = "";
-            for (Node neighbor : getNeighbors(nodeMapping[i])) {
-                sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
-                space = " ";
+    public void hMetisExport(File target, boolean weighted) throws FileNotFoundException {
+        StringBuilder sb;
+        try (PrintWriter writer = new PrintWriter(target, "UTF-8")) {
+            Node[] nodeMapping = new Node[getNodeCount()];
+            for (Node node : getNodes()) {
+                nodeMapping[idToIndex.get(node.getId())] = node;
             }
-            sb.append("\n");
+            sb = new StringBuilder();
+            //same number of nodes as hyperedges - a hyperedge is formed by node's neighbourhood
+            sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+            for (int i = 0; i < getNodeCount(); i++) {
+                String space = "";
+                for (Node neighbor : getNeighbors(nodeMapping[i])) {
+                    sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
+                    space = " ";
+                }
+                sb.append("\n");
+            }
+            writer.write(sb.toString());
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
         }
-        return sb.toString();
     }
 
     @Override

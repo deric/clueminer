@@ -74,7 +74,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         Clustering<E, C> clustering = null;
         try {
             long current = System.currentTimeMillis();
-            File dataFile = new File("data-" + safeName(dataset.getName()) + "-" + current + ".mat");
+            File dataFile = new File("data-" + ExtBinHelper.safeName(dataset.getName()) + "-" + current + ".mat");
             try {
                 helper.exportDataset(dataset, dataFile);
             } catch (FileNotFoundException ex) {
@@ -82,7 +82,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
             }
 
             File metisFile = getBinary();
-            String result = "result-" + safeName(dataset.getName()) + "-" + current + ".out";
+            String result = "result-" + ExtBinHelper.safeName(dataset.getName()) + "-" + current + ".out";
             //make sure metis is executable
             Process p = Runtime.getRuntime().exec("chmod u+x " + metisFile.getAbsolutePath());
             p.waitFor();
@@ -201,10 +201,6 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         if (idx < dataset.size()) {
             clust.add(dataset.get(idx));
         }
-    }
-
-    private String safeName(String name) {
-        return name.toLowerCase().replace(" ", "_");
     }
 
 }

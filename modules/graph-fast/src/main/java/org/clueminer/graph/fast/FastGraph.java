@@ -16,6 +16,7 @@
  */
 package org.clueminer.graph.fast;
 
+import java.io.File;
 import java.util.Collection;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
@@ -270,11 +271,6 @@ public class FastGraph implements Graph {
     }
 
     @Override
-    public String hMetisExport(boolean weighted) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Lookup getLookup() {
         return lookup;
     }
@@ -287,6 +283,11 @@ public class FastGraph implements Graph {
     @Override
     public void lookupRemove(Object instance) {
         instanceContent.remove(instance);
+    }
+
+    @Override
+    public void hMetisExport(File target, boolean weighted) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

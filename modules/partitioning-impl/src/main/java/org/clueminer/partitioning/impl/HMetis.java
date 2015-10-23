@@ -62,6 +62,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     @Override
     public void runMetis(Graph graph, int k) {
         String metis = graph.hMetisExport(false);
+        long current = System.currentTimeMillis();
         File file = new File("inputGraph");
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
             writer.print(metis);
