@@ -469,11 +469,12 @@ public class AdjListGraph implements Graph {
             sb = new StringBuilder();
             //same number of nodes as hyperedges - a hyperedge is formed by node's neighbourhood
             sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+            String space = " ";
             for (int i = 0; i < getNodeCount(); i++) {
-                String space = "";
+                //append self
+                sb.append(idToIndex.get(nodeMapping[i].getId()) + 1);
                 for (Node neighbor : getNeighbors(nodeMapping[i])) {
                     sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
-                    space = " ";
                 }
                 sb.append("\n");
             }

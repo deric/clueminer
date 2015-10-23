@@ -85,14 +85,14 @@ public class HMetis extends AbstractMetis implements Partitioning {
             System.out.println("cmd: " + sb.toString());
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
-            if (p.exitValue() != 0) {
-                System.out.println("input graph:");
-                System.out.println(ExtBinHelper.readFile(file));
-            } else {
-                file.delete();
+            System.out.println("exit code: " + p.exitValue());
+            if (p.exitValue() != 1) {
+                //System.out.println(ExtBinHelper.readFile(file));
             }
+
             helper.readStdout(p);
             helper.readStderr(p);
+            file.delete();
 
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);

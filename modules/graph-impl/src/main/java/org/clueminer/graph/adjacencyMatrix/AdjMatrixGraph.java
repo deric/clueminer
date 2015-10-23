@@ -260,8 +260,9 @@ public class AdjMatrixGraph implements Graph {
         try (PrintWriter writer = new PrintWriter(target, "UTF-8")) {
             sb = new StringBuilder();
             sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+            String space = " ";
             for (int i = 0; i < getNodeCount(); i++) {
-                String space = "";
+                sb.append(idToIndex.get(nodes[i].getId()) + 1);
                 for (Node neighbor : getNeighbors(nodes[i])) {
                     sb.append(space).append(idToIndex.get(neighbor.getId()) + 1);
                     space = " ";
