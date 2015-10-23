@@ -18,6 +18,8 @@ package edu.umn.cluto;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JComboBox;
@@ -62,7 +64,7 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         Props params = new Props();
         params.putInt(Cluto.K, sliderK.getValue());
         params.put(Cluto.CLMETHOD, cmbMethod.getSelectedItem().toString());
-        params.put(Cluto.DISTANCE, cmbDist.getSelectedItem().toString());
+        params.put(Cluto.SIM, cmbDist.getSelectedItem().toString());
         params.put(Cluto.CRFUN, cmbCrfun.getSelectedItem().toString());
 
         return params;
@@ -119,6 +121,17 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         c.weightx = 0.9;
         cmbMethod = new JComboBox(new String[]{"graph", "rb", "rbr", "direct", "agglo", "bagglo"});
+        cmbMethod.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (cmbMethod.getSelectedItem().equals("graph")) {
+                    cmbDist.setEnabled(false);
+                } else {
+                    cmbDist.setEnabled(true);
+                }
+            }
+        });
         add(cmbMethod, c);
 
         //dist
@@ -128,6 +141,7 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         c.weightx = 0.9;
         cmbDist = new JComboBox(new String[]{"dist", "cos", "corr", "jacc"});
+        cmbDist.setEnabled(false);
         add(cmbDist, c);
 
         //crfun
