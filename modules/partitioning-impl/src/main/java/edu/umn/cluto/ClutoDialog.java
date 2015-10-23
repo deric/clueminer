@@ -46,6 +46,7 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
     private static final long serialVersionUID = -3597832454334820059L;
     private JSlider sliderK;
     private JTextField tfK;
+    private JTextField tfM;
     private JComboBox cmbMethod;
     private JComboBox cmbDist;
     private JComboBox cmbCrfun;
@@ -66,6 +67,7 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         params.put(Cluto.CLMETHOD, cmbMethod.getSelectedItem().toString());
         params.put(Cluto.SIM, cmbDist.getSelectedItem().toString());
         params.put(Cluto.CRFUN, cmbCrfun.getSelectedItem().toString());
+        params.put(Cluto.AGGLOFROM, tfM.getText());
 
         return params;
     }
@@ -153,6 +155,15 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         cmbCrfun = new JComboBox(new String[]{"i1", "i2", "e1", "g1", "g1p", "h1", "h2", "slink", "wslink", "clink", "wclink", "upgma"});
         add(cmbCrfun, c);
 
+        //agglofrom
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("m:"), c);
+        c.gridx = 1;
+        c.weightx = 0.9;
+        tfM = new JTextField("30", 5);
+        add(tfM, c);
+
     }
 
     @Override
@@ -178,6 +189,10 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
         try {
             int val = Integer.valueOf(tfK.getText());
             sliderK.setValue(val);
+            int m = Integer.valueOf(tfM.getText());
+            if (val < m) {
+                tfM.setText(String.valueOf(m));
+            }
         } catch (NumberFormatException ex) {
             // wrong input so we do not set the slider but also do not want to raise an exception
         }

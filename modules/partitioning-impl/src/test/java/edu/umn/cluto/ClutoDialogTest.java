@@ -41,7 +41,7 @@ public class ClutoDialogTest {
     }
 
     public String getTitle() {
-        return "CURE test";
+        return "CLUTO test";
     }
 
     protected JFrame showInFrame() {
@@ -63,6 +63,5 @@ public class ClutoDialogTest {
             }
         });
     }
-
 
 }
