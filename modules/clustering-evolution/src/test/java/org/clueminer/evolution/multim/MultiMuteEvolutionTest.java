@@ -33,10 +33,6 @@ public class MultiMuteEvolutionTest {
         mem = new MemInfo();
     }
 
-    @Test
-    public void testGetName() {
-    }
-
     /**
      * Test iris dataset evolution
      */

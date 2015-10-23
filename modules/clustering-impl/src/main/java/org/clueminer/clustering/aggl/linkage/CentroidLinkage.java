@@ -37,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CentroidLinkage<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     public static final String name = "Centroid";
+    private static final long serialVersionUID = -2582463438359464726L;
 
     public CentroidLinkage() {
         super(EuclideanDistance.getInstance());

@@ -15,12 +15,14 @@ import org.clueminer.distance.api.Distance;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
+ * Each clustering algorithm should inherit from this class, in order to be able
+ * to define its parameters.
  *
  * @author Tomas Barton
  * @param <E>
  * @param <C>
  */
-public abstract class AbstractClusteringAlgorithm<E extends Instance, C extends Cluster<E>> implements ClusteringAlgorithm<E, C> {
+public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implements ClusteringAlgorithm<E, C> {
 
     // don't mutate distance by default - most of evaluation metrics are not
     // adjusted for this
@@ -44,6 +46,11 @@ public abstract class AbstractClusteringAlgorithm<E extends Instance, C extends 
     protected ProgressHandle ph;
 
     public static final String DISTANCE = "distance";
+
+    /**
+     * Whether to use logarithmic scaling - boolean parameter
+     */
+    public static final String LOG = "log-scale";
 
     /**
      * Cluster label for outliers or noises.

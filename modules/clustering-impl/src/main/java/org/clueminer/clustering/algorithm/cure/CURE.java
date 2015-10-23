@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -50,7 +50,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C> CURE requires cluster structure with set of representatives
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class CURE<E extends Instance, C extends CureCluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     /**
      * total number of points (instances) in the data set
@@ -148,7 +148,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Abstract
         logger.log(Level.INFO, "left {0} outliers", outliers.size());
 
         if (!outliers.isEmpty()) {
-            outliers.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            outliers.setName(Algorithm.OUTLIER_LABEL);
             outliers.setClusterId(clustering.size());
             if (colorGenerator != null) {
                 outliers.setColor(colorGenerator.next());

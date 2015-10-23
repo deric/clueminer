@@ -17,7 +17,7 @@
 package org.clueminer.clustering;
 
 import java.util.Random;
-import static org.clueminer.clustering.api.AbstractClusteringAlgorithm.DISTANCE;
+import static org.clueminer.clustering.api.Algorithm.DISTANCE;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;

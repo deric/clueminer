@@ -37,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class McQuitty<E extends Instance> extends AbstractLinkage<E> implements ClusterLinkage<E> {
 
     public static final String name = "McQuitty";
+    private static final long serialVersionUID = -2258560321227869879L;
 
     public McQuitty() {
         super(EuclideanDistance.getInstance());

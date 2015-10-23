@@ -16,7 +16,7 @@
  */
 package org.clueminer.bagging;
 
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
@@ -47,7 +47,7 @@ public class CSPA<E extends Instance, C extends Cluster<E>> extends CoAssocMatri
     }
 
     @Override
-    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg,
+    public Clustering<E, C> reduce(Clustering[] clusts, Algorithm<E, C> alg,
             ColorGenerator cg, Props props) {
         Matrix coassoc = createMatrix(clusts);
 

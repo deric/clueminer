@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.util.Set;
 import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.attributes.BasicAttrType;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
@@ -178,7 +178,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
 
     @Override
     public boolean isOutlier() {
-        return getName().equals(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+        return getName().equals(Algorithm.OUTLIER_LABEL);
     }
 
     @Override

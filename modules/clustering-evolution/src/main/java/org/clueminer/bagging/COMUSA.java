@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
@@ -105,7 +105,7 @@ public class COMUSA<E extends Instance, C extends Cluster<E>> implements Consens
     }
 
     @Override
-    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props) {
+    public Clustering<E, C> reduce(Clustering[] clusts, Algorithm<E, C> alg, ColorGenerator cg, Props props) {
         Graph graph = createGraph(clusts);
 
         //degree of freedom

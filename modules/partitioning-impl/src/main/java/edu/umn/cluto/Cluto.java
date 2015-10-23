@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -44,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     public static final String name = "CLUTO";
     private final ExtBinHelper<E> helper;
@@ -169,7 +169,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends AbstractClu
             if (colorGenerator != null) {
                 noise.setColor(colorGenerator.next());
             }
-            noise.setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            noise.setName(Algorithm.OUTLIER_LABEL);
             clustering.add((C) noise);
         }
         clustering.setParams(props);

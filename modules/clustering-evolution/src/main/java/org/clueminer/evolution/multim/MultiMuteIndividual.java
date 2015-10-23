@@ -145,14 +145,15 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
     public double countFitness(ClusterEvaluation eval) {
         if (clustering == null) {
             updateCustering();
-            if (!isValid()) {
-                return Double.NaN;
-            }
+        }
+        if (!isValid()) {
+            return Double.NaN;
         }
         EvaluationTable<E, C> et = evaluationTable(clustering);
         if (et == null) {
             throw new RuntimeException("missing eval table");
         }
+        System.out.println(clustering.getParams().toString());
         return et.getScore(eval);
     }
 
@@ -251,7 +252,6 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
                 //we don't want solutions with 0 or 1 cluster
                 return false;
             }
-
             Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
             if (dataset != null) {
                 if (clustering.instancesCount() != dataset.size()) {

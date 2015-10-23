@@ -18,7 +18,7 @@ package org.clueminer.bagging;
 
 import java.util.Iterator;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
@@ -46,7 +46,7 @@ public class NaiveReduce<E extends Instance, C extends Cluster<E>> implements Co
     }
 
     @Override
-    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props) {
+    public Clustering<E, C> reduce(Clustering[] clusts, Algorithm<E, C> alg, ColorGenerator cg, Props props) {
         int k = props.getInt(KMeans.K);
 
         Clustering<E, C> result = new ClusterList<>(k); //reducer - find consensus

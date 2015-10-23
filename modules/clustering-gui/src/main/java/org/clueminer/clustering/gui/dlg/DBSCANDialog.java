@@ -32,7 +32,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.gui.ClusteringDialog;
@@ -180,7 +180,7 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
     public Props getParams() {
         params.putInt(DBSCAN.MIN_PTS, Integer.valueOf(tfMinPts.getText()));
         params.putDouble(DBSCAN.EPS, Double.parseDouble(tfRadius.getText()));
-        params.put(AbstractClusteringAlgorithm.DISTANCE, (String) comboDistance.getSelectedItem());
+        params.put(Algorithm.DISTANCE, (String) comboDistance.getSelectedItem());
 
         return params;
     }

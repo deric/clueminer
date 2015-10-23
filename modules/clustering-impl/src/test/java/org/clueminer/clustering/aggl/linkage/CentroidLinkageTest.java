@@ -17,9 +17,17 @@
 package org.clueminer.clustering.aggl.linkage;
 
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.Algorithm;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
+import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -52,6 +60,23 @@ public class CentroidLinkageTest extends AbstractLinkageTest {
         //TODO: absolute values are differnt, but tree structure is identical
         assertEquals(45.37244054571007, lance.getTreeData().getRoot().getHeight(), delta);
         //      assertEquals(2 * dataset.size() - 1, tree.numNodes());
+        assertEquals(dataset.size(), lance.getClustering().instancesCount());
+    }
+
+    @Test
+    public void testIris() {
+        Dataset<Instance> dataset = (Dataset<Instance>) FakeClustering.irisDataset();
+        Executor<Instance, Cluster<Instance>> exec = new ClusteringExecutorCached<>();
+        Props pref = new Props();
+        pref.put(AgglParams.LINKAGE, subject.getName());
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(Algorithm.LOG, true);
+        //TODO: this combination of parameters does not return valid clustering
+        pref.put(AgglParams.STD, "Maximum");
+        pref.put(AgglParams.CUTOFF_SCORE, "KsqDetW");
+        Clustering<Instance, Cluster<Instance>> clust = exec.clusterRows(dataset, pref);
+        //assertEquals(36, clust.size());
+        assertEquals(0, clust.instancesCount());
     }
 
     @Test

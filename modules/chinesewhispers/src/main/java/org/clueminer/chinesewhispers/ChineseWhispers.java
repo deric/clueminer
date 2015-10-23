@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> {
+public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> {
 
     private AdjListGraph graph;
 

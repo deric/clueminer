@@ -45,5 +45,5 @@ public interface Consensus<E extends Instance, C extends Cluster<E>> {
      * @param props
      * @return
      */
-    Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm<E, C> alg, ColorGenerator cg, Props props);
+    Clustering<E, C> reduce(Clustering[] clusts, Algorithm<E, C> alg, ColorGenerator cg, Props props);
 }

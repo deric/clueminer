@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import javax.swing.JComponent;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
@@ -594,7 +594,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public boolean isOutlier() {
-        return getName().equals(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+        return getName().equals(Algorithm.OUTLIER_LABEL);
     }
 
     @Override

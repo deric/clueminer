@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -44,7 +44,7 @@ import org.uma.jmetal.solution.Solution;
  * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     private static final String name = "K-Means bagging";
 
@@ -72,7 +72,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Abs
         return name;
     }
 
-    private Clustering[] randClusters(AbstractClusteringAlgorithm alg, Dataset<? extends Instance> dataset, Props props) {
+    private Clustering[] randClusters(Algorithm alg, Dataset<? extends Instance> dataset, Props props) {
         Clustering[] clusts = new Clustering[bagging];
         int maxK = (int) Math.sqrt(dataset.size());
         for (int i = 0; i < bagging; i++) {

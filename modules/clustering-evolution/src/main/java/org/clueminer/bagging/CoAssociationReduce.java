@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -63,7 +63,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
     }
 
     @Override
-    public Clustering<E, C> reduce(Clustering[] clusts, AbstractClusteringAlgorithm alg,
+    public Clustering<E, C> reduce(Clustering[] clusts, Algorithm alg,
             ColorGenerator cg, Props props) {
         Matrix coassoc = createMatrix(clusts);
 

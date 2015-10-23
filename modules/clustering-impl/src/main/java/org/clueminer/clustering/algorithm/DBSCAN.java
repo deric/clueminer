@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> implements ClusteringAlgorithm<E, C> {
+public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     public static final String name = "DBSCAN";
 
@@ -111,7 +111,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends AbstractCl
             curr.add(dataset.get(i));
         }
         if (res.hasAt(k)) {
-            res.get(k).setName(AbstractClusteringAlgorithm.OUTLIER_LABEL);
+            res.get(k).setName(Algorithm.OUTLIER_LABEL);
         }
         res.lookupAdd(dataset);
         res.setParams(props);

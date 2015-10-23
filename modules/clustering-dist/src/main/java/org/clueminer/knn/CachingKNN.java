@@ -16,7 +16,7 @@
  */
 package org.clueminer.knn;
 
-import org.clueminer.clustering.api.AbstractClusteringAlgorithm;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -144,7 +144,7 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
     @Override
     public Neighbor[] knn(T q, int k, Props params) {
-        String dmProvider = params.get(AbstractClusteringAlgorithm.DISTANCE, "Euclidean");
+        String dmProvider = params.get(Algorithm.DISTANCE, "Euclidean");
         this.dm = DistanceFactory.getInstance().getProvider(dmProvider);
         return knn(q, k);
     }

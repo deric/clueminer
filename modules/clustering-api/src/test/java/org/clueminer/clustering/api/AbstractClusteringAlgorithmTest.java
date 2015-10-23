@@ -21,7 +21,7 @@ public class AbstractClusteringAlgorithmTest {
         alg.getParameters();
     }
 
-    private class DummyAlgorithm<E extends Instance, C extends Cluster<E>> extends AbstractClusteringAlgorithm<E, C> {
+    private class DummyAlgorithm<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> {
 
         @Param(name = "k")
         int k = 5;
