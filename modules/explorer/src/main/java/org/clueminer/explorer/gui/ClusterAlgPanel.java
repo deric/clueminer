@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
@@ -24,6 +25,7 @@ public class ClusterAlgPanel extends JPanel {
     private static final long serialVersionUID = 3764607764760405449L;
 
     private JComboBox<String> cbType;
+    private JComboBox<String> cbData;
     private JPanel optPanel;
     private String selected = null;
     private ClusteringDialog dialog = null;
@@ -61,6 +63,12 @@ public class ClusterAlgPanel extends JPanel {
                 revalidate();
             }
         });
+        c.gridx++;
+        add(new JLabel("Dataset: "), c);
+        c.gridx++;
+        cbData = new JComboBox<>();
+        add(cbData, c);
+        updateCheckbox(dataset);
 
         c = new GridBagConstraints();
         c.gridx = 0;
@@ -102,6 +110,15 @@ public class ClusterAlgPanel extends JPanel {
 
     public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
+        updateCheckbox(dataset);
+    }
+
+    private void updateCheckbox(Dataset<? extends Instance> dataset) {
+        cbData.removeAll();
+        if (dataset != null) {
+            cbData.addItem(dataset.getName());
+        }
+
     }
 
 }

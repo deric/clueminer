@@ -1,5 +1,7 @@
 package org.clueminer.dataset.std;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.DataStandardizationFactory;
 import org.clueminer.dataset.api.Dataset;
@@ -13,6 +15,8 @@ import org.clueminer.std.StdNone;
  */
 public class DataScaler<E extends Instance> {
 
+    private static final Logger logger = Logger.getLogger(DataScaler.class.getName());
+
     public Dataset<E> standartize(Dataset<E> dataset, String method, boolean logScale) {
         DataStandardizationFactory sf = DataStandardizationFactory.getInstance();
         Dataset<E> res;
@@ -24,6 +28,7 @@ public class DataScaler<E extends Instance> {
             if (std == null) {
                 throw new RuntimeException("Standartization method " + std + " was not found");
             }
+            logger.log(Level.INFO, "scaling dataset {0} name: {1}", new Object[]{dataset.getClass().getName(), dataset.getName()});
             res = std.optimize(dataset);
         }
         if (logScale) {

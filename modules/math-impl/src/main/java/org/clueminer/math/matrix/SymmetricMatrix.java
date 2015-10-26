@@ -63,7 +63,7 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
             throw new IllegalArgumentException("invalid dimensions for SymmetricalMatrix. it must be a squared matrix " + rows + "x" + cols);
         }
         if (rows < 2) {
-            throw new IllegalArgumentException("invalid dimension, matrix of size " + rows + "doesn't make much sense");
+            throw new IllegalArgumentException("invalid dimension, matrix of size " + rows + " doesn't make much sense");
         }
 
         n = rows;
