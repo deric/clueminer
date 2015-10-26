@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import org.clueminer.approximation.LegendreApproximator;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.DataTransform;
+import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -23,9 +25,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <O>
  */
 @ServiceProvider(service = DataTransform.class)
-public class LegendreTransformation implements DataTransform {
+public class LegendreTransformation<I extends Instance, O extends Instance> implements DataTransform<I, O> {
 
     private static String name = "ortho-polynomials (Legendre)";
     protected int degree;
@@ -45,11 +49,11 @@ public class LegendreTransformation implements DataTransform {
     }
 
     @Override
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
         logger.log(Level.INFO, "starting transformation {0}", name);
         ph.start(dataset.size());
-        analyzeTimeseries(d, (Dataset<Instance>) output, ph, 0);
+        analyzeTimeseries(d, output, ph, 0);
         logger.log(Level.INFO, "finished transformation {0}", name);
         ph.finish();
     }
@@ -75,7 +79,7 @@ public class LegendreTransformation implements DataTransform {
         return xAxis;
     }
 
-    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
+    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<O> output, ProgressHandle ph, int segment) {
         //initial value of progress handle
         int analyzeProgress = segment * dataset.size();
         double[] xAxis = scaleTimePoints(dataset);
@@ -87,13 +91,17 @@ public class LegendreTransformation implements DataTransform {
         List<Approximator> approx = new ArrayList<>();
         approx.add(new LegendreApproximator(degree));
         int offset = totalAttributes(approx) * segment;
+        AttributeBuilder builder = output.attributeBuilder();
+        Attribute attr;
         for (Approximator a : approx) {
             String[] attrs = a.getParamNames();
             for (String attribute : attrs) {
                 if (segment > 0) {
                     attribute = segment + "_" + attribute;
                 }
-                output.setAttribute(offset + j, output.attributeBuilder().build(attribute, "NUMERIC"));
+                attr = builder.build(attribute, "NUMERIC");
+                attr.setDataset(output);
+                output.setAttribute(offset + j, attr);
                 j++;
             }
         }
@@ -124,13 +132,13 @@ public class LegendreTransformation implements DataTransform {
      * @param approx
      * @param offset
      */
-    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx, int offset) {
+    protected void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<O> output, List<Approximator> approx, int offset) {
         HashMap<String, Double> coefficients;
         int idx;
         if (input.size() > 0) {
-            InstanceBuilder builder = output.builder();
+            InstanceBuilder<O> builder = output.builder();
             if (output.size() <= i) {
-                Instance instance = builder.build(output.attributeCount());
+                O instance = builder.build(output.attributeCount());
                 instance.setName(input.getName());
                 instance.setId(input.getId());
                 instance.setAncestor(input);
@@ -148,7 +156,7 @@ public class LegendreTransformation implements DataTransform {
     }
 
     @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
+    public Dataset<O> createDefaultOutput(Dataset<I> input) {
         //number of attributes is some default, could be expanded
         logger.log(Level.INFO, "input size: {0} attrs {1}", new Object[]{input.size(), input.attributeCount()});
         return new AttrHashDataset<>(input.size());

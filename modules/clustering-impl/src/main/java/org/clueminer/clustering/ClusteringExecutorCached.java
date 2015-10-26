@@ -10,10 +10,10 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.clustering.order.MOLO;
@@ -38,7 +38,7 @@ import org.clueminer.utils.Props;
 public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> extends AbstractExecutor<E, C> implements Executor<E, C> {
 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
-    private Map<Dataset<? extends Instance>, StdStorage> storage;
+    private Map<Dataset<E>, StdStorage<E>> storage;
     private OptimalTreeOrder treeOrder = new MOLO();
 
     public ClusteringExecutorCached() {
@@ -53,7 +53,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
         logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
-        Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        Dataset<E> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
         params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         logger.log(Level.FINER, "clustering {0}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
@@ -82,7 +82,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
         }
     }
 
-    private StdStorage getStorage(Dataset<? extends Instance> dataset) {
+    private StdStorage getStorage(Dataset<E> dataset) {
         checkInput(dataset);
         StdStorage stdStore;
 

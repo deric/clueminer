@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.ApproximatorFactory;
 import org.clueminer.approximation.api.DataTransform;
+import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -27,9 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <O>
  */
 @ServiceProvider(service = DataTransform.class)
-public class DatasetTransformation implements DataTransform {
+public class DatasetTransformation<I extends Instance, O extends Instance> implements DataTransform<I, O> {
 
     private boolean save = false;
     private static final String name = "approx cubic-exp-poly9";
@@ -46,19 +50,19 @@ public class DatasetTransformation implements DataTransform {
      *
      * @return
      */
-    private void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<Instance> output, List<Approximator> approx) {
+    private void approximate(int i, double[] xAxis, ContinuousInstance input, Dataset<O> output, List<Approximator> approx) {
         HashMap<String, Double> coefficients;
         if (input.size() > 0) {
-            InstanceBuilder builder = output.builder();
+            InstanceBuilder<O> builder = output.builder();
             if (output.size() <= i) {
-                Instance instance = builder.create(output.attributeCount());
+                O instance = builder.create(output.attributeCount());
                 instance.setName(input.getFullName());
                 instance.setId(input.getId());
                 instance.setAncestor(input);
                 output.add(instance);
             }
             for (Approximator a : approx) {
-                coefficients = new HashMap<String, Double>();
+                coefficients = new HashMap<>();
                 a.estimate(xAxis, input, coefficients);
                 for (Entry<String, Double> item : coefficients.entrySet()) {
                     output.setAttributeValue(item.getKey(), i, item.getValue());
@@ -68,13 +72,13 @@ public class DatasetTransformation implements DataTransform {
     }
 
     @Override
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         //this will cause casting exception if used in incorrect context
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
         analyze(d, output, ph);
     }
 
-    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Timeseries<ContinuousInstance> dataset, Dataset<O> output, ProgressHandle ph) {
         int analyzeProgress = 0;
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
@@ -89,7 +93,7 @@ public class DatasetTransformation implements DataTransform {
         int j = 0;
         ApproximatorFactory am = ApproximatorFactory.getInstance();
         //create attribute for each parameter
-        List<Approximator> approx = new ArrayList<Approximator>();
+        List<Approximator> approx = new ArrayList<>();
         //for(Approximator ap : am.getAll()){
         //    System.out.println(ap.getName());
         //}
@@ -100,15 +104,18 @@ public class DatasetTransformation implements DataTransform {
         approx.add(am.getProvider("avg"));
         approx.add(am.getProvider("poly9"));
         //approx.add(am.getProvider("chebyshev-5"));
+        AttributeBuilder builder = output.attributeBuilder();
+        Attribute attr;
         for (Approximator a : approx) {
             String[] attrs = a.getParamNames();
             for (String attribute : attrs) {
-                output.attributeBuilder().create(attribute, "NUMERIC");
+                attr = builder.create(attribute, "NUMERIC");
+                attr.setDataset(output);
             }
         }
         for (int i = 0; i < dataset.size(); i++) {
             item = dataset.instance(i);
-            approximate(i, xAxis, item, (Dataset<Instance>) output, approx);
+            approximate(i, xAxis, item, output, approx);
             //output
             ph.progress(++analyzeProgress);
         }
@@ -247,7 +254,7 @@ public class DatasetTransformation implements DataTransform {
     }
 
     @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return new AttrHashDataset(input.size());
+    public Dataset<O> createDefaultOutput(Dataset<I> input) {
+        return new AttrHashDataset<>(input.size());
     }
 }

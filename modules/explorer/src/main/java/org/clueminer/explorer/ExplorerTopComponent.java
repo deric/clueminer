@@ -76,7 +76,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     private final transient ExplorerManager mgr = new ExplorerManager();
     private Lookup.Result<Clustering> result = null;
     private AbstractNode root;
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
     private static final RequestProcessor RP = new RequestProcessor("Evolution", 100, false, true);
     private volatile RequestProcessor.Task task;
     private static final Logger logger = Logger.getLogger(ExplorerTopComponent.class.getName());
@@ -206,7 +206,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
          mgr.setRootContext(root);*/
     }
 
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 

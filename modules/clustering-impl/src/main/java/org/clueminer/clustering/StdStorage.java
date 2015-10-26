@@ -14,10 +14,11 @@ import org.clueminer.dataset.std.DataScaler;
  * copies of the data.
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class StdStorage {
+public class StdStorage<E extends Instance> {
 
-    private final Dataset<? extends Instance> dataset;
+    private final Dataset<E> dataset;
     private final Table<String, Boolean, Dataset<? extends Instance>> cache;
     private DataScaler ds;
 
@@ -26,7 +27,7 @@ public class StdStorage {
      *
      * @param dataset
      */
-    public StdStorage(Dataset<? extends Instance> dataset) {
+    public StdStorage(Dataset<E> dataset) {
         this.dataset = dataset;
         cache = newTable();
     }
@@ -36,7 +37,7 @@ public class StdStorage {
             if (ds == null) {
                 ds = new DataScaler();
             }
-            Dataset<? extends Instance> norm = ds.standartize(dataset, method, logscale);
+            Dataset<E> norm = ds.standartize(dataset, method, logscale);
             cache.put(method, logscale, norm);
         }
         return cache.get(method, logscale);

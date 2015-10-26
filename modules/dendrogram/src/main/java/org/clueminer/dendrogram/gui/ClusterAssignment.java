@@ -219,7 +219,15 @@ public class ClusterAssignment<E extends Instance, C extends Cluster<E>> extends
 
     @Override
     public boolean hasData() {
-        return hieraRes != null;
+        if (hieraRes != null) {
+            Dataset<E> dataset = hieraRes.getDataset();
+            if (dataset != null) {
+                if (dataset.getClasses().size() > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

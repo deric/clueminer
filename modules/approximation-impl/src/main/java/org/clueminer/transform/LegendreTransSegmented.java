@@ -10,16 +10,17 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.std.StdScale;
-import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <O>
  */
 @ServiceProvider(service = DataTransform.class)
-public class LegendreTransSegmented extends LegendreTransformation implements DataTransform {
+public class LegendreTransSegmented<I extends Instance, O extends Instance> extends LegendreTransformation<I, O> implements DataTransform<I, O> {
 
     private static String name = "Legendre segmented";
     private static final Logger logger = Logger.getLogger(LegendreTransSegmented.class.getName());
@@ -46,7 +47,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      * @param ph
      */
     @Override
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         // last two params: number of segments and degree of polynomials
 
         int workunits = numSegments * dataset.size();
@@ -65,7 +66,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
      * @param n       number of segments
      * @param deg     max degree of Legendre polynomials
      */
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph, int n, int deg) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph, int n, int deg) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
         Timeseries<ContinuousInstance>[] segments;
         //protected var
@@ -75,7 +76,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
         segments = splitIntoSegments(d, n);
         int seg = 0;
         for (Timeseries<ContinuousInstance> input : segments) {
-            analyzeTimeseries(input, (Dataset<Instance>) output, ph, seg);
+            analyzeTimeseries(input, output, ph, seg);
             //Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
             logger.log(Level.INFO, "segment {0}", seg);
             seg++;
@@ -106,7 +107,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             if (remain < 2 * inc) {
                 inc = remain;
             }
-            TimePoint[] tp = new TimePointAttribute[inc];
+            TimePointAttribute[] tp = new TimePointAttribute[inc];
             // position in interval <0, 1>
             pInc = 2.0 / (double) (inc - 1);
             p = -1.0;
@@ -115,6 +116,7 @@ public class LegendreTransSegmented extends LegendreTransformation implements Da
             //create attributes
             while (pos < uppper) {
                 tp[m] = new TimePointAttribute(m, pos, p);
+                tp[m].setDataset(res[i]);
                 p += pInc;
                 pos++;
                 m++;

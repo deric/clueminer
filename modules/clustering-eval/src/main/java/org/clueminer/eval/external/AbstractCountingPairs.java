@@ -44,6 +44,10 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
         //we don't expect mapping to original to change, so we can store the result
         if (pm == null) {
             pm = CountingPairs.getInstance().matchPairs(clusters);
+            if (pm == null) {
+                //no labels present in the dataset
+                return Double.NaN;
+            }
             clusters.lookupAdd(pm);
         }
         return countScore(pm);

@@ -31,7 +31,7 @@ public class ProjectControllerImpl implements ProjectController {
 
         INITIALIZE, SELECT, UNSELECT, CLOSE, DISABLE, PROJECT_SELECTED
     };
-    private List<Project> projects = new ArrayList<Project>();
+    private List<Project> projects = new ArrayList<>();
     private Project currentProject;
     private final List<WorkspaceListener> listeners;
     private WorkspaceImpl temporaryOpeningWorkspace;
@@ -39,7 +39,7 @@ public class ProjectControllerImpl implements ProjectController {
     public ProjectControllerImpl() {
 
         //Listeners
-        listeners = new ArrayList<WorkspaceListener>();
+        listeners = new ArrayList<>();
         listeners.addAll(Lookup.getDefault().lookupAll(WorkspaceListener.class));
     }
 
@@ -58,7 +58,6 @@ public class ProjectControllerImpl implements ProjectController {
 
     protected void addProject(Project project) {
         if (!projects.contains(project)) {
-            System.out.println("adding new project " + project.getName());
             projects.add(project);
         }
     }
@@ -67,7 +66,6 @@ public class ProjectControllerImpl implements ProjectController {
     public void setCurrentProject(Project project) {
         if (currentProject != project) {
             this.currentProject = project;
-            System.out.println("current project is " + project.getName());
             fireWorkspaceEvent(EventType.PROJECT_SELECTED, null);
         }
     }

@@ -456,11 +456,14 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public Dataset<E> duplicate() {
         ArrayDataset<E> copy = new ArrayDataset<>(this.size(), this.attributeCount());
         int i = 0;
+        AttributeBuilder bld = copy.attributeBuilder();
+        Attribute attr;
         for (Attribute attribute : attributes) {
             if (attribute == null) {
                 throw new RuntimeException("null attribute at position " + i);
             }
-            copy.attributeBuilder().create(attribute.getName(), BasicAttrType.NUMERIC, attribute.getRole());
+            attr = bld.create(attribute.getName(), BasicAttrType.NUMERIC, attribute.getRole());
+            attr.setDataset(copy);
             i++;
         }
         copy.setParent(this);

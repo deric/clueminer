@@ -19,9 +19,9 @@ import org.openide.explorer.view.BeanTreeView;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
@@ -100,10 +100,9 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
 
         Workspace workspace = pc.getCurrentWorkspace();
         if (workspace != null) {
-            System.out.println("got result (project)");
             Project p = workspace.getLookup().lookup(Project.class);
             if (p != null) {
-                System.out.println("got project! = " + p.getName());
+                logger.log(Level.WARNING, "got project! = {0}", p.getName());
             }
         }
         pc.addWorkspaceListener(new WorkspaceListener() {
@@ -117,9 +116,6 @@ public final class ProjectMgmtTopComponent extends TopComponent implements Explo
             @Override
             public void select(Workspace workspace) {
                 Collection<? extends Project> lp = workspace.getLookup().lookupAll(Project.class);
-                System.out.println("got project lookup " + lp.size());
-
-                System.out.println("projects (" + pc.getProjects().size() + "): " + pc.getProjects().toString());
                 updateProjects(pc.getProjects());
             }
 

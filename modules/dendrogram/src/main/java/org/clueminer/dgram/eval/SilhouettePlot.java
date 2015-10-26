@@ -57,6 +57,7 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
             Dataset<? extends Instance> dataset;
             //Instance inst;
             // String str;
+            int mapped;
             if (hierarchicalResult != null) {
                 dataset = hierarchicalResult.getDataset();
                 //Dump.array(hierarchicalResult.getMapping(), "sil mapping");
@@ -64,36 +65,39 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
                 //System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
                 //System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
                 for (int i = 0; i < dataset.size(); i++) {
-                    s = score[hierarchicalResult.getMappedIndex(i)];
-                    if (Double.isNaN(s)) {
-                        s = -1.0;
-                    }
-                    value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
+                    mapped = hierarchicalResult.getMappedIndex(i);
+                    if (mapped > -1) {
+                        s = score[mapped];
+                        if (Double.isNaN(s)) {
+                            s = -1.0;
+                        }
+                        value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
                     //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
-                    //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
-                    k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
+                        //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
+                        k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
 
-                    if (k != prev) {
-                        if (clustering.hasAt(k)) {
-                            clust = clustering.get(k);
+                        if (k != prev) {
+                            if (clustering.hasAt(k)) {
+                                clust = clustering.get(k);
+                            }
+                            if (clust != null) {
+                                g.setColor(clust.getColor());
+                            } else {
+                                g.setColor(Color.GRAY);
+                            }
                         }
-                        if (clust != null) {
-                            g.setColor(clust.getColor());
-                        } else {
-                            g.setColor(Color.GRAY);
-                        }
+                        //System.out.println(i + " -> " + k + " : " + hierarchicalResult.getMappedIndex(i) + " color: " + g.getColor().toString());
+                        g.fillRect(x, i * element.height, (int) value, element.height);
+                        /*
+                         g.setColor(Color.BLACK);
+                         y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                         str = String.format("%.2f", s);
+                         if (str != null) {
+                         g.drawString(str, (float) (x + value + 10), y);
+                         }*/
+
+                        prev = k;
                     }
-                    //System.out.println(i + " -> " + k + " : " + hierarchicalResult.getMappedIndex(i) + " color: " + g.getColor().toString());
-                    g.fillRect(x, i * element.height, (int) value, element.height);
-                    /*
-                     g.setColor(Color.BLACK);
-                     y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                     str = String.format("%.2f", s);
-                     if (str != null) {
-                     g.drawString(str, (float) (x + value + 10), y);
-                     }*/
-
-                    prev = k;
                 }
             }
         }

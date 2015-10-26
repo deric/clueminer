@@ -19,9 +19,11 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
+ * @param <O>
  */
 @ServiceProvider(service = DataTransform.class)
-public class CurveParameters extends LegendreTransformation implements DataTransform {
+public class CurveParameters<I extends Instance, O extends Instance> extends LegendreTransformation<I, O> implements DataTransform<I, O> {
 
     private static final String name = "curve parameters";
     private static final Logger logger = Logger.getLogger(CurveParameters.class.getName());
@@ -32,8 +34,8 @@ public class CurveParameters extends LegendreTransformation implements DataTrans
     }
 
     @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return new AttrHashDataset<Instance>(input.size());
+    public Dataset<O> createDefaultOutput(Dataset<I> input) {
+        return new AttrHashDataset<>(input.size());
     }
 
     /**
@@ -58,7 +60,7 @@ public class CurveParameters extends LegendreTransformation implements DataTrans
     }
 
     @Override
-    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, ProgressHandle ph, int segment) {
+    public void analyzeTimeseries(Timeseries<ContinuousInstance> dataset, Dataset<O> output, ProgressHandle ph, int segment) {
         //initial value of progress handle
         int analyzeProgress = segment * dataset.size();
         double[] xAxis = scaleTimePoints(dataset);
@@ -67,7 +69,7 @@ public class CurveParameters extends LegendreTransformation implements DataTrans
             //segment start
 
         //create attribute for each parameter
-        List<Approximator> approx = new ArrayList<Approximator>();
+        List<Approximator> approx = new ArrayList<>();
         approx.add(new CurveApproximator());
         int offset = totalAttributes(approx) * segment;
         for (Approximator a : approx) {
