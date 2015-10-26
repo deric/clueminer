@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -111,12 +111,12 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

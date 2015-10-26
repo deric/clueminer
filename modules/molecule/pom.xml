@@ -55,7 +55,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
@@ -90,17 +90,17 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-settings</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openscience.cdk</groupId>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>org-apache-commons-lang</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>java3d</groupId>

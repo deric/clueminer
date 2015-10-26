@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -64,12 +64,12 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
 
@@ -95,7 +95,6 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>3.11</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>

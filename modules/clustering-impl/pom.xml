@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -92,12 +92,12 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.specs2</groupId>
@@ -135,7 +135,7 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-core-startup</artifactId>
-            <version>RELEASE80</version>
+            <version>${netbeans.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

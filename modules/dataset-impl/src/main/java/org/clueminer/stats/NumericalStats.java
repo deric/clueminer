@@ -119,7 +119,6 @@ public class NumericalStats implements Statistics {
             case MAX:
 
                 if (Double.isInfinite(maximum)) {
-                    System.out.println("recalculate max: " + data.toString());
                     recalculate();
                 }
                 return maximum;
