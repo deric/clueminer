@@ -1,5 +1,6 @@
 package org.clueminer.dataset.api;
 
+import java.util.Collection;
 import org.clueminer.math.Interpolator;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -12,29 +13,31 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public interface Timeseries<E extends ContinuousInstance> extends Dataset<E> {
 
-    public void crop(int begin, int end, ProgressHandle ph);
+    void crop(int begin, int end, ProgressHandle ph);
 
-    public double interpolate(int index, double x, Interpolator interpolator);
+    double interpolate(int index, double x, Interpolator interpolator);
 
-    public TimePoint[] getTimePoints();
+    TimePoint[] getTimePoints();
 
-    public double[] getTimePointsArray();
+    double[] getTimePointsArray();
 
-    public double[] getTimestampsArray();
+    double[] getTimestampsArray();
 
-    public void setTimePoints(TimePoint[] tp);
+    Collection<? extends Number> getTimePointsCollection();
+
+    void setTimePoints(TimePoint[] tp);
 
     /**
      * Minimum value in the dataset
      *
      * @return
      */
-    public double getMin();
+    double getMin();
 
     /**
      * Maximum value in the dataset
      *
      * @return
      */
-    public double getMax();
+    double getMax();
 }

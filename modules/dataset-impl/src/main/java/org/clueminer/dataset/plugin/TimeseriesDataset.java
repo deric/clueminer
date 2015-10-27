@@ -552,4 +552,9 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Collection<? extends Number> getTimePointsCollection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

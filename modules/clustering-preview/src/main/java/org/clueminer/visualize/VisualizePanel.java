@@ -24,7 +24,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.preview.PreviewFrameSet;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Exportable;
 
@@ -35,7 +34,7 @@ import org.clueminer.utils.Exportable;
 public class VisualizePanel<E extends Instance, C extends Cluster<E>> extends JPanel implements Exportable {
 
     private JScrollPane scroller;
-    private PreviewFrameSet previewSet;
+    private ClusterSetView<E, C> previewSet;
 
     public VisualizePanel() {
         initialize();
@@ -55,7 +54,7 @@ public class VisualizePanel<E extends Instance, C extends Cluster<E>> extends JP
         c.weighty = 1.0;
         c.insets = new Insets(0, 0, 0, 0);
 
-        previewSet = new PreviewFrameSet(this);
+        previewSet = new ClusterSetView<>(this);
 
         scroller = new JScrollPane(previewSet);
         scroller.getViewport().setDoubleBuffered(true);

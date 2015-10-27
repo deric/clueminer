@@ -1,9 +1,22 @@
-package org.clueminer.clustering.preview;
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.clueminer.visualize;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -21,43 +34,29 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Data preview for Milka project
  *
- * @author Tomas Barton
- * @param <E>
- * @param <C>
+ * @author deric
  */
-@ServiceProvider(service = ClusterPreviewer.class)
-public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
+public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
 
-    private static final long serialVersionUID = 4231956781752926611L;
-    private int clusterNum = 0;
-    private JPanel parent;
+    private final JPanel parent;
     private Plotter[] plots;
     private Clustering<E, C> clust;
+    private int clusterNum = 0;
     private Dimension dimChart;
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
-    private boolean useGlobalScale = true;
+    private boolean useGlobalScale = false;
     private double xmax = 0.0;
-    private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
-    private HashMap<Integer, Instance> metaMap;
-    private Map<Integer, Color> metaColors;
-    private ChartLegend legend;
+    private static final Logger logger = Logger.getLogger(ClusterSetView.class.getName());
 
-    public PreviewFrameSet() {
-        initComponents();
-    }
-
-    public PreviewFrameSet(JPanel parent) {
+    public ClusterSetView(JPanel parent) {
         this.parent = parent;
         initComponents();
     }
 
     private void initComponents() {
-        //   setLayout(new GridBagLayout());
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
@@ -81,8 +80,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
 
             int i = 0;
             int total = 0;
-            Plotter plot = null;
-            Instance metaInst;
+            Plotter plot;
 
             if (clust.size() > 0) {
                 Dataset<? extends Instance> cluster = clust.get(0);
@@ -112,45 +110,23 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
                      */
                     //logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
                     //logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
-                    if (metaMap == null) {
-                        while (inst.getAncestor() != null) {
-                            inst = inst.getAncestor();
-                        }
 
-                        plot = inst.getPlotter();
-                        if (dataset.size() > 1) {
-                            for (int k = 1; k < dataset.size(); k++) {
-                                inst = dataset.instance(k);
-                                while (inst.getAncestor() != null) {
-                                    inst = inst.getAncestor();
-                                }
-                                plot.addInstance(inst);
-                                //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
-                            }
-                        }
-                        checkBounds(plot, inst);
-                    } else {
-                        int id = Integer.valueOf((String) inst.classValue());
+                    while (inst.getAncestor() != null) {
+                        inst = inst.getAncestor();
+                    }
 
-                        if (metaMap.containsKey(id)) {
-                            metaInst = metaMap.get(id);
-                            plot = metaInst.getPlotter();
-                            checkBounds(plot, metaInst);
-                        } else {
-                            logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
-                        }
-
+                    plot = inst.getPlotter();
+                    if (dataset.size() > 1) {
                         for (int k = 1; k < dataset.size(); k++) {
-                            id = Integer.valueOf((String) dataset.instance(k).classValue());
-                            if (metaMap.containsKey(id)) {
-                                metaInst = metaMap.get(id);
-                                plot.addInstance(metaInst);
-                                checkBounds(plot, metaInst);
-                            } else {
-                                logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
+                            inst = dataset.instance(k);
+                            while (inst.getAncestor() != null) {
+                                inst = inst.getAncestor();
                             }
+                            plot.addInstance(inst);
+                            //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
                         }
                     }
+                    checkBounds(plot, inst);
 
                     if (dimChart == null) {
                         dimChart = new Dimension(this.getWidth(), 100);
@@ -167,18 +143,6 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
             }
             logger.log(Level.INFO, "total num of instances: {0}", total);
         }
-        if (metaColors != null) {
-            if (legend == null) {
-                legend = new ChartLegend();
-            }
-            add(legend);
-            legend.setColors(metaColors);
-            legend.setMaxWidth(this.getWidth());
-            legend.updateChart();
-            revalidate();
-            System.out.println("legend size: " + legend.getSize());
-        }
-
     }
 
     private void checkBounds(Plotter plot, Instance metaInst) {
@@ -232,75 +196,4 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
         }
     }
 
-    /**
-     * Updates sizes of charts, so that the information will be readable
-     *
-     * @param height
-     */
-    public void setChartHeight(int height) {
-        if (plots != null) {
-            Dimension dim = null;
-            for (Plotter plot : plots) {
-                if (plot != null) {
-                    dim = new Dimension(plot.getWidth(), height);
-                    plot.setPreferredSize(dim);
-                    plot.setMinimumSize(dim);
-                    plot.revalidate();
-                }
-            }
-            this.dimChart = dim;
-            revalidate();
-        }
-    }
-
-    public void setParent(JPanel p) {
-        this.parent = p;
-    }
-
-    public HashMap<Integer, Instance> getMetaMap() {
-        return metaMap;
-    }
-
-    public void setMetaMap(HashMap<Integer, Instance> metaMap) {
-        this.metaMap = metaMap;
-    }
-
-    public double getYmax() {
-        return ymax;
-    }
-
-    public void setYmax(double ymax) {
-        this.ymax = ymax;
-    }
-
-    public double getYmin() {
-        return ymin;
-    }
-
-    public void setYmin(double ymin) {
-        this.ymin = ymin;
-    }
-
-    public double getXmax() {
-        return xmax;
-    }
-
-    public void setXmax(double xmax) {
-        this.xmax = xmax;
-    }
-
-    public Map<Integer, Color> getMetaColors() {
-        return metaColors;
-    }
-
-    public void setMetaColors(Map<Integer, Color> metaColors) {
-        this.metaColors = metaColors;
-    }
-
-    public void setGlobalScale(boolean b) {
-        if (useGlobalScale != b) {
-            this.useGlobalScale = b;
-            repaint();
-        }
-    }
 }
