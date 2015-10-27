@@ -10,6 +10,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = DataStandardization.class)
 public class StdDataDev<E extends Instance> extends StdDev implements DataStandardization<E> {

@@ -21,6 +21,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.utils.Props;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
 import org.openide.nodes.AbstractNode;
@@ -30,6 +32,9 @@ import org.openide.nodes.NodeTransfer;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Exceptions;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.PasteType;
 import org.openide.util.lookup.Lookups;
@@ -47,6 +52,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     private boolean rendering = false;
     private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
     private final ReentrantLock lock = new ReentrantLock();
+    private static final RequestProcessor RP = new RequestProcessor("clustering properties");
 
     public ClusteringNode(Clustering<E, C> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -152,33 +158,55 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         return true;
     }
 
+    private void computeClusterProperties(final Sheet sheet, final Clustering<E, C> clustering) {
+
+        final ProgressHandle ph = ProgressHandleFactory.createHandle("Computing properties of " + clustering.getName());
+
+        final RequestProcessor.Task taskMetrics = RP.create(new Runnable() {
+            @Override
+            public void run() {
+                Sheet.Set set = sheet.get(Sheet.PROPERTIES);
+                if (set == null) {
+                    set = Sheet.createPropertiesSet();
+                }
+                try {
+                    set.setDisplayName("Clustering (" + clustering.size() + ")");
+                    Property nameProp = new PropertySupport.Reflection(clustering, String.class, "getName", null);
+                    nameProp.setName("Name");
+                    set.put(nameProp);
+
+                    Property sizeProp = new PropertySupport.Reflection(clustering, Integer.class, "size", null);
+                    sizeProp.setName("Size");
+                    set.put(sizeProp);
+
+                } catch (NoSuchMethodException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+
+                sheet.put(set);
+                algorithmSheet(clustering, sheet);
+                internalSheet(clustering, sheet);
+                externalSheet(clustering, sheet);
+            }
+        });
+
+        taskMetrics.addTaskListener(new TaskListener() {
+            @Override
+            public void taskFinished(Task task) {
+                logger.info("finished computing properties");
+                firePropertySetsChange(null, null);
+            }
+        });
+        taskMetrics.schedule(0);
+
+    }
+
     @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
-        Sheet.Set set = sheet.get(Sheet.PROPERTIES);
-        if (set == null) {
-            set = Sheet.createPropertiesSet();
-        }
         Clustering<E, C> clustering = getClustering();
         if (clustering != null) {
-            try {
-                set.setDisplayName("Clustering (" + clustering.size() + ")");
-                Property nameProp = new PropertySupport.Reflection(clustering, String.class, "getName", null);
-                nameProp.setName("Name");
-                set.put(nameProp);
-
-                Property sizeProp = new PropertySupport.Reflection(clustering, Integer.class, "size", null);
-                sizeProp.setName("Size");
-                set.put(sizeProp);
-
-            } catch (NoSuchMethodException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-
-            sheet.put(set);
-            algorithmSheet(clustering, sheet);
-            internalSheet(clustering, sheet);
-            externalSheet(clustering, sheet);
+            computeClusterProperties(sheet, clustering);
         }
         return sheet;
     }
