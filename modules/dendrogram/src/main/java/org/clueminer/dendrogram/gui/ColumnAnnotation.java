@@ -1,9 +1,15 @@
 package org.clueminer.dendrogram.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
@@ -11,9 +17,6 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.clustering.api.dendrogram.DendroPane;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.HorizontalTree;
 
 public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
@@ -33,41 +36,43 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     protected void render(Graphics2D g) {
         //we draw strings in rows and then we rotate the whole image
         String s;
-        if (columnsOrder != null) {
-            Dataset<? extends Instance> data = dendroData.getDataset();
-            g.setColor(Color.black);
-            int coordX;
-            g.setFont(defaultFont);
-            FontRenderContext frc = g.getFontRenderContext();
-            FontMetrics fm = g.getFontMetrics();
-            Font f;
-            int height = fm.getHeight();
-            int width;
-            // clockwise 90 degrees
-            g.rotate(Math.PI / 2.0);
-            for (int col = 0; col < dendroData.getNumberOfColumns(); col++) {
-                coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
-                Attribute a = data.getAttribute(this.columnsOrder[col]);
-                if (a != null) {
-                    s = a.getName();
-                } else {
-                    s = "(unknown)";
-                }
-                if (col == firstSelectedColumn) {
-                    f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
-                    g.setFont(f);
-                }
-
-                width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
-                checkMax(width);
-
-                g.drawString(s, 0, -coordX);
-                if (col == lastSelectedColumn) {
-                    g.setFont(defaultFont);
-                }
-            }
-            g.rotate(-Math.PI / 2.0);
+        if (!hasData()) {
+            return;
         }
+        Dataset<? extends Instance> data = dendroData.getDataset();
+        g.setColor(Color.black);
+        int coordX;
+        g.setFont(defaultFont);
+        FontRenderContext frc = g.getFontRenderContext();
+        FontMetrics fm = g.getFontMetrics();
+        Font f;
+        int height = fm.getHeight();
+        int width;
+        // clockwise 90 degrees
+        g.rotate(Math.PI / 2.0);
+        for (int col = 0; col < dendroData.getNumberOfColumns(); col++) {
+            coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
+            Attribute a = data.getAttribute(this.columnsOrder[col]);
+            if (a != null) {
+                s = a.getName();
+            } else {
+                s = "(unknown)";
+            }
+            if (col == firstSelectedColumn) {
+                f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
+                g.setFont(f);
+            }
+
+            width = (int) (g.getFont().getStringBounds(s, frc).getWidth());
+            checkMax(width);
+
+            g.drawString(s, 0, -coordX);
+            if (col == lastSelectedColumn) {
+                g.setFont(defaultFont);
+            }
+        }
+        g.rotate(-Math.PI / 2.0);
+
     }
 
     private void checkMax(int width) {
@@ -170,5 +175,10 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
             mapping[i] = i;
         }
         return mapping;
+    }
+
+    @Override
+    public boolean hasData() {
+        return dendroData != null && dendroData.hasColumnsClustering() && columnsOrder != null;
     }
 }

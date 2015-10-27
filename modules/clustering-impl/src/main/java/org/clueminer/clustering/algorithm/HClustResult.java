@@ -14,10 +14,10 @@ import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
-import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendroLeaf;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -63,6 +63,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private ColorGenerator colorGenerator = new ColorBrewer();
     private int num;
     private Props props;
+    private DendrogramMapping dendroMapping;
 
     /**
      * list of dendrogram levels - each Merge represents one dendrogram level
@@ -87,7 +88,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     }
 
     private void init() {
-        resultType = ClusteringType.parse(props.get(AgglParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
+        resultType = ClusteringType.parse(props.getObject(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING));
         cutoffStrategy = CutoffStrategyFactory.getInstance().getDefault();
         if (cutoffStrategy != null) {
             InternalEvaluatorFactory<E, Cluster<E>> ief = InternalEvaluatorFactory.getInstance();
@@ -182,7 +183,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
 
     @Override
     public boolean hasClustering() {
-        return (clustering != null);
+        return clustering != null;
     }
 
     @Override
@@ -220,6 +221,17 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
             result.setParams(props);
         }
         return result;
+    }
+
+    /**
+     * Dummy mapping for debugging purposes
+     */
+    public void createMapping() {
+        treeData = new DynamicTreeData();
+        mapping = new int[dataset.size()];
+        for (int i = 0; i < dataset.size(); i++) {
+            mapping[i] = i;
+        }
     }
 
     @Override
@@ -650,12 +662,12 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
 
     @Override
     public DendrogramMapping getDendrogramMapping() {
-        DendrogramMapping res = null;
-        Clustering c = getClustering();
-        if (c != null) {
-            res = c.getLookup().lookup(DendrogramMapping.class);
-        }
-        return res;
+        return dendroMapping;
+    }
+
+    @Override
+    public void setDendrogramMapping(DendrogramMapping dendroMap) {
+        this.dendroMapping = dendroMap;
     }
 
     @Override

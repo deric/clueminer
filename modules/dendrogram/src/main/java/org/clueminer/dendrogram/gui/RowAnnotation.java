@@ -1,15 +1,19 @@
 package org.clueminer.dendrogram.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendroPane;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
+import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.clustering.api.dendrogram.DendroPane;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
-import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.dendrogram.tree.VerticalTree;
 
 public class RowAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
@@ -26,38 +30,39 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     protected void render(Graphics2D g) {
-        if (rowsOrder != null) {
-            g.setColor(Color.BLACK);
-            g.setFont(defaultFont);
-            FontRenderContext frc = g.getFontRenderContext();
-            FontMetrics fm = g.getFontMetrics();
-            Font f;
-            String str;
-            int width;
-            float x = 0.0f, y;
-            for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
-                str = dendroData.getRowsResult().getVector(row).getName();
+        if (!hasData()) {
+            return;
+        }
+        g.setColor(Color.BLACK);
+        g.setFont(defaultFont);
+        FontRenderContext frc = g.getFontRenderContext();
+        FontMetrics fm = g.getFontMetrics();
+        Font f;
+        String str;
+        int width;
+        float x = 0.0f, y;
+        for (int row = 0; row < dendroData.getNumberOfRows(); row++) {
+            str = dendroData.getRowsResult().getVector(row).getName();
+            if (str == null) {
+                //if name empty, try to use ID
+                str = dendroData.getRowsResult().getInstance(row).getId();
                 if (str == null) {
-                    //if name empty, try to use ID
-                    str = dendroData.getRowsResult().getInstance(row).getId();
-                    if (str == null) {
-                        //index is number of line in dataset, starting from 0
-                        str = String.valueOf(dendroData.getRowsResult().getVector(row).getIndex());
-                    }
+                    //index is number of line in dataset, starting from 0
+                    str = String.valueOf(dendroData.getRowsResult().getVector(row).getIndex());
                 }
-                if (row == firstSelectedRow) {
-                    f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
-                    g.setFont(f);
-                }
+            }
+            if (row == firstSelectedRow) {
+                f = defaultFont.deriveFont(defaultFont.getStyle() ^ Font.BOLD);
+                g.setFont(f);
+            }
 
-                width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
-                checkMax(width);
-                y = (row * elementSize.height + elementSize.height / 2f + fm.getDescent() / 2f);
-                g.drawString(str, x, y);
+            width = (int) (g.getFont().getStringBounds(str, frc).getWidth());
+            checkMax(width);
+            y = (row * elementSize.height + elementSize.height / 2f + fm.getDescent() / 2f);
+            g.drawString(str, x, y);
 
-                if (row == lastSelectedRow) {
-                    g.setFont(defaultFont);
-                }
+            if (row == lastSelectedRow) {
+                g.setFont(defaultFont);
             }
         }
     }
@@ -181,5 +186,10 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
             rowsOrder = mapping.getMapping();
             resetCache();
         }
+    }
+
+    @Override
+    public boolean hasData() {
+        return dendroData != null && dendroData.hasRowsClustering() && rowsOrder != null;
     }
 }

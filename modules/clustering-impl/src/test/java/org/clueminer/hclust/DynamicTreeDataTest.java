@@ -2,8 +2,8 @@ package org.clueminer.hclust;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.openide.util.Exceptions;
 
 /**
@@ -87,6 +87,8 @@ public class DynamicTreeDataTest {
 
     @Test
     public void testFirst() {
+        DynamicTreeData dtd = new DynamicTreeData();
+        assertEquals(false, dtd.hasMapping());
     }
 
     @Test
@@ -96,14 +98,13 @@ public class DynamicTreeDataTest {
 
     @Test
     public void testPrint() {
-        try {
-            OutputStreamWriter out = new OutputStreamWriter(System.out);
+        try (OutputStreamWriter out = new OutputStreamWriter(System.out)) {
             subject.printTree(out, subject.getRoot());
             out.flush();
-            out.close();
-        } catch (IOException e) {
-            Exceptions.printStackTrace(e);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
+
     }
 
 }

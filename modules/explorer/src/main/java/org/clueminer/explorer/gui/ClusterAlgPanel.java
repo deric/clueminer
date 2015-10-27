@@ -48,7 +48,7 @@ public class ClusterAlgPanel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.insets = new Insets(5, 5, 5, 5);
-        c.weightx = 1;
+        c.weightx = 0.3;
         c.weighty = 0.2;
         c.fill = GridBagConstraints.NONE;
         add(cbType, c);
@@ -68,7 +68,6 @@ public class ClusterAlgPanel extends JPanel {
         c.gridx++;
         cbData = new JComboBox<>();
         add(cbData, c);
-        updateCheckbox(dataset);
 
         c = new GridBagConstraints();
         c.gridx = 0;

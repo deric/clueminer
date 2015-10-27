@@ -32,7 +32,7 @@ import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.clustering.struct.DendrogramData2;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -96,7 +96,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         rowsResult.setProximityMatrix(coassoc);
 
         findCutoff(rowsResult, props);
-        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
+        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult);
 
         Clustering<E, C> clustering = rowsResult.getClustering();
         clustering.mergeParams(props);

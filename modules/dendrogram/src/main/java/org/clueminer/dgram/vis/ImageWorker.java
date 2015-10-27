@@ -30,7 +30,7 @@ public class ImageWorker implements Runnable {
 
     public void generateImage(ImageTask task) {
         heatmap.setData(task.getMapping());
-        silhoulette.setClustering(task.getClustering());
+        silhoulette.setClustering(task.getMapping().getRowsResult(), task.getClustering());
 
         // 1px space
         int space = 1;

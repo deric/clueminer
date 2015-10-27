@@ -284,8 +284,15 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
      */
     DendrogramMapping<E, C> getDendrogramMapping();
 
-    public double getHeightByLevel(int level);
+    /**
+     * Set reference to "parent" data structure
+     *
+     * @param dendroMap
+     */
+    void setDendrogramMapping(DendrogramMapping dendroMap);
 
-    public void setNoise(List<Instance> noise);
+    double getHeightByLevel(int level);
+
+    void setNoise(List<Instance> noise);
 
 }

@@ -7,7 +7,7 @@ import org.clueminer.clustering.aggl.HAC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
@@ -30,7 +30,7 @@ public class DendrogramDataTest {
 
     private static AgglomerativeClustering algorithm;
     private static Dataset<? extends Instance> dataset;
-    private static DendrogramData dendroData;
+    private static DendroMatrixData dendroData;
 
     public DendrogramDataTest() {
     }
@@ -58,7 +58,7 @@ public class DendrogramDataTest {
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         HierarchicalResult colResuls = algorithm.hierarchy(dataset, pref);
 
-        dendroData = new DendrogramData(dataset, dataset.asMatrix(), rowsResult, colResuls);
+        dendroData = new DendroMatrixData(dataset, dataset.asMatrix(), rowsResult, colResuls);
     }
 
     @AfterClass

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Stack;
-import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.openide.util.Exceptions;
 
 /**
@@ -373,6 +373,16 @@ public class DynamicTreeData implements DendroTreeData {
     @Override
     public int[] getMapping() {
         return mapping;
+    }
+
+    /**
+     * Check whether mapping was already created
+     *
+     * @return
+     */
+    @Override
+    public boolean hasMapping() {
+        return mapping != null;
     }
 
     /**

@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -47,57 +46,58 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
 
     @Override
     public void render(Graphics2D g) {
-        if (hasData()) {
-            //Dump.array(score, "sil score");
-            //FontMetrics fm = g.getFontMetrics();
-            Cluster clust = null;
-            // float y;
-            int x = 0, k, prev = -1;
-            double value, s;
-            Dataset<? extends Instance> dataset;
+        if (!hasData()) {
+            return;
+        }
+        //Dump.array(score, "sil score");
+        //FontMetrics fm = g.getFontMetrics();
+        Cluster clust = null;
+        // float y;
+        int x = 0, k, prev = -1;
+        double value, s;
+        Dataset<? extends Instance> dataset;
             //Instance inst;
-            // String str;
-            int mapped;
-            if (hierarchicalResult != null) {
-                dataset = hierarchicalResult.getDataset();
+        // String str;
+        int mapped;
+        if (hierarchicalResult != null) {
+            dataset = hierarchicalResult.getDataset();
                 //Dump.array(hierarchicalResult.getMapping(), "sil mapping");
-                //System.out.println("clusters size: " + clustering.size());
-                //System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
-                //System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
-                for (int i = 0; i < dataset.size(); i++) {
-                    mapped = hierarchicalResult.getMappedIndex(i);
-                    if (mapped > -1) {
-                        s = score[mapped];
-                        if (Double.isNaN(s)) {
-                            s = -1.0;
-                        }
-                        value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-                    //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
-                        //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
-                        k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
-
-                        if (k != prev) {
-                            if (clustering.hasAt(k)) {
-                                clust = clustering.get(k);
-                            }
-                            if (clust != null) {
-                                g.setColor(clust.getColor());
-                            } else {
-                                g.setColor(Color.GRAY);
-                            }
-                        }
-                        //System.out.println(i + " -> " + k + " : " + hierarchicalResult.getMappedIndex(i) + " color: " + g.getColor().toString());
-                        g.fillRect(x, i * element.height, (int) value, element.height);
-                        /*
-                         g.setColor(Color.BLACK);
-                         y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
-                         str = String.format("%.2f", s);
-                         if (str != null) {
-                         g.drawString(str, (float) (x + value + 10), y);
-                         }*/
-
-                        prev = k;
+            //System.out.println("clusters size: " + clustering.size());
+            //System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
+            //System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
+            for (int i = 0; i < dataset.size(); i++) {
+                mapped = hierarchicalResult.getMappedIndex(i);
+                if (mapped > -1) {
+                    s = score[mapped];
+                    if (Double.isNaN(s)) {
+                        s = -1.0;
                     }
+                    value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
+                        //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
+                    //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
+                    k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
+
+                    if (k != prev) {
+                        if (clustering.hasAt(k)) {
+                            clust = clustering.get(k);
+                        }
+                        if (clust != null) {
+                            g.setColor(clust.getColor());
+                        } else {
+                            g.setColor(Color.GRAY);
+                        }
+                    }
+                    //System.out.println(i + " -> " + k + " : " + hierarchicalResult.getMappedIndex(i) + " color: " + g.getColor().toString());
+                    g.fillRect(x, i * element.height, (int) value, element.height);
+                    /*
+                     g.setColor(Color.BLACK);
+                     y = (i * element.height + element.height / 2f + fm.getDescent() / 2f);
+                     str = String.format("%.2f", s);
+                     if (str != null) {
+                     g.drawString(str, (float) (x + value + 10), y);
+                     }*/
+
+                    prev = k;
                 }
             }
         }
@@ -165,14 +165,10 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
         return true;
     }
 
-    public void setClustering(Clustering<? extends Instance, ? extends Cluster> data) {
+    public void setClustering(HierarchicalResult hres, Clustering<E, C> data) {
+        this.hierarchicalResult = hres;
         this.clustering = data;
-        DendrogramMapping d = data.getLookup().lookup(DendrogramMapping.class);
-        if (d != null) {
-            hierarchicalResult = d.getRowsResult();
-        } else {
-            logger.log(Level.WARNING, "can''t find hierarchical result in lookup, using: {0}", hierarchicalResult);
-        }
+
         updateScore();
         if (reqSize.width == 0) {
             reqSize.width = 100;
@@ -182,8 +178,7 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
 
     @Override
     public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping mapping) {
-        hierarchicalResult = mapping.getRowsResult();
-        setClustering(mapping.getRowsClustering());
+        setClustering(mapping.getRowsResult(), mapping.getRowsClustering());
     }
 
     @Override
@@ -235,22 +230,21 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
     }
 
     public void setDendrogramData(DendrogramMapping dendroData) {
-        hierarchicalResult = dendroData.getRowsResult();
-        setClustering(dendroData.getRowsClustering());
+        setClustering(dendroData.getRowsResult(), dendroData.getRowsClustering());
         resetCache();
         repaint();
     }
 
     @Override
     public void clusteringChanged(Clustering clust) {
-        setClustering(clust);
+        //setClustering(clust);
+        logger.info("got clustering without hierarchical data");
     }
 
     @Override
     public void resultUpdate(HierarchicalResult hclust) {
         if (hclust != null) {
-            hierarchicalResult = hclust;
-            setClustering(hclust.getClustering());
+            setClustering(hclust, hclust.getClustering());
         }
     }
 

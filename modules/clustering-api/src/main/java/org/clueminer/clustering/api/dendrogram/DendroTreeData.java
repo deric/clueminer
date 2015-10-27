@@ -125,6 +125,13 @@ public interface DendroTreeData {
     int getMappedId(int i);
 
     /**
+     * Check whether mapping was set
+     *
+     * @return true when mapping to actual tree order exists
+     */
+    boolean hasMapping();
+
+    /**
      *
      * @param i th leaf
      * @return

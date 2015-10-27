@@ -7,10 +7,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
-import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -40,6 +40,7 @@ public class HCLResult<E extends Instance, C extends Cluster<E>> implements Hier
     private int[] itemsMapping;
     private Matrix inputData;
     private Clustering clustering = null;
+    private DendrogramMapping dendroMapping;
     private static final Logger logger = Logger.getLogger(HCLResult.class.getName());
     /**
      * original dataset
@@ -388,12 +389,7 @@ public class HCLResult<E extends Instance, C extends Cluster<E>> implements Hier
 
     @Override
     public DendrogramMapping getDendrogramMapping() {
-        DendrogramMapping res = null;
-        Clustering c = getClustering();
-        if (c != null) {
-            res = c.getLookup().lookup(DendrogramMapping.class);
-        }
-        return res;
+        return dendroMapping;
     }
 
     @Override
@@ -419,6 +415,11 @@ public class HCLResult<E extends Instance, C extends Cluster<E>> implements Hier
     @Override
     public void setNoise(List<Instance> noise) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDendrogramMapping(DendrogramMapping dendroMap) {
+        this.dendroMapping = dendroMap;
     }
 
 }

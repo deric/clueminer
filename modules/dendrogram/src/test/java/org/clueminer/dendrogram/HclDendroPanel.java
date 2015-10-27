@@ -12,7 +12,7 @@ import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
@@ -86,7 +86,7 @@ public class HclDendroPanel extends DendroPanel {
     }
 
     @Override
-    public DendrogramData execute() {
+    public DendroMatrixData execute() {
 
         DistanceFactory df = DistanceFactory.getInstance();
         Distance func = df.getProvider("Euclidean");
@@ -128,7 +128,7 @@ public class HclDendroPanel extends DendroPanel {
         //   System.out.println("rows tree cutoff = " + cutoff);
         //    cutoff = columnsResult.findCutoff();
         //     System.out.println("columns tree cutoff = " + cutoff);
-        DendrogramData dendroData = new DendrogramData(getDataset(), input, rowsResult, columnsResult);
+        DendroMatrixData dendroData = new DendroMatrixData(getDataset(), input, rowsResult, columnsResult);
         viewer.setDataset(dendroData);
         String cutoffAlg = params.get("cutoff", "-- naive --");
         Clustering clust;
@@ -234,7 +234,7 @@ public class HclDendroPanel extends DendroPanel {
                 res = 0;
                 break;
             default:
-                throw new RuntimeException("linkage " + linkage + " is not supported");
+                throw new RuntimeException("linkage " + linkage + " is not supported for algorithm " + algorithm.getName());
         }
         params.putInt("method-linkage", res);
         if (algorithm != null) {

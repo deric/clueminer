@@ -126,6 +126,13 @@ public abstract class AbstractAnnotation extends JPanel {
 
     }
 
+    /**
+     * Check whether all necessary data for rendering are available
+     *
+     * @return
+     */
+    public abstract boolean hasData();
+
     protected abstract void updateSize();
 
     public Dimension getDimension() {

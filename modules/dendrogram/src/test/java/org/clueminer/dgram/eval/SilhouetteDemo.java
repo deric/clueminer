@@ -6,10 +6,14 @@ import java.awt.Insets;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -26,8 +30,13 @@ public class SilhouetteDemo extends JFrame {
         setLayout(new GridBagLayout());
         sPanel = new SilhouettePlot(true);
 
+        Props props = new Props();
         final Clustering<Instance, Cluster<Instance>> data = FakeClustering.irisWrong();
-        sPanel.setClustering(data);
+        HClustResult hres = new HClustResult(data.getLookup().lookup(Dataset.class), props);
+        hres.setClustering(data);
+        hres.createMapping();
+
+        sPanel.setClustering(hres, data);
         System.out.println("dataset size: " + data.size());
         add(sPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
@@ -48,8 +57,7 @@ public class SilhouetteDemo extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

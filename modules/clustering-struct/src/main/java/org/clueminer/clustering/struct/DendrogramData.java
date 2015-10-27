@@ -14,7 +14,8 @@ import org.clueminer.math.Matrix;
 
 /**
  * Data used for rendering dendrogram, might contain rows and columns clustering
- * result.
+ * result. Data is stored without using matrix, which is inefficient for such
+ * purpose.
  *
  * @author Tomas Barton
  * @param <E>
@@ -22,8 +23,8 @@ import org.clueminer.math.Matrix;
  */
 public class DendrogramData<E extends Instance, C extends Cluster<E>> implements DendrogramMapping<E, C> {
 
-    private Matrix matrix;
-    private Dataset<E> dataset;
+    private Dataset<E> normData;
+    private Dataset<E> origData;
     private double min = Double.MAX_VALUE;
     private double max = Double.MIN_VALUE;
     private double mid = 0;
@@ -36,37 +37,57 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
     }
 
     public DendrogramData(Dataset<E> dataset) {
-        this.dataset = dataset;
+        setDataset(dataset);
 
     }
 
-    public DendrogramData(Dataset<E> dataset, Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
-        this.dataset = dataset;
-        // checkParams(matrix, rowResult, columnResult);
-        this.setMatrix(matrix);
-        this.rowsResult = rowResult;
-        this.colsResult = columnResult;
+    public DendrogramData(Dataset<E> dataset, HierarchicalResult rowResult, HierarchicalResult columnResult) {
+        setDataset(dataset);
+        checkParams(rowResult, columnResult);
+        setMapping(rowResult, columnResult);
     }
 
-    public DendrogramData(Dataset<E> dataset, Matrix matrix, HierarchicalResult rowResult) {
-        this.dataset = dataset;
-        // checkParams(matrix, rowResult, null);
-        this.setMatrix(matrix);
-        this.rowsResult = rowResult;
+    public DendrogramData(Dataset<E> dataset, HierarchicalResult rowResult) {
+        setDataset(dataset);
+        checkParams(rowResult, null);
+        setMapping(rowResult, null);
     }
 
-    private void checkParams(Matrix matrix, HierarchicalResult rowResult, HierarchicalResult columnResult) {
-        if (matrix == null) {
-            throw new RuntimeException("input matrix can't be null");
-        }
-        if (matrix.rowsCount() != rowResult.size()) {
-            throw new RuntimeException("row result size does not match dimension of input matrix " + rowResult.size() + " vs. " + matrix.rowsCount());
+    private void checkParams(HierarchicalResult rowResult, HierarchicalResult columnResult) {
+        if (normData.size() != rowResult.size()) {
+            throw new RuntimeException("row result size does not match dimension of input matrix " + normData.size() + " vs. " + rowResult.size());
         }
         if (columnResult != null) {
-            if (matrix.columnsCount() != columnResult.size()) {
-                throw new RuntimeException("column result size does not match dimension of input matrix " + columnResult.size() + " vs. " + matrix.columnsCount());
+            if (normData.attributeCount() != columnResult.size()) {
+                throw new RuntimeException("column result size does not match dimension of input matrix " + columnResult.size() + " vs. " + normData.attributeCount());
             }
         }
+    }
+
+    private void setMapping(HierarchicalResult rowResult, HierarchicalResult columnResult) {
+        this.rowsResult = rowResult;
+        rowResult.setDendrogramMapping(this);
+        if (columnResult != null) {
+            this.colsResult = columnResult;
+            colsResult.setDendrogramMapping(this);
+        }
+    }
+
+    @Override
+    public final void setDataset(Dataset<E> dataset) {
+        this.normData = dataset;
+        Dataset<E> current = normData;
+        while (current.getParent() != null) {
+            current = current.getParent();
+        }
+        origData = current;
+        //in case of negative min, we add it again
+        //@test [10-(-5)] /2 + (-5) = 7.5 - 5 = 2.5
+        //@test 10 - 0 = 5 + 0 = 5
+        //@test 1 - (-1) = 1-1 = 0
+        min = normData.min();
+        max = normData.max();
+        mid = (max - min) / 2 + min;
     }
 
     @Override
@@ -102,8 +123,8 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public int getNumberOfRows() {
-        if (dataset != null) {
-            return dataset.size();
+        if (normData != null) {
+            return normData.size();
         } else {
             return 0;
         }
@@ -116,8 +137,8 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public int getNumberOfColumns() {
-        if (dataset != null) {
-            return dataset.attributeCount();
+        if (normData != null) {
+            return normData.attributeCount();
         } else {
             return 0;
         }
@@ -128,7 +149,7 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public Matrix getMatrix() {
-        return matrix;
+        throw new UnsupportedOperationException("not supported");
     }
 
     /**
@@ -136,28 +157,8 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public final void setMatrix(Matrix matrix) {
-        this.matrix = matrix;
-        findMinMax(matrix);
-    }
-
-    private void findMinMax(Matrix matrix) {
-        double value;
-        for (int i = 0; i < matrix.rowsCount(); i++) {
-            for (int j = 0; j < matrix.columnsCount(); j++) {
-                value = matrix.get(i, j);
-                if (value < min) {
-                    min = value;
-                }
-                if (value > max) {
-                    max = value;
-                }
-            }
-        }
-        //in case of negative min, we add it again
-        //@test [10-(-5)] /2 + (-5) = 7.5 - 5 = 2.5
-        //@test 10 - 0 = 5 + 0 = 5
-        //@test 1 - (-1) = 1-1 = 0
-        mid = (max - min) / 2 + min;
+        //this.matrix = matrix;
+        throw new UnsupportedOperationException("not supported");
     }
 
     @Override
@@ -177,7 +178,7 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double get(int i, int j) {
-        return matrix.get(i, j);
+        return normData.get(i, j);
     }
 
     @Override
@@ -190,15 +191,7 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public Dataset<E> getDataset() {
-        return dataset;
-    }
-
-    /**
-     * @param instances the instances to set
-     */
-    @Override
-    public void setDataset(Dataset<E> instances) {
-        this.dataset = instances;
+        return normData;
     }
 
     @Override

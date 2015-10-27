@@ -11,9 +11,10 @@ import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
@@ -32,7 +33,7 @@ import org.openide.util.Exceptions;
 public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame implements DendrogramVisualizationListener<E, C> {
 
     private static final long serialVersionUID = -8493251992060371012L;
-    private JLabel picLabel;
+    private final JLabel picLabel;
 
     public IconDemo() {
         setLayout(new BorderLayout());
@@ -43,10 +44,10 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         AgglomerativeClustering algorithm = new HACLW();
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
+        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         HierarchicalResult columnsResult = algorithm.hierarchy(dataset, params);
 
-        DendrogramData dendroData = new DendrogramData(dataset, input, rowsResult, columnsResult);
+        DendroMatrixData dendroData = new DendroMatrixData(dataset, input, rowsResult, columnsResult);
 
         Clustering<E, C> clustering = FakeClustering.iris();
         clustering.lookupAdd(dendroData);
@@ -100,7 +101,7 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
 
     @Override
     public void clusteringFinished(Clustering<E, C> clustering) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //nothing to do
     }
 
 }

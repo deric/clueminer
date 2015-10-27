@@ -7,13 +7,13 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,14 +21,14 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class DendrogramData2Test {
+public class DendrogramDataTest {
 
-    private DendrogramData2 subject;
+    private DendrogramData subject;
     private static final CommonFixture tf = new CommonFixture();
     private final Dataset<? extends Instance> iris;
     //private ClusteringAlgorithm algorithm = new HAC();
 
-    public DendrogramData2Test() throws IOException {
+    public DendrogramDataTest() throws IOException {
         iris = loadIris();
 
     }
@@ -42,13 +42,10 @@ public class DendrogramData2Test {
 
     @Before
     public void setUp() {
-        subject = new DendrogramData2();
+        subject = new DendrogramData();
         subject.setDataset(iris);
     }
 
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void testSetDataset() {
@@ -61,14 +58,6 @@ public class DendrogramData2Test {
     }
 
     @Test
-    public void testGetColumnIndex() {
-    }
-
-    @Test
-    public void testGetRowIndex() {
-    }
-
-    @Test
     public void testGetNumberOfRows() {
         assertEquals(150, subject.getNumberOfRows());
     }
@@ -78,41 +67,13 @@ public class DendrogramData2Test {
         assertEquals(4, subject.getNumberOfColumns());
     }
 
-    @Test
-    public void testGetMatrix() {
-    }
-
-    @Test
-    public void testSetMatrix() {
-    }
-
-    @Test
-    public void testGetMinValue() {
-    }
-
-    @Test
-    public void testGetMaxValue() {
-    }
-
-    @Test
-    public void testGetMidValue() {
-    }
-
-    @Test
-    public void testGet() {
-
-    }
-
-    @Test
-    public void testGetMappedValue() {
-    }
 
     //@Test
     public void testGetDataset() throws IOException {
         Distance dm = DistanceFactory.getInstance().getDefault();
         Dataset<? extends Instance> dataset = loadIris();
         HierarchicalResult rowsResult = hclustRows(dataset, dm, new Props());
-        DendrogramMapping mapping = new DendrogramData2(dataset, rowsResult);
+        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult);
     }
 
     public HierarchicalResult hclustRows(Dataset<? extends Instance> dataset, Distance dm, Props params) {
@@ -125,52 +86,5 @@ public class DendrogramData2Test {
         return null;
     }
 
-    @Test
-    public void testGetRowsResult() {
-    }
-
-    @Test
-    public void testSetRowsResult() {
-    }
-
-    @Test
-    public void testGetColsResult() {
-    }
-
-    @Test
-    public void testSetColsResult() {
-    }
-
-    @Test
-    public void testGetRowsClustering() {
-    }
-
-    @Test
-    public void testGetColumnsClustering() {
-    }
-
-    @Test
-    public void testSetRowsTreeCutoffByLevel() {
-    }
-
-    @Test
-    public void testSetColumnsTreeCutoffByLevel() {
-    }
-
-    @Test
-    public void testHasRowsClustering() {
-    }
-
-    @Test
-    public void testHasColumnsClustering() {
-    }
-
-    @Test
-    public void testPrintMappedMatix() {
-    }
-
-    @Test
-    public void testPrintMatrix() {
-    }
 
 }

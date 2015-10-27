@@ -11,7 +11,7 @@ import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
@@ -77,7 +77,7 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
     @Override
     public Clustering<E, C> clusterRows(Dataset<E> dataset, Props params) {
         HierarchicalResult rowsResult = hclustRows(dataset, params);
-        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult);
+        DendrogramMapping mapping = new DendroMatrixData(dataset, rowsResult.getInputData(), rowsResult);
 
         Clustering clustering = rowsResult.getClustering();
         clustering.mergeParams(params);
@@ -97,7 +97,7 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, params);
 
-        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
+        DendrogramMapping mapping = new DendroMatrixData(dataset, rowsResult.getInputData(), rowsResult, columnsResult);
         rowsResult.getClustering().lookupAdd(mapping);
         return mapping;
     }
