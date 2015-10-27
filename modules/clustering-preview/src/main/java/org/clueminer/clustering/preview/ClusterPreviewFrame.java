@@ -91,8 +91,8 @@ public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
         scroller.getVerticalScrollBar().addAdjustmentListener(this);
 
         add(toolbar);
-        scroller.getViewport().revalidate();
         add(scroller);
+        scroller.getViewport().revalidate();
     }
 
     public PreviewFrameSet getViewer() {
