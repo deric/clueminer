@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.event.EventListenerList;
@@ -161,6 +162,19 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
             return null;
         }
         return children.get(key);
+    }
+
+    /**
+     * Iterator over children datasets
+     *
+     * @return iterator over children keys
+     */
+    @Override
+    public Iterator<String> getChildIterator() {
+        if (children == null) {
+            children = new HashMap<>(5);
+        }
+        return children.keySet().iterator();
     }
 
     @Override

@@ -2,6 +2,7 @@ package org.clueminer.dataset.api;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -21,7 +22,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Unique identifier of dataset
      *
      * @return usually it is a number, however to make it more universal, we use
-     *         string
+     * string
      */
     String getId();
 
@@ -271,7 +272,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
 
     /**
      * Set attributes
-      *
+     *
      * @param attributes
      */
     void setAttributes(Map<Integer, Attribute> attributes);
@@ -361,6 +362,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return
      */
     Dataset<E> getChild(String key);
+
+    /**
+     * Iterator over children datasets
+     *
+     * @return iterator over children keys
+     */
+    Iterator<String> getChildIterator();
 
     /**
      * Should provide matrix-like facade to access values of the dataset
