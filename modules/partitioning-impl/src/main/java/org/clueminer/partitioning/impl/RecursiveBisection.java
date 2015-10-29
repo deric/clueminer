@@ -10,6 +10,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Basic recursive bisection algorithm, by default Fiduccia-Mattheyses bisection
+ * is used.
  *
  * @author Tomas Bruna
  */
@@ -17,8 +19,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class RecursiveBisection implements Partitioning {
 
     private int maxNodesInCluster;
-    private Graph graph;
-    private boolean marked[];
     private Bisection bisection;
 
     public RecursiveBisection() {
@@ -42,35 +42,37 @@ public class RecursiveBisection implements Partitioning {
     @Override
     public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
         maxNodesInCluster = max;
-        graph = g;
         ArrayList<LinkedList<Node>> clusters;
-        if (graph.getNodeCount() < maxNodesInCluster) {
+        if (g.getNodeCount() < maxNodesInCluster) {
             ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
             nodes.add(new LinkedList<>(g.getNodes().toCollection()));
             return nodes;
         } else {
-            clusters = recursivePartition(graph);
+            clusters = recursivePartition(g);
         }
-        Graph clusteredGraph = new EdgeRemover().removeEdges(graph, clusters);
+        Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
     }
 
     public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
-        ArrayList<LinkedList<Node>> result = bisection.bisect(g);
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
-        for (int i = 0; i <= 1; i++) {
+        ArrayList<LinkedList<Node>> result = bisection.bisect(g);
+        int i = 0;
+
+        while (i < 2) {
             if (result.get(i).size() <= maxNodesInCluster) {
                 output.add(result.get(i));
             } else {
-                Graph newGraph = buildGraphFromCluster(result.get(i));
+                Graph newGraph = buildGraphFromCluster(g, result.get(i));
                 output.addAll(recursivePartition(newGraph));
             }
+            i++;
         }
         return output;
     }
 
-    private Graph buildGraphFromCluster(LinkedList<Node> n) {
+    private Graph buildGraphFromCluster(Graph graph, LinkedList<Node> n) {
         Graph newGraph = null;
         try {
             ArrayList<Node> nodes = new ArrayList<>(n);
