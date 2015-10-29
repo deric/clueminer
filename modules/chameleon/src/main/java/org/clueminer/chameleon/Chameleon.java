@@ -7,9 +7,9 @@ import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
-import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -183,6 +183,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         int datasetK = determineK(dataset);
         maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
         maxPartitionSize = determineMaxPartitionSize(dataset);
+        pref.putInt(MAX_PARTITION, maxPartitionSize);
+        pref.putInt(K, datasetK);
 
         graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
         //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
