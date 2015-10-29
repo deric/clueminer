@@ -94,19 +94,19 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-impl</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>fixtures-clustering</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
