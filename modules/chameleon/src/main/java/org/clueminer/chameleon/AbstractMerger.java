@@ -14,7 +14,7 @@ import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
-import org.clueminer.partitioning.impl.HMetisBisector;
+import edu.umn.metis.HMetisBisector;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 

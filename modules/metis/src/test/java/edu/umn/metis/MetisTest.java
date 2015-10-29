@@ -1,4 +1,4 @@
-package org.clueminer.partitioning.impl;
+package edu.umn.metis;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

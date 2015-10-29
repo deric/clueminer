@@ -1,20 +1,18 @@
 /*
- * Copyright (C) 2011-2015 clueminer.org
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * The hMETIS package is copyrighted by the Regents of the University of
+ * Minnesota. It is meant to be used solely for educational, research, and
+ * benchmarking purposes by non-profit institutions and US government agencies
+ * only. Other organizations are allowed to use hMETIS for evaluation purposes
+ * only. The software may not be sold or redistributed. One may make copies of
+ * the software for their use provided that the copies, are not sold or
+ * distributed, are used under the same terms and conditions. As unestablished
+ * research software, this code is provided on an ``as is'' basis without
+ * warranty of any kind, either expressed or implied. The downloading, or
+ * executing any part of this software constitutes an implicit agreement to
+ * these terms. These terms and conditions are subject to change at any time
+ * without prior notice.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.metis;
 
 import java.io.File;
 import java.io.FileNotFoundException;

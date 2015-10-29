@@ -14,21 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.metis;
 
+import edu.umn.metis.HMetis;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.partitioning.api.Bisection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-@ServiceProvider(service = Partitioning.class)
-public class HMetisNoFF extends HMetis implements Partitioning {
+@ServiceProvider(service = Bisection.class)
+public class HMetisBisector extends HMetis implements Bisection {
 
     private static final String name = "hMETIS";
 
@@ -37,24 +38,24 @@ public class HMetisNoFF extends HMetis implements Partitioning {
         return name;
     }
 
-    /**
-     * Directly return hMetis result without flood fill
-     *
-     * @param maxPartitionSize
-     * @param g
-     * @return
-     */
     @Override
-    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g) {
-        int k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
-        if (k == 1) {
-            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
-            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
-            return nodes;
-        }
+    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+        int k = 2;
         Node[] nodeMapping = createMapping(g);
+        //we want to split graph into 2 parts
         String path = runMetis(g, k);
-        return importMetisResult(path, k, nodeMapping);
+        ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
+        return clusters;
+    }
+
+    @Override
+    public ArrayList<LinkedList<Node>> bisect() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Graph removeUnusedEdges() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

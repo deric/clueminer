@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.resources;
+package edu.umn.metis;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.metis;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.partitioning.impl.EdgeRemover;
+import org.clueminer.partitioning.impl.FloodFill;
 import org.openide.util.Exceptions;
 
 /**

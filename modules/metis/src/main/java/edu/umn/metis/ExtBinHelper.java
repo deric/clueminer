@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.partitioning.impl;
+package edu.umn.metis;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,6 @@ import java.net.URL;
 import java.util.Collection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.resources.ResourceLoader;
 import org.openide.util.Exceptions;
 
 /**
