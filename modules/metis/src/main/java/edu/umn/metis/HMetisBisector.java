@@ -16,7 +16,6 @@
  */
 package edu.umn.metis;
 
-import edu.umn.metis.HMetis;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;

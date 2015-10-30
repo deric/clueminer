@@ -43,7 +43,7 @@ public class ExtBinHelper<E extends Instance> {
 
     private static final String lineEnd = "\n";
     private static final String space = " ";
-    protected static final String prefix = "/org/clueminer/partitioning/impl";
+    protected static final String prefix = "/edu/umn/metis";
 
     /**
      * Write dataset into a file as space separated values

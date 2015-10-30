@@ -44,7 +44,7 @@ import org.openide.util.Utilities;
 public class ResourceLoader {
 
     private static final String OS = System.getProperty("os.name").toLowerCase();
-    private static final String resPath = "partitioning/impl";
+    private static final String resPath = "metis";
 
     /**
      * for all elements of java.class.path get a Collection of resources Pattern
