@@ -30,6 +30,7 @@ import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -47,6 +48,7 @@ public class HMetisTest extends PartitioningTest {
     @Test
     public void simpleGraphTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
+        assertTrue("binary does not exists", subject.getBinary().exists());
         if (subject.getBinary().exists()) {
             Dataset<? extends Instance> dataset = twoDistinctNeighbors();
             KNNGraphBuilder knn = new KNNGraphBuilder();

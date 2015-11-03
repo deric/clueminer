@@ -44,6 +44,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     public static final String PTYPE = "ptype";
     public static final String RTYPE = "rtype";
     public static final String CTYPE = "ctype";
+    public static final String OTYPE = "otype";
 
     protected int vcycle = 1;// 0-3
     protected int reconst = 0;// 0-1
@@ -82,7 +83,8 @@ public class HMetis extends AbstractMetis implements Partitioning {
                     .append(String.valueOf(k)).append(space)
                     .append("-ufactor=").append(String.valueOf(params.getDouble(UFACTOR, 5.0))).append(space)
                     .append("-nruns=").append(String.valueOf(params.getInt(NRUNS, 10))).append(space)
-                    .append("-ptype=").append(String.valueOf(params.get(PTYPE, "rb"))).append(space);
+                    .append("-ptype=").append(String.valueOf(params.get(PTYPE, "rb"))).append(space)
+                    .append("-otype=").append(String.valueOf(params.get(OTYPE, "cut"))).append(space);
             if (params.containsKey(CTYPE)) {
                 sb.append("-ctype=").append(params.get(CTYPE)).append(space);
             }
@@ -90,10 +92,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
                 sb.append("-rtype=").append(params.get(RTYPE)).append(space);
             }
 
-            sb.append(String.valueOf(vcycle)).append(space)
-                    .append(String.valueOf(reconst)).append(space)
-                    .append(String.valueOf(dbglvl));
-
+            //sb.append(String.valueOf(vcycle)).append(space);
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
             if (debug) {
