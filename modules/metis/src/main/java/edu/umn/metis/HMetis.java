@@ -50,7 +50,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected int reconst = 0;// 0-1
     protected int dbglvl = 0;
     private final ExtBinHelper<Instance> helper;
-    private boolean debug = true;
+    private boolean debug = false;
     private static File metisFile = null;
 
     public HMetis() {
