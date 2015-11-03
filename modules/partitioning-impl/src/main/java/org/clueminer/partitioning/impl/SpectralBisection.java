@@ -9,6 +9,7 @@ import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,7 +33,7 @@ public class SpectralBisection implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
         this.g = g;
         Matrix laplacianMatrix = buildLaplacianMatrix();
         //laplacianMatrix.eig().getV().print(5, 2);
@@ -59,7 +60,7 @@ public class SpectralBisection implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect() {
+    public ArrayList<LinkedList<Node>> bisect(Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

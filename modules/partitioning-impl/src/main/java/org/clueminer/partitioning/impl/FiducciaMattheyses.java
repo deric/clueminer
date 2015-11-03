@@ -7,6 +7,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -276,7 +277,7 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
         initialize(g);
         createIntitalPartition();
         int iterationCounter = 0;
@@ -331,7 +332,7 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect() {
+    public ArrayList<LinkedList<Node>> bisect(Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

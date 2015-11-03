@@ -134,7 +134,7 @@ public class ExtBinHelper<E extends Instance> {
                     out.write(bytes, 0, read);
                 }
             }
-            file.deleteOnExit();
+            //file.deleteOnExit();
         } catch (IOException ex) {
             System.err.println(ex.toString());
         }

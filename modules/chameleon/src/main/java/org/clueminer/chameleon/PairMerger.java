@@ -96,7 +96,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         LinkedList<Node> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
         clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
         addIntoTree(curr, pref);

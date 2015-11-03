@@ -71,7 +71,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         this.graph = graph;
         this.bisection = bisection;
         blacklist = new HashSet<>();
-        createClusters(clusterList, bisection);
+        createClusters(clusterList, bisection, params);
         if (params != null && params.getInt(Chameleon.NOISE_DETECTION, 0) == Chameleon.NOISE_INTERNAL_PROPERTIES) {
             noise = identifyNoise(params);
             if (noise != null) {
@@ -125,13 +125,14 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      *
      * @param clusterList
      * @param bisection
+     * @param props
      * @return list of clusters
      */
-    public ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection) {
+    public ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection, Props props) {
         clusters = new ArrayList<>(clusterList.size());
         int i = 0;
         for (LinkedList<Node<E>> cluster : clusterList) {
-            clusters.add(new GraphCluster(cluster, graph, i, bisection));
+            clusters.add(new GraphCluster(cluster, graph, i, bisection, props));
             i++;
         }
         return clusters;

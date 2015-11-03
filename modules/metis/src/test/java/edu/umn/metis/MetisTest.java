@@ -12,6 +12,7 @@ import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -33,7 +34,7 @@ public class MetisTest extends PartitioningTest {
         Graph g = new AdjMatrixGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 4);
         subject.setPtype("rb");
-        ArrayList<LinkedList<Node>> res = subject.partition(2, g);
+        ArrayList<LinkedList<Node>> res = subject.partition(2, g, new Props());
         //the result is randomized typically the size should be 4 or 8
         assertEquals(true, res.size() > 3);
     }
@@ -45,7 +46,7 @@ public class MetisTest extends PartitioningTest {
         Graph g = new AdjListGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 20);
         subject.setPtype("rb");
-        ArrayList<LinkedList<Node>> res = subject.partition(10, g);
+        ArrayList<LinkedList<Node>> res = subject.partition(10, g, new Props());
         assertNotNull(res);
         assertEquals(true, res.size() > 10);
     }

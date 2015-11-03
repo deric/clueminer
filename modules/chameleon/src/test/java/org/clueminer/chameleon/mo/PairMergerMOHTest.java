@@ -51,12 +51,13 @@ public class PairMergerMOHTest {
         int k = 3;
         int maxPartitionSize = 20;
         Graph g = new AdjMatrixGraph();
+        Props pref = new Props();
         Bisection bisection = new FiducciaMattheyses(20);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         subject = new PairMergerMOH();
         subject.addObjective(new Closeness());
@@ -64,7 +65,6 @@ public class PairMergerMOHTest {
 
         subject.initialize(partitioningResult, g, bisection, null);
 
-        Props pref = new Props();
         HierarchicalResult result = subject.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
         tree.print();

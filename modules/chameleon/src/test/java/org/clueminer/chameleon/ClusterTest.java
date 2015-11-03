@@ -12,6 +12,7 @@ import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -37,6 +38,7 @@ public class ClusterTest {
     public void testClosenessAndInterconnectivity() {
         Dataset<? extends Instance> dataset = simpleData();
         Distance dm = new EuclideanDistance();
+        Props props = new Props();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 3);
 
@@ -46,7 +48,7 @@ public class ClusterTest {
         LinkedList<Node> nodes = new LinkedList<>();
         nodes.addAll(g.getNodes().toCollection());
 
-        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses());
+        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses(), props);
         // Assert internal interconnectivity
         assertEquals(c.getIIC(), 1 / (sqrt(2)) + 1 / (sqrt(10)) + 1 / (sqrt(5)) + 1 / (sqrt(8)) + 1 / (sqrt(5)), 0.0001);
         // Assert internal closeness
@@ -58,6 +60,7 @@ public class ClusterTest {
     public void testAverageCloseness() {
         Dataset<? extends Instance> dataset = simpleData();
         Distance dm = new EuclideanDistance();
+        Props props = new Props();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int[][] a = knn.getNeighborArray(dataset, 3);
 
@@ -67,7 +70,7 @@ public class ClusterTest {
         LinkedList<Node> nodes = new LinkedList<>();
         nodes.addAll(g.getNodes().toCollection());
 
-        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses());
+        GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses(), props);
         assertEquals(0.4687162648354779, c.getACL(), 1e-9);
     }
 }

@@ -61,22 +61,22 @@ public class ShatovskaSimilarityTest {
         int k = 5;
         int maxPartitionSize = 20;
         double closenessPriority = 2.0;
+        Props pref = new Props();
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         PairMerger merger = new PairMerger();
         merger.setMergeEvaluation(subject);
         merger.initialize(partitioningResult, g, bisection, null);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
 
-        Props pref = new Props();
         assertEquals(4.464646866748596E-13, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(2), clusters.get(3), pref), delta);

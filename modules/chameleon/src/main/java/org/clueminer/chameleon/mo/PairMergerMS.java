@@ -102,7 +102,7 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
         LinkedList<Node<E>> clusterNodes = (LinkedList<Node<E>>) curr.A.getNodes().clone();
         clusterNodes.addAll(curr.B.getNodes());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
         clusters.add(newCluster);
         for (MergeEvaluation<E> eval : objectives) {
             eval.clusterCreated(curr, newCluster, pref);

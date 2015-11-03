@@ -6,6 +6,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -40,7 +41,7 @@ public class RecursiveBisection implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int max, Graph g) {
+    public ArrayList<LinkedList<Node>> partition(int max, Graph g, Props params) {
         maxNodesInCluster = max;
         ArrayList<LinkedList<Node>> clusters;
         if (g.getNodeCount() < maxNodesInCluster) {
@@ -48,16 +49,16 @@ public class RecursiveBisection implements Partitioning {
             nodes.add(new LinkedList<>(g.getNodes().toCollection()));
             return nodes;
         } else {
-            clusters = recursivePartition(g);
+            clusters = recursivePartition(g, params);
         }
         Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph);
     }
 
-    public ArrayList<LinkedList<Node>> recursivePartition(Graph g) {
+    public ArrayList<LinkedList<Node>> recursivePartition(Graph g, Props params) {
         ArrayList<LinkedList<Node>> output = new ArrayList<>();
-        ArrayList<LinkedList<Node>> result = bisection.bisect(g);
+        ArrayList<LinkedList<Node>> result = bisection.bisect(g, params);
         int i = 0;
 
         while (i < 2) {
@@ -65,7 +66,7 @@ public class RecursiveBisection implements Partitioning {
                 output.add(result.get(i));
             } else {
                 Graph newGraph = buildGraphFromCluster(g, result.get(i));
-                output.addAll(recursivePartition(newGraph));
+                output.addAll(recursivePartition(newGraph, params));
             }
             i++;
         }

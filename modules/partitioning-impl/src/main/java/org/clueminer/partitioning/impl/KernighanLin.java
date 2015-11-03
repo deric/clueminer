@@ -6,6 +6,7 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,12 +55,12 @@ public class KernighanLin implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect() {
-        return bisect(graph);
+    public ArrayList<LinkedList<Node>> bisect(Props params) {
+        return bisect(graph, params);
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
         initialize(g);
 
         createIntitalPartition();

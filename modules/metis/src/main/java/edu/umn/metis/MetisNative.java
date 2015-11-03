@@ -23,6 +23,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 
 /**
  * Download metis: http://glaros.dtc.umn.edu/gkhome/metis/metis/download
@@ -104,7 +105,7 @@ public class MetisNative implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
+    public ArrayList<LinkedList<Node>> partition(int k, Graph g, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

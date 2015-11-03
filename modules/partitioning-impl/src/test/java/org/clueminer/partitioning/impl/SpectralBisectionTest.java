@@ -14,6 +14,7 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,7 @@ public class SpectralBisectionTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         SpectralBisection sb = new SpectralBisection();
-        ArrayList<LinkedList<Node>> result = sb.bisect(g);
+        ArrayList<LinkedList<Node>> result = sb.bisect(g, new Props());
 
         assertEquals(0, result.get(1).get(0).getInstance().getIndex());
         assertEquals(1, result.get(1).get(1).getInstance().getIndex());
@@ -64,7 +65,7 @@ public class SpectralBisectionTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         SpectralBisection sb = new SpectralBisection();
-        ArrayList<LinkedList<Node>> result = sb.bisect(g);
+        ArrayList<LinkedList<Node>> result = sb.bisect(g, new Props());
 
         assertEquals(0, result.get(1).get(0).getInstance().getIndex());
         assertEquals(1, result.get(1).get(1).getInstance().getIndex());
@@ -89,7 +90,7 @@ public class SpectralBisectionTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         SpectralBisection sb = new SpectralBisection();
-        ArrayList<LinkedList<Node>> result = sb.bisect(g);
+        ArrayList<LinkedList<Node>> result = sb.bisect(g, new Props());
 
         assertEquals(2, result.get(1).get(0).getInstance().getIndex());
         assertEquals(3, result.get(1).get(1).getInstance().getIndex());
@@ -111,7 +112,7 @@ public class SpectralBisectionTest extends PartitioningTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 5);
         SpectralBisection kl = new SpectralBisection();
 
-        kl.bisect(g);
+        kl.bisect(g, new Props());
 
     }
 }

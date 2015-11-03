@@ -24,6 +24,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.math.Matrix;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
@@ -70,12 +71,15 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     private Color color;
 
-    public GraphCluster(LinkedList<Node<E>> n, Graph g, int index, Bisection bisection) {
+    private Props props;
+
+    public GraphCluster(LinkedList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
         parentGraph = g;
         graphNodes = n;
         edgeCount = -1;
         this.id = index;
         this.bisection = bisection;
+        this.props = props;
     }
 
     /**
@@ -89,7 +93,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
             ICL = IIC = 1;
             return;
         }
-        ArrayList<LinkedList<Node>> result = bisection.bisect(graph);
+        ArrayList<LinkedList<Node>> result = bisection.bisect(graph, props);
         IIC = ICL = 0;
         int counter = 0;
         for (Node node1 : result.get(0)) {

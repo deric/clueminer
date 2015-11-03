@@ -52,12 +52,13 @@ public class PairMergerTest {
         int k = 3;
         int maxPartitionSize = 20;
         Graph g = new AdjMatrixGraph();
+        Props props = new Props();
         Bisection bisection = new FiducciaMattheyses(20);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         merger = new PairMerger();
         merger.setMergeEvaluation(new ShatovskaSimilarity());
@@ -76,20 +77,21 @@ public class PairMergerTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
+        Props props = new Props();
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
         merger = new PairMerger();
         merger.initialize(partitioningResult, g, bisection, null);
         merger.setMergeEvaluation(eval);
 
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
 
         merger.computeExternalProperties();
         assertEquals(7, clusters.size());

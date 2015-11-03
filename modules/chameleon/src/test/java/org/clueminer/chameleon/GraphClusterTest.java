@@ -30,9 +30,9 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -54,25 +54,22 @@ public class GraphClusterTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 12;
         int maxPartitionSize = 20;
+        Props props = new Props();
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         RiRcSimilarity<Instance> eval = new RiRcSimilarity<>();
         PairMerger merger = new PairMerger();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setMergeEvaluation(eval);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
         cluster = clusters.get(0);
         assertNotNull(cluster);
-    }
-
-    @Before
-    public void setUp() {
     }
 
     @Test
@@ -91,295 +88,13 @@ public class GraphClusterTest {
     }
 
     @Test
-    public void testSetACL() {
-    }
-
-    @Test
     public void testGetEdgeCount() {
         assertEquals(120, cluster.getEdgeCount());
     }
 
     @Test
-    public void testGetNodes() {
-    }
-
-    @Test
-    public void testGetNodeCount() {
-    }
-
-    @Test
     public void testGetClusterId() {
         assertEquals(0, cluster.getClusterId());
-    }
-
-    @Test
-    public void testGetParent() {
-    }
-
-    @Test
-    public void testSetParent_GraphCluster() {
-    }
-
-    @Test
-    public void testSetClusterId() {
-    }
-
-    @Test
-    public void testGetColor() {
-    }
-
-    @Test
-    public void testSetColor() {
-    }
-
-    @Test
-    public void testGetCentroid() {
-    }
-
-    @Test
-    public void testCountMutualElements() {
-    }
-
-    @Test
-    public void testContains_int() {
-    }
-
-    @Test
-    public void testGetId() {
-    }
-
-    @Test
-    public void testSetId() {
-    }
-
-    @Test
-    public void testGetName() {
-    }
-
-    @Test
-    public void testSetName() {
-    }
-
-    @Test
-    public void testGetClasses() {
-    }
-
-    @Test
-    public void testAdd() {
-    }
-
-    @Test
-    public void testAddAll_Collection() {
-    }
-
-    @Test
-    public void testAddAll_Dataset() {
-    }
-
-    @Test
-    public void testInstance() {
-    }
-
-    @Test
-    public void testGet_int() {
-    }
-
-    @Test
-    public void testHasIndex() {
-    }
-
-    @Test
-    public void testGetRandom() {
-    }
-
-    @Test
-    public void testSize() {
-        assertEquals(17, cluster.size());
-    }
-
-    @Test
-    public void testIsEmpty() {
-        assertEquals(false, cluster.isEmpty());
-    }
-
-    @Test
-    public void testHasParent() {
-    }
-
-    @Test
-    public void testAttributeCount() {
-    }
-
-    @Test
-    public void testClassIndex() {
-    }
-
-    @Test
-    public void testClassValue() {
-    }
-
-    @Test
-    public void testChangedClass() {
-    }
-
-    @Test
-    public void testCopyAttributes() {
-    }
-
-    @Test
-    public void testAttributeByRole() {
-    }
-
-    @Test
-    public void testGetAttributes() {
-    }
-
-    @Test
-    public void testGetAttribute_int() {
-    }
-
-    @Test
-    public void testAddAttribute() {
-    }
-
-    @Test
-    public void testGetAttribute_String() {
-    }
-
-    @Test
-    public void testGetAttributeValue_String_int() {
-    }
-
-    @Test
-    public void testGetAttributeValue_Attribute_int() {
-    }
-
-    @Test
-    public void testGet_int_int() {
-    }
-
-    @Test
-    public void testSetAttributeValue() {
-    }
-
-    @Test
-    public void testSet_3args() {
-    }
-
-    @Test
-    public void testSet_int_GenericType() {
-    }
-
-    @Test
-    public void testSetAttribute() {
-    }
-
-    @Test
-    public void testSetAttributes() {
-    }
-
-    @Test
-    public void testBuilder() {
-    }
-
-    @Test
-    public void testAttributeBuilder() {
-    }
-
-    @Test
-    public void testCopy() {
-    }
-
-    @Test
-    public void testDuplicate() {
-    }
-
-    @Test
-    public void testArrayCopy() {
-    }
-
-    @Test
-    public void testSetColorGenerator() {
-    }
-
-    @Test
-    public void testGetPlotter() {
-    }
-
-    @Test
-    public void testEnsureCapacity() {
-    }
-
-    @Test
-    public void testGetCapacity() {
-    }
-
-    @Test
-    public void testAddChild() {
-    }
-
-    @Test
-    public void testGetChild() {
-    }
-
-    @Test
-    public void testAsMatrix() {
-    }
-
-    @Test
-    public void testMin() {
-    }
-
-    @Test
-    public void testMax() {
-    }
-
-    @Test
-    public void testResetStats() {
-    }
-
-    @Test
-    public void testAttrCollection() {
-    }
-
-    @Test
-    public void testIterator() {
-    }
-
-    @Test
-    public void testContains_Object() {
-    }
-
-    @Test
-    public void testToArray_0args() {
-    }
-
-    @Test
-    public void testToArray_GenericType() {
-    }
-
-    @Test
-    public void testRemove() {
-    }
-
-    @Test
-    public void testContainsAll() {
-    }
-
-    @Test
-    public void testRemoveAll() {
-    }
-
-    @Test
-    public void testRetainAll() {
-    }
-
-    @Test
-    public void testClear() {
-    }
-
-    @Test
-    public void testSetParent_Dataset() {
     }
 
 }

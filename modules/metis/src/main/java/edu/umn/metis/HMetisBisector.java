@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,17 +39,17 @@ public class HMetisBisector extends HMetis implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g) {
+    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
         int k = 2;
         Node[] nodeMapping = createMapping(g);
         //we want to split graph into 2 parts
-        String path = runMetis(g, k);
+        String path = runMetis(g, k, params);
         ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
         return clusters;
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect() {
+    public ArrayList<LinkedList<Node>> bisect(Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

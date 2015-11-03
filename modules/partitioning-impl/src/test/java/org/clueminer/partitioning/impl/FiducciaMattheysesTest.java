@@ -15,6 +15,7 @@ import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -37,7 +38,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g);
+        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(4, result.get(1).get(0).getInstance().getIndex());
         assertEquals(6, result.get(1).get(1).getInstance().getIndex());
@@ -64,7 +65,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g);
+        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(4, result.get(1).get(0).getInstance().getIndex());
         assertEquals(5, result.get(1).get(1).getInstance().getIndex());
@@ -89,7 +90,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g);
+        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(0, result.get(1).get(0).getInstance().getIndex());
         assertEquals(2, result.get(1).get(1).getInstance().getIndex());
@@ -111,7 +112,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 5);
         FiducciaMattheyses kl = new FiducciaMattheyses();
 
-        ArrayList<LinkedList<Node>> result = kl.bisect(g);
+        ArrayList<LinkedList<Node>> result = kl.bisect(g, new Props());
 
     }
 }

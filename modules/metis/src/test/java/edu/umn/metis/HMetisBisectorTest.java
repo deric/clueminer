@@ -27,6 +27,7 @@ import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -48,16 +49,15 @@ public class HMetisBisectorTest extends PartitioningTest {
         /*GraphPrinter gp = new GraphPrinter(true);
          gp.printGraph(g, 1, output, "knn");*/
         subject = new HMetisBisector();
-        ArrayList<LinkedList<Node>> result = subject.bisect(g);
+        ArrayList<LinkedList<Node>> result = subject.bisect(g, new Props());
 
 
         /*        assertEquals(4, result.get(1).get(0).getInstance().getIndex());
          assertEquals(6, result.get(1).get(1).getInstance().getIndex());
-        assertEquals(7, result.get(1).get(2).getInstance().getIndex());
-        assertEquals(8, result.get(1).get(3).getInstance().getIndex());
-        assertEquals(9, result.get(1).get(4).getInstance().getIndex());
-        assertEquals(10, result.get(1).get(5).getInstance().getIndex());*/
-
+         assertEquals(7, result.get(1).get(2).getInstance().getIndex());
+         assertEquals(8, result.get(1).get(3).getInstance().getIndex());
+         assertEquals(9, result.get(1).get(4).getInstance().getIndex());
+         assertEquals(10, result.get(1).get(5).getInstance().getIndex());*/
         //gp.printClusters(g, 1, result, output, "BisectedByFMclusters");
         //g = (AdjMatrixGraph) fm.removeUnusedEdges();
         // gp.printGraph(g, 1, output, "BisectedByFM");

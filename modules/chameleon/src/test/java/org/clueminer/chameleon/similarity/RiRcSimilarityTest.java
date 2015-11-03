@@ -67,17 +67,17 @@ public class RiRcSimilarityTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        Props pref = new Props();
+        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         PairMerger merger = new PairMerger();
         merger.initialize(partitioningResult, g, bisection, null);
         merger.setMergeEvaluation(subject);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection);
+        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
 
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());
 
-        Props pref = new Props();
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
 
         assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);

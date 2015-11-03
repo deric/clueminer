@@ -62,7 +62,7 @@ public class NSGASortTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());

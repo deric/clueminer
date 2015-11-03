@@ -28,6 +28,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.EdgeRemover;
 import org.clueminer.partitioning.impl.FloodFill;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
 /**
@@ -41,9 +42,10 @@ public abstract class AbstractMetis implements Partitioning {
      *
      * @param graph
      * @param k
+     * @param params
      * @return
      */
-    public abstract String runMetis(Graph graph, int k);
+    public abstract String runMetis(Graph graph, int k, Props params);
 
     protected Node[] createMapping(Graph graph) {
         Node[] nodeMapping = new Node[graph.getNodeCount()];
@@ -54,7 +56,7 @@ public abstract class AbstractMetis implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g) {
+    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
         int k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
         if (k == 1) {
             ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
@@ -62,7 +64,7 @@ public abstract class AbstractMetis implements Partitioning {
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);
-        String path = runMetis(g, k);
+        String path = runMetis(g, k, params);
         ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
         Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();

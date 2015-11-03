@@ -63,7 +63,7 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
@@ -104,7 +104,7 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
@@ -143,7 +143,7 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
@@ -168,7 +168,7 @@ public class NsgaQueueTest {
             assertNotNull(item);
             LinkedList<Node<Instance>> clusterNodes = item.A.getNodes();
             clusterNodes.addAll(item.B.getNodes());
-            GraphCluster<Instance> newCluster = new GraphCluster(clusterNodes, g, clusters.size(), bisection);
+            GraphCluster<Instance> newCluster = new GraphCluster(clusterNodes, g, clusters.size(), bisection, props);
             clusters.add(newCluster);
             /*for (MergeEvaluation<Instance> eval : objectives) {
              eval.clusterCreated(item, newCluster, props);

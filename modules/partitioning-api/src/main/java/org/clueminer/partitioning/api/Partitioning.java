@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -20,9 +21,15 @@ public interface Partitioning<E extends Instance> {
      *
      * @param k
      * @param g graph to partition
+     * @param params optional parameters
      * @return list of nodes for each cluster
      */
-    ArrayList<LinkedList<Node<E>>> partition(int k, Graph g);
+    ArrayList<LinkedList<Node<E>>> partition(int k, Graph g, Props params);
 
-    public void setBisection(Bisection bisection);
+    /**
+     * Algorithm for bisection
+     *
+     * @param bisection
+     */
+    void setBisection(Bisection bisection);
 }

@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,7 +44,7 @@ public class HMetisNoFF extends HMetis implements Partitioning {
      * @return
      */
     @Override
-    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g) {
+    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
         int k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
         if (k == 1) {
             ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
@@ -51,7 +52,7 @@ public class HMetisNoFF extends HMetis implements Partitioning {
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);
-        String path = runMetis(g, k);
+        String path = runMetis(g, k, params);
         return importMetisResult(path, k, nodeMapping);
     }
 

@@ -29,6 +29,7 @@ import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -51,14 +52,14 @@ public class HMetisTest extends PartitioningTest {
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Graph g = new AdjMatrixGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 4);
-            ArrayList<LinkedList<Node>> res = subject.partition(2, g);
+            ArrayList<LinkedList<Node>> res = subject.partition(2, g, new Props());
             //doesn't work on Travis
             //assertEquals(4, res.size());
             assertNotNull(res);
         }
     }
 
-    //@Test
+    @Test
     public void irisTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
         if (subject.getBinary().exists()) {
@@ -66,7 +67,7 @@ public class HMetisTest extends PartitioningTest {
             Dataset dataset = FakeDatasets.irisDataset();
             Graph g = new AdjListGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 20);
-            ArrayList<LinkedList<Node>> res = subject.partition(10, g);
+            ArrayList<LinkedList<Node>> res = subject.partition(10, g, new Props());
             assertNotNull(res);
             //the result is randomized - we can't be sure to get exactly
             //the same number of partitions as requested

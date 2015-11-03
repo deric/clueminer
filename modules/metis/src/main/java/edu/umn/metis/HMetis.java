@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -38,15 +39,17 @@ public class HMetis extends AbstractMetis implements Partitioning {
 
     private static final String name = "hMETIS + FF";
 
-    protected int ubFactor = 5;
-    protected int nruns = 10;//default value used by smetis
-    protected int rtype = 1;// 1-3
-    protected int ctype = 1;// 1-5
+    public static final String UFACTOR = "ufactor";
+    public static final String NRUNS = "nruns";
+    public static final String PTYPE = "ptype";
+    public static final String RTYPE = "rtype";
+    public static final String CTYPE = "ctype";
+
     protected int vcycle = 1;// 0-3
     protected int reconst = 0;// 0-1
     protected int dbglvl = 0;
     private final ExtBinHelper<Instance> helper;
-    private boolean debug = false;
+    private boolean debug = true;
     private static File metisFile = null;
 
     public HMetis() {
@@ -59,7 +62,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     }
 
     @Override
-    public String runMetis(Graph graph, int k) {
+    public String runMetis(Graph graph, int k, Props params) {
         long current = System.currentTimeMillis();
         File file = new File("inputGraph-" + current);
         String filename = file.getName();
@@ -77,11 +80,17 @@ public class HMetis extends AbstractMetis implements Partitioning {
             StringBuilder sb = new StringBuilder(metisFile.getAbsolutePath());
             sb.append(" ").append(filename).append(" ")
                     .append(String.valueOf(k)).append(space)
-                    .append(String.valueOf(ubFactor)).append(space)
-                    .append(String.valueOf(nruns)).append(space)
-                    .append(String.valueOf(ctype)).append(space)
-                    .append(String.valueOf(rtype)).append(space)
-                    .append(String.valueOf(vcycle)).append(space)
+                    .append("-ufactor=").append(String.valueOf(params.getDouble(UFACTOR, 5.0))).append(space)
+                    .append("-nruns=").append(String.valueOf(params.getInt(NRUNS, 10))).append(space)
+                    .append("-ptype=").append(String.valueOf(params.get(PTYPE, "rb"))).append(space);
+            if (params.containsKey(CTYPE)) {
+                sb.append("-ctype=").append(params.get(CTYPE)).append(space);
+            }
+            if (params.containsKey(RTYPE)) {
+                sb.append("-rtype=").append(params.get(RTYPE)).append(space);
+            }
+
+            sb.append(String.valueOf(vcycle)).append(space)
                     .append(String.valueOf(reconst)).append(space)
                     .append(String.valueOf(dbglvl));
 
@@ -107,7 +116,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     }
 
     protected File getBinary() throws IOException, InterruptedException {
-        File f = helper.resource("hmetis1");
+        File f = helper.resource("hmetis2");
         if (!f.exists()) {
             System.err.println("file " + f.getAbsolutePath() + "does not exist!");
         }
@@ -129,14 +138,6 @@ public class HMetis extends AbstractMetis implements Partitioning {
     @Override
     public void setBisection(Bisection bisection) {
         //TODO: not supported by hmetis?
-    }
-
-    public int getUbFactor() {
-        return ubFactor;
-    }
-
-    public void setUbFactor(int ubFactor) {
-        this.ubFactor = ubFactor;
     }
 
 }

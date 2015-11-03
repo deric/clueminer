@@ -119,7 +119,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      */
     public static final String INDIVIDUAL_MULTIPLIER = "individual_multiplier";
     @Param(name = Chameleon.INDIVIDUAL_MULTIPLIER, description = "Constant used to multiply external similarity of cluster pairs where one"
-            + "of the clusters contains just one node.")
+           + "of the clusters contains just one node.")
     protected int individualMultiplier;
 
     private final KNNGraphBuilder knn;
@@ -212,7 +212,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         partitioning = pref.get(PARTITIONING, "Recursive bisection");
         Partitioning partitioningAlg = PartitioningFactory.getInstance().getProvider(partitioning);
         partitioningAlg.setBisection(bisectionAlg);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g);
+        ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g, pref);
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);

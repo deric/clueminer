@@ -11,6 +11,7 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.utils.Props;
 import org.junit.Test;
 
 /**
@@ -29,7 +30,7 @@ public class RecursiveBisectionTest extends PartitioningTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 5);
         RecursiveBisection rb = new RecursiveBisection(new FiducciaMattheyses());
 
-        ArrayList<LinkedList<Node>> result = rb.partition(5, g);
+        ArrayList<LinkedList<Node>> result = rb.partition(5, g, new Props());
         assertEquals(36, result.size());
     }
 

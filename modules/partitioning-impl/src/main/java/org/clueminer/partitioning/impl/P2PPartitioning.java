@@ -10,6 +10,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,7 +43,7 @@ public class P2PPartitioning implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int k, Graph g) {
+    public ArrayList<LinkedList<Node>> partition(int k, Graph g, Props params) {
         initialize(k, g);
 
         used = new boolean[nodeCount];

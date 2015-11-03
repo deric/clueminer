@@ -27,6 +27,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
+import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -65,7 +66,7 @@ public class Metis extends AbstractMetis implements Partitioning {
     }
 
     @Override
-    public String runMetis(Graph graph, int k) {
+    public String runMetis(Graph graph, int k, Props params) {
         String metis = graph.metisExport(false);
         long current = System.currentTimeMillis();
         File file = new File("inputGraph-" + current);

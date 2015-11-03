@@ -44,18 +44,18 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
         return name;
     }
 
-    public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList) {
+    public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList, Props props) {
         ArrayList<LinkedList<Node<E>>> result = clusterList;
         merged = true;
         while (merged) {
             merged = false;
-            result = singleMerge(result);
+            result = singleMerge(result, props);
         }
         return result;
     }
 
-    private ArrayList<LinkedList<Node<E>>> singleMerge(ArrayList<LinkedList<Node<E>>> clusterList) {
-        createClusters(clusterList, bisection);
+    private ArrayList<LinkedList<Node<E>>> singleMerge(ArrayList<LinkedList<Node<E>>> clusterList, Props props) {
+        createClusters(clusterList, bisection, props);
         computeExternalProperties();
         initiateClustersForMerging();
 
