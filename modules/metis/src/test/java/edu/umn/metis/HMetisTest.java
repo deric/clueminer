@@ -16,6 +16,7 @@
  */
 package edu.umn.metis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import static junit.framework.Assert.assertEquals;
@@ -36,14 +37,14 @@ import org.junit.Test;
  */
 public class HMetisTest extends PartitioningTest {
 
-    private final HMetis subject;
+    private static HMetis subject;
 
     public HMetisTest() {
         subject = new HMetis();
     }
 
     @Test
-    public void simpleGraphTest() {
+    public void simpleGraphTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
         if (subject.getBinary().exists()) {
             Dataset<? extends Instance> dataset = twoDistinctNeighbors();
@@ -58,7 +59,7 @@ public class HMetisTest extends PartitioningTest {
     }
 
     //@Test
-    public void irisTest() {
+    public void irisTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
         if (subject.getBinary().exists()) {
             KNNGraphBuilder knn = new KNNGraphBuilder();

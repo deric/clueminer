@@ -47,6 +47,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected int dbglvl = 0;
     private final ExtBinHelper<Instance> helper;
     private boolean debug = false;
+    private static File metisFile = null;
 
     public HMetis() {
         helper = new ExtBinHelper();
@@ -62,12 +63,14 @@ public class HMetis extends AbstractMetis implements Partitioning {
         long current = System.currentTimeMillis();
         File file = new File("inputGraph-" + current);
         String filename = file.getName();
+        Process p;
         try {
             graph.hMetisExport(file, false);
-            File metisFile = getBinary();
-            //make sure metis is executable
-            Process p = Runtime.getRuntime().exec("chmod ugo+x " + metisFile.getAbsolutePath());
-            p.waitFor();
+            if (metisFile == null) {
+                //fetch the file just once
+                metisFile = getBinary();
+                System.out.println("metis path: " + metisFile.getAbsolutePath());
+            }
 
             //run metis
             String space = " ";
@@ -95,7 +98,6 @@ public class HMetis extends AbstractMetis implements Partitioning {
                 helper.readStderr(p);
             }
             file.delete();
-
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException | InterruptedException ex) {
@@ -104,8 +106,24 @@ public class HMetis extends AbstractMetis implements Partitioning {
         return filename;
     }
 
-    protected File getBinary() {
-        return helper.resource("hmetis");
+    protected File getBinary() throws IOException, InterruptedException {
+        File f = helper.resource("hmetis1");
+        if (!f.exists()) {
+            System.err.println("file " + f.getAbsolutePath() + "does not exist!");
+        }
+        //make sure metis is executable
+        Process p = Runtime.getRuntime().exec("chmod ugo+x " + f.getAbsolutePath());
+        p.waitFor();
+        helper.readStdout(p);
+        helper.readStderr(p);
+        return f;
+    }
+
+    public void cleanup() {
+        if (metisFile != null && metisFile.exists()) {
+            System.out.println("deleting " + metisFile.getAbsolutePath());
+            metisFile.deleteOnExit();
+        }
     }
 
     @Override

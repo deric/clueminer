@@ -44,6 +44,7 @@ public class ExtBinHelper<E extends Instance> {
     private static final String lineEnd = "\n";
     private static final String space = " ";
     protected static final String prefix = "/edu/umn/metis";
+    protected static final String hintPackage = "metis";
 
     /**
      * Write dataset into a file as space separated values
@@ -85,12 +86,13 @@ public class ExtBinHelper<E extends Instance> {
     public File resource(String path) {
         String resource = prefix + File.separatorChar + path;
         File file;
-        URL url = Metis.class.getResource(resource);
+
+        URL url = getClass().getResource(resource);
         if (url == null) {
             //probably on Windows
-            Collection<String> res = ResourceLoader.getResources(path);
+            Collection<String> res = ResourceLoader.getResources(path, hintPackage);
             if (res.isEmpty()) {
-                throw new RuntimeException("could not find metis binary!");
+                throw new RuntimeException("could not find metis binary! Was searching for: " + resource + ", path: " + path);
             }
             String fullPath = res.iterator().next();
             file = new File(fullPath);

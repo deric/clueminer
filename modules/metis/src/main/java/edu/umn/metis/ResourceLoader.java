@@ -17,8 +17,6 @@
 package edu.umn.metis;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -30,8 +28,6 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
 
@@ -51,9 +47,10 @@ public class ResourceLoader {
      * pattern = Pattern.compile(".*"); gets all resources
      *
      * @param needle first part of path
+     * @param packageName hint a package name to search
      * @return the resources in the order they are found
      */
-    public static Collection<String> getResources(String needle) {
+    public static Collection<String> getResources(String needle, String packageName) {
         final List<String> retval = new LinkedList<>();
         final String classPath = System.getProperty("java.class.path", ".");
         String pathSeparator;
@@ -80,7 +77,7 @@ public class ResourceLoader {
         //when running from IDE we can use classpath a directly read files from disk
         final String[] classPathElements = classPath.split(pathSeparator);
         for (final String element : classPathElements) {
-            retval.addAll(getResources(element, pattern));
+            retval.addAll(getResources(element, pattern, packageName));
         }
         if (retval.isEmpty()) {
             //last resort, when compiled into JAR
@@ -104,14 +101,14 @@ public class ResourceLoader {
         }
     }
 
-    private static Collection<String> getResources(final String element, final Pattern pattern) {
+    private static Collection<String> getResources(final String element, final Pattern pattern, String packageName) {
         final List<String> retval = new LinkedList<>();
         final File file = new File(element);
         if (file.isDirectory()) {
             retval.addAll(getResourcesFromDirectory(file, pattern));
         } else {
             if (file.exists()) {
-                retval.addAll(getResourcesFromJarFile(file, pattern));
+                retval.addAll(findResourcesInJarFile(file, pattern, packageName));
             } else {
                 System.err.println("can't open file: " + file);
             }
@@ -119,30 +116,38 @@ public class ResourceLoader {
         return retval;
     }
 
-    private static Collection<String> getResourcesFromJarFile(final File file, final Pattern pattern) {
+    /**
+     * Find resources matching given pattern in a JAR file
+     *
+     * @param file
+     * @param pattern
+     * @return
+     */
+    private static Collection<String> findResourcesInJarFile(final File file, final Pattern pattern, String packageName) {
         final List<String> retval = new LinkedList<>();
-        ZipInputStream zip = null;
-        try {
-            zip = new ZipInputStream(new FileInputStream(file));
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        }
 
-        if (zip != null) {
-            try {
-                while (zip.available() == 1) {
-                    final ZipEntry ze = zip.getNextEntry();
-                    final String fileName = ze.getName();
-                    final boolean accept = pattern.matcher(fileName).matches();
-                    if (accept) {
-                        retval.add(fileName);
-                    }
-                    zip.closeEntry();
-                }
-                zip.close();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+        String jarFilePath = file.getAbsolutePath();
+        try (JarFile jar = new JarFile(file)) {
+            if (!packageName.isEmpty() && !file.getAbsolutePath().contains(packageName)) {
+                //skip this jar
+                return retval;
             }
+            JarEntry entry;
+            String fileName;
+            Enumeration<JarEntry> enumer = jar.entries();
+            while (enumer.hasMoreElements()) {
+                entry = enumer.nextElement();
+                fileName = entry.getName();
+                if (pattern.matcher(fileName).matches()) {
+                    //don't add directories
+                    if (!fileName.endsWith("/")) {
+                        retval.add("jar:" + jarFilePath + "!" + fileName);
+                    }
+                }
+            }
+
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
 
         return retval;
