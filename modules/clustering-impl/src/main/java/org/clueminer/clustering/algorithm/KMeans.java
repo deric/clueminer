@@ -187,9 +187,9 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
 
         }
         Clustering output = new ClusterList(centroids.length);
-        Props p = output.getParams();
-        p.put("algorithm", getName());
-        p.putInt(ITERATIONS, iterations);
+        output.setParams(params);
+        params.put("algorithm", getName());
+        params.putInt(ITERATIONS, iterations);
         BaseCluster cluster;
         if (colorGenerator != null) {
             colorGenerator.reset();
