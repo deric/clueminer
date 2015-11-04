@@ -125,7 +125,8 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
         c.gridy++;
         add(new JLabel("Epsilon:"), c);
         c.gridx = 1;
-        tfRadius = new JTextField("2.0", 10);
+        tfRadius = new JTextField("2.0", 15);
+        c.insets = new java.awt.Insets(8, 5, 8, 5);
         add(tfRadius, c);
 
         btnEstimate = new JButton("Estimate");
@@ -164,7 +165,6 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
         add(comboDistance, c);
-
     }
 
     private void updateMinPtsSlider() {
@@ -192,18 +192,17 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm<E, C> algorithm, Dataset<E> dataset) {
-        if (algorithm instanceof DBSCAN) {
+        if (dataset != null) {
             this.dataset = dataset;
-            return true;
         }
-        return false;
+        return algorithm instanceof DBSCAN;
     }
 
     @Override
     public void taskFinished(Task task) {
         if (estimator != null) {
             tfRadius.setText(String.valueOf(estimator.getEps()));
-            info.setText(String.format("eps range %.4f and %.4f", estimator.getMinEps(), estimator.getMaxEps()));
+            info.setText(String.format("eps in [%.4f, %.4f]", estimator.getMinEps(), estimator.getMaxEps()));
             btnEstimate.setEnabled(true);
         }
     }
