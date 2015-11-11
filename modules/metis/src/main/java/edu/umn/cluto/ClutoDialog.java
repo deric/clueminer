@@ -50,6 +50,7 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
     private JComboBox cmbMethod;
     private JComboBox cmbDist;
     private JComboBox cmbCrfun;
+    private Dataset currDataset;
 
     public ClutoDialog() {
         initComponents();
@@ -174,11 +175,13 @@ public class ClutoDialog extends JPanel implements ClusteringDialog {
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
         if (algorithm instanceof Cluto) {
-            if (dataset != null) {
+            if (dataset != null && currDataset != dataset) {
                 int clsSize = dataset.getClasses().size();
                 clsSize = clsSize > 0 ? clsSize : 4;
                 tfK.setText(String.valueOf(clsSize));
                 sliderK.setValue(clsSize);
+                //make sure user can update value of k
+                currDataset = dataset;
             }
             return true;
         }
