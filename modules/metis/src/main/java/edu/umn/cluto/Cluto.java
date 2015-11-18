@@ -102,7 +102,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
             while (!output.exists() && repeat < 5) {
                 System.out.println("waiting for output ... " + repeat);
                 helper.readStderr(p);
-                Thread.sleep(500);
+                //Thread.sleep(500);
                 repeat++;
             }
             clustering = parseResult(output, dataset, props);
