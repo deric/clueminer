@@ -20,11 +20,6 @@ import org.clueminer.math.matrix.SymmetricMatrix;
 public class KNNGraphBuilder<E extends Instance> {
 
     /**
-     * storage for neighbors of each node
-     */
-    private int[][] nearests;
-
-    /**
      * Triangular distance matrix
      */
     private SymmetricMatrix distance;
@@ -53,7 +48,7 @@ public class KNNGraphBuilder<E extends Instance> {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
         buildDistanceMatrix();
-        nearests = new int[input.size()][k];
+        int[][] nearests = new int[input.size()][k];
         for (int i = 0; i < input.size(); i++) {
             //put first k neighbours into array and sort them
             int firsts = k;
@@ -65,7 +60,7 @@ public class KNNGraphBuilder<E extends Instance> {
                     continue;
                 }
                 nearests[i][index] = j;
-                insert(index, i);
+                insert(nearests, index, i);
                 index++;
             }
             //neighbour array full, find closer neighbours from the rest of the dataset
@@ -77,7 +72,7 @@ public class KNNGraphBuilder<E extends Instance> {
                 //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
                 if (distance.get(i, j) < distance.get(i, nearests[i][k - 1])) {
                     nearests[i][k - 1] = j;
-                    insert(k - 1, i);
+                    insert(nearests, k - 1, i);
                 }
             }
         }
@@ -90,7 +85,7 @@ public class KNNGraphBuilder<E extends Instance> {
      * @param pos Position of the last element in array with neighbors
      * @param i Number of central cluster to which neighbors are assigned
      */
-    private void insert(int pos, int i) {
+    private void insert(int[][] nearests, int pos, int i) {
         while (pos > 0 && distance.get(i, nearests[i][pos]) < distance.get(i, nearests[i][pos - 1])) {
             int temp = nearests[i][pos];
             nearests[i][pos] = nearests[i][pos - 1];
@@ -121,8 +116,9 @@ public class KNNGraphBuilder<E extends Instance> {
      * @return neighbor graph
      */
     public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
-        findNeighbors(dataset, k);
+        int[][] nearests = findNeighbors(dataset, k);
         GraphFactory f = g.getFactory();
+        System.out.println("using factory: " + f.getClass().toString());
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
         g.addEdgesFromNeigborArray(nearests, k);

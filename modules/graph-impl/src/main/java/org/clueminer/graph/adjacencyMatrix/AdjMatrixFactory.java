@@ -90,7 +90,7 @@ public class AdjMatrixFactory<E extends Instance> implements GraphFactory<E> {
     @Override
     public ArrayList<Node<E>> createNodesFromInput(Dataset<E> input) {
         ArrayList<Node<E>> nodes = new ArrayList<>(input.size());
-        for (Instance ins : input) {
+        for (E ins : input) {
             nodes.add(newNode(ins));
         }
         return nodes;
