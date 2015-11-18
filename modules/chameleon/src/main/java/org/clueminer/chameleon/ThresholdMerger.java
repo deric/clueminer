@@ -2,6 +2,7 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -133,6 +134,11 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
 
     @Override
     public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public PriorityQueue getQueue(Props pref) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

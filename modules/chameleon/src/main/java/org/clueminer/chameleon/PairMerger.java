@@ -196,4 +196,10 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         this.evaluation = eval;
     }
 
+    @Override
+    public PriorityQueue getQueue(Props pref) {
+        buildQueue(clusters.size(), pref);
+        return pq;
+    }
+
 }

@@ -118,7 +118,6 @@ public class KNNGraphBuilder<E extends Instance> {
     public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
         int[][] nearests = findNeighbors(dataset, k);
         GraphFactory f = g.getFactory();
-        System.out.println("using factory: " + f.getClass().toString());
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
         g.addEdgesFromNeigborArray(nearests, k);

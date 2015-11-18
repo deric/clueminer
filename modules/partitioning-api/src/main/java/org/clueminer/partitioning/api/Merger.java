@@ -19,6 +19,7 @@ package org.clueminer.partitioning.api;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -60,4 +61,6 @@ public interface Merger<E extends Instance> {
      * @return
      */
     HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref);
+
+    PriorityQueue getQueue(Props pref);
 }

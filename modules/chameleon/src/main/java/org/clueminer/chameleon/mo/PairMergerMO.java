@@ -19,6 +19,7 @@ package org.clueminer.chameleon.mo;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import org.clueminer.chameleon.AbstractMerger;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
@@ -219,6 +220,11 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
 
     public void setSortEvaluation(MergeEvaluation evaluation) {
         this.eval = evaluation;
+    }
+
+    @Override
+    public PriorityQueue getQueue(Props pref) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

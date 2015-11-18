@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.mo.PairMergerMO;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
 import org.clueminer.clustering.api.AgglParams;
@@ -228,7 +228,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
 
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (m instanceof PairMerger) {
-            similarityMeasure = pref.get(SIM_MEASURE, ShatovskaSimilarity.name);
+            similarityMeasure = pref.get(SIM_MEASURE, BBK1.name);
             MergeEvaluation me = mef.getProvider(similarityMeasure);
             ((PairMerger) m).setMergeEvaluation(me);
         } else if (m instanceof PairMergerMO) {
