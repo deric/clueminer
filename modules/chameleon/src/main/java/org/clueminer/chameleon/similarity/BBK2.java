@@ -28,19 +28,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * This class implements the improved standard similarity measure proposed in
- * http://subs.emis.de/LNI/Proceedings/Proceedings107/gi-proc-107-015.pdf.
- *
- * Internal properties of the newly created are instantly determined from the
- * external and internal properties of the clusters being merged.
- *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Shatovska";
+    public static final String name = "BBK2";
 
     @Override
     public String getName() {
@@ -61,10 +54,12 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         double ec1 = x.getEdgeCount();
         double ec2 = y.getEdgeCount();
 
-        double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
-                * Math.pow((gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2)
-                        + (y.getACL() * ec2) / (ec1 + ec2))), closenessPriority)
-                * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), interconnectivityPriority);
+        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2));
+        double ics = Math.max(Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL()), 1.0);
+        double cls = gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2) + (y.getACL() * ec2) / (ec1 + ec2));
+        double val = gamma
+                * Math.pow(cls, closenessPriority)
+                * Math.pow(ics, interconnectivityPriority);
 
         return val;
     }
@@ -92,5 +87,4 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         newCluster.setACL(newACL);
         newCluster.setEdgeCount((int) edgeCountSum);
     }
-
 }

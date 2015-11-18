@@ -28,19 +28,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
- * This class implements the improved standard similarity measure proposed in
- * http://subs.emis.de/LNI/Proceedings/Proceedings107/gi-proc-107-015.pdf.
- *
- * Internal properties of the newly created are instantly determined from the
- * external and internal properties of the clusters being merged.
- *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class BBK1<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Shatovska";
+    public static final String name = "BBK1";
 
     @Override
     public String getName() {
@@ -60,6 +53,10 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         int j = y.getClusterId();
         double ec1 = x.getEdgeCount();
         double ec2 = y.getEdgeCount();
+        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
+        if (ec1 == 0 || ec2 == 0) {
+            return gps.getECL(i, j) * params.getDouble(Chameleon.INDIVIDUAL_MULTIPLIER, 1000);
+        }
 
         double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
                 * Math.pow((gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2)
@@ -92,5 +89,4 @@ public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<
         newCluster.setACL(newACL);
         newCluster.setEdgeCount((int) edgeCountSum);
     }
-
 }

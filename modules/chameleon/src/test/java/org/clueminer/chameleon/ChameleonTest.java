@@ -1,7 +1,7 @@
 package org.clueminer.chameleon;
 
+import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -89,7 +89,7 @@ public class ChameleonTest {
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, ShatovskaSimilarity.name);
+        pref.put(Chameleon.SIM_MEASURE, BBK1.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
