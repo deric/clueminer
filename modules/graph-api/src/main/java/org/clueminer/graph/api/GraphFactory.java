@@ -27,8 +27,9 @@ import org.clueminer.dataset.api.Instance;
  * <p>
  * Both nodes and edges have unique identifiers. If not provided, a unique id
  * will be automatically assigned to the elements.
+ * @param <E>
  */
-public interface GraphFactory {
+public interface GraphFactory<E extends Instance> {
 
     /**
      * Creates and returns a directed edge between source and target.
@@ -90,7 +91,7 @@ public interface GraphFactory {
      *
      * @return the new node
      */
-    Node newNode();
+    Node<E> newNode();
 
     /**
      * Creates and returns a node.
@@ -98,7 +99,7 @@ public interface GraphFactory {
      * @param label the node label
      * @return the new node
      */
-    Node newNode(Object label);
+    Node<E> newNode(Object label);
 
     /**
      * Creates and returns a node.
@@ -106,7 +107,7 @@ public interface GraphFactory {
      * @param i instance which the node represents
      * @return the new node
      */
-    Node newNode(Instance i);
+    Node<E> newNode(E i);
 
     /**
      * Creates nodes from the dataset
@@ -114,7 +115,7 @@ public interface GraphFactory {
      * @param input input dataset
      * @return list of nodes
      */
-    ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input);
+    ArrayList<Node<E>> createNodesFromInput(Dataset<E> input);
 
     /**
      * Create nodes from dataset's instances and add them to the graph
@@ -123,6 +124,6 @@ public interface GraphFactory {
      * @param graph target graph
      * @return mapping from Dataset index -> Node ID
      */
-    Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph);
+    Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph);
 
 }

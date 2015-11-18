@@ -31,9 +31,10 @@ import org.openide.util.lookup.ServiceProvider;
  *
  *
  * @author Hamster
+ * @param <E>
  */
 @ServiceProvider(service = Graph.class)
-public class AdjListGraph implements Graph {
+public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     private static final String name = "Adjacency list graph";
 
@@ -128,7 +129,7 @@ public class AdjListGraph implements Graph {
     }
 
     @Override
-    public boolean addAllNodes(Collection<? extends Node> nodes) {
+    public boolean addAllNodes(Collection<? extends Node<E>> nodes) {
         boolean success = true;
         for (Node node : nodes) {
             if (!addNode(node)) {
@@ -177,7 +178,7 @@ public class AdjListGraph implements Graph {
     }
 
     @Override
-    public boolean removeAllNodes(Collection<? extends Node> nodes) {
+    public boolean removeAllNodes(Collection<? extends Node<E>> nodes) {
         boolean removed = false;
         for (Node node : nodes) {
             if (removeNode(node)) {
@@ -511,7 +512,7 @@ public class AdjListGraph implements Graph {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof Neighbor)) {
+            if (!(o.getClass().equals(Neighbor.class))) {
                 return false;
             }
             Neighbor other = (Neighbor) o;

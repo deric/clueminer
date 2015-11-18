@@ -29,7 +29,7 @@ import org.clueminer.graph.api.Node;
  *
  * @author deric
  */
-public class GraphFactoryImpl implements GraphFactory {
+public class GraphFactoryImpl<E extends Instance> implements GraphFactory<E> {
 
     protected final AtomicLong NODE_IDS = new AtomicLong();
     protected final AtomicLong EDGE_IDS = new AtomicLong();
@@ -80,12 +80,12 @@ public class GraphFactoryImpl implements GraphFactory {
     }
 
     @Override
-    public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
+    public ArrayList<Node<E>> createNodesFromInput(Dataset<E> input) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+    public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

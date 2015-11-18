@@ -18,6 +18,7 @@ package org.clueminer.graph.fast;
 
 import java.io.File;
 import java.util.Collection;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -32,7 +33,7 @@ import org.openide.util.lookup.InstanceContent;
  *
  * @author deric
  */
-public class FastGraph implements Graph {
+public class FastGraph<E extends Instance> implements Graph<E> {
 
     private static final String name = "Fast Graph";
 
@@ -65,10 +66,6 @@ public class FastGraph implements Graph {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public boolean addAllNodes(Collection<? extends Node> nodes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
     @Override
     public boolean removeEdge(Edge edge) {
@@ -82,11 +79,6 @@ public class FastGraph implements Graph {
 
     @Override
     public boolean removeAllEdges(Collection<? extends Edge> edges) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeAllNodes(Collection<? extends Node> nodes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -287,6 +279,16 @@ public class FastGraph implements Graph {
 
     @Override
     public void hMetisExport(File target, boolean weighted) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addAllNodes(Collection<? extends Node<E>> nodes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeAllNodes(Collection<? extends Node<E>> nodes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

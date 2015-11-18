@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2015 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.graph.adjacencyMatrix;
 
 import java.io.File;
@@ -9,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
@@ -27,9 +44,10 @@ import org.openide.util.lookup.ServiceProvider;
  * Implementation of graph storage using a matrix for adjacency edges.
  *
  * @author Tomas Bruna
+ * @param <E>
  */
 @ServiceProvider(service = Graph.class)
-public class AdjMatrixGraph implements Graph {
+public class AdjMatrixGraph<E extends Instance> implements Graph<E> {
 
     private HashMap<Long, Integer> idToIndex;
     private HashMap<Long, AdjMatrixNode> idToNode;
@@ -104,7 +122,7 @@ public class AdjMatrixGraph implements Graph {
     }
 
     @Override
-    public boolean addNode(Node node) {
+    public boolean addNode(Node<E> node) {
         if (nodeCounter >= size) {
             return false;
         }
@@ -126,7 +144,7 @@ public class AdjMatrixGraph implements Graph {
     }
 
     @Override
-    public boolean addAllNodes(Collection<? extends Node> nodes) {
+    public boolean addAllNodes(Collection<? extends Node<E>> nodes) {
         boolean success = true;
         for (Node node : nodes) {
             if (!addNode(node)) {
@@ -156,12 +174,12 @@ public class AdjMatrixGraph implements Graph {
     }
 
     @Override
-    public boolean removeAllNodes(Collection<? extends Node> nodes) {
+    public boolean removeAllNodes(Collection<? extends Node<E>> nodes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean contains(Node node) {
+    public boolean contains(Node<E> node) {
         return idToNode.get(node.getId()) != null;
     }
 
@@ -199,7 +217,7 @@ public class AdjMatrixGraph implements Graph {
      * @return requested edge between given nodes, otherwise null
      */
     @Override
-    public Edge getEdge(Node node1, Node node2) {
+    public Edge getEdge(Node<E> node1, Node<E> node2) {
         if (!idToIndex.containsKey(node1.getId())) {
             return null;
         }

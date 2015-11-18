@@ -15,8 +15,9 @@ import org.clueminer.math.matrix.SymmetricMatrix;
  * @author Tomas Bruna
  *
  * TODO: create interface for graph builders
+ * @param <E>
  */
-public class KNNGraphBuilder {
+public class KNNGraphBuilder<E extends Instance> {
 
     /**
      * storage for neighbors of each node
@@ -28,7 +29,7 @@ public class KNNGraphBuilder {
      */
     private SymmetricMatrix distance;
 
-    private Dataset<? extends Instance> input;
+    private Dataset<E> input;
 
     private Distance dm;
 
@@ -46,7 +47,7 @@ public class KNNGraphBuilder {
      * @param dataset input dataset
      * @return
      */
-    private int[][] findNeighbors(Dataset<? extends Instance> dataset, int k) {
+    private int[][] findNeighbors(Dataset<E> dataset, int k) {
         input = dataset;
         if (k >= input.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
@@ -107,7 +108,7 @@ public class KNNGraphBuilder {
         }
     }
 
-    public int[][] getNeighborArray(Dataset<? extends Instance> dataset, int k) {
+    public int[][] getNeighborArray(Dataset<E> dataset, int k) {
         return findNeighbors(dataset, k);
     }
 
@@ -119,7 +120,7 @@ public class KNNGraphBuilder {
      * @param k
      * @return neighbor graph
      */
-    public Graph getNeighborGraph(Dataset<? extends Instance> dataset, Graph g, int k) {
+    public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
         findNeighbors(dataset, k);
         GraphFactory f = g.getFactory();
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);

@@ -11,8 +11,9 @@ import org.clueminer.graph.api.Node;
 /**
  *
  * @author Hamster
+ * @param <E>
  */
-public class AdjListFactory implements GraphFactory {
+public class AdjListFactory<E extends Instance> implements GraphFactory<E> {
 
     private static AdjListFactory instance;
 
@@ -67,10 +68,10 @@ public class AdjListFactory implements GraphFactory {
     }
 
     @Override
-    public ArrayList<Node> createNodesFromInput(Dataset<? extends Instance> input) {
+    public ArrayList<Node<E>> createNodesFromInput(Dataset<E> input) {
         nodeIdCounter = 0;
         edgeIdCounter = 0;
-        ArrayList<Node> nodes = new ArrayList<>(input.size());
+        ArrayList<Node<E>> nodes = new ArrayList<>(input.size());
         for (Instance inputInstance : input) {
             Node node = this.newNode();
             node.setInstance(inputInstance);
@@ -80,7 +81,7 @@ public class AdjListFactory implements GraphFactory {
     }
 
     @Override
-    public Node newNode(Instance instance) {
+    public Node<E> newNode(E instance) {
         Node node = this.newNode();
         node.setInstance(instance);
         return node;
@@ -95,7 +96,7 @@ public class AdjListFactory implements GraphFactory {
     }
 
     @Override
-    public Long[] createNodesFromInput(Dataset<? extends Instance> input, Graph graph) {
+    public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
         nodeIdCounter = 0;
         edgeIdCounter = 0;
         Long[] mapping = new Long[input.size()];

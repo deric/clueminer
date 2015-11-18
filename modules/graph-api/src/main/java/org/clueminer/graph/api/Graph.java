@@ -19,12 +19,14 @@ package org.clueminer.graph.api;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collection;
+import org.clueminer.dataset.api.Instance;
 import org.openide.util.Lookup;
 
 /**
  * Graph interface.
+ * @param <E> base data type
  */
-public interface Graph {
+public interface Graph<E extends Instance> {
 
     /**
      * A unique identifier of graph storage implementation
@@ -47,7 +49,7 @@ public interface Graph {
      * @param node the node to add
      * @return true if the node has been added, false if it already exists
      */
-    boolean addNode(Node node);
+    boolean addNode(Node<E> node);
 
     /**
      * Adds all edges in the collection to this graph.
@@ -63,7 +65,7 @@ public interface Graph {
      * @param nodes the node collection
      * @return true if at least one node has been added, false otherwise
      */
-    boolean addAllNodes(Collection<? extends Node> nodes);
+    boolean addAllNodes(Collection<? extends Node<E>> nodes);
 
     /**
      * Removes an edge from this graph.
@@ -79,7 +81,7 @@ public interface Graph {
      * @param node the node to remove
      * @return true if the node was removed, false if it didn't exist
      */
-    boolean removeNode(Node node);
+    boolean removeNode(Node<E> node);
 
     /**
      * Removes all edges in the collection from this graph.
@@ -95,7 +97,7 @@ public interface Graph {
      * @param nodes the node collection
      * @return true if at least one node has been removed, false otherwise
      */
-    boolean removeAllNodes(Collection<? extends Node> nodes);
+    boolean removeAllNodes(Collection<? extends Node<E>> nodes);
 
     /**
      * Returns true if <em>node</em> is contained in this graph.
@@ -103,7 +105,7 @@ public interface Graph {
      * @param node the node to test
      * @return true if this graph contains <em>node</em>, false otherwise
      */
-    boolean contains(Node node);
+    boolean contains(Node<E> node);
 
     /**
      * Returns true if <em>edge</em> is contained in this graph.
@@ -136,7 +138,7 @@ public interface Graph {
      * @param node2 the second node
      * @return the adjacent edge, or null if not found
      */
-    Edge getEdge(Node node1, Node node2);
+    Edge getEdge(Node<E> node1, Node<E> node2);
 
     /**
      * Gets the edge adjacent to node1 and node2 and from the given type.
@@ -146,7 +148,7 @@ public interface Graph {
      * @param type the edge type
      * @return the adjacent edge, or null if not found
      */
-    Edge getEdge(Node node1, Node node2, int type);
+    Edge getEdge(Node<E> node1, Node<E> node2, int type);
 
     /**
      * Gets all the nodes in the graph.
@@ -175,7 +177,7 @@ public interface Graph {
      * @param node the node to get neighbors
      * @return a node iterable over the neighbors
      */
-    NodeIterable getNeighbors(Node node);
+    NodeIterable getNeighbors(Node<E> node);
 
     /**
      * Gets all neighbors of a given node connected through the given edge type.
@@ -184,7 +186,7 @@ public interface Graph {
      * @param type the edge type
      * @return a node iterable over the neigbors
      */
-    NodeIterable getNeighbors(Node node, int type);
+    NodeIterable getNeighbors(Node<E> node, int type);
 
     /**
      * Gets all edges incident to a given node.
@@ -192,7 +194,7 @@ public interface Graph {
      * @param node the node to get edges from
      * @return an edge iterable of all edges connected to the node
      */
-    EdgeIterable getEdges(Node node);
+    EdgeIterable getEdges(Node<E> node);
 
     /**
      * Gets all edges incident to a given node with the given edge type.
@@ -201,7 +203,7 @@ public interface Graph {
      * @param type the edge type
      * @return an edge iterable of the edges connected to the node
      */
-    EdgeIterable getEdges(Node node, int type);
+    EdgeIterable getEdges(Node<E> node, int type);
 
     /**
      * Gets the number of nodes in the graph.
@@ -232,7 +234,7 @@ public interface Graph {
      * @param edge the edge connected to both nodes
      * @return the opposite node
      */
-    Node getOpposite(Node node, Edge edge);
+    Node getOpposite(Node<E> node, Edge edge);
 
     /**
      * Gets the node degree.
@@ -240,7 +242,7 @@ public interface Graph {
      * @param node the node
      * @return the degree
      */
-    int getDegree(Node node);
+    int getDegree(Node<E> node);
 
     /**
      * Returns true if the given edge is a self-loop.
@@ -265,7 +267,7 @@ public interface Graph {
      * @param node2 the second node
      * @return true if node1 is adjacent to node2, false otherwise
      */
-    boolean isAdjacent(Node node1, Node node2);
+    boolean isAdjacent(Node<E> node1, Node<E> node2);
 
     /**
      * Returns true if node1 and node2 are adjacent with an edge of the given
@@ -277,7 +279,7 @@ public interface Graph {
      * @return true if node1 and node2 are adjacent with an edge og the given
      * type, false otherwise
      */
-    boolean isAdjacent(Node node1, Node node2, int type);
+    boolean isAdjacent(Node<E> node1, Node<E> node2, int type);
 
     /**
      * Returns true if edge1 and edge2 are incident.
@@ -295,14 +297,14 @@ public interface Graph {
      * @param edge the edge
      * @return true if the node and edge are incident, false otherwise
      */
-    boolean isIncident(Node node, Edge edge);
+    boolean isIncident(Node<E> node, Edge edge);
 
     /**
      * Clears the edges incident to the given node.
      *
      * @param node the node to clear edges from
      */
-    void clearEdges(Node node);
+    void clearEdges(Node<E> node);
 
     /**
      * Clears the edges of the given type incident to the given node.
@@ -310,7 +312,7 @@ public interface Graph {
      * @param node the node to clear edges from
      * @param type the edge type
      */
-    void clearEdges(Node node, int type);
+    void clearEdges(Node<E> node, int type);
 
     /**
      * Clears all edges and all nodes in the graph
