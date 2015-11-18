@@ -31,9 +31,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class BBK3<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "BBK2";
+    public static final String name = "BBK3";
 
     @Override
     public String getName() {
@@ -54,8 +54,8 @@ public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements M
         double ec1 = x.getEdgeCount();
         double ec2 = y.getEdgeCount();
 
-        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2) + 1);
-        double ics = Math.max(Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL()), 1.0);
+        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2) + 1) * (1.0 / Math.abs(Math.log10(ec1 + ec2 + 2)));
+        double ics = (Math.min(x.getACL(), y.getACL()) + 1) / Math.max(x.getACL(), y.getACL());
         double cls = gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2) + (y.getACL() * ec2) / (ec1 + ec2));
         double val = gamma
                 * Math.pow(cls, closenessPriority)

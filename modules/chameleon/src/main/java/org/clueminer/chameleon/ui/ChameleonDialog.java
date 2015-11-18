@@ -9,7 +9,7 @@ import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.mo.PairMergerMOF;
 import org.clueminer.chameleon.mo.PairMergerMOH;
 import org.clueminer.chameleon.mo.PairMergerMS;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
@@ -45,11 +45,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboCutoffMethod.setSelectedItem("FirstJump");
         comboCutoff.setSelectedItem("SD index");
         comboGraphStorage.setSelectedItem("Adj Graph Matrix");
-        comboSimilarity.setSelectedItem(ShatovskaSimilarity.name);
+        comboSimilarity.setSelectedItem(BBK1.name);
         comboMerger.setSelectedItem(PairMerger.name);
         comboMoObjective.setEnabled(false);
         combo3rdSort.setEnabled(false);
-        combo3rdSort.setSelectedItem(ShatovskaSimilarity.name);
+        combo3rdSort.setSelectedItem(BBK1.name);
     }
 
     /**
