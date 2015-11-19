@@ -30,7 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class PairMerger<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
 
-    protected PriorityQueue<PairValue<GraphCluster>> pq;
+    protected PriorityQueue<PairValue<GraphCluster<E>>> pq;
 
     protected MergeEvaluation evaluation;
 
@@ -75,7 +75,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      *
      * @param clusterList
      */
-    private void singleMerge(PairValue<GraphCluster> curr, Props pref) {
+    private void singleMerge(PairValue<GraphCluster<E>> curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
@@ -93,7 +93,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
         //WARNING: we copy nodes from previous clusters (we save memory, but
         //it's not a good idea to work with merged clusters)
-        LinkedList<Node> clusterNodes = curr.A.getNodes();
+        LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
@@ -117,7 +117,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
             if (!blacklist.contains(i)) {
                 a = clusters.get(i);
                 sim = evaluation.score(a, cluster, pref);
-                pq.add(new PairValue<>(a, cluster, sim));
+                pq.add(new PairValue<GraphCluster<E>>(a, cluster, sim));
             }
         }
     }
@@ -125,31 +125,13 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     /**
      * Computes similarities between all clusters and adds them into the
      * priority queue.
+     *
+     * @param numClusters
+     * @param pref
      */
-    private void buildQueue(int numClusters, Props pref) {
+    protected void buildQueue(int numClusters, Props pref) {
         int capacity = numClusters * numClusters;
-        if (evaluation.isMaximized()) {
-            Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
-
-                @Override
-                public int compare(PairValue<GraphCluster> o1, PairValue<GraphCluster> o2) {
-                    return o1.compareTo(o2);
-                }
-
-            };
-            pq = new PriorityQueue<>(capacity, comp);
-        } else {
-            //inverse sorting - smallest values first
-            Comparator<PairValue<GraphCluster>> comp = new Comparator<PairValue<GraphCluster>>() {
-
-                @Override
-                public int compare(PairValue<GraphCluster> o1, PairValue<GraphCluster> o2) {
-                    return o2.compareTo(o1);
-                }
-
-            };
-            pq = new PriorityQueue<>(capacity, comp);
-        }
+        pq = initQueue(capacity);
         double sim;
         GraphCluster a, b;
         for (int i = 0; i < numClusters; i++) {
@@ -157,9 +139,36 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
             for (int j = 0; j < i; j++) {
                 b = clusters.get(j);
                 sim = evaluation.score(a, b, pref);
-                pq.add(new PairValue<>(a, b, sim));
+                pq.add(new PairValue<GraphCluster<E>>(a, b, sim));
             }
         }
+    }
+
+    protected PriorityQueue<PairValue<GraphCluster<E>>> initQueue(int capacity) {
+        PriorityQueue<PairValue<GraphCluster<E>>> queue;
+        if (evaluation.isMaximized()) {
+            Comparator<PairValue<GraphCluster<E>>> comp = new Comparator<PairValue<GraphCluster<E>>>() {
+
+                @Override
+                public int compare(PairValue<GraphCluster<E>> o1, PairValue<GraphCluster<E>> o2) {
+                    return o1.compareTo(o2);
+                }
+
+            };
+            queue = new PriorityQueue<>(capacity, comp);
+        } else {
+            //inverse sorting - smallest values first
+            Comparator<PairValue<GraphCluster<E>>> comp = new Comparator<PairValue<GraphCluster<E>>>() {
+
+                @Override
+                public int compare(PairValue<GraphCluster<E>> o1, PairValue<GraphCluster<E>> o2) {
+                    return o2.compareTo(o1);
+                }
+
+            };
+            queue = new PriorityQueue<>(capacity, comp);
+        }
+        return queue;
     }
 
     /**

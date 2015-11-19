@@ -276,7 +276,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param pair
      * @param pref
      */
-    protected void addIntoTree(PairValue<GraphCluster> pair, Props pref) {
+    protected void addIntoTree(PairValue<GraphCluster<E>> pair, Props pref) {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
         double sim = pair.getValue();

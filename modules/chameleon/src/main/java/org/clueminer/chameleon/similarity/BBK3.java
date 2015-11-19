@@ -53,8 +53,8 @@ public class BBK3<E extends Instance> extends AbstractSimilarity<E> implements M
         int j = y.getClusterId();
         double ec1 = x.getEdgeCount();
         double ec2 = y.getEdgeCount();
-
-        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2) + 1) * (1.0 / Math.abs(Math.log10(ec1 + ec2 + 2)));
+        double multip = params.getDouble(Chameleon.INDIVIDUAL_MULTIPLIER, 10);
+        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2) + 1) * Math.pow(multip, 1.0 / (a.size() + b.size()));
         double ics = (Math.min(x.getACL(), y.getACL()) + 1) / Math.max(x.getACL(), y.getACL());
         double cls = gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2) + (y.getACL() * ec2) / (ec1 + ec2));
         double val = gamma
