@@ -215,15 +215,15 @@ public class MemoryStarvationManager implements NotificationListener {
         BufferedReader reader = new BufferedReader(new FileReader(confFile));
         String strLine;
         int i, pos;
-        while ((strLine = reader.readLine()) != null) {                        
+        while ((strLine = reader.readLine()) != null) {
             i = strLine.indexOf(match);
             if (i != -1) {
                 String xmx = strLine.substring(i + match.length());
                 //if statement like "-J-Xmx64m" is not at the end of line
                 pos = xmx.indexOf(" ");
-                if(pos != -1){
+                if (pos != -1) {
                     xmx = xmx.substring(0, xmx.indexOf(" "));
-                }                
+                }
                 String before = strLine.substring(0, i + match.length());
                 String after = strLine.substring(i + match.length() + xmx.length());
                 outputBuilder.append(before);
