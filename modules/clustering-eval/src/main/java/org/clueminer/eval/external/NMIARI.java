@@ -75,6 +75,9 @@ public class NMIARI<E extends Instance, C extends Cluster<E>> extends NMIbase<E,
             double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
 
         PairMatch pm = CountingPairs.getInstance().matchPairs(clusters);
+        if (pm == null) {
+            return Double.NaN;
+        }
 
         return (countNMI(mutualInformation, c1entropy, classEntropy) + score(pm)) / 2.0;
     }
