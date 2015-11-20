@@ -1,7 +1,12 @@
 package org.clueminer.dendrogram.gui;
 
-import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -12,14 +17,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
-import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.api.dendrogram.DendrogramTree;
-import org.clueminer.clustering.api.dendrogram.TreeCluster;
-import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.dendrogram.DendrogramTree;
+import org.clueminer.clustering.api.dendrogram.TreeCluster;
+import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.tree.VerticalTree;
 import org.imgscalr.Scalr;
 
@@ -144,8 +150,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     /**
-     * Returns the row index in the experiment's
-     * <code>FloatMatrix<\code>
+     * Returns the row index in the experiment's <code>FloatMatrix<\code>
      * corresponding to the passed index to the clusters array
      */
     private int rowIndex(int row) {
@@ -241,10 +246,13 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      * This function should be called whenever the dendroData or the gradient
      * changes.
      *
+     * The method is synchronized because we don't want to perform multiple
+     * paintings at the same time.
+     *
      * @param size
      */
     @Override
-    public BufferedImage drawData(Dimension size) {
+    public synchronized BufferedImage drawData(Dimension size) {
         this.setOpaque(true);
         //if we don't have any dendroData, ends here
         if (dendroData == null) {
