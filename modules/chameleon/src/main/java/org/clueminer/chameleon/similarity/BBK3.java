@@ -61,6 +61,21 @@ public class BBK3<E extends Instance> extends AbstractSimilarity<E> implements M
                 * Math.pow(cls, closenessPriority)
                 * Math.pow(ics, interconnectivityPriority);
 
+        if (Double.isNaN(val)) {
+            System.out.println("==== NaN !!!!");
+            System.out.println("gamma = " + gamma);
+            System.out.println("ics = " + ics);
+            System.out.println("cls = " + cls);
+            System.out.println("cnt = " + gps.getCnt(i, j));
+            System.out.println("ec1 = " + ec1);
+            System.out.println("ec2 = " + ec2);
+            System.out.println("ECL = " + gps.getECL(i, j));
+            System.out.println("ACL1 = " + x.getACL());
+            System.out.println("ACL2 = " + y.getACL());
+            System.out.println("a = " + a.size());
+            System.out.println("b = " + b.size());
+        }
+
         return val;
     }
 
