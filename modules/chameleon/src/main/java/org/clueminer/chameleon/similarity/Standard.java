@@ -16,6 +16,8 @@
  */
 package org.clueminer.chameleon.similarity;
 
+import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
@@ -24,21 +26,21 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Relative Interconnectivity + Relative Closeness similarity (dynamic modeling
- * framework from Chameleon). An underlying graph structure is required for
- * computing this metric.
+ * Similarity metric as defined by Karypis et al.
+ *
+ * Karypis, George, Eui-Hong Han, and Vipin Kumar. "Chameleon: Hierarchical
+ * clustering using dynamic modeling." Computer 32.8 (1999): 68-75.
  *
  * @author deric
- * @param <E>
  */
 @ServiceProvider(service = MergeEvaluation.class)
-public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+public class Standard<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Standard-fixed";
+    public static final String name = "Standard";
     private final Interconnectivity<E> interconnectivity;
     private final Closeness<E> closeness;
 
-    public RiRcSimilarity() {
+    public Standard() {
         interconnectivity = new Interconnectivity<>();
         closeness = new Closeness<>();
     }
@@ -52,7 +54,12 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
     public double score(Cluster<E> a, Cluster<E> b, Props params) {
         checkClusters(a, b);
 
-        return interconnectivity.score(a, b, params) * closeness.score(a, b, params);
+        GraphCluster<E> x = (GraphCluster<E>) a;
+        GraphCluster<E> y = (GraphCluster<E>) b;
+        double RCL = closeness.getRCL(x, y);
+        double closenessPriority = params.getDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+
+        return interconnectivity.score(a, b, params) * Math.pow(RCL, closenessPriority);
     }
 
     @Override
