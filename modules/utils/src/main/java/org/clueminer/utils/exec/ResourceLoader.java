@@ -50,9 +50,15 @@ public abstract class ResourceLoader {
 
     public static final String OS = System.getProperty("os.name").toLowerCase();
 
-    public abstract Collection<String> loadResource(String path, String hintPackage);
+    public abstract Enumeration<URL> searchURL(String path) throws IOException;
 
-    public abstract Enumeration<URL> findURL(String path) throws IOException;
+    /**
+     * Try loading file from default package
+     *
+     * @param path
+     * @return
+     */
+    public abstract File resource(String path);
 
     /**
      * for all elements of java.class.path get a Collection of resources Pattern
@@ -62,7 +68,7 @@ public abstract class ResourceLoader {
      * @param packageName hint a package name to search
      * @return the resources in the order they are found
      */
-    public Collection<String> getResources(String needle, String packageName, String folder) {
+    public Collection<String> getResources(String needle, String packageName) {
         final List<String> retval = new LinkedList<>();
         final String classPath = System.getProperty("java.class.path", ".");
         String pathSeparator;
@@ -70,7 +76,7 @@ public abstract class ResourceLoader {
         Pattern pattern = Pattern.compile("(.*)" + needle);
         if (isWindows()) {
             try {
-                Enumeration<URL> en = findURL(folder);
+                Enumeration<URL> en = searchURL(packageName);
                 if (en.hasMoreElements()) {
                     URL metaInf = en.nextElement();
                     File fileMetaInf = Utilities.toFile(metaInf.toURI());
@@ -93,7 +99,7 @@ public abstract class ResourceLoader {
         }
         if (retval.isEmpty()) {
             //last resort, when compiled into JAR
-            loadFromJar(retval, pattern, folder);
+            loadFromJar(retval, pattern, packageName);
         }
         return retval;
     }
@@ -103,6 +109,8 @@ public abstract class ResourceLoader {
      * a .tmp file which should be on exit deleted
      *
      * @param path
+     * @param prefix
+     * @param hintPackage
      * @return
      */
     public File resource(String path, String prefix, String hintPackage) {
@@ -112,7 +120,7 @@ public abstract class ResourceLoader {
         URL url = getClass().getResource(resource);
         if (url == null) {
             //probably on Windows
-            Collection<String> res = loadResource(path, hintPackage);
+            Collection<String> res = getResources(path, hintPackage);
             if (res.isEmpty()) {
                 throw new RuntimeException("could not find binary! Was searching for: " + resource + ", path: " + path);
             }
@@ -320,7 +328,7 @@ public abstract class ResourceLoader {
      */
     private void loadFromJar(List<String> retval, Pattern pattern, String folder) {
         try {
-            Enumeration<URL> en = findURL(folder);
+            Enumeration<URL> en = searchURL(folder);
             if (en.hasMoreElements()) {
                 URL metaInf = en.nextElement();
                 File file;

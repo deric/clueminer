@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Enumeration;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -79,17 +78,13 @@ public class ExtBinHelper<E extends Instance> extends ResourceLoader {
      * @param path
      * @return
      */
+    @Override
     public File resource(String path) {
         return resource(path, prefix, hintPackage);
     }
 
     @Override
-    public Collection<String> loadResource(String path, String hintPackage) {
-        return getResources(path, hintPackage, hintPackage);
-    }
-
-    @Override
-    public Enumeration<URL> findURL(String path) throws IOException {
+    public Enumeration<URL> searchURL(String path) throws IOException {
         return ExtBinHelper.class.getClassLoader().getResources(path);
     }
 
