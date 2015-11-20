@@ -14,10 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.umn.metis;
+package org.clueminer.utils.exec;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -32,15 +39,20 @@ import org.openide.util.Exceptions;
 import org.openide.util.Utilities;
 
 /**
- * @TODO: move to utils?
- * code from
+ * Loader of text/binary files from java classpath
+ *
+ * Inspired by
  * @link http://stackoverflow.com/questions/3923129/get-a-list-of-resources-from-classpath-directory
+ *
  * @author deric
  */
-public class ResourceLoader {
+public abstract class ResourceLoader {
 
-    private static final String OS = System.getProperty("os.name").toLowerCase();
-    private static final String resPath = "metis";
+    public static final String OS = System.getProperty("os.name").toLowerCase();
+
+    public abstract Collection<String> loadResource(String path, String hintPackage);
+
+    public abstract Enumeration<URL> findURL(String path) throws IOException;
 
     /**
      * for all elements of java.class.path get a Collection of resources Pattern
@@ -50,7 +62,7 @@ public class ResourceLoader {
      * @param packageName hint a package name to search
      * @return the resources in the order they are found
      */
-    public static Collection<String> getResources(String needle, String packageName) {
+    public Collection<String> getResources(String needle, String packageName, String folder) {
         final List<String> retval = new LinkedList<>();
         final String classPath = System.getProperty("java.class.path", ".");
         String pathSeparator;
@@ -58,7 +70,7 @@ public class ResourceLoader {
         Pattern pattern = Pattern.compile("(.*)" + needle);
         if (isWindows()) {
             try {
-                Enumeration<URL> en = ResourceLoader.class.getClassLoader().getResources(resPath);
+                Enumeration<URL> en = findURL(folder);
                 if (en.hasMoreElements()) {
                     URL metaInf = en.nextElement();
                     File fileMetaInf = Utilities.toFile(metaInf.toURI());
@@ -81,9 +93,117 @@ public class ResourceLoader {
         }
         if (retval.isEmpty()) {
             //last resort, when compiled into JAR
-            loadFromJar(retval, pattern);
+            loadFromJar(retval, pattern, folder);
         }
         return retval;
+    }
+
+    /**
+     * Resource packed in jar is not possible to open directly, this method uses
+     * a .tmp file which should be on exit deleted
+     *
+     * @param path
+     * @return
+     */
+    public File resource(String path, String prefix, String hintPackage) {
+        String resource = prefix + File.separatorChar + path;
+        File file;
+
+        URL url = getClass().getResource(resource);
+        if (url == null) {
+            //probably on Windows
+            Collection<String> res = loadResource(path, hintPackage);
+            if (res.isEmpty()) {
+                throw new RuntimeException("could not find binary! Was searching for: " + resource + ", path: " + path);
+            }
+            String fullPath = res.iterator().next();
+            file = new File(fullPath);
+            if (file.exists()) {
+                return file;
+            }
+            //non existing URL
+            //no classpath, compiled as JAR
+            //if path is in form: "jar:path.jar!resource/data"
+            int pos = fullPath.lastIndexOf("!");
+            if (pos > 0) {
+                resource = fullPath.substring(pos + 1);
+                if (!resource.startsWith("/")) {
+                    //necessary for loading as a stream
+                    resource = "/" + resource;
+                }
+            }
+            return loadResource(resource);
+        }
+
+        if (url.toString().startsWith("jar:")) {
+            return loadResource(resource);
+        } else {
+            file = new File(url.getFile());
+        }
+        return file;
+    }
+
+    protected File loadResource(String resource) {
+        File file = null;
+        try {
+            InputStream input = getClass().getResourceAsStream(resource);
+            long time = System.currentTimeMillis();
+            file = File.createTempFile("resource-" + time, ".tmp");
+            try (OutputStream out = new FileOutputStream(file)) {
+                int read;
+                byte[] bytes = new byte[1024];
+
+                while ((read = input.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+            }
+            file.deleteOnExit();
+        } catch (IOException ex) {
+            System.err.println(ex.toString());
+        }
+        return file;
+    }
+
+    public void readStdout(Process p) {
+        try {
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public void readStderr(Process p) {
+        try {
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line;
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    public static String safeName(String name) {
+        return name.toLowerCase().replace(" ", "_");
+    }
+
+    public static String readFile(File file) throws FileNotFoundException, IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+            return sb.toString();
+        }
     }
 
     private static void browseFiles(final List<String> retval, File fileMetaInf, final Pattern pattern) {
@@ -198,9 +318,9 @@ public class ResourceLoader {
      * @param retval
      * @param pattern
      */
-    private static void loadFromJar(List<String> retval, Pattern pattern) {
+    private void loadFromJar(List<String> retval, Pattern pattern, String folder) {
         try {
-            Enumeration<URL> en = ResourceLoader.class.getClassLoader().getResources(resPath);
+            Enumeration<URL> en = findURL(folder);
             if (en.hasMoreElements()) {
                 URL metaInf = en.nextElement();
                 File file;
@@ -231,5 +351,4 @@ public class ResourceLoader {
             Exceptions.printStackTrace(ex);
         }
     }
-
 }

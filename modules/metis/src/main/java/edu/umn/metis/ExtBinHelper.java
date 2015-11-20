@@ -16,21 +16,17 @@
  */
 package edu.umn.metis;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Enumeration;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.exec.ResourceLoader;
 import org.openide.util.Exceptions;
 
 /**
@@ -39,7 +35,7 @@ import org.openide.util.Exceptions;
  * @author deric
  * @param <E>
  */
-public class ExtBinHelper<E extends Instance> {
+public class ExtBinHelper<E extends Instance> extends ResourceLoader {
 
     private static final String lineEnd = "\n";
     private static final String space = " ";
@@ -84,102 +80,17 @@ public class ExtBinHelper<E extends Instance> {
      * @return
      */
     public File resource(String path) {
-        String resource = prefix + File.separatorChar + path;
-        File file;
-
-        URL url = getClass().getResource(resource);
-        if (url == null) {
-            //probably on Windows
-            Collection<String> res = ResourceLoader.getResources(path, hintPackage);
-            if (res.isEmpty()) {
-                throw new RuntimeException("could not find metis binary! Was searching for: " + resource + ", path: " + path);
-            }
-            String fullPath = res.iterator().next();
-            file = new File(fullPath);
-            if (file.exists()) {
-                return file;
-            }
-            //non existing URL
-            //no classpath, compiled as JAR
-            //if path is in form: "jar:path.jar!resource/data"
-            int pos = fullPath.lastIndexOf("!");
-            if (pos > 0) {
-                resource = fullPath.substring(pos + 1);
-                if (!resource.startsWith("/")) {
-                    //necessary for loading as a stream
-                    resource = "/" + resource;
-                }
-            }
-            return loadResource(resource);
-        }
-
-        if (url.toString().startsWith("jar:")) {
-            return loadResource(resource);
-        } else {
-            file = new File(url.getFile());
-        }
-        return file;
+        return resource(path, prefix, hintPackage);
     }
 
-    protected File loadResource(String resource) {
-        File file = null;
-        try {
-            InputStream input = getClass().getResourceAsStream(resource);
-            file = File.createTempFile("metis", ".tmp");
-            try (OutputStream out = new FileOutputStream(file)) {
-                int read;
-                byte[] bytes = new byte[1024];
-
-                while ((read = input.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-            }
-            file.deleteOnExit();
-        } catch (IOException ex) {
-            System.err.println(ex.toString());
-        }
-        return file;
+    @Override
+    public Collection<String> loadResource(String path, String hintPackage) {
+        return getResources(path, hintPackage, hintPackage);
     }
 
-    public void readStdout(Process p) {
-        try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+    @Override
+    public Enumeration<URL> findURL(String path) throws IOException {
+        return ExtBinHelper.class.getClassLoader().getResources(path);
     }
 
-    public void readStderr(Process p) {
-        try {
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line;
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-    }
-
-    public static String safeName(String name) {
-        return name.toLowerCase().replace(" ", "_");
-    }
-
-    public static String readFile(File file) throws FileNotFoundException, IOException {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
-            while (line != null) {
-                sb.append(line);
-                sb.append("\n");
-                line = br.readLine();
-            }
-            return sb.toString();
-        }
-    }
 }
