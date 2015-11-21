@@ -7,10 +7,12 @@ import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fastcommunity.FastCommunity;
+import org.clueminer.fastcommunity.orig.FastCommunityBin;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Simple UI for Fast Community configuration
  *
  * @author Hamster
  */
@@ -38,7 +40,7 @@ public class FastCommunityDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
-        return algorithm instanceof FastCommunity;
+        return algorithm instanceof FastCommunity || algorithm instanceof FastCommunityBin;
     }
 
 }
