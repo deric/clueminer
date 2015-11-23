@@ -55,7 +55,6 @@ public class PairMergerTest {
         Props props = new Props();
         Bisection bisection = new FiducciaMattheyses(20);
         g.ensureCapacity(dataset.size());
-        g.lookupAdd(dataset);
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
@@ -79,7 +78,6 @@ public class PairMergerTest {
         int maxPartitionSize = 20;
         Props props = new Props();
         Graph g = new AdjMatrixGraph();
-        g.lookupAdd(dataset);
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);

@@ -121,6 +121,7 @@ public class KNNGraphBuilder<E extends Instance> {
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
         g.addEdgesFromNeigborArray(nearests, k);
+        g.lookupAdd(dataset);
         return g;
     }
 

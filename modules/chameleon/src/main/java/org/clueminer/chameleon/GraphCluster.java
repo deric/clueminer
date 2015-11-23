@@ -87,13 +87,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         this.id = index;
         this.bisection = bisection;
         this.props = props;
-        if (n.size() > 0) {
-            attrCnt = n.get(0).getInstance().size();
-        }
         Dataset<E> dataset = g.getLookup().lookup(Dataset.class);
         if (dataset == null) {
             throw new RuntimeException("missing parent dataset");
         }
+        attrCnt = dataset.attributeCount();
         attributes = dataset.copyAttributes();
     }
 
@@ -150,12 +148,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     /**
      * Builds graph from list of nodes and parent graph
      *
-     * @param n List of nodes
+     * @param nodes List of nodes
      * @param g Parent graph
      * @return Graph representing this cluster
      */
-    protected Graph buildGraphFromCluster(LinkedList<Node<E>> n, Graph g) {
-        ArrayList<Node<E>> nodes = new ArrayList<>(n);
+    protected Graph buildGraphFromCluster(LinkedList<Node<E>> nodes, Graph g) {
         Graph newGraph = null;
         try {
             newGraph = g.getClass().newInstance();
