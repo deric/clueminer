@@ -36,4 +36,33 @@ public interface Element {
      */
     Object getLabel();
 
+    /**
+     * Gets the attribute for the given key.
+     *
+     * @param key the column's key
+     * @return the attribute value, or null
+     */
+    Object getAttribute(String key);
+
+    /**
+     * Removes the attribute at the given key.
+     *
+     * @param key the key
+     * @return the value being removed, or null
+     */
+    Object removeAttribute(String key);
+
+    /**
+     * Sets the attribute with the given key and value.
+     *
+     * @param key the column's key
+     * @param value the value to set
+     */
+    void setAttribute(String key, Object value);
+
+    /**
+     * Clears all attribute values.
+     */
+    void clearAttributes();
+
 }
