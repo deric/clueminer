@@ -59,6 +59,7 @@ public class GraphClusterTest {
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
         g = knn.getNeighborGraph(dataset, g, k);
+        g.lookupAdd(dataset);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
         ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);

@@ -60,11 +60,11 @@ public class ShatovskaSimilarityTest {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;
         int maxPartitionSize = 20;
-        double closenessPriority = 2.0;
         Props pref = new Props();
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
+        g.lookupAdd(dataset);
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);

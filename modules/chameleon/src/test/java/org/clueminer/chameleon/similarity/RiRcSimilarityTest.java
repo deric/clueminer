@@ -64,6 +64,7 @@ public class RiRcSimilarityTest {
         Graph g = new AdjMatrixGraph();
         Bisection bisection = new FiducciaMattheyses(10);
         g.ensureCapacity(dataset.size());
+        g.lookupAdd(dataset);
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);

@@ -19,6 +19,8 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.plugin.AttributeCollection;
+import org.clueminer.dataset.plugin.DoubleArrayFactory;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -72,6 +74,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     private Color color;
 
     private Props props;
+    private E centroid;
+    protected Attribute[] attributes;
+    private int attrCnt = 0;
+    protected InstanceBuilder<E> builder;
+    private Graph graph;
 
     public GraphCluster(LinkedList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
         parentGraph = g;
@@ -80,6 +87,14 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         this.id = index;
         this.bisection = bisection;
         this.props = props;
+        if (n.size() > 0) {
+            attrCnt = n.get(0).getInstance().size();
+        }
+        Dataset<E> dataset = g.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing parent dataset");
+        }
+        attributes = dataset.copyAttributes();
     }
 
     /**
@@ -87,7 +102,9 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      *
      */
     protected void computeBisectionProperties() {
-        Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
+        if (graph == null) {
+            graph = buildGraphFromCluster(graphNodes, parentGraph);
+        }
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
             ICL = IIC = 1;
@@ -115,7 +132,9 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      * Computes average weight of all edges in the graph
      */
     protected void computeAverageCloseness() {
-        Graph graph = buildGraphFromCluster(graphNodes, parentGraph);
+        if (graph == null) {
+            graph = buildGraphFromCluster(graphNodes, parentGraph);
+        }
 
         double sum = 0;
         if (edgeCount == 0) {
@@ -137,25 +156,31 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      */
     protected Graph buildGraphFromCluster(LinkedList<Node<E>> n, Graph g) {
         ArrayList<Node<E>> nodes = new ArrayList<>(n);
-        Graph graph = null;
+        Graph newGraph = null;
         try {
-            graph = g.getClass().newInstance();
-            graph.ensureCapacity(nodes.size());
-            for (Node node : nodes) {
-                graph.addNode(node);
+            newGraph = g.getClass().newInstance();
+            newGraph.ensureCapacity(nodes.size());
+            E inst;
+            for (Node<E> node : nodes) {
+                newGraph.addNode(node);
+                inst = node.getInstance();
+                //update attribute's statistics
+                for (int i = 0; i < attributeCount(); i++) {
+                    attributes[i].updateStatistics(inst.get(i));
+                }
             }
             for (int i = 0; i < nodes.size(); i++) {
                 for (int j = i + 1; j < nodes.size(); j++) {
                     if (g.isAdjacent(nodes.get(i), nodes.get(j))) {
-                        graph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
+                        newGraph.addEdge(g.getEdge(nodes.get(i), nodes.get(j)));
                     }
                 }
             }
-            edgeCount = graph.getEdgeCount();
+            edgeCount = newGraph.getEdgeCount();
         } catch (InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return graph;
+        return newGraph;
     }
 
     /**
@@ -265,7 +290,29 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public E getCentroid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (centroid == null) {
+            int attrCount = this.attributeCount();
+            if (attrCount == 0) {
+                throw new RuntimeException("number of attributes should not be 0");
+            }
+            Instance avg = this.builder().build(attrCount);
+            double value;
+            for (Node node : getNodes()) {
+                for (int i = 0; i < attrCount; i++) {
+                    value = avg.get(i);
+                    if (Double.isNaN(value)) {
+                        value = 0;
+                    }
+                    avg.set(i, value + node.getInstance().get(i));
+                }
+            }
+            for (int i = 0; i < attrCount; i++) {
+                avg.set(i, avg.get(i) / (double) getNodeCount());
+            }
+            centroid = (E) avg;
+        }
+
+        return centroid;
     }
 
     @Override
@@ -350,12 +397,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public boolean hasParent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return parent != null;
     }
 
     @Override
     public int attributeCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attrCnt;
     }
 
     @Override
@@ -390,7 +437,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public Attribute getAttribute(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attributes[index];
     }
 
     @Override
@@ -400,7 +447,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public Attribute getAttribute(String attributeName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Attribute attribute : attributes) {
+            if (attribute.getName().equals(attributeName)) {
+                return attribute;
+            }
+        }
+        throw new RuntimeException("Attribute with name " + attributeName + " was not found");
     }
 
     @Override
@@ -415,7 +467,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public double get(int instanceIdx, int attributeIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return graphNodes.get(instanceIdx).getInstance().get(attributeIndex);
     }
 
     @Override
@@ -450,7 +502,10 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public InstanceBuilder<E> builder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (builder == null) {
+            builder = new DoubleArrayFactory(this, '.');
+        }
+        return builder;
     }
 
     @Override
@@ -525,7 +580,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public Collection<? extends Number> attrCollection(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AttributeCollection<>(this, index);
     }
 
     @Override
@@ -603,7 +658,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public void setCentroid(E centroid) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.centroid = centroid;
     }
 
     @Override

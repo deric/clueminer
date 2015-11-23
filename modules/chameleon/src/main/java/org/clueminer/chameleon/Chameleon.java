@@ -193,6 +193,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             Class c = Class.forName(graphStorage);
             g = (Graph) c.newInstance();
             g.ensureCapacity(dataset.size());
+            g.lookupAdd(dataset);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }
