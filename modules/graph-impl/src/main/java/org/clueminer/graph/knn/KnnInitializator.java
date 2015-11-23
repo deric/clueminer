@@ -1,6 +1,5 @@
 package org.clueminer.graph.knn;
 
-
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -15,6 +14,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * @TODO: merge interfaces with {@link KNNGraphBuilder}
  *
  * @author Hamster
  * @param <E>

@@ -1,4 +1,4 @@
-package org.clueminer.graph.GraphBuilder;
+package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;

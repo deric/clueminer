@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.graph.fast;
+package org.clueminer.graph.impl;
 
 import org.clueminer.graph.api.Element;
 
@@ -22,24 +22,27 @@ import org.clueminer.graph.api.Element;
  *
  * @author deric
  */
-public abstract class ElementImpl implements Element {
+public abstract class ElemImpl implements Element {
 
-    protected final FastGraph graphStore;
-    protected Long id;
+    protected final long id;
+    protected Object label;
 
-    protected Object[] attributes;
-
-    public ElementImpl(Long id, FastGraph graphStore) {
-        if (id == null) {
-            throw new NullPointerException();
-        }
-        this.graphStore = graphStore;
+    public ElemImpl(long id) {
         this.id = id;
     }
 
     @Override
     public long getId() {
         return id;
+    }
+
+    @Override
+    public Object getLabel() {
+        return label;
+    }
+
+    public void setLabel(Object label) {
+        this.label = label;
     }
 
     @Override

@@ -18,49 +18,39 @@ package org.clueminer.graph.adjacencyMatrix;
 
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.ElemImpl;
 
 /**
  *
  * @author tomas
+ * @param <E>
  */
-public class AdjMatrixNode implements Node {
+public class AdjMatrixNode<E extends Instance> extends ElemImpl implements Node<E> {
 
-    private final long id;
-    Object label;
-    private Instance instance;
+    private E instance;
 
     public AdjMatrixNode(long id) {
-        this.id = id;
+        super(id);
     }
 
     public AdjMatrixNode(long id, Object label) {
+        super(id);
         this.label = label;
-        this.id = id;
     }
 
-    public AdjMatrixNode(long id, Instance i) {
-        instance = i;
-        this.id = id;
-    }
-
-    @Override
-    public void setInstance(Instance i) {
+    public AdjMatrixNode(long id, E i) {
+        super(id);
         instance = i;
     }
 
     @Override
-    public Instance getInstance() {
+    public void setInstance(E i) {
+        instance = i;
+    }
+
+    @Override
+    public E getInstance() {
         return instance;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public Object getLabel() {
-        return label;
     }
 
 }

@@ -26,6 +26,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.knn.KNNGraphBuilder;
+import org.clueminer.graph.adjacencyList.AdjListGraph;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
@@ -54,6 +57,10 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
         if (colorGenerator != null) {
             colorGenerator.reset();
         }
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        Graph g = new AdjListGraph(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, props.getInt("k", 20));
+
         Clustering<E, C> clustering = null;
 
         long current = System.currentTimeMillis();

@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import static junit.framework.Assert.assertEquals;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
