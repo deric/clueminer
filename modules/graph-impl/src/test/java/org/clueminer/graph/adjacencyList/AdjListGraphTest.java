@@ -14,7 +14,7 @@ import org.junit.Test;
  *
  * @author Hamster
  */
-public class AdjListGraphTest extends commons.Commons {
+public class AdjListGraphTest extends org.clueminer.graph.impl.Commons {
 
     private static final AdjListFactory factory = AdjListFactory.getInstance();
     private static final AdjListGraph graph = new AdjListGraph();

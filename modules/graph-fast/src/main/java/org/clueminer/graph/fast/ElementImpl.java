@@ -26,6 +26,7 @@ public abstract class ElementImpl implements Element {
 
     protected final FastGraph graphStore;
     protected Long id;
+    protected Object label;
 
     protected Object[] attributes;
 
@@ -40,6 +41,11 @@ public abstract class ElementImpl implements Element {
     @Override
     public long getId() {
         return id;
+    }
+
+    @Override
+    public Object getLabel() {
+        return label;
     }
 
     @Override

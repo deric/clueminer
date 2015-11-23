@@ -1,4 +1,4 @@
-package commons;
+package org.clueminer.graph.impl;
 
 import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class Commons {
 
-    public Graph buildSmallGraph(Graph g, GraphFactory factory) {
+    public static Graph buildSmallGraph(Graph g, GraphFactory factory) {
         g.ensureCapacity(7);
         Node n1 = factory.newNode();
         Node n2 = factory.newNode();

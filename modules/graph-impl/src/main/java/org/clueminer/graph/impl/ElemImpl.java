@@ -16,6 +16,7 @@
  */
 package org.clueminer.graph.impl;
 
+import java.util.HashMap;
 import org.clueminer.graph.api.Element;
 
 /**
@@ -26,9 +27,11 @@ public abstract class ElemImpl implements Element {
 
     protected final long id;
     protected Object label;
+    private final HashMap<String, Object> attributes;
 
     public ElemImpl(long id) {
         this.id = id;
+        this.attributes = new HashMap<>();
     }
 
     @Override
@@ -47,22 +50,22 @@ public abstract class ElemImpl implements Element {
 
     @Override
     public Object getAttribute(String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attributes.get(key);
     }
 
     @Override
     public Object removeAttribute(String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attributes.remove(key);
     }
 
     @Override
     public void setAttribute(String key, Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        attributes.put(key, value);
     }
 
     @Override
     public void clearAttributes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        attributes.clear();
     }
 
 }
