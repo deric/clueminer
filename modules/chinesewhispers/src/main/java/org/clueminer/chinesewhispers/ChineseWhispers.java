@@ -61,7 +61,7 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         maxIterations = props.getInt(MAX_ITERATIONS, 100);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
-        String initializer = props.get(GRAPH_CONV, "distance threshold");
+        String initializer = props.get(GRAPH_CONV, "k-NN");
         graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, props);
