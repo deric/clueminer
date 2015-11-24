@@ -38,6 +38,19 @@ public interface ColorScheme {
      */
     Color getColor(double value, double min, double mid, double max);
 
+    /**
+     * Generate requested color with alpha channel. Must be supported by canvas
+     * (ARGB)
+     *
+     * @param value
+     * @param min
+     * @param mid
+     * @param max
+     * @param alpha value between 0 a 255
+     * @return color with alpha (0-255)
+     */
+    Color getColor(double value, double min, double mid, double max, int alpha);
+
     boolean isUseDoubleGradient();
 
     /**

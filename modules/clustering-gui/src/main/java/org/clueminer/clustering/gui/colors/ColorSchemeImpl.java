@@ -74,6 +74,11 @@ public final class ColorSchemeImpl implements ColorScheme {
 
     @Override
     public Color getColor(double value, double min, double mid, double max) {
+        return getColor(value, min, mid, max, 255);
+    }
+
+    @Override
+    public Color getColor(double value, double min, double mid, double max, int alpha) {
         if (Double.isNaN(value)) {
             return missingColor;
         }
@@ -100,7 +105,12 @@ public final class ColorSchemeImpl implements ColorScheme {
             }
             rgb = posColorImage.getRGB(colorIndex, 0);
         }
-        return new Color(rgb);
+        if (alpha < 255) {
+            return new Color(rgb, true);
+        } else {
+            //no alpha
+            return new Color(rgb);
+        }
     }
 
 }
