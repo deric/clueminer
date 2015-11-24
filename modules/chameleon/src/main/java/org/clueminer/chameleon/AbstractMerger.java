@@ -130,17 +130,12 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     public ArrayList<GraphCluster<E>> createClusters(ArrayList<ArrayList<Node<E>>> clusterList, Bisection bisection, Props props) {
         clusters = new ArrayList<>(clusterList.size());
         int i = 0;
-        int total = 0;
         GraphCluster grc;
         for (ArrayList<Node<E>> cluster : clusterList) {
-            //WTF???
-            //TODO: graph cluster size is smaller than size of passed cluster set
             grc = new GraphCluster(cluster, graph, i, bisection, props);
             clusters.add(grc);
-            total += grc.size();
             i++;
         }
-        System.out.println("total = " + total);
         return clusters;
     }
 
@@ -326,6 +321,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         nodes[clusters.size() - 1] = newNode;
     }
 
+    @Override
     public ArrayList<GraphCluster<E>> getClusters() {
         return clusters;
     }
