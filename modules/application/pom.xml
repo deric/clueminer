@@ -281,11 +281,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>fastcommunity</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>edu.umn</groupId>
             <artifactId>metis</artifactId>
             <version>${project.version}</version>
