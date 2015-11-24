@@ -18,7 +18,6 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -118,14 +117,14 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
         return res;
     }
 
-    public List<Instance> findNoise(Dataset<E> dataset, Props props) {
+    public ArrayList<Instance> findNoise(Dataset<E> dataset, Props props) {
         int[] y = scan(dataset, props);
         int n = dataset.size();
-        LinkedList<Instance> result = null;
+        ArrayList<Instance> result = null;
         for (int i = 0; i < n; i++) {
             if (y[i] == OUTLIER) {
                 if (result == null) {
-                    result = new LinkedList<>();
+                    result = new ArrayList<>();
                 }
                 result.add(dataset.get(i));
             }

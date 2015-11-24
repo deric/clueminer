@@ -22,7 +22,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
@@ -56,25 +55,25 @@ public abstract class AbstractMetis implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
         int k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
         if (k == 1) {
-            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
-            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
+            nodes.add((ArrayList<Node>) g.getNodes().toCollection());
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);
         String path = runMetis(g, k, params);
-        ArrayList<LinkedList<Node>> clusters = importMetisResult(path, k, nodeMapping);
+        ArrayList<ArrayList<Node>> clusters = importMetisResult(path, k, nodeMapping);
         Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();
-        return f.findSubgraphs(clusteredGraph);
+        return f.findSubgraphs(clusteredGraph, maxPartitionSize);
     }
 
-    protected ArrayList<LinkedList<Node>> importMetisResult(String path, int k, Node[] nodeMapping) {
-        ArrayList<LinkedList<Node>> result = new ArrayList<>();
+    protected ArrayList<ArrayList<Node>> importMetisResult(String path, int k, Node[] nodeMapping) {
+        ArrayList<ArrayList<Node>> result = new ArrayList<>();
         for (int i = 0; i < k; i++) {
-            result.add(new LinkedList<Node>());
+            result.add(new ArrayList<Node>());
         }
         File file = new File(path + ".part." + String.valueOf(k));
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

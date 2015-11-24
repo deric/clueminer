@@ -1,7 +1,6 @@
 package org.clueminer.partitioning.api;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
@@ -21,7 +20,7 @@ public interface Bisection {
      * @param params
      * @return list of nodes for each cluster
      */
-    ArrayList<LinkedList<Node>> bisect(Graph g, Props params);
+    ArrayList<ArrayList<Node>> bisect(Graph g, Props params);
 
     /**
      * Bisect the graph
@@ -29,7 +28,7 @@ public interface Bisection {
      * @param params
      * @return list of nodes for each cluster
      */
-    ArrayList<LinkedList<Node>> bisect(Props params);
+    ArrayList<ArrayList<Node>> bisect(Props params);
 
     /**
      * Remove edges between clusters which were created by bisection

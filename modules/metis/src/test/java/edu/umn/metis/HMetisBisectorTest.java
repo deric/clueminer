@@ -20,13 +20,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import org.junit.Test;
 
@@ -49,7 +48,7 @@ public class HMetisBisectorTest extends PartitioningTest {
         /*GraphPrinter gp = new GraphPrinter(true);
          gp.printGraph(g, 1, output, "knn");*/
         subject = new HMetisBisector();
-        ArrayList<LinkedList<Node>> result = subject.bisect(g, new Props());
+        ArrayList<ArrayList<Node>> result = subject.bisect(g, new Props());
 
 
         /*        assertEquals(4, result.get(1).get(0).getInstance().getIndex());

@@ -4,13 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import static junit.framework.Assert.assertEquals;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import org.junit.Test;
 
@@ -30,7 +29,7 @@ public class RecursiveBisectionTest extends PartitioningTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 5);
         RecursiveBisection rb = new RecursiveBisection(new FiducciaMattheyses());
 
-        ArrayList<LinkedList<Node>> result = rb.partition(5, g, new Props());
+        ArrayList<ArrayList<Node>> result = rb.partition(5, g, new Props());
         assertEquals(36, result.size());
     }
 

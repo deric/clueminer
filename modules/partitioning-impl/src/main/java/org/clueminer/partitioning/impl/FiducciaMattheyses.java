@@ -255,10 +255,10 @@ public class FiducciaMattheyses implements Bisection {
      *
      * @return lists of nodes according to clusters
      */
-    private ArrayList<LinkedList<Node>> createNodeClusters() {
-        ArrayList<LinkedList<Node>> clusters = new ArrayList<>();
-        clusters.add(new LinkedList<Node>());
-        clusters.add(new LinkedList<Node>());
+    private ArrayList<ArrayList<Node>> createNodeClusters(int maxPartition) {
+        ArrayList<ArrayList<Node>> clusters = new ArrayList<>();
+        clusters.add(new ArrayList<Node>(maxPartition));
+        clusters.add(new ArrayList<Node>(maxPartition));
         for (Vertex vertex : vertexes) {
             if (vertex.cluster == 0) {
                 clusters.get(0).add(vertex.node);
@@ -277,10 +277,11 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Graph g, Props params) {
         initialize(g);
         createIntitalPartition();
         int iterationCounter = 0;
+        int maxPartition = params.getInt("max_partition_size", 15);
         //Repeat until no better swap can be done
         while (iterationCounter < iterationLimit) {
             iterationCounter++;
@@ -290,7 +291,7 @@ public class FiducciaMattheyses implements Bisection {
                 break;
             }
         }
-        return createNodeClusters();
+        return createNodeClusters(maxPartition);
     }
 
     private int minimizeCosts() {
@@ -332,7 +333,7 @@ public class FiducciaMattheyses implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

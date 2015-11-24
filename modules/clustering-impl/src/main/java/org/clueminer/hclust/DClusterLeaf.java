@@ -8,12 +8,13 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author Tomas Bruna
+ * @param <E>
  */
-public class DClusterLeaf extends DLeaf {
+public class DClusterLeaf<E extends Instance> extends DLeaf {
 
-    private List<Instance> data;
+    private List<E> data;
 
-    public DClusterLeaf(int id, List<Instance> data) {
+    public DClusterLeaf(int id, List<E> data) {
         super(id);
         this.data = data;
     }
@@ -35,11 +36,11 @@ public class DClusterLeaf extends DLeaf {
         return data.get(0).getIndex();
     }
 
-    public List<Instance> getInstances() {
+    public List<E> getInstances() {
         return data;
     }
 
-    public void setInstances(List<Instance> data) {
+    public void setInstances(List<E> data) {
         this.data = data;
     }
 

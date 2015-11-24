@@ -45,8 +45,8 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
         return name;
     }
 
-    public ArrayList<LinkedList<Node<E>>> merge(ArrayList<LinkedList<Node<E>>> clusterList, Props props) {
-        ArrayList<LinkedList<Node<E>>> result = clusterList;
+    public ArrayList<ArrayList<Node<E>>> merge(ArrayList<ArrayList<Node<E>>> clusterList, Props props) {
+        ArrayList<ArrayList<Node<E>>> result = clusterList;
         merged = true;
         while (merged) {
             merged = false;
@@ -55,7 +55,7 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
         return result;
     }
 
-    private ArrayList<LinkedList<Node<E>>> singleMerge(ArrayList<LinkedList<Node<E>>> clusterList, Props props) {
+    private ArrayList<ArrayList<Node<E>>> singleMerge(ArrayList<ArrayList<Node<E>>> clusterList, Props props) {
         createClusters(clusterList, bisection, props);
         computeExternalProperties();
         initiateClustersForMerging();
@@ -116,11 +116,11 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
      *
      * @return lists of nodes in clusters
      */
-    public ArrayList<LinkedList<Node<E>>> getNewClusters() {
-        ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
+    public ArrayList<ArrayList<Node<E>>> getNewClusters() {
+        ArrayList<ArrayList<Node<E>>> result = new ArrayList<>(clusters.size());
         for (GraphCluster<E> clust : clusters) {
             if (clust.offsprings != null) {
-                LinkedList<Node<E>> list = new LinkedList<>();
+                ArrayList<Node<E>> list = new ArrayList<>(clust.offsprings.size());
                 for (GraphCluster<E> cluster : clust.offsprings) {
                     for (Node<E> node : cluster.getNodes()) {
                         list.add(node);

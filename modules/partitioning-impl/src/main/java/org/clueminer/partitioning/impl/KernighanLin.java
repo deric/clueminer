@@ -55,14 +55,15 @@ public class KernighanLin implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Props params) {
         return bisect(graph, params);
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Graph g, Props params) {
         initialize(g);
 
+        int maxPartition = params.getInt("max_partition_size", 15);
         createIntitalPartition();
         computeCosts();
         //nodeCount-1 for odd numbers of nodes
@@ -72,7 +73,7 @@ public class KernighanLin implements Bisection {
             updateCosts();
         }
         swapUpToBestIndex();
-        return createNodeClusters();
+        return createNodeClusters(maxPartition);
     }
 
     /**
@@ -96,10 +97,10 @@ public class KernighanLin implements Bisection {
      *
      * @return lists of nodes according to clusters
      */
-    private ArrayList<LinkedList<Node>> createNodeClusters() {
-        ArrayList<LinkedList<Node>> clusters = new ArrayList<>();
-        clusters.add(new LinkedList<Node>());
-        clusters.add(new LinkedList<Node>());
+    private ArrayList<ArrayList<Node>> createNodeClusters(int maxPartition) {
+        ArrayList<ArrayList<Node>> clusters = new ArrayList<>();
+        clusters.add(new ArrayList<Node>());
+        clusters.add(new ArrayList<Node>());
         for (Vertex vertex : vertexes) {
             if (vertex.cluster == 0) {
                 clusters.get(0).add(vertex.node);
@@ -246,7 +247,7 @@ public class KernighanLin implements Bisection {
     }
 
     public void printClusters() {
-        ArrayList<LinkedList<Node>> clusters = createNodeClusters();
+        ArrayList<ArrayList<Node>> clusters = createNodeClusters(10);
         for (int i = 0; i <= 1; i++) {
             System.out.print("Cluster " + i + ": ");
             for (Node n : clusters.get(i)) {

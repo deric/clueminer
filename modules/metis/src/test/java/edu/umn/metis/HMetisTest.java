@@ -18,17 +18,16 @@ package edu.umn.metis;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -54,7 +53,7 @@ public class HMetisTest extends PartitioningTest {
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Graph g = new AdjMatrixGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 4);
-            ArrayList<LinkedList<Node>> res = subject.partition(2, g, new Props());
+            ArrayList<ArrayList<Node>> res = subject.partition(2, g, new Props());
             //doesn't work on Travis
             //assertEquals(4, res.size());
             assertNotNull(res);
@@ -69,7 +68,7 @@ public class HMetisTest extends PartitioningTest {
             Dataset dataset = FakeDatasets.irisDataset();
             Graph g = new AdjListGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 20);
-            ArrayList<LinkedList<Node>> res = subject.partition(10, g, new Props());
+            ArrayList<ArrayList<Node>> res = subject.partition(10, g, new Props());
             assertNotNull(res);
             //the result is randomized - we can't be sure to get exactly
             //the same number of partitions as requested

@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.chameleon.Chameleon;
 import static org.clueminer.chameleon.Chameleon.SIM_MEASURE;
 import org.clueminer.chameleon.GraphCluster;
@@ -101,7 +100,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
         //System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.getValue());
         //System.out.println("   " + curr.toString());
-        LinkedList<Node<E>> clusterNodes = (LinkedList<Node<E>>) curr.A.getNodes().clone();
+        ArrayList<Node<E>> clusterNodes = (ArrayList<Node<E>>) curr.A.getNodes().clone();
         clusterNodes.addAll(curr.B.getNodes());
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);

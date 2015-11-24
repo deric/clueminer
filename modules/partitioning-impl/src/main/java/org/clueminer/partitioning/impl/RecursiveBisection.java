@@ -1,7 +1,6 @@
 package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -41,24 +40,25 @@ public class RecursiveBisection implements Partitioning {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> partition(int max, Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> partition(int max, Graph g, Props params) {
         maxNodesInCluster = max;
-        ArrayList<LinkedList<Node>> clusters;
+        int expectedSize = g.getNodeCount() / max;
+        ArrayList<ArrayList<Node>> clusters;
         if (g.getNodeCount() < maxNodesInCluster) {
-            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
-            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            ArrayList<ArrayList<Node>> nodes = new ArrayList<>(expectedSize);
+            nodes.add((ArrayList<Node>) g.getNodes().toCollection());
             return nodes;
         } else {
-            clusters = recursivePartition(g, params);
+            clusters = recursivePartition(g, params, expectedSize);
         }
         Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
         FloodFill f = new FloodFill();
-        return f.findSubgraphs(clusteredGraph);
+        return f.findSubgraphs(clusteredGraph, max);
     }
 
-    public ArrayList<LinkedList<Node>> recursivePartition(Graph g, Props params) {
-        ArrayList<LinkedList<Node>> output = new ArrayList<>();
-        ArrayList<LinkedList<Node>> result = bisection.bisect(g, params);
+    public ArrayList<ArrayList<Node>> recursivePartition(Graph g, Props params, int expectedSize) {
+        ArrayList<ArrayList<Node>> output = new ArrayList<>(expectedSize);
+        ArrayList<ArrayList<Node>> result = bisection.bisect(g, params);
         int i = 0;
 
         while (i < 2) {
@@ -66,14 +66,14 @@ public class RecursiveBisection implements Partitioning {
                 output.add(result.get(i));
             } else {
                 Graph newGraph = buildGraphFromCluster(g, result.get(i));
-                output.addAll(recursivePartition(newGraph, params));
+                output.addAll(recursivePartition(newGraph, params, expectedSize));
             }
             i++;
         }
         return output;
     }
 
-    private Graph buildGraphFromCluster(Graph graph, LinkedList<Node> n) {
+    private Graph buildGraphFromCluster(Graph graph, ArrayList<Node> n) {
         Graph newGraph = null;
         try {
             ArrayList<Node> nodes = new ArrayList<>(n);

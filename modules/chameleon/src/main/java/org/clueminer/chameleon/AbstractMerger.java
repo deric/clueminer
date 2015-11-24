@@ -1,10 +1,10 @@
 package org.clueminer.chameleon;
 
+import edu.umn.metis.HMetisBisector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
@@ -14,7 +14,6 @@ import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
-import edu.umn.metis.HMetisBisector;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 
@@ -62,12 +61,12 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     protected int level;
 
     @Override
-    public List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params) {
+    public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params) {
         return this.initialize(clusterList, graph, bisection, params, null);
     }
 
     @Override
-    public List<Instance> initialize(ArrayList<LinkedList<Node<E>>> clusterList, Graph graph, Bisection bisection, Props params, List<Instance> noise) {
+    public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params, ArrayList<E> noise) {
         this.graph = graph;
         this.bisection = bisection;
         blacklist = new HashSet<>();
@@ -84,19 +83,19 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         }
         assignNodesToCluters();
         computeExternalProperties();
-        nodes = initiateTree((List<Instance>) noise);
+        nodes = initiateTree(noise);
         return noise;
     }
 
-    private List<Instance> identifyNoise(Props params) {
+    private ArrayList<E> identifyNoise(Props params) {
         double median = computeMedianCl();
-        List<Instance> noise = null;
+        ArrayList<E> noise = null;
         for (int i = 0; i < clusters.size(); i++) {
             if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.INTERNAL_NOISE_THRESHOLD, 2)) {
                 if (noise == null) {
-                    noise = new LinkedList<>();
+                    noise = new ArrayList<>();
                 }
-                for (Node node : clusters.get(i).getNodes()) {
+                for (Node<E> node : clusters.get(i).getNodes()) {
                     noise.add(node.getInstance());
                 }
                 clusters.remove(i);
@@ -128,12 +127,12 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param props
      * @return list of clusters
      */
-    public ArrayList<GraphCluster<E>> createClusters(ArrayList<LinkedList<Node<E>>> clusterList, Bisection bisection, Props props) {
+    public ArrayList<GraphCluster<E>> createClusters(ArrayList<ArrayList<Node<E>>> clusterList, Bisection bisection, Props props) {
         clusters = new ArrayList<>(clusterList.size());
         int i = 0;
         int total = 0;
         GraphCluster grc;
-        for (LinkedList<Node<E>> cluster : clusterList) {
+        for (ArrayList<Node<E>> cluster : clusterList) {
             //WTF???
             //TODO: graph cluster size is smaller than size of passed cluster set
             grc = new GraphCluster(cluster, graph, i, bisection, props);
@@ -193,7 +192,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param noise
      * @return
      */
-    protected DendroNode[] initiateTree(List<Instance> noise) {
+    protected DendroNode[] initiateTree(ArrayList<E> noise) {
         DendroNode[] treeNodes;
         //Create special node for noise only if noise is present
         treeNodes = new DendroNode[(2 * clusters.size())];
@@ -212,7 +211,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         return treeNodes;
     }
 
-    protected LinkedList<Instance> createInstanceList(LinkedList<Node<E>> nodes) {
+    protected LinkedList<Instance> createInstanceList(ArrayList<Node<E>> nodes) {
         LinkedList<Instance> out = new LinkedList<>();
         for (Node node : nodes) {
             out.add(node.getInstance());

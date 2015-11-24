@@ -1,7 +1,6 @@
 package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.openide.util.Exceptions;
@@ -20,7 +19,7 @@ public class EdgeRemover {
      * @param partitions
      * @return new graph without edges crossing different partitions
      */
-    public Graph removeEdges(Graph originalGraph, ArrayList<LinkedList<Node>> partitions) {
+    public Graph removeEdges(Graph originalGraph, ArrayList<ArrayList<Node>> partitions) {
         Graph result = null;
         try {
             //create instance of same graph storage implementation
@@ -31,7 +30,7 @@ public class EdgeRemover {
                 result.addNode(node);
             }
 
-            for (LinkedList<Node> partition : partitions) {
+            for (ArrayList<Node> partition : partitions) {
                 for (int i = 0; i < partition.size(); i++) {
                     for (int j = i + 1; j < partition.size(); j++) {
                         if (originalGraph.isAdjacent(partition.get(i), partition.get(j))) {

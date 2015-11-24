@@ -2,7 +2,6 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.algorithm.DBSCAN;
@@ -19,9 +18,9 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.Merger;
@@ -168,7 +167,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             return null;
         }
 
-        List<E> noise = null;
+        ArrayList<E> noise = null;
         if (pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
             noise = findNoiseViaDBSCAN(dataset, pref);
             if (noise != null) {
@@ -269,7 +268,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         }
     }
 
-    private List<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
+    private ArrayList<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
         DBSCANParamEstim<E> estimation = new DBSCANParamEstim<>();
         estimation.estimate(dataset, pref);
         pref.putInt(DBSCAN.MIN_PTS, 4);

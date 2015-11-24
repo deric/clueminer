@@ -15,7 +15,6 @@
 package edu.umn.metis;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Partitioning;
@@ -44,11 +43,11 @@ public class HMetisNoFF extends HMetis implements Partitioning {
      * @return
      */
     @Override
-    public ArrayList<LinkedList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> partition(int maxPartitionSize, Graph g, Props params) {
         int k = (int) Math.ceil(g.getNodeCount() / (double) maxPartitionSize);
         if (k == 1) {
-            ArrayList<LinkedList<Node>> nodes = new ArrayList<>();
-            nodes.add(new LinkedList<>(g.getNodes().toCollection()));
+            ArrayList<ArrayList<Node>> nodes = new ArrayList<>();
+            nodes.add((ArrayList<Node>) g.getNodes().toCollection());
             return nodes;
         }
         Node[] nodeMapping = createMapping(g);

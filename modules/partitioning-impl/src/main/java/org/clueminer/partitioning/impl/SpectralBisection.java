@@ -1,14 +1,13 @@
 package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.Node;
-import org.clueminer.partitioning.api.Bisection;
 import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.Node;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -33,7 +32,7 @@ public class SpectralBisection implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Graph g, Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Graph g, Props params) {
         this.g = g;
         Matrix laplacianMatrix = buildLaplacianMatrix();
         //laplacianMatrix.eig().getV().print(5, 2);
@@ -60,15 +59,15 @@ public class SpectralBisection implements Bisection {
     }
 
     @Override
-    public ArrayList<LinkedList<Node>> bisect(Props params) {
+    public ArrayList<ArrayList<Node>> bisect(Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private ArrayList<LinkedList<Node>> createClusters(Matrix eigenVectors) {
+    private ArrayList<ArrayList<Node>> createClusters(Matrix eigenVectors) {
         nodeToCluster = new int[g.getNodeCount()];
-        ArrayList<LinkedList<Node>> clusters = new ArrayList<>();
-        clusters.add(new LinkedList<Node>());
-        clusters.add(new LinkedList<Node>());
+        ArrayList<ArrayList<Node>> clusters = new ArrayList<>();
+        clusters.add(new ArrayList<Node>());
+        clusters.add(new ArrayList<Node>());
         double mid = findMedian(eigenVectors);
         //If all components of the Fiedler vector are the same, randomly split the graph into two equal groups
         if (min == max) {

@@ -4,17 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import static junit.framework.Assert.assertEquals;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
+        ArrayList<ArrayList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(4, result.get(1).get(0).getInstance().getIndex());
         assertEquals(6, result.get(1).get(1).getInstance().getIndex());
@@ -65,7 +64,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
+        ArrayList<ArrayList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(4, result.get(1).get(0).getInstance().getIndex());
         assertEquals(5, result.get(1).get(1).getInstance().getIndex());
@@ -90,7 +89,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         //GraphPrinter gp = new GraphPrinter(true);
         //gp.printGraph(g, 1, output, "knn");
         FiducciaMattheyses fm = new FiducciaMattheyses();
-        ArrayList<LinkedList<Node>> result = fm.bisect(g, new Props());
+        ArrayList<ArrayList<Node>> result = fm.bisect(g, new Props());
 
         assertEquals(0, result.get(1).get(0).getInstance().getIndex());
         assertEquals(2, result.get(1).get(1).getInstance().getIndex());
@@ -112,7 +111,7 @@ public class FiducciaMattheysesTest extends PartitioningTest {
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 5);
         FiducciaMattheyses kl = new FiducciaMattheyses();
 
-        ArrayList<LinkedList<Node>> result = kl.bisect(g, new Props());
+        ArrayList<ArrayList<Node>> result = kl.bisect(g, new Props());
 
     }
 }

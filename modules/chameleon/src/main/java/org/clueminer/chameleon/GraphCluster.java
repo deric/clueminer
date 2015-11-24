@@ -65,7 +65,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     /**
      * Nodes belonging to the cluster
      */
-    private final LinkedList<Node<E>> graphNodes;
+    private final ArrayList<Node<E>> graphNodes;
 
     private final Graph parentGraph;
 
@@ -80,7 +80,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     protected InstanceBuilder<E> builder;
     private Graph graph;
 
-    public GraphCluster(LinkedList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
+    public GraphCluster(ArrayList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
         parentGraph = g;
         graphNodes = n;
         edgeCount = -1;
@@ -108,7 +108,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
             ICL = IIC = 1;
             return;
         }
-        ArrayList<LinkedList<Node>> result = bisection.bisect(graph, props);
+        ArrayList<ArrayList<Node>> result = bisection.bisect(graph, props);
         IIC = ICL = 0;
         int counter = 0;
         for (Node node1 : result.get(0)) {
@@ -152,7 +152,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      * @param g Parent graph
      * @return Graph representing this cluster
      */
-    protected Graph buildGraphFromCluster(LinkedList<Node<E>> nodes, Graph g) {
+    protected Graph buildGraphFromCluster(ArrayList<Node<E>> nodes, Graph g) {
         Graph newGraph = null;
         try {
             newGraph = g.getClass().newInstance();
@@ -244,7 +244,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         edgeCount = count;
     }
 
-    public LinkedList<Node<E>> getNodes() {
+    public ArrayList<Node<E>> getNodes() {
         return graphNodes;
     }
 

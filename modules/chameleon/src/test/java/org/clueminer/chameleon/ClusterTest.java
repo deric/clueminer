@@ -1,16 +1,16 @@
 package org.clueminer.chameleon;
 
 import static java.lang.Math.sqrt;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +45,7 @@ public class ClusterTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 3);
 
-        LinkedList<Node> nodes = new LinkedList<>();
+        ArrayList<Node> nodes = new ArrayList<>();
         nodes.addAll(g.getNodes().toCollection());
 
         GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses(), props);
@@ -67,7 +67,7 @@ public class ClusterTest {
         AdjMatrixGraph g = new AdjMatrixGraph(dataset.size());
         g = (AdjMatrixGraph) knn.getNeighborGraph(dataset, g, 3);
 
-        LinkedList<Node> nodes = new LinkedList<>();
+        ArrayList<Node> nodes = new ArrayList<>();
         nodes.addAll(g.getNodes().toCollection());
 
         GraphCluster c = new GraphCluster(nodes, g, 1, new FiducciaMattheyses(), props);

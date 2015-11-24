@@ -26,10 +26,10 @@ import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -166,7 +166,7 @@ public class NsgaQueueTest {
         for (int i = 0; i < n; i++) {
             item = queue.poll();
             assertNotNull(item);
-            LinkedList<Node<Instance>> clusterNodes = item.A.getNodes();
+            ArrayList<Node<Instance>> clusterNodes = item.A.getNodes();
             clusterNodes.addAll(item.B.getNodes());
             GraphCluster<Instance> newCluster = new GraphCluster(clusterNodes, g, clusters.size(), bisection, props);
             clusters.add(newCluster);

@@ -2,7 +2,6 @@ package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 
@@ -14,15 +13,16 @@ public class FloodFill {
 
     private Graph graph;
     private boolean marked[];
-    private ArrayList<LinkedList<Node>> result;
+    private ArrayList<ArrayList<Node>> result;
 
     /**
      * Finds disconnected subgraphs in the given graph
      *
      * @param g Graph to find subgraphs in
+     * @param maxPartition expected size of max. partition
      * @return Lists of nodes in different subgraphs
      */
-    public ArrayList<LinkedList<Node>> findSubgraphs(Graph g) {
+    public ArrayList<ArrayList<Node>> findSubgraphs(Graph g, int maxPartition) {
         graph = g;
         marked = new boolean[graph.getNodeCount()];
         Node nodes[] = graph.getNodes().toArray();
@@ -39,7 +39,7 @@ public class FloodFill {
             for (Node node : nodes) {
                 if (marked[graph.getIndex(node)] == false) {
                     allMarked = false;
-                    result.add(new LinkedList<Node>());
+                    result.add(new ArrayList<Node>(maxPartition));
                     markSubgraph(node, clusterCounter++);
                 }
             }

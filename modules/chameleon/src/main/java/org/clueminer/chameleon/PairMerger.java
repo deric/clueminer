@@ -2,7 +2,6 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
@@ -93,7 +92,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
         //WARNING: we copy nodes from previous clusters (we save memory, but
         //it's not a good idea to work with merged clusters)
-        LinkedList<Node<E>> clusterNodes = curr.A.getNodes();
+        ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
@@ -177,8 +176,8 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      *
      * @return
      */
-    private ArrayList<LinkedList<Node<E>>> getResult() {
-        ArrayList<LinkedList<Node<E>>> result = new ArrayList<>();
+    private ArrayList<ArrayList<Node<E>>> getResult() {
+        ArrayList<ArrayList<Node<E>>> result = new ArrayList<>();
         for (int i = 0; i < clusters.size(); i++) {
             if (blacklist.contains(i)) {
                 continue;

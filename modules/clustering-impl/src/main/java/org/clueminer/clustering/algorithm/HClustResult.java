@@ -283,9 +283,9 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private void checkCutoff(DendroNode node, double cutoff, Clustering clusters, int[] assign) {
         if (node.isLeaf()) {
             if (treeData.containsClusters()) {
-                DClusterLeaf leaf = (DClusterLeaf) node;
+                DClusterLeaf<E> leaf = (DClusterLeaf) node;
                 Cluster clust = makeCluster(clusters);
-                for (Instance instance : leaf.getInstances()) {
+                for (E instance : leaf.getInstances()) {
                     clust.add(instance);
                     assign[instance.getIndex()] = clust.getClusterId();
                 }
@@ -331,8 +331,8 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private void subtreeToCluster(DendroNode node, Cluster c, int[] assign) {
         if (node.isLeaf()) {
             if (treeData.containsClusters()) {
-                DClusterLeaf leaf = (DClusterLeaf) node;
-                for (Instance instance : leaf.getInstances()) {
+                DClusterLeaf<E> leaf = (DClusterLeaf) node;
+                for (E instance : leaf.getInstances()) {
                     c.add(instance);
                     assign[instance.getIndex()] = c.getClusterId();
                 }

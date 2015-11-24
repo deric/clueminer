@@ -54,4 +54,6 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             }
         }
     }
+
+
 }
