@@ -1,4 +1,4 @@
-package org.clueminer.fastcommunity.ui;
+package org.clueminer.graph.ui;
 
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.AgglParams;

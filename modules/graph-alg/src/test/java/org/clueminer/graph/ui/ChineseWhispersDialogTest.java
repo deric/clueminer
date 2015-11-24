@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chinesewhispers.ui;
+package org.clueminer.graph.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -42,7 +42,7 @@ public class ChineseWhispersDialogTest {
     }
 
     public String getTitle() {
-        return "k-means test";
+        return "Chinese Whispers test";
     }
 
     protected JFrame showInFrame() {

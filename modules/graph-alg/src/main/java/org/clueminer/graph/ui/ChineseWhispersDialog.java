@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chinesewhispers.ui;
+package org.clueminer.graph.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -69,7 +69,9 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     public Props getParams() {
         Props params = new Props();
         params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
+        if (sliderIter.getValue() > 0) {
+            params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
+        }
         params.put(ChineseWhispers.DISTANCE, (String) comboDistance.getSelectedItem());
         params.put(ChineseWhispers.GRAPH_CONV, (String) comboGraphConv.getSelectedItem());
         params.putInt("k", sliderK.getValue());
@@ -95,7 +97,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         c.gridx = 0;
         c.gridy = 1;
         add(new JLabel("Iterations:"), c);
-        sliderIter = new JSlider(10, 2000);
+        sliderIter = new JSlider(0, 2000);
         sliderIter.addChangeListener(new ChangeListener() {
 
             @Override
@@ -150,7 +152,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         c.weightx = 0.9;
         tfK = new JTextField("4", 4);
-        sliderK = new JSlider(2, 1000, 4);
+        sliderK = new JSlider(0, 1000, 4);
         sliderK.addChangeListener(new ChangeListener() {
 
             @Override
