@@ -117,6 +117,8 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
             }
             cluster.add(node.getInstance());
         }
+        result.lookupAdd(dataset);
+        result.setParams(props);
         return result;
     }
 }
