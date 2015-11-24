@@ -18,22 +18,21 @@ package org.clueminer.graph.adjacencyMatrix;
 
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.ElemImpl;
 
 /**
  *
  * @author Tomas Bruna
  */
-public class AdjMatrixEdge implements Edge {
+public class AdjMatrixEdge extends ElemImpl implements Edge {
 
-    private final long id;
     private final Node source;
     private final Node target;
     private boolean directed;
     private double weight;
-    private Object label;
 
     AdjMatrixEdge(long id, Node source, Node target, double weight) {
-        this.id = id;
+        super(id);
         this.source = source;
         this.target = target;
         this.weight = weight;
@@ -55,22 +54,8 @@ public class AdjMatrixEdge implements Edge {
     }
 
     @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
     public double getWeight() {
         return weight;
-    }
-
-    @Override
-    public Object getLabel() {
-        return this.label;
-    }
-
-    public void setLabel(Object label) {
-        this.label = label;
     }
 
     @Override

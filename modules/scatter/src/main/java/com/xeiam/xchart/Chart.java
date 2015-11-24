@@ -326,6 +326,38 @@ public class Chart {
         return res;
     }
 
+    public double[] translate(Point2D point) {
+        double[] pos = new double[2];
+
+        //rectangle with
+        Rectangle2D bounds = chartPainter.getPlot().getBounds();
+
+        Axis xAxis = chartPainter.getAxisPair().getXAxis();
+        Axis yAxis = chartPainter.getAxisPair().getYAxis();
+
+        //double xval = rect.x - xLeftMargin / 2.0;
+        double xval;
+        //double yval = rect.y - yTopMargin / 2.0;
+        double yval;
+        double xmax = bounds.getMaxX();
+        double ymax = bounds.getMaxY();
+
+        xval = point.getX();
+        //selection of out plot area
+        if (xval < bounds.getX()) {
+            xval = bounds.getX();
+        }
+
+        yval = point.getY();
+        if (yval < bounds.getY()) {
+            yval = bounds.getY();
+        }
+
+        pos[0] = scaleToRange(xval, bounds.getX(), xmax, xAxis.getMin(), xAxis.getMax());
+        pos[1] = scaleToRange(yval, bounds.getY(), ymax, yAxis.getMax(), yAxis.getMin());
+        return pos;
+    }
+
     /**
      * Scale value from one linear scale to another
      *

@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  * @author Tomas Bruna
  */
-public class AdjMatrixGraphTest extends commons.Commons {
+public class AdjMatrixGraphTest extends org.clueminer.graph.impl.Commons {
 
     AdjMatrixFactory f;
     Node n1;

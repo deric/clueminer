@@ -1,9 +1,6 @@
 package org.clueminer.chinesewhispers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -16,7 +13,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
-import org.clueminer.graph.adjacencyList.AdjListNode;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.Node;
@@ -49,6 +45,8 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
            type = org.clueminer.clustering.params.ParamType.STRING)
     private GraphConvertor graphCon;
 
+    private static final String CLS = "cw_cls";
+
     @Override
     public String getName() {
         return "Chinese Whispers";
@@ -63,15 +61,14 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         maxIterations = props.getInt(MAX_ITERATIONS, 100);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
-        String initializer = props.get(GRAPH_CONV, "distance threshold");
+        String initializer = props.get(GRAPH_CONV, "k-NN");
         graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, props);
 
-        for (Node nodeIt : graph.getNodes()) {
-            AdjListNode node = (AdjListNode) nodeIt;
-            Long classValue = node.getId();
-            node.getInstance().setClassValue(classValue.toString());
+        //assign node to a random class (each node forms a cluster)
+        for (Node node : graph.getNodes()) {
+            node.setAttribute(CLS, node.getId());
         }
 
         boolean changes = true;
@@ -79,14 +76,12 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         int i = 0;
         while (changes && i < maxIterations) {
             changes = false;
-            for (Node nodeIt : graph.getNodes()) {
-                AdjListNode node = (AdjListNode) nodeIt;
-                HashMap<String, Integer> classes = new HashMap<>(graph.getNodeCount());
-                String maxClass = (String) node.getInstance().classValue();
+            for (Node node : graph.getNodes()) {
+                HashMap<Long, Integer> classes = new HashMap<>(graph.getNodeCount());
+                long maxClass = (long) node.getAttribute(CLS);
                 Integer maxCount = 1;
-                for (Node neighborIt : graph.getNeighbors(node)) {
-                    AdjListNode neighbor = (AdjListNode) neighborIt;
-                    String classValue = (String) neighbor.getInstance().classValue();
+                for (Node neighbor : graph.getNeighbors(node)) {
+                    long classValue = (long) neighbor.getAttribute(CLS);
                     Integer count = classes.get(classValue);
                     count = (count == null) ? 1 : count++;
                     classes.put(classValue, count);
@@ -96,39 +91,30 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
                         maxClass = classValue;
                     }
                 }
-                if (!maxClass.equals(node.getInstance().classValue())) {
+                if (maxClass != (long) node.getAttribute(CLS)) {
                     changes = true;
-                    node.getInstance().setClassValue(maxClass);
+                    node.setAttribute(CLS, maxClass);
                 }
             }
             i++;
         }
 
         //graph.print();
-        HashMap<String, List<Node>> clusters = new HashMap<>();
-        for (Node node : graph.getNodes()) {
-            String classValue = (String) node.getInstance().classValue();
-            List<Node> thisCluster = clusters.get(classValue);
-            if (thisCluster == null) {
-                thisCluster = new ArrayList<>();
-                clusters.put(classValue, thisCluster);
-            }
-            thisCluster.add(node);
-        }
         Clustering result = Clusterings.newList();
-        for (Map.Entry<String, List<Node>> entrySet : clusters.entrySet()) {
-            //Long clusterId = entrySet.getKey();
-            List<Node> clusterNodes = entrySet.getValue();
-            Cluster cluster = result.createCluster();
-            if (colorGenerator != null) {
-                cluster.setColor(colorGenerator.next());
+        Cluster cluster;
+        HashMap<Long, Integer> id2clust = new HashMap<>();
+        for (Node node : graph.getNodes()) {
+            long classValue = (long) node.getAttribute(CLS);
+            if (!id2clust.containsKey(classValue)) {
+                cluster = result.createCluster();
+                id2clust.put(classValue, cluster.getClusterId());
+                if (colorGenerator != null) {
+                    cluster.setColor(colorGenerator.next());
+                }
+            } else {
+                cluster = result.get(id2clust.get(classValue));
             }
-            //System.out.println("Cluster " + clusterId);
-            for (Node clusterNode : clusterNodes) {
-                //System.out.println("\t" + clusterNode.getId());
-                cluster.add(clusterNode.getInstance());
-            }
-            //System.out.println("");
+            cluster.add(node.getInstance());
         }
         return result;
     }

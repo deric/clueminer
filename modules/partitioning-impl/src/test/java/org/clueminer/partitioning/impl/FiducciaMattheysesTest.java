@@ -11,7 +11,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;

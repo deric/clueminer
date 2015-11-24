@@ -8,7 +8,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;

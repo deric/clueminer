@@ -85,6 +85,7 @@
                         <publicPackage>org.clueminer.longtask.spi</publicPackage>
                         <publicPackage>org.clueminer.sort</publicPackage>
                         <publicPackage>org.clueminer.utils</publicPackage>
+                        <publicPackage>org.clueminer.utils.exec</publicPackage>
                         <publicPackage>org.clueminer.utils.progress</publicPackage>
                         <publicPackage>org.clueminer.xml</publicPackage>
                     </publicPackages>

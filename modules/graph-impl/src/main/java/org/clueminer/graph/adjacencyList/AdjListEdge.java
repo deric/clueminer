@@ -2,21 +2,21 @@ package org.clueminer.graph.adjacencyList;
 
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.ElemImpl;
 
 /**
  *
  * @author Hamster
  */
-public class AdjListEdge implements Edge {
+public class AdjListEdge extends ElemImpl implements Edge {
 
-    private final long id;
     private final Node source;
     private final Node target;
     private double weight;
     private final boolean directed;
 
     AdjListEdge(long id, Node source, Node target) {
-        this.id = id;
+        super(id);
         this.source = source;
         this.target = target;
         this.weight = 1.0;
@@ -24,7 +24,7 @@ public class AdjListEdge implements Edge {
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed) {
-        this.id = id;
+        super(id);
         this.source = source;
         this.target = target;
         this.weight = 1.0;
@@ -32,7 +32,7 @@ public class AdjListEdge implements Edge {
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed, double weight) {
-        this.id = id;
+        super(id);
         this.source = source;
         this.target = target;
         this.weight = weight;
@@ -52,11 +52,6 @@ public class AdjListEdge implements Edge {
     @Override
     public Node getTarget() {
         return target;
-    }
-
-    @Override
-    public long getId() {
-        return id;
     }
 
     @Override

@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertNotNull;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;

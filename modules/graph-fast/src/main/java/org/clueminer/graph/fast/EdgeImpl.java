@@ -47,11 +47,6 @@ public class EdgeImpl extends ElementImpl implements Edge {
     }
 
     @Override
-    public Object getLabel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean isDirected() {
         return directed;
     }

@@ -1,4 +1,4 @@
-package org.clueminer.graph.GraphBuilder;
+package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
@@ -121,6 +121,7 @@ public class KNNGraphBuilder<E extends Instance> {
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
         g.addEdgesFromNeigborArray(nearests, k);
+        g.lookupAdd(dataset);
         return g;
     }
 

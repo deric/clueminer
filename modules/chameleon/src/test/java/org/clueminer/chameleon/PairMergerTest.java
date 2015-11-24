@@ -25,7 +25,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -72,7 +72,6 @@ public class PairMergerTest {
 
     @Test
     public void testGetHierarchy() {
-
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 5;

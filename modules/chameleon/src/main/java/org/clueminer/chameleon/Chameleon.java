@@ -19,7 +19,7 @@ import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.GraphBuilder.KNNGraphBuilder;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
@@ -193,6 +193,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             Class c = Class.forName(graphStorage);
             g = (Graph) c.newInstance();
             g.ensureCapacity(dataset.size());
+            g.lookupAdd(dataset);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }

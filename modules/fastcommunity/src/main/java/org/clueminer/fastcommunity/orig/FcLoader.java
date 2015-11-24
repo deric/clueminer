@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package edu.umn.metis;
+package org.clueminer.fastcommunity.orig;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,17 +29,33 @@ import org.clueminer.utils.exec.ResourceLoader;
 import org.openide.util.Exceptions;
 
 /**
- * Helper for running external binaries
  *
  * @author deric
- * @param <E>
  */
-public class ExtBinHelper<E extends Instance> extends ResourceLoader {
+public class FcLoader<E extends Instance> extends ResourceLoader {
+
+    protected static final String prefix = "/org/clueminer/fastcommunity";
+    protected static final String hintPackage = "fastcommunity";
 
     private static final String lineEnd = "\n";
     private static final String space = " ";
-    protected static final String prefix = "/edu/umn/metis";
-    protected static final String hintPackage = "metis";
+
+    /**
+     * Resource packed in jar is not possible to open directly, this method uses
+     * a .tmp file which should be on exit deleted
+     *
+     * @param path
+     * @return
+     */
+    @Override
+    public File resource(String path) {
+        return resource(path, prefix, hintPackage);
+    }
+
+    @Override
+    public Enumeration<URL> searchURL(String path) throws IOException {
+        return FcLoader.class.getClassLoader().getResources(path);
+    }
 
     /**
      * Write dataset into a file as space separated values
@@ -69,23 +85,6 @@ public class ExtBinHelper<E extends Instance> extends ResourceLoader {
         } catch (UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
-    }
-
-    /**
-     * Resource packed in jar is not possible to open directly, this method uses
-     * a .tmp file which should be on exit deleted
-     *
-     * @param path
-     * @return
-     */
-    @Override
-    public File resource(String path) {
-        return resource(path, prefix, hintPackage);
-    }
-
-    @Override
-    public Enumeration<URL> searchURL(String path) throws IOException {
-        return ExtBinHelper.class.getClassLoader().getResources(path);
     }
 
 }

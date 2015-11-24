@@ -57,6 +57,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     public ChineseWhispersDialog() {
         initComponents();
         comboDistance.setSelectedItem("Euclidean");
+        comboGraphConv.setSelectedItem("k-NN");
     }
 
     @Override
@@ -125,7 +126,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
                 updateIterSlider();
             }
         });
-        sliderIter.setValue(100);
+        sliderIter.setValue(50);
         //distance measure
         c.gridy++;
         c.gridx = 0;

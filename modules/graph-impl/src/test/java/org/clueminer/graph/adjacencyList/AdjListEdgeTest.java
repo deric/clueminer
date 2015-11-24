@@ -1,5 +1,7 @@
 package org.clueminer.graph.adjacencyList;
 
+import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.Commons;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -51,5 +53,19 @@ public class AdjListEdgeTest {
         assertEquals(weight, edge.getWeight(), delta);
         edge.setWeight(-5.0);
         assertEquals(-5.0, edge.getWeight(), delta);
+    }
+
+    @Test
+    public void testAttributes() {
+        AdjListGraph graph = new AdjListGraph();
+        Commons.buildSmallGraph(graph, new AdjListFactory());
+        assertEquals(7, graph.getNodeCount());
+        int nodeCnt = 0;
+        for (Node n : graph.getNodes()) {
+            n.setAttribute("visited", true);
+            nodeCnt++;
+        }
+        assertEquals(7, nodeCnt);
+        assertEquals(true, graph.getNode(0).getAttribute("visited"));
     }
 }

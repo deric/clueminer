@@ -14,43 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.graph.adjacencyMatrix;
+package org.clueminer.fastcommunity.orig;
 
-import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Node;
-import org.clueminer.graph.impl.ElemImpl;
+import java.io.IOException;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 /**
  *
- * @author tomas
- * @param <E>
+ * @author deric
  */
-public class AdjMatrixNode<E extends Instance> extends ElemImpl implements Node<E> {
+public class FastCommunityBinTest {
 
-    private E instance;
+    private static FastCommunityBin subject;
 
-    public AdjMatrixNode(long id) {
-        super(id);
+    public FastCommunityBinTest() {
+        subject = new FastCommunityBin();
     }
 
-    public AdjMatrixNode(long id, Object label) {
-        super(id);
-        this.label = label;
+    @Test
+    public void testCluster() {
+
     }
 
-    public AdjMatrixNode(long id, E i) {
-        super(id);
-        instance = i;
+    @Test
+    public void testBinary() throws IOException, InterruptedException {
+        assertTrue("binary does not exists", subject.getBinary().exists());
     }
 
-    @Override
-    public void setInstance(E i) {
-        instance = i;
-    }
-
-    @Override
-    public E getInstance() {
-        return instance;
+    @Test
+    public void testIsLinkageSupported() {
     }
 
 }
