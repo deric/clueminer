@@ -73,7 +73,7 @@ public class ChineseWhispersTest {
 
     @Test
     public void getNameTest() {
-        assertEquals("Chinese Whispers", subject.getName());
+        assertEquals("ChineseWhispers", subject.getName());
     }
 
     @Test

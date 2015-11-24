@@ -277,7 +277,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>chinesewhispers</artifactId>
+            <artifactId>graph-alg</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

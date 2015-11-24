@@ -49,7 +49,7 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
 
     @Override
     public String getName() {
-        return "Chinese Whispers";
+        return "ChineseWhispers";
     }
 
     @Override
@@ -58,7 +58,8 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         String dist = props.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
         props.put("algorithm", getName());
-        maxIterations = props.getInt(MAX_ITERATIONS, 100);
+        int iter = (int) (2 * Math.log(dataset.size()));
+        maxIterations = props.getInt(MAX_ITERATIONS, iter);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
         String initializer = props.get(GRAPH_CONV, "k-NN");

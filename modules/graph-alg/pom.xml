@@ -7,7 +7,7 @@
         <version>0.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>chinesewhispers</artifactId>
+    <artifactId>graph-alg</artifactId>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -113,4 +113,5 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <name>graph-alg</name>
 </project>
