@@ -168,6 +168,13 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         throw new RuntimeException("current chart not set");
     }
 
+    public double[] translate(Point2D point) {
+        if (currChart != null) {
+            return currChart.translate(point);
+        }
+        throw new RuntimeException("current chart not set");
+    }
+
     public Point2D posOnCanvas(double x, double y) {
         if (currChart != null) {
             return currChart.positionOnCanvas(x, y);
