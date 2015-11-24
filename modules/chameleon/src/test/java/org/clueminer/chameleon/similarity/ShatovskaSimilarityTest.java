@@ -17,16 +17,15 @@
 package org.clueminer.chameleon.similarity;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.PairMerger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -67,11 +66,11 @@ public class ShatovskaSimilarityTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
+        ArrayList<ArrayList<Node<Instance>>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         PairMerger merger = new PairMerger();
         merger.setMergeEvaluation(subject);
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, pref);
         ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
         merger.computeExternalProperties();
         assertEquals(12, clusters.size());

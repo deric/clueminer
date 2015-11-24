@@ -28,10 +28,10 @@ import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -66,14 +66,14 @@ public class FkQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new Closeness());
         objectives.add(new Interconnectivity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
@@ -126,7 +126,7 @@ public class FkQueueTest {
         objectives.add(new ShatovskaSimilarity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);

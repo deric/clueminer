@@ -46,7 +46,7 @@ public class RecursiveBisection implements Partitioning {
         ArrayList<ArrayList<Node>> clusters;
         if (g.getNodeCount() < maxNodesInCluster) {
             ArrayList<ArrayList<Node>> nodes = new ArrayList<>(expectedSize);
-            nodes.add((ArrayList<Node>) g.getNodes().toCollection());
+            nodes.add(new ArrayList<>(g.getNodes().toCollection()));
             return nodes;
         } else {
             clusters = recursivePartition(g, params, expectedSize);

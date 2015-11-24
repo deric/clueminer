@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -25,10 +24,10 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
@@ -57,13 +56,13 @@ public class PairMergerMOHTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         subject = new PairMergerMOH();
         subject.addObjective(new Closeness());
         subject.addObjective(new Interconnectivity());
 
-        subject.initialize(partitioningResult, g, bisection, null);
+        subject.initialize(partitioningResult, g, bisection, pref);
 
         HierarchicalResult result = subject.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();

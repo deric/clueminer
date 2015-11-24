@@ -63,14 +63,14 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
@@ -104,14 +104,14 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
@@ -143,14 +143,14 @@ public class NsgaQueueTest {
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<LinkedList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         List<MergeEvaluation> objectives = new LinkedList<>();
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
         PairMergerMOF merger = new PairMergerMOF();
-        merger.initialize(partitioningResult, g, bisection, null);
+        merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
