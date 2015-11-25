@@ -276,6 +276,10 @@ public class GraphPropertyStore {
         }
     }
 
+    public int getCapacity() {
+        return store.length;
+    }
+
     public double getDefaultValue() {
         return defaultValue;
     }
