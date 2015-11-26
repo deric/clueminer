@@ -333,6 +333,17 @@ public class ClusterListTest {
     }
 
     @Test
+    public void testRemoveInt() {
+        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        assertEquals(4, c1.size());
+
+        c1.remove(0);
+        assertEquals(3, c1.size());
+        //another cluster with ID 0 will be present
+        assertEquals(0, c1.get(0).getClusterId());
+    }
+
+    @Test
     public void testContainsAll() {
         Clustering<Instance, Cluster<Instance>> c1 = createClusters();
         Clustering<Instance, Cluster<Instance>> c2 = createClustersDifferentOrder();

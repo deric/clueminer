@@ -300,4 +300,12 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @param value
      */
     void setValidation(String metric, double value);
+
+    /**
+     * Remove cluster on given index
+     *
+     * @param idx
+     * @return true when successful
+     */
+    boolean remove(int idx);
 }
