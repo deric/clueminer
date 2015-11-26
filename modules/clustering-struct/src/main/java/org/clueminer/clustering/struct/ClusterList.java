@@ -67,6 +67,10 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         name2id = new HashMap<>(capacity);
     }
 
+    public ClusterList(Integer capacity) {
+        this(capacity.intValue());
+    }
+
     /**
      * Some identification of clustering doesn't have to be unique, but short
      *
