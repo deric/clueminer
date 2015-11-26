@@ -171,7 +171,14 @@ public class DTreeNode implements DendroNode {
         StringBuilder sb = new StringBuilder();
         sb.append("[ ").append("#").append(getId()).append(", ")
                 .append(String.format("%.2f", getHeight()))
-                .append(", ").append(level).append(" ]");
+                .append(", level = ").append(level).append(" ");
+        if (left != null) {
+            sb.append("L: ").append(left.getId());
+        }
+        if (right != null) {
+            sb.append(", R: ").append(right.getId());
+        }
+        sb.append(" ]");
         return sb.toString();
     }
 

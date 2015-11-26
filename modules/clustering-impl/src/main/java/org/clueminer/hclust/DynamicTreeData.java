@@ -397,7 +397,7 @@ public class DynamicTreeData implements DendroTreeData {
         if (node.isLeaf()) {
             return node.getPosition();
         }
-
+        //System.out.println(node.getId() + "L: " + node.getLeft() + ", R: " + node.getRight());
         double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
         node.setPosition(position);
         return position;

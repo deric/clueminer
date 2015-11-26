@@ -371,18 +371,16 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private double findLevelHeight(DendroNode node, int level) {
         if (node.level() == level) {
             return node.getHeight();
+        } else if (node.isLeaf()) {
+            return -1;
         } else {
-            if (node.isLeaf()) {
-                return -1;
-            } else {
-                double ret = findLevelHeight(node.getLeft(), level);
-                if (ret > -1) {
-                    return ret;
-                }
-                ret = findLevelHeight(node.getRight(), level);
-                if (ret > -1) {
-                    return ret;
-                }
+            double ret = findLevelHeight(node.getLeft(), level);
+            if (ret > -1) {
+                return ret;
+            }
+            ret = findLevelHeight(node.getRight(), level);
+            if (ret > -1) {
+                return ret;
             }
         }
         return -1;
@@ -637,13 +635,13 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
 
     @Override
     public int size() {
-        if (resultType == ClusteringType.COLUMNS_CLUSTERING) {
-            return dataset.attributeCount();
-        } else if (resultType == ClusteringType.ROWS_CLUSTERING) {
-            return dataset.size();
-        } else {
-            throw new RuntimeException("Don't know wether cluster rows or columns.");
+        switch (resultType) {
+            case COLUMNS_CLUSTERING:
+                return dataset.attributeCount();
+            case ROWS_CLUSTERING:
+                return dataset.size();
         }
+        throw new RuntimeException("Don't know wether cluster rows or columns.");
     }
 
     @Override
