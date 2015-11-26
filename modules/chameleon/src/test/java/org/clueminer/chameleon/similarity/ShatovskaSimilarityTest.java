@@ -19,6 +19,7 @@ package org.clueminer.chameleon.similarity;
 import java.util.ArrayList;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.PairMerger;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -71,8 +72,8 @@ public class ShatovskaSimilarityTest {
         PairMerger merger = new PairMerger();
         merger.setMergeEvaluation(subject);
         merger.initialize(partitioningResult, g, bisection, pref);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
-        merger.computeExternalProperties();
+        Clustering<Instance, GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
+        merger.computeExternalProperties(clusters);
         assertEquals(12, clusters.size());
 
         assertEquals(4.464646866748596E-13, subject.score(clusters.get(0), clusters.get(1), pref), delta);

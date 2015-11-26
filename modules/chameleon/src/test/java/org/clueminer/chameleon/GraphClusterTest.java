@@ -18,6 +18,7 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -66,7 +67,7 @@ public class GraphClusterTest {
         PairMerger merger = new PairMerger();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setMergeEvaluation(eval);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
+        Clustering<Instance, GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
         cluster = clusters.get(0);
         assertNotNull(cluster);
     }

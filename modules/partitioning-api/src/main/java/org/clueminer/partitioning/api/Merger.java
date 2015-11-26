@@ -19,6 +19,7 @@ package org.clueminer.partitioning.api;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -69,7 +70,7 @@ public interface Merger<E extends Instance> {
      *
      * @return clusters to merge
      */
-    ArrayList<? extends Cluster<E>> getClusters();
+    Clustering<E, ? extends Cluster<E>> getClusters();
 
     /**
      * Set distance measure used for computation of similarity graph

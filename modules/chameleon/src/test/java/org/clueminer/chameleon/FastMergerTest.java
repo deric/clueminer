@@ -44,7 +44,7 @@ public class FastMergerTest {
 
     private FastMerger merger;
 
-    @Test
+    // @Test
     public void testUsArrest() {
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
@@ -66,7 +66,7 @@ public class FastMergerTest {
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
-        //tree.print();
+        tree.print();
     }
 
     @Test

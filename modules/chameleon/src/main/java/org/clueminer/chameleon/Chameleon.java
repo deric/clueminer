@@ -223,7 +223,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 dataset.add((E) i);
             }
         }
-
         noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
 
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();

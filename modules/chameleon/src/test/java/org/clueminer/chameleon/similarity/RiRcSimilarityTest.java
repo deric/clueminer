@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.PairMerger;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -72,9 +73,9 @@ public class RiRcSimilarityTest {
         PairMerger merger = new PairMerger();
         merger.initialize(partitioningResult, g, bisection, pref);
         merger.setMergeEvaluation(subject);
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
+        Clustering<Instance, GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, pref);
 
-        merger.computeExternalProperties();
+        merger.computeExternalProperties(clusters);
         assertEquals(12, clusters.size());
 
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);

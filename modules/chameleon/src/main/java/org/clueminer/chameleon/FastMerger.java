@@ -17,14 +17,18 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.similarity.AbstractSimilarity;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.kdtree.KDTree;
 import org.clueminer.kdtree.KeyDuplicateException;
 import org.clueminer.kdtree.KeySizeException;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
@@ -41,6 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class FastMerger<E extends Instance> extends PairMerger<E> implements Merger<E> {
 
     public static final String name = "fast merger";
+    private KDTree<GraphCluster<E>> kdTree;
 
     @Override
     public String getName() {
@@ -48,22 +53,23 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     }
 
     @Override
-    protected void buildQueue(int numClusters, Props pref) {
-        int k = 3;
-        int capacity = k * numClusters;
-        System.out.println("pq capacity = " + capacity);
-        pq = initQueue(capacity);
-        double sim;
-        //number of nearest clusters that we evaluate
+    public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params, ArrayList<E> noise) {
+        this.graph = graph;
+        this.bisection = bisection;
+        blacklist = new HashSet<>();
+        clusters = createClusters(clusterList, bisection, params);
+        assignNodesToCluters(clusters);
+        computeExternalProperties(clusters);
+        prefilter(clusters, noise, params);
+        nodes = initiateTree(clusters, noise);
+        return noise;
+    }
 
-        AbstractSimilarity as = (AbstractSimilarity) evaluation;
-        GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
-
-        System.out.println("clusters " + numClusters);
-        System.out.println("gps capacity = " + gps.getCapacity());
-
+    @Override
+    public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props pref) {
+        System.out.println("input clusters: " + clusters.size());
         //build kd-tree for fast search
-        KDTree<GraphCluster<E>> kdTree = new KDTree<>(clusters.get(0).attributeCount());
+        kdTree = new KDTree<>(clusters.get(0).attributeCount());
         List<GraphCluster<E>> tiny = new LinkedList<>();
         for (GraphCluster<E> a : clusters) {
             try {
@@ -96,6 +102,24 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 Exceptions.printStackTrace(ex);
             }
         }
+        System.out.println("after filtering: " + clusters.size());
+    }
+
+    @Override
+    protected int buildQueue(int numClusters, Props pref) {
+        int k = 10;
+        int capacity = k * numClusters;
+        System.out.println("pq capacity = " + capacity);
+        pq = initQueue(capacity);
+        double sim;
+        //number of nearest clusters that we evaluate
+
+        AbstractSimilarity as = (AbstractSimilarity) evaluation;
+        GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
+        int maxClusterId = clusters.size();
+
+        System.out.println("clusters " + numClusters);
+        System.out.println("gps capacity = " + gps.getCapacity());
 
         for (GraphCluster<E> a : clusters) {
             //except tiny clusters
@@ -117,6 +141,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             }
         }
         System.out.println("pq built " + pq.size());
+        return maxClusterId;
     }
 
     /**
@@ -150,24 +175,25 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
         System.out.println("a = " + small.getClusterId() + ", b = " + large.getClusterId());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, large.getClusterId(), bisection, pref);
         System.out.println("creating cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
         clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
-        addIntoTree(curr, pref);
+        //   addIntoTree(curr, pref);
         updateExternalProperties(newCluster, small, large);
-        addIntoQueue(newCluster, pref);
+        //addIntoQueue(newCluster, pref);
     }
 
     private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         double sim;
-        GraphCluster a;
         //TODO: check bounds
-        for (int i = 0; i < cluster.getClusterId(); i++) {
-            if (!blacklist.contains(i)) {
-                a = clusters.get(i);
-                sim = evaluation.score(a, cluster, pref);
-                pq.add(new PairValue<GraphCluster<E>>(a, cluster, sim));
+        for (GraphCluster<E> a : clusters) {
+            if (!blacklist.contains(a.getClusterId())) {
+                if (a.getClusterId() != cluster.getClusterId()) {
+                    sim = evaluation.score(a, cluster, pref);
+                    System.out.println("sim = " + sim);
+                    pq.add(new PairValue<>(a, cluster, sim));
+                }
             }
         }
     }

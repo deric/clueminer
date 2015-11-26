@@ -19,6 +19,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -89,9 +90,9 @@ public class PairMergerTest {
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setMergeEvaluation(eval);
 
-        ArrayList<GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
+        Clustering<Instance, GraphCluster<Instance>> clusters = merger.createClusters(partitioningResult, bisection, props);
 
-        merger.computeExternalProperties();
+        merger.computeExternalProperties(clusters);
         assertEquals(7, clusters.size());
 
         assertEquals(3, clusters.get(0).size());

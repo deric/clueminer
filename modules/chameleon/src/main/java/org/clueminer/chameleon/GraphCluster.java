@@ -80,6 +80,8 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     protected InstanceBuilder<E> builder;
     private Graph graph;
 
+    private String name;
+
     public GraphCluster(ArrayList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
         parentGraph = g;
         graphNodes = n;
@@ -93,6 +95,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         }
         attrCnt = dataset.attributeCount();
         attributes = dataset.copyAttributes();
+        name = "cluster " + id;
     }
 
     /**
@@ -334,12 +337,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     @Override
     public String getName() {
-        return "cluster " + id;
+        return name;
     }
 
     @Override
     public void setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.name = name;
     }
 
     @Override

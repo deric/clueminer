@@ -22,6 +22,7 @@ import java.util.List;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -162,7 +163,7 @@ public class NsgaQueueTest {
         //TODO: make sure we can remove and add items to queue in fast manner
         int n = 21;
         MoPair<Instance, GraphCluster<Instance>> item;
-        ArrayList<GraphCluster<Instance>> clusters = merger.getClusters();
+        Clustering<Instance, GraphCluster<Instance>> clusters = merger.getClusters();
         for (int i = 0; i < n; i++) {
             item = queue.poll();
             assertNotNull(item);

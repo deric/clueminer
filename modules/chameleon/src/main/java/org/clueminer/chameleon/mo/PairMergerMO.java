@@ -25,6 +25,7 @@ import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.HClustResult;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -225,6 +226,11 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     @Override
     public PriorityQueue getQueue(Props pref) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
+        //
     }
 
 }

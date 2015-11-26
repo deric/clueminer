@@ -52,15 +52,17 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         if (clusters.isEmpty()) {
             throw new RuntimeException("initialize() must be called first");
         }
-        buildQueue(clusters.size(), pref);
+        int numClusters = clusters.size();
+        int clusterId = buildQueue(clusters.size(), pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         //number of initial clusters
-        int numClusters = clusters.size();
         for (int i = 0; i < numClusters - 1; i++) {
-            singleMerge(pq.poll(), pref);
+            //while (!pq.isEmpty()) {
+            singleMerge(pq.poll(), pref, clusterId);
+            clusterId++;
         }
         //getGraphPropertyStore(clusters.get(0)).dump();
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
@@ -74,7 +76,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      *
      * @param clusterList
      */
-    private void singleMerge(PairValue<GraphCluster<E>> curr, Props pref) {
+    private void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
@@ -95,7 +97,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
         clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
         addIntoTree(curr, pref);
@@ -125,10 +127,12 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      * Computes similarities between all clusters and adds them into the
      * priority queue.
      *
+     *
      * @param numClusters
      * @param pref
+     * @return ID of next cluster
      */
-    protected void buildQueue(int numClusters, Props pref) {
+    protected int buildQueue(int numClusters, Props pref) {
         int capacity = numClusters * numClusters;
         pq = initQueue(capacity);
         double sim;
@@ -141,6 +145,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
                 pq.add(new PairValue<GraphCluster<E>>(a, b, sim));
             }
         }
+        return clusters.size();
     }
 
     protected PriorityQueue<PairValue<GraphCluster<E>>> initQueue(int capacity) {
@@ -208,6 +213,38 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     public PriorityQueue getQueue(Props pref) {
         buildQueue(clusters.size(), pref);
         return pq;
+    }
+
+    @Override
+    public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
+        if (params != null && params.getInt(Chameleon.NOISE_DETECTION, 0) == Chameleon.NOISE_INTERNAL_PROPERTIES) {
+            noise = identifyNoise(clusters, params);
+            if (noise != null) {
+                int i = 0;
+                for (GraphCluster cluster : clusters) {
+                    cluster.setClusterId(i);
+                    i++;
+                }
+            }
+        }
+    }
+
+    private ArrayList<E> identifyNoise(Clustering<E, GraphCluster<E>> clusters, Props params) {
+        double median = computeMedianCl(clusters);
+        ArrayList<E> noise = null;
+        for (int i = 0; i < clusters.size(); i++) {
+            if (clusters.get(i).getACL() < median / params.getDouble(Chameleon.INTERNAL_NOISE_THRESHOLD, 2)) {
+                if (noise == null) {
+                    noise = new ArrayList<>();
+                }
+                for (Node<E> node : clusters.get(i).getNodes()) {
+                    noise.add(node.getInstance());
+                }
+                clusters.remove(i);
+                i--;
+            }
+        }
+        return noise;
     }
 
 }

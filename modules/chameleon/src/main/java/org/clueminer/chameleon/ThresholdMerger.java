@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.PriorityQueue;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -57,7 +58,7 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
 
     private ArrayList<ArrayList<Node<E>>> singleMerge(ArrayList<ArrayList<Node<E>>> clusterList, Props props) {
         createClusters(clusterList, bisection, props);
-        computeExternalProperties();
+        computeExternalProperties(clusters);
         initiateClustersForMerging();
 
         for (int i = 0; i < clusters.size(); i++) {
@@ -140,6 +141,11 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     @Override
     public PriorityQueue getQueue(Props pref) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
+        //
     }
 
 }
