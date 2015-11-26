@@ -147,10 +147,16 @@ public class GraphPropertyStore {
                 return p;
             }
         } else {
-            ExtProp p = store[map(i, j)];
-            if (p == null) {
-                p = new ExtProp();
-                store[map(i, j)] = p;
+            ExtProp p;
+            try {
+                p = store[map(i, j)];
+                if (p == null) {
+                    p = new ExtProp();
+                    store[map(i, j)] = p;
+                }
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                System.out.println("was getting [" + i + ", " + j + "] -> " + map(i, j) + " length = " + store.length);
+                throw ex;
             }
             return p;
         }

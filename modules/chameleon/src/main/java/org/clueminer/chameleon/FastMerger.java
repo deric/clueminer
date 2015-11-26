@@ -49,12 +49,12 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     @Override
     protected void buildQueue(int numClusters, Props pref) {
-        int capacity = numClusters * numClusters;
+        int k = 3;
+        int capacity = k * numClusters;
         System.out.println("pq capacity = " + capacity);
         pq = initQueue(capacity);
         double sim;
         //number of nearest clusters that we evaluate
-        int k = 3;
 
         AbstractSimilarity as = (AbstractSimilarity) evaluation;
         GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
@@ -85,6 +85,12 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 List<GraphCluster<E>> nn = kdTree.nearest(inst.arrayCopy(), 1);
                 //TODO: check constrains
                 //merge with closest cluster
+                System.out.println("t = " + t.getClusterId() + " nn = " + nn.get(0).getClusterId());
+                //blacklist.add(t.getClusterId());
+                //blacklist.add(nn.get(0).getClusterId());
+                //TODO: this is quite inefficient, though it reduces number of compared similarities
+                clusters.remove(nn.get(0));
+                clusters.remove(t);
                 merge(t, nn.get(0), pref);
             } catch (KeySizeException | IllegalArgumentException ex) {
                 Exceptions.printStackTrace(ex);
@@ -113,16 +119,43 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         System.out.println("pq built " + pq.size());
     }
 
-    private void merge(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
-        ArrayList<Node<E>> clusterNodes = a.getNodes();
-        clusterNodes.addAll(b.getNodes());
+    /**
+     * Merge cluster containing single node with a larger cluster
+     *
+     * @param small
+     * @param large
+     * @param pref
+     */
+    private void merge(GraphCluster<E> small, GraphCluster<E> large, Props pref) {
+        ArrayList<Node<E>> clusterNodes = large.getNodes();
+        Node<E> outlier = small.getNodes().get(0);
+        E inst = outlier.getInstance();
+        double min = Double.MAX_VALUE, dist;
+        Node minNode = null;
+        for (Node<E> n : large.getNodes()) {
+            dist = dm.measure(inst, n.getInstance());
+            if (dm.compare(dist, min)) {
+                min = dist;
+                minNode = n;
+            }
+            System.out.println("d = " + dist);
+        }
+        System.out.println("min distance is " + min);
+        System.out.println("edge " + outlier.getId() + " -> " + minNode.getId());
+        //create an extra edge connecting the outlier with original graph
+        graph.addEdge(graph.getFactory().newEdge(small.getNodes().get(0), minNode, 0, min, false));
+
+        clusterNodes.add(outlier);
         //similarity is not important in this case
-        PairValue<GraphCluster<E>> curr = new PairValue<>(a, b, 0.0);
+        PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
+        System.out.println("a = " + small.getClusterId() + ", b = " + large.getClusterId());
+
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
+        System.out.println("creating cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
         clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
         addIntoTree(curr, pref);
-        updateExternalProperties(newCluster, a, b);
+        updateExternalProperties(newCluster, small, large);
         addIntoQueue(newCluster, pref);
     }
 

@@ -216,7 +216,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
-
+        m.setDistanceMeasure(knn.getDistanceMeasure());
         //Restore noise removed by DBSCAN so it is part of the result
         if (noise != null && pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
             for (E i : noise) {

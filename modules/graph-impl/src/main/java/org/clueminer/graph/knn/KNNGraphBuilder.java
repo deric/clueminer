@@ -32,10 +32,6 @@ public class KNNGraphBuilder<E extends Instance> {
         dm = new EuclideanDistance();
     }
 
-    public void setDistanceMeasure(Distance dm) {
-        this.dm = dm;
-    }
-
     /**
      * Find k neighbors of all items in the dataset
      *
@@ -123,6 +119,14 @@ public class KNNGraphBuilder<E extends Instance> {
         g.addEdgesFromNeigborArray(nearests, k);
         g.lookupAdd(dataset);
         return g;
+    }
+
+    public void setDistanceMeasure(Distance dm) {
+        this.dm = dm;
+    }
+
+    public Distance getDistanceMeasure() {
+        return this.dm;
     }
 
 }

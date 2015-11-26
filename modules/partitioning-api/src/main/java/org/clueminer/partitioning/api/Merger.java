@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
@@ -69,4 +70,11 @@ public interface Merger<E extends Instance> {
      * @return clusters to merge
      */
     ArrayList<? extends Cluster<E>> getClusters();
+
+    /**
+     * Set distance measure used for computation of similarity graph
+     *
+     * @param dm a distance function
+     */
+    void setDistanceMeasure(Distance dm);
 }

@@ -1,6 +1,6 @@
 package org.clueminer.hclust;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Stack;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
@@ -72,7 +72,7 @@ public class DynamicClusterTreeData extends DynamicTreeData {
         resizeIfNeeded(i);
         leaves[leavesCounter++] = node;
         DClusterLeaf leaf = (DClusterLeaf) node;
-        LinkedList<Instance> instances = (LinkedList<Instance>) leaf.getInstances();
+        ArrayList<Instance> instances = (ArrayList<Instance>) leaf.getInstances();
         node.setPosition(i + instances.size() / 2);
         //Map all nodes in cluster
         for (Instance instance : instances) {

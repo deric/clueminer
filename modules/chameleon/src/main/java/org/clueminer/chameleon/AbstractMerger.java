@@ -4,9 +4,9 @@ import edu.umn.metis.HMetisBisector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -60,9 +60,14 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected int level;
 
+    /**
+     * Distance measure used by the k-NN algorithm
+     */
+    protected Distance dm;
+
     @Override
     public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params) {
-        return this.initialize(clusterList, graph, bisection, params, null);
+        return initialize(clusterList, graph, bisection, params, null);
     }
 
     @Override
@@ -206,8 +211,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         return treeNodes;
     }
 
-    protected LinkedList<Instance> createInstanceList(ArrayList<Node<E>> nodes) {
-        LinkedList<Instance> out = new LinkedList<>();
+    protected ArrayList<Instance> createInstanceList(ArrayList<Node<E>> nodes) {
+        ArrayList<Instance> out = new ArrayList<>(nodes.size());
         for (Node node : nodes) {
             out.add(node.getInstance());
         }
@@ -324,6 +329,11 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     @Override
     public ArrayList<GraphCluster<E>> getClusters() {
         return clusters;
+    }
+
+    @Override
+    public void setDistanceMeasure(Distance dm) {
+        this.dm = dm;
     }
 
 }

@@ -17,11 +17,13 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.chameleon.similarity.Standard;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
@@ -64,7 +66,33 @@ public class FastMergerTest {
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
-        tree.print();
+        //tree.print();
+    }
+
+    @Test
+    public void testVehicle() {
+        Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 3;
+        int maxPartitionSize = 20;
+        Graph g = new AdjMatrixGraph();
+        Props props = new Props();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+
+        merger = new FastMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
+        merger.setMergeEvaluation(new ShatovskaSimilarity());
+        merger.initialize(partitioningResult, g, bisection, props);
+
+        Props pref = new Props();
+        HierarchicalResult result = merger.getHierarchy(dataset, pref);
+        DendroTreeData tree = result.getTreeData();
+        //tree.print();
     }
 
 }
