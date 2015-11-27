@@ -6,6 +6,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
+import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
@@ -24,12 +25,14 @@ public class Legend extends BPanel implements DendrogramDataListener {
     private final Insets insets = new Insets(10, 10, 10, 0);
     private final DendroPane panel;
     private int colorBarWidth = 30;
+    private int colorBarHeight;
     private DendrogramMapping data;
     private boolean antialiasing = true;
-    private int colorBarHeight;
     protected BufferedImage buffScale;
     private int textWidth;
     private int spaceBetweenBarAndLabels = 5;
+    private int orientation;
+    private int fHeight;
 
     public Legend(DendroPane p) {
         super();
@@ -38,6 +41,16 @@ public class Legend extends BPanel implements DendrogramDataListener {
         setOpaque(true);
         //setDoubleBuffered(false);
         fitToSpace = false;
+        this.orientation = SwingConstants.VERTICAL;
+    }
+
+    /**
+     * Either SwingConstants.VERTICAL or HORIZONTAL
+     *
+     * @param orientation component orientation
+     */
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
     }
 
     /**
@@ -109,7 +122,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
 
         FontMetrics hfm = g.getFontMetrics();
         // int descent = hfm.getDescent();
-        int fHeight = hfm.getHeight();
+        fHeight = hfm.getHeight();
 
         g.setColor(Color.black);
 
@@ -151,12 +164,21 @@ public class Legend extends BPanel implements DendrogramDataListener {
 
     @Override
     public void recalculate() {
-        colorBarHeight = reqSize.height - insets.bottom - insets.top;
+        int w = colorBarWidth + insets.left + insets.right + spaceBetweenBarAndLabels;
+        int h = 200; //total component height (available space - depends e.g. on tree height)
+        if (orientation == SwingConstants.VERTICAL) {
+            realSize.height = h;
+            realSize.width = w;
+        } else {
+            realSize.width = w;
+            realSize.width = h;
+        }
+
+        colorBarHeight = realSize.height - insets.bottom - insets.top - fHeight;
         if (colorBarHeight < 10) {
             //default height which is not bellow zero
             colorBarHeight = 20;
         }
-        //setMinimumSize(realSize);
     }
 
     @Override
@@ -166,6 +188,8 @@ public class Legend extends BPanel implements DendrogramDataListener {
 
     public void setData(DendrogramMapping data) {
         this.data = data;
+        recalculate();
+        setSize(realSize);
     }
 
     @Override

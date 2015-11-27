@@ -15,6 +15,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 
 /**
  * Should serve for testing DendroView component
@@ -56,8 +57,7 @@ public class DendroView2 extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

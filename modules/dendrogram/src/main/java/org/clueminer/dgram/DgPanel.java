@@ -517,13 +517,18 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     private void createLegend() {
         //we call constructor just one
+        System.out.println("creating legend");
         if (legend == null) {
             legend = new Legend(this);
             dataListeners.add(legend);
-            if (dendroData != null) {
-                legend.setData(dendroData);
-            }
         }
+        if (dendroData != null) {
+            legend.setData(dendroData);
+        }
+
+        System.out.println("legend has data? " + legend.hasData());
+        System.out.println("legend size " + legend.getSize());
+        System.out.println("legend pref size " + legend.getPreferredSize());
     }
 
     private void createColumnAnnotation() {

@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -66,7 +65,7 @@ public class DendroView extends JFrame {
     private static void createAndShowGUI() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream is = classLoader.getResourceAsStream("logging.properties");
-        LogManager.getLogManager().readConfiguration(is);
+//        LogManager.getLogManager().readConfiguration(is);
 
         Handler consoleHandler = new ConsoleHandler();
         consoleHandler.setLevel(Level.FINER);

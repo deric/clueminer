@@ -35,6 +35,7 @@ import org.clueminer.utils.Exportable;
 import org.openide.util.Lookup;
 
 /**
+ * Component for dendrogram visualization
  *
  * @author Tomas Barton
  * @param <E>
@@ -182,18 +183,22 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
         return dendrogramPanel.isHorizontalTreeVisible();
     }
 
+    @Override
     public void setVerticalTreeVisible(boolean show) {
         dendrogramPanel.setVerticalTreeVisible(show);
     }
 
+    @Override
     public boolean isVerticalTreeVisible() {
         return dendrogramPanel.isVerticalTreeVisible();
     }
 
+    @Override
     public void setLegendVisible(boolean show) {
         dendrogramPanel.setLegendVisible(show);
     }
 
+    @Override
     public boolean isLegendVisible() {
         return dendrogramPanel.isLegendVisible();
     }
