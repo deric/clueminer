@@ -106,8 +106,10 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         this.currChart = chart;
 
         for (Cluster<E> clust : clustering) {
-            Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
-            s.setMarkerColor(clust.getColor());
+            if (clust.size() > 0) {
+                Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+                s.setMarkerColor(clust.getColor());
+            }
         }
         XChartPanel xchart = new XChartPanel(chart);
         if (mouseListener != null) {
