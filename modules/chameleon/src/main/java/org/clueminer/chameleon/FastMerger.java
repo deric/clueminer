@@ -60,6 +60,9 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         clusters = createClusters(clusterList, bisection, params);
         assignNodesToCluters(clusters);
         computeExternalProperties(clusters);
+        if (noise == null) {
+            noise = new ArrayList<>();
+        }
         prefilter(clusters, noise, params);
         nodes = initiateTree(clusters, noise);
         return noise;
@@ -97,12 +100,14 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //TODO: this is quite inefficient, though it reduces number of compared similarities
                 clusters.remove(nn.get(0));
                 clusters.remove(t);
-                merge(t, nn.get(0), pref);
+                merge(t, nn.get(0), noise, pref);
             } catch (KeySizeException | IllegalArgumentException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
-        System.out.println("after filtering: " + clusters.size());
+        System.out.println("after filtering: " + clusters.size() + ", noise: " + noise.size());
+        renumberClusters(clusters, noise);
+
     }
 
     @Override
@@ -145,13 +150,14 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     }
 
     /**
-     * Merge cluster containing single node with a larger cluster
+     * Merge cluster containing single node with a larger cluster (this merge is
+     * not reflected in the dendrogram)
      *
      * @param small
      * @param large
      * @param pref
      */
-    private void merge(GraphCluster<E> small, GraphCluster<E> large, Props pref) {
+    private void merge(GraphCluster<E> small, GraphCluster<E> large, ArrayList<E> noise, Props pref) {
         ArrayList<Node<E>> clusterNodes = large.getNodes();
         Node<E> outlier = small.getNodes().get(0);
         E inst = outlier.getInstance();
@@ -159,29 +165,33 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         Node minNode = null;
         for (Node<E> n : large.getNodes()) {
             dist = dm.measure(inst, n.getInstance());
-            if (dm.compare(dist, min)) {
+            if (dm.compare(dist, min) && (dist < large.getSigma(pref))) {
                 min = dist;
                 minNode = n;
             }
-            System.out.println("d = " + dist);
         }
-        System.out.println("min distance is " + min);
-        System.out.println("edge " + outlier.getId() + " -> " + minNode.getId());
-        //create an extra edge connecting the outlier with original graph
-        graph.addEdge(graph.getFactory().newEdge(small.getNodes().get(0), minNode, 0, min, false));
 
-        clusterNodes.add(outlier);
-        //similarity is not important in this case
-        PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
-        System.out.println("a = " + small.getClusterId() + ", b = " + large.getClusterId());
+        if (minNode != null) {
+            System.out.println("min distance is " + min);
+            System.out.println("sigma dist = " + large.getSigma(pref));
+            System.out.println("edge " + outlier.getId() + " -> " + minNode.getId());
+            //create an extra edge connecting the outlier with original graph
+            graph.addEdge(graph.getFactory().newEdge(small.getNodes().get(0), minNode, 0, min, false));
 
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, large.getClusterId(), bisection, pref);
-        System.out.println("creating cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
-        clusters.add(newCluster);
-        evaluation.clusterCreated(curr, newCluster, pref);
-        //   addIntoTree(curr, pref);
-        updateExternalProperties(newCluster, small, large);
-        //addIntoQueue(newCluster, pref);
+            clusterNodes.add(outlier);
+            //similarity is not important in this case
+            PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
+
+            GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, large.getClusterId(), bisection, pref);
+            System.out.println("adding to cluster cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
+            clusters.add(newCluster);
+            evaluation.clusterCreated(curr, newCluster, pref);
+            //   addIntoTree(curr, pref);
+            updateExternalProperties(newCluster, small, large);
+            //addIntoQueue(newCluster, pref);
+        } else {
+            noise.add(inst);
+        }
     }
 
     private void addIntoQueue(GraphCluster<E> cluster, Props pref) {

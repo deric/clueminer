@@ -223,8 +223,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 dataset.add((E) i);
             }
         }
-        noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
-
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (m instanceof PairMerger) {
             similarityMeasure = pref.get(SIM_MEASURE, BBK1.name);
@@ -236,6 +234,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_2)));
         }
+        noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
         HierarchicalResult result = m.getHierarchy(dataset, pref);
         result.setNoise(noise);
         return result;

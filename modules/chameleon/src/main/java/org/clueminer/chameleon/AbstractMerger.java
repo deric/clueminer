@@ -38,9 +38,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
 
     /**
      * Set of merged clustering which are ignored. They could also be deleted
-     * but
-     * deleting them from cluster array, external properties matrix and priority
-     * queue would be too expensive.
+     * but deleting them from cluster array, external properties matrix and
+     * priority queue would be too expensive.
      */
     protected HashSet<Integer> blacklist = new HashSet<>();
 
@@ -126,6 +125,16 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         return clustering;
     }
 
+    public void renumberClusters(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise) {
+        if (noise != null && noise.size() > 0) {
+            int i = 0;
+            for (GraphCluster cluster : clusters) {
+                cluster.setClusterId(i);
+                i++;
+            }
+        }
+    }
+
     /**
      * Assigns clustering to nodes according to list of clustering in each node.
      * Having clustering assigned to nodes can be advantageous in some cases
@@ -182,7 +191,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         DendroNode[] treeNodes;
         //Create special node for noise only if noise is present
         treeNodes = new DendroNode[(2 * clusters.size())];
-        if (noise != null) {
+        if (noise != null && noise.size() > 0) {
             treeNodes[2 * clusters.size() - 1] = new DClusterLeaf(clusters.size(), noise);
             treeNodes[2 * clusters.size() - 1].setHeight(0);
             treeNodes[2 * clusters.size() - 1].setLevel(0);

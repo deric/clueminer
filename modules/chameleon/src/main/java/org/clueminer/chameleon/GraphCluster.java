@@ -206,8 +206,9 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     /**
+     * Computed as the average edge weight
      *
-     * @return Average internal closeness
+     * @return Average closeness
      */
     public double getACL() {
         if (ACL == -1) {
@@ -218,6 +219,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
 
     public void setACL(double ACL) {
         this.ACL = ACL;
+    }
+
+    public double getSigma(Props params) {
+        double threshold = params.getDouble("ch2.sigma_t", 3.0);
+        return threshold * getACL();
     }
 
     /**

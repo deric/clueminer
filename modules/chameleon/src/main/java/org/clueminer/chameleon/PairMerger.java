@@ -219,13 +219,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
         if (params != null && params.getInt(Chameleon.NOISE_DETECTION, 0) == Chameleon.NOISE_INTERNAL_PROPERTIES) {
             noise = identifyNoise(clusters, params);
-            if (noise != null) {
-                int i = 0;
-                for (GraphCluster cluster : clusters) {
-                    cluster.setClusterId(i);
-                    i++;
-                }
-            }
+            renumberClusters(clusters, noise);
         }
     }
 
