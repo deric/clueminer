@@ -331,7 +331,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (showLegend) {
             dim = legend.getSize();
             if (showColumnsTree) {
-                legend.setBounds(heatmapXoffset + dimHeatmap.width, insets.top, dim.width, dim.height);
+                legend.setBounds(heatmapXoffset + dimHeatmap.width + columnsScale.getWidth(), insets.top, dim.width, dim.height);
             } else {
                 //we don't have extra space above heatmap
                 legend.setBounds(heatmapXoffset + dimHeatmap.width, totalHeight, dim.width, dim.height);
