@@ -329,13 +329,17 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         totalHeight += thirdLineHeight;
 
         if (showLegend) {
+            legend.setVisible(true);
             dim = legend.getSize();
             if (showColumnsTree) {
                 legend.setBounds(heatmapXoffset + dimHeatmap.width + columnsScale.getWidth(), insets.top, dim.width, dim.height);
             } else {
+                legend.setOrientation(SwingConstants.HORIZONTAL);
                 //we don't have extra space above heatmap
                 legend.setBounds(heatmapXoffset + dimHeatmap.width, totalHeight, dim.width, dim.height);
             }
+        } else {
+            legend.setVisible(false);
         }
 
         clustAssign = clusterAssignment.getSize();

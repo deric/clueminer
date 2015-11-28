@@ -25,6 +25,7 @@ public class DendroToolbar extends JToolBar {
     private JButton btnScreenshot;
     private JButton btnExport;
     private JToggleButton btnEvaluation;
+    private JToggleButton btnLegend;
     private final DendroViewer viewer;
 
     public DendroToolbar(DendroViewer viewer) {
@@ -46,10 +47,13 @@ public class DendroToolbar extends JToolBar {
         btnExport = new JButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/save16.png", false));
         btnExport.setToolTipText("Export this dendrogram");
         btnEvaluation = new JToggleButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/eval16.png", false));
+        btnLegend = new JToggleButton(ImageUtilities.loadImageIcon("org/clueminer/dendrogram/gui/legend16.png", false));
+        btnLegend.setSelected(true);
         add(btnFitToSpace);
         add(btnScreenshot);
         add(btnExport);
         add(btnEvaluation);
+        add(btnLegend);
         addSeparator();
 
         btnFitToSpace.addActionListener(new ActionListener() {
@@ -104,6 +108,13 @@ public class DendroToolbar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 viewer.setEvaluationVisible(!viewer.isEvaluationVisible());
+            }
+        });
+
+        btnLegend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewer.setLegendVisible(!viewer.isLegendVisible());
             }
         });
 
