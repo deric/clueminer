@@ -29,10 +29,10 @@ public class Legend extends BPanel implements DendrogramDataListener {
     private DendrogramMapping data;
     private boolean antialiasing = true;
     protected BufferedImage buffScale;
-    private int textWidth;
     private int spaceBetweenBarAndLabels = 5;
     private int orientation;
     private int fHeight;
+    private int maxStrWidth = 10;
 
     public Legend(DendroPane p) {
         super();
@@ -127,16 +127,21 @@ public class Legend extends BPanel implements DendrogramDataListener {
         g.setColor(Color.black);
 
         String strMin = String.valueOf(panel.formatNumber(min));
-        textWidth = hfm.stringWidth(strMin); //usually longest string FIXME for smartest string width detection
+        checkMaxString(hfm.stringWidth(strMin));
         g.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
-
         String strMid = String.valueOf(panel.formatNumber(mid));
-        //textWidth = hfm.stringWidth(strMid);
+        checkMaxString(hfm.stringWidth(strMid));
         g.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
         String strMax = String.valueOf(panel.formatNumber(max));
-        //textWidth = hfm.stringWidth(strMax);
+        checkMaxString(hfm.stringWidth(strMax));
         g.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
         g.dispose();
+    }
+
+    private void checkMaxString(int width) {
+        if (width > maxStrWidth) {
+            maxStrWidth = width;
+        }
     }
 
     @Override
@@ -145,7 +150,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
             int cbh = (int) (0.9 * size.height);
             int cbw = (int) Math.min(30, 0.5 * size.width);
 
-            realSize.width = insets.left + cbw + spaceBetweenBarAndLabels + textWidth + insets.right;
+            realSize.width = insets.left + cbw + spaceBetweenBarAndLabels + maxStrWidth + insets.right;
             realSize.height = insets.top + cbh + insets.bottom;
             setPreferredSize(realSize);
             setSize(realSize.width, realSize.height - 2);

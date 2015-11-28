@@ -201,10 +201,8 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (showColumnsTree) {
             heatmapHeight -= colsTreeDim;
             columnsTree.recalculate();
-        } else {
-            if (slider != null) {
-                heatmapHeight -= slider.getSize().height;
-            }
+        } else if (slider != null) {
+            heatmapHeight -= slider.getSize().height;
         }
         //column annotations is usually bigger than tree annotation
         if (columnAnnotationBar != null) {
@@ -517,7 +515,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
 
     private void createLegend() {
         //we call constructor just one
-        System.out.println("creating legend");
         if (legend == null) {
             legend = new Legend(this);
             dataListeners.add(legend);
@@ -525,10 +522,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (dendroData != null) {
             legend.setData(dendroData);
         }
-
-        System.out.println("legend has data? " + legend.hasData());
-        System.out.println("legend size " + legend.getSize());
-        System.out.println("legend pref size " + legend.getPreferredSize());
     }
 
     private void createColumnAnnotation() {
