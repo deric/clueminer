@@ -165,15 +165,18 @@ public class Legend extends BPanel implements DendrogramDataListener {
         } else {
             //horizontal
             String strMin = String.valueOf(panel.formatNumber(min));
-            checkMaxString(hfm.stringWidth(strMin));
-            int width = hfm.stringWidth(strMin);
-            g.drawString(strMin, insets.left, insets.top + fHeight / 2);
+
+            int strWidth = hfm.stringWidth(strMin);
+            checkMaxString(strWidth);
+            g.drawString(strMin, strWidth / 2, insets.top + colorBarHeight + fHeight);
             String strMid = String.valueOf(panel.formatNumber(mid));
-            checkMaxString(hfm.stringWidth(strMid));
-            g.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
+            strWidth = hfm.stringWidth(strMid);
+            checkMaxString(strWidth);
+            g.drawString(strMid, colorBarWidth / 2 + strWidth / 2, insets.top + colorBarHeight + fHeight);
             String strMax = String.valueOf(panel.formatNumber(max));
-            checkMaxString(hfm.stringWidth(strMax));
-            g.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
+            strWidth = hfm.stringWidth(strMax);
+            checkMaxString(strWidth);
+            g.drawString(strMax, colorBarWidth - strWidth / 2, insets.top + colorBarHeight + fHeight);
 
         }
         g.dispose();
@@ -214,7 +217,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
      */
     @Override
     public void recalculate() {
-        int stdBarSize = 80;
+        int stdBarSize = 60;
 
         if (hasData()) {
             if (orientation == SwingConstants.VERTICAL) {
@@ -222,9 +225,14 @@ public class Legend extends BPanel implements DendrogramDataListener {
                 realSize.width = stdBarSize;
                 colorBarHeight = available.height - insets.bottom - insets.top - fHeight;
             } else {
-                realSize.height = stdBarSize;
-                realSize.width = available.width;
-                colorBarWidth = available.width - insets.left - insets.right;
+                realSize.height = stdBarSize + spaceBetweenBarAndLabels;
+                if (available.width < 200) {
+                    realSize.width = available.width;
+                } else {
+                    realSize.width = 200;
+                }
+
+                colorBarWidth = realSize.width - insets.left - insets.right;
                 colorBarHeight = stdBarSize - insets.bottom - insets.top - fHeight - spaceBetweenBarAndLabels;
             }
         }
@@ -237,6 +245,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
 
     public void setData(DendrogramMapping data) {
         this.data = data;
+        recalculate();
         setSize(realSize);
         resetCache();
     }
