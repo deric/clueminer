@@ -27,6 +27,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.kdtree.KDTree;
 import org.clueminer.kdtree.KeyDuplicateException;
+import org.clueminer.kdtree.KeyMissingException;
 import org.clueminer.kdtree.KeySizeException;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
@@ -88,19 +89,21 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
         //get rid of tiny clusters
         System.out.println("found " + tiny.size() + " tiny cluster");
+        GraphCluster<E> closest;
         for (GraphCluster<E> t : tiny) {
             try {
                 E inst = t.get(0); //there's just one instance
                 List<GraphCluster<E>> nn = kdTree.nearest(inst.arrayCopy(), 1);
                 //TODO: check constrains
                 //merge with closest cluster
-                System.out.println("t = " + t.getClusterId() + " nn = " + nn.get(0).getClusterId());
+                closest = nn.get(0);
+                System.out.println("t = " + t.getClusterId() + " nn = " + closest.getClusterId());
                 //blacklist.add(t.getClusterId());
                 //blacklist.add(nn.get(0).getClusterId());
                 //TODO: this is quite inefficient, though it reduces number of compared similarities
-                clusters.remove(nn.get(0));
+                clusters.remove(closest);
                 clusters.remove(t);
-                merge(t, nn.get(0), noise, pref);
+                merge(t, closest, noise, pref);
             } catch (KeySizeException | IllegalArgumentException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -110,9 +113,17 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     }
 
+    /**
+     * Initialize cluster pairs based on its nearest-neighbors. We don't compute
+     * full similarity matrix.
+     *
+     * @param numClusters
+     * @param pref
+     * @return
+     */
     @Override
     protected int buildQueue(int numClusters, Props pref) {
-        int k = 10;
+        int k = 15;
         int capacity = k * numClusters;
         System.out.println("pq capacity = " + capacity);
         pq = initQueue(capacity);
@@ -136,7 +147,11 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                     for (GraphCluster<E> b : nn) {
                         if (a.getClusterId() != b.getClusterId()) {
                             sim = evaluation.score(a, b, pref);
-                            pq.add(new PairValue<>(a, b, sim));
+                            if (sim > 0) {
+                                pq.add(new PairValue<>(a, b, sim));
+                            } else {
+                                //System.out.println("excluding pair " + a + ", " + b);
+                            }
                             //gps.dump();
                         }
                     }
@@ -157,7 +172,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
      * @param large
      * @param pref
      */
-    private void merge(GraphCluster<E> small, GraphCluster<E> large, ArrayList<E> noise, Props pref) {
+    private GraphCluster<E> merge(GraphCluster<E> small, GraphCluster<E> large, ArrayList<E> noise, Props pref) {
         ArrayList<Node<E>> clusterNodes = large.getNodes();
         Node<E> outlier = small.getNodes().get(0);
         E inst = outlier.getInstance();
@@ -172,39 +187,69 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
 
         if (minNode != null) {
-            System.out.println("min distance is " + min);
-            System.out.println("sigma dist = " + large.getSigma(pref));
-            System.out.println("edge " + outlier.getId() + " -> " + minNode.getId());
-            //create an extra edge connecting the outlier with original graph
-            graph.addEdge(graph.getFactory().newEdge(small.getNodes().get(0), minNode, 0, min, false));
+            try {
+                System.out.println("min distance is " + min);
+                System.out.println("sigma dist = " + large.getSigma(pref));
+                System.out.println("edge " + outlier.getId() + " -> " + minNode.getId());
+                //create an extra edge connecting the outlier with original graph
+                graph.addEdge(graph.getFactory().newEdge(small.getNodes().get(0), minNode, 0, min, false));
 
-            clusterNodes.add(outlier);
-            //similarity is not important in this case
-            PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
+                clusterNodes.add(outlier);
+                //similarity is not important in this case
+                PairValue<GraphCluster<E>> curr = new PairValue<>(small, large, 0.0);
 
-            GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, large.getClusterId(), bisection, pref);
-            System.out.println("adding to cluster cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
-            clusters.add(newCluster);
-            evaluation.clusterCreated(curr, newCluster, pref);
-            //   addIntoTree(curr, pref);
-            updateExternalProperties(newCluster, small, large);
-            //addIntoQueue(newCluster, pref);
-        } else {
-            noise.add(inst);
+                GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, large.getClusterId(), bisection, pref);
+                System.out.println("adding to cluster cluster " + newCluster.getClusterId() + " nodes " + clusterNodes.size());
+                clusters.add(newCluster);
+                evaluation.clusterCreated(curr, newCluster, pref);
+                //   addIntoTree(curr, pref);
+                updateExternalProperties(newCluster, small, large);
+
+                kdTree.delete(large.getCentroid().arrayCopy());
+                kdTree.insert(newCluster.getCentroid().arrayCopy(), newCluster);
+                //addIntoQueue(newCluster, pref);
+                return newCluster;
+            } catch (KeySizeException | KeyMissingException | KeyDuplicateException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        noise.add(inst);
+        return null;
+    }
+
+    @Override
+    protected void merged(PairValue<GraphCluster<E>> curr) {
+        try {
+            kdTree.delete(curr.A.getCentroid().arrayCopy());
+            kdTree.delete(curr.B.getCentroid().arrayCopy());
+        } catch (KeySizeException | KeyMissingException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
-    private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
+    @Override
+    protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         double sim;
-        //TODO: check bounds
-        for (GraphCluster<E> a : clusters) {
-            if (!blacklist.contains(a.getClusterId())) {
-                if (a.getClusterId() != cluster.getClusterId()) {
-                    sim = evaluation.score(a, cluster, pref);
-                    System.out.println("sim = " + sim);
-                    pq.add(new PairValue<>(a, cluster, sim));
+
+        try {
+            List<GraphCluster<E>> nn = kdTree.nearest(cluster.getCentroid().arrayCopy(), 10);
+            for (GraphCluster<E> b : nn) {
+                if (cluster.getClusterId() != b.getClusterId()) {
+                    sim = evaluation.score(cluster, b, pref);
+                    //if (sim > 0) {
+                    pq.add(new PairValue<>(cluster, b, sim));
+                    //}
                 }
             }
+
+        } catch (KeySizeException | IllegalArgumentException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        try {
+            //insert newly created cluster to kd-tree
+            kdTree.insert(cluster.getCentroid().arrayCopy(), cluster);
+        } catch (KeySizeException | KeyDuplicateException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 

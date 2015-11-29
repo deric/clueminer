@@ -376,10 +376,13 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         int idx = cluster.getClusterId();
         if (data[idx] != null && data[idx].equals(cluster)) {
             return remove(idx);
+        } else {
+            System.out.println("failed to remove " + cluster.getClusterId());
         }
         return false;
     }
 
+    @Override
     public boolean remove(int idx) {
         if (idx > n || idx < 0) {
             return false;

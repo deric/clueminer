@@ -74,9 +74,11 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     /**
      * Merges two most similar clusters
      *
-     * @param clusterList
+     * @param curr
+     * @param pref
+     * @param newClusterId
      */
-    private void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+    protected void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
@@ -96,7 +98,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         //it's not a good idea to work with merged clusters)
         ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
         clusterNodes.addAll(curr.B.getNodes());
-
+        merged(curr);
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
         clusters.add(newCluster);
         evaluation.clusterCreated(curr, newCluster, pref);
@@ -105,13 +107,20 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         addIntoQueue(newCluster, pref);
     }
 
+    protected void merged(PairValue<GraphCluster<E>> curr) {
+        //nothing to do
+    }
+
     /**
      * Computes similarities between the merged and other active clusters and
      * adds them into the priority queue. The merged cluster is the last one in
      * both cluster array and external properties matrix, therefore we use index
      * clusterCount -1.
+     *
+     * @param cluster
+     * @param pref
      */
-    private void addIntoQueue(GraphCluster<E> cluster, Props pref) {
+    protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         double sim;
         GraphCluster a;
         for (int i = 0; i < cluster.getClusterId(); i++) {
