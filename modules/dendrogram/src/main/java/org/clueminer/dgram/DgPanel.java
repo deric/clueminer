@@ -328,20 +328,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         int thirdLineHeight = Math.max(rowsScaleHeight, dim.height);
         totalHeight += thirdLineHeight;
 
-        if (showLegend) {
-            legend.setVisible(true);
-            dim = legend.getSize();
-            if (showColumnsTree) {
-                legend.setBounds(heatmapXoffset + dimHeatmap.width + columnsScale.getWidth(), insets.top, dim.width, dim.height);
-            } else {
-                legend.setOrientation(SwingConstants.HORIZONTAL);
-                //we don't have extra space above heatmap
-                legend.setBounds(heatmapXoffset + dimHeatmap.width, totalHeight, dim.width, dim.height);
-            }
-        } else {
-            legend.setVisible(false);
-        }
-
         clustAssign = clusterAssignment.getSize();
         //row tree + heatmap
         totalWidth = heatmapXoffset + dimHeatmap.width;
@@ -351,6 +337,23 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         dim = classAssignment.getSize();
         classAssignment.setBounds(totalWidth, heatmapYoffset, dim.width, dim.height);
         totalWidth += dim.width;
+
+        if (showLegend) {
+            legend.setVisible(true);
+            if (showColumnsTree) {
+                legend.setAvailableSpace(classAssignment.getWidth(), columnsTree.getHeight());
+                dim = legend.getSize();
+                legend.setBounds(heatmapXoffset + dimHeatmap.width + columnsScale.getWidth(), insets.top, dim.width, dim.height);
+            } else {
+                legend.setOrientation(SwingConstants.HORIZONTAL);
+                legend.setAvailableSpace(totalWidth, rowsScaleHeight);
+                dim = legend.getSize();
+                //we don't have extra space above heatmap
+                legend.setBounds(heatmapXoffset + dimHeatmap.width, totalHeight, dim.width, dim.height);
+            }
+        } else {
+            legend.setVisible(false);
+        }
 
         if (isLabelVisible()) {
             dim = rowAnnotationBar.getSize();

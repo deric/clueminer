@@ -33,6 +33,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
     private int orientation;
     private int fHeight;
     private int maxStrWidth = 10;
+    private Dimension available;
 
     public Legend(DendroPane p) {
         super();
@@ -42,6 +43,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
         //setDoubleBuffered(false);
         fitToSpace = false;
         this.orientation = SwingConstants.VERTICAL;
+        available = new Dimension(0, 0);
     }
 
     /**
@@ -65,23 +67,46 @@ public class Legend extends BPanel implements DendrogramDataListener {
      * @param max
      */
     private BufferedImage drawData(int colorBarWidth, int colorBarHeight, double min, double max) {
-        BufferedImage scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gr = scaleImg.createGraphics();
+        BufferedImage scaleImg;
+        Graphics2D gr;
+        if (orientation == SwingConstants.VERTICAL) {
+            scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
+            gr = scaleImg.createGraphics();
 
-        double range = max - min;
-        double inc = range / (double) colorBarHeight;
+            double range = max - min;
+            double inc = range / (double) colorBarHeight;
 
-        int yStart;
-        gr.setColor(Color.black);
-        gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
-        //maximum color is at the top
-        double value = max;
-        //draws box with colors
-        for (int y = 2; y < colorBarHeight; y++) {
-            yStart = colorBarHeight - y;
-            gr.setColor(panel.getScheme().getColor(value, data));
-            value -= inc;
-            gr.fillRect(1, yStart, colorBarWidth - 2, 1);
+            int yStart;
+            gr.setColor(Color.black);
+            gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
+            //maximum color is at the top
+            double value = max;
+            //draws box with colors
+            for (int y = 2; y < colorBarHeight; y++) {
+                yStart = colorBarHeight - y;
+                gr.setColor(panel.getScheme().getColor(value, data));
+                value -= inc;
+                gr.fillRect(1, yStart, colorBarWidth - 2, 1);
+            }
+        } else {
+            scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
+            gr = scaleImg.createGraphics();
+
+            double range = max - min;
+            double inc = range / (double) colorBarWidth;
+
+            int xStart;
+            gr.setColor(Color.black);
+            gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
+            //maximum color is at the top
+            double value = max;
+            //draws box with colors
+            for (int x = 2; x < colorBarWidth; x++) {
+                xStart = colorBarWidth - x;
+                gr.setColor(panel.getScheme().getColor(value, data));
+                value -= inc;
+                gr.fillRect(xStart, 1, 1, colorBarHeight - 2);
+            }
         }
         gr.dispose();
         return scaleImg;
@@ -110,6 +135,12 @@ public class Legend extends BPanel implements DendrogramDataListener {
         double max = data.getMaxValue();
         double mid = data.getMidValue();
 
+        FontMetrics hfm = g.getFontMetrics();
+        // int descent = hfm.getDescent();
+        fHeight = hfm.getHeight();
+
+        g.setColor(Color.black);
+
         //create color palette
         if (buffScale == null) {
             buffScale = drawData(colorBarWidth, colorBarHeight, min, max);
@@ -120,22 +151,37 @@ public class Legend extends BPanel implements DendrogramDataListener {
                 colorBarWidth, colorBarHeight,
                 null);
 
-        FontMetrics hfm = g.getFontMetrics();
-        // int descent = hfm.getDescent();
-        fHeight = hfm.getHeight();
+        if (orientation == SwingConstants.VERTICAL) {
 
-        g.setColor(Color.black);
+            String strMin = String.valueOf(panel.formatNumber(min));
+            checkMaxString(hfm.stringWidth(strMin));
+            g.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
+            String strMid = String.valueOf(panel.formatNumber(mid));
+            checkMaxString(hfm.stringWidth(strMid));
+            g.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
+            String strMax = String.valueOf(panel.formatNumber(max));
+            checkMaxString(hfm.stringWidth(strMax));
+            g.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
+        } else {
+            //horizontal
+            String strMin = String.valueOf(panel.formatNumber(min));
+            checkMaxString(hfm.stringWidth(strMin));
+            int width = hfm.stringWidth(strMin);
+            g.drawString(strMin, insets.left, insets.top + fHeight / 2);
+            String strMid = String.valueOf(panel.formatNumber(mid));
+            checkMaxString(hfm.stringWidth(strMid));
+            g.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
+            String strMax = String.valueOf(panel.formatNumber(max));
+            checkMaxString(hfm.stringWidth(strMax));
+            g.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
 
-        String strMin = String.valueOf(panel.formatNumber(min));
-        checkMaxString(hfm.stringWidth(strMin));
-        g.drawString(strMin, colorBarWidth + spaceBetweenBarAndLabels + insets.left, 0 + fHeight);
-        String strMid = String.valueOf(panel.formatNumber(mid));
-        checkMaxString(hfm.stringWidth(strMid));
-        g.drawString(strMid, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight / 2 + fHeight);
-        String strMax = String.valueOf(panel.formatNumber(max));
-        checkMaxString(hfm.stringWidth(strMax));
-        g.drawString(strMax, colorBarWidth + spaceBetweenBarAndLabels + insets.left, colorBarHeight + fHeight);
+        }
         g.dispose();
+    }
+
+    public void setAvailableSpace(int width, int height) {
+        available.width = width;
+        available.height = height;
     }
 
     private void checkMaxString(int width) {
@@ -147,15 +193,11 @@ public class Legend extends BPanel implements DendrogramDataListener {
     @Override
     public void sizeUpdated(Dimension size) {
         if (hasData()) {
-            int cbh = (int) (0.9 * size.height);
-            int cbw = (int) Math.min(30, 0.5 * size.width);
-
-            realSize.width = insets.left + cbw + spaceBetweenBarAndLabels + maxStrWidth + insets.right;
-            realSize.height = insets.top + cbh + insets.bottom;
+            recalculate();
             setPreferredSize(realSize);
             setSize(realSize.width, realSize.height - 2);
 
-            if (Math.abs(cbh - colorBarHeight) > 1 || Math.abs(cbw - colorBarWidth) > 1) {
+            if (Math.abs(size.height - realSize.height) > 1 || Math.abs(size.width - realSize.width) > 1) {
                 buffScale = null;
                 resetCache();
             }
@@ -167,22 +209,24 @@ public class Legend extends BPanel implements DendrogramDataListener {
         return data != null;
     }
 
+    /**
+     * Compute space required for legend
+     */
     @Override
     public void recalculate() {
-        int w = colorBarWidth + insets.left + insets.right + spaceBetweenBarAndLabels;
-        int h = 200; //total component height (available space - depends e.g. on tree height)
-        if (orientation == SwingConstants.VERTICAL) {
-            realSize.height = h;
-            realSize.width = w;
-        } else {
-            realSize.width = w;
-            realSize.width = h;
-        }
+        int stdBarSize = 80;
 
-        colorBarHeight = realSize.height - insets.bottom - insets.top - fHeight;
-        if (colorBarHeight < 10) {
-            //default height which is not bellow zero
-            colorBarHeight = 20;
+        if (hasData()) {
+            if (orientation == SwingConstants.VERTICAL) {
+                realSize.height = available.height;
+                realSize.width = stdBarSize;
+                colorBarHeight = available.height - insets.bottom - insets.top - fHeight;
+            } else {
+                realSize.height = stdBarSize;
+                realSize.width = available.width;
+                colorBarWidth = available.width - insets.left - insets.right;
+                colorBarHeight = stdBarSize - insets.bottom - insets.top - fHeight - spaceBetweenBarAndLabels;
+            }
         }
     }
 
@@ -193,8 +237,8 @@ public class Legend extends BPanel implements DendrogramDataListener {
 
     public void setData(DendrogramMapping data) {
         this.data = data;
-        recalculate();
         setSize(realSize);
+        resetCache();
     }
 
     @Override
