@@ -185,6 +185,9 @@ public class Legend extends BPanel implements DendrogramDataListener {
     public void setAvailableSpace(int width, int height) {
         available.width = width;
         available.height = height;
+
+        recalculate();
+        setSize(realSize);
     }
 
     private void checkMaxString(int width) {
