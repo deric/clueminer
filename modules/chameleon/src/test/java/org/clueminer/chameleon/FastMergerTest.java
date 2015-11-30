@@ -44,7 +44,7 @@ public class FastMergerTest {
 
     private FastMerger merger;
 
-    @Test
+//    @Test
     public void testUsArrest() {
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();

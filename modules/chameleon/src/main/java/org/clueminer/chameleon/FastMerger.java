@@ -248,30 +248,29 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
         //System.out.println("dist between clusters = " + dist);
 
-        if (dist < sigmaA && dist < sigmaB) {
-
-            blacklist.add(i);
-            blacklist.add(j);
-            if (i == j) {
-                throw new RuntimeException("Cannot merge two same clusters");
-            }
-        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
-            //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
-            //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
-            //WARNING: we copy nodes from previous clusters (we save memory, but
-            //it's not a good idea to work with merged clusters)
-            ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
-            clusterNodes.addAll(curr.B.getNodes());
-            merged(curr);
-            GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
-            clusters.add(newCluster);
-            evaluation.clusterCreated(curr, newCluster, pref);
-            addIntoTree(curr, pref);
-            updateExternalProperties(newCluster, curr.A, curr.B);
-            addIntoQueue(newCluster, pref);
-        } else {
-            System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+//        if (dist < sigmaA && dist < sigmaB) {
+        blacklist.add(i);
+        blacklist.add(j);
+        if (i == j) {
+            throw new RuntimeException("Cannot merge two same clusters");
         }
+        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
+        //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
+        //WARNING: we copy nodes from previous clusters (we save memory, but
+        //it's not a good idea to work with merged clusters)
+        ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
+        clusterNodes.addAll(curr.B.getNodes());
+        merged(curr);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
+        clusters.add(newCluster);
+        evaluation.clusterCreated(curr, newCluster, pref);
+        addIntoTree(curr, pref);
+        updateExternalProperties(newCluster, curr.A, curr.B);
+        addIntoQueue(newCluster, pref);
+        /*      } else {
+         System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+         }*/
     }
 
     @Override
