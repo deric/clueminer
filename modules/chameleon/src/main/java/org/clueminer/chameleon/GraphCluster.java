@@ -222,7 +222,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     public double getSigma(Props params) {
-        double threshold = params.getDouble("ch2.sigma_t", 3.0);
+        double threshold = params.getDouble("ch2.sigma_t", 2.0);
         return threshold * getACL();
     }
 

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.chameleon.similarity.AbstractSimilarity;
+import org.clueminer.chameleon.similarity.CLS;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
@@ -133,6 +134,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         AbstractSimilarity as = (AbstractSimilarity) evaluation;
         GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
         int maxClusterId = clusters.size();
+        CLS<E> closeness = new CLS<>();
 
         System.out.println("clusters " + numClusters);
         System.out.println("gps capacity = " + gps.getCapacity());
@@ -150,6 +152,11 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                             if (sim > 0) {
                                 pq.add(new PairValue<>(a, b, sim));
                             } else {
+                                sim = closeness.score(a, b, pref);
+                                if (sim > 0) {
+                                    System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
+                                    pq.add(new PairValue<>(a, b, sim));
+                                }
                                 //System.out.println("excluding pair " + a + ", " + b);
                             }
                             //gps.dump();
@@ -215,6 +222,56 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
         noise.add(inst);
         return null;
+    }
+
+    /**
+     * Merges two most similar clusters
+     *
+     * @param curr
+     * @param pref
+     * @param newClusterId
+     */
+    @Override
+    protected void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+        int i = curr.A.getClusterId();
+        int j = curr.B.getClusterId();
+        while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
+            curr = pq.poll();
+            i = curr.A.getClusterId();
+            j = curr.B.getClusterId();
+        }
+
+        double sigmaA = curr.A.getSigma(pref);
+        double sigmaB = curr.B.getSigma(pref);
+        //System.out.println("sigma dist(A)= " + sigmaA);
+        //System.out.println("sigma dist(B)= " + sigmaB);
+        double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
+        //System.out.println("dist between clusters = " + dist);
+
+        if (dist < sigmaA && dist < sigmaB) {
+
+            blacklist.add(i);
+            blacklist.add(j);
+            if (i == j) {
+                throw new RuntimeException("Cannot merge two same clusters");
+            }
+        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+            //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
+            //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
+            //WARNING: we copy nodes from previous clusters (we save memory, but
+            //it's not a good idea to work with merged clusters)
+            ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
+            clusterNodes.addAll(curr.B.getNodes());
+            merged(curr);
+            GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
+            clusters.add(newCluster);
+            evaluation.clusterCreated(curr, newCluster, pref);
+            addIntoTree(curr, pref);
+            updateExternalProperties(newCluster, curr.A, curr.B);
+            addIntoQueue(newCluster, pref);
+        } else {
+            System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+        }
     }
 
     @Override
