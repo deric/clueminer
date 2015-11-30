@@ -1,20 +1,33 @@
 package org.clueminer.dendrogram.gui;
 
-import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.LayoutManager;
 import java.text.DecimalFormat;
 import javax.swing.Box;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.api.Distribution;
 import org.clueminer.clustering.api.dendrogram.DendroHeatmap;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.dendrogram.tree.*;
+import org.clueminer.clustering.api.dendrogram.TreeListener;
+import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.dendrogram.tree.AbstractScale;
+import org.clueminer.dendrogram.tree.HCLColorBar;
+import org.clueminer.dendrogram.tree.HorizontalScale;
+import org.clueminer.dendrogram.tree.HorizontalTree;
+import org.clueminer.dendrogram.tree.VerticalScale;
+import org.clueminer.dendrogram.tree.VerticalTree;
 
 /**
  *
@@ -587,5 +600,10 @@ public class DendrogramPanel extends JPanel implements DendrogramDataListener, D
     @Override
     public String toString() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public Distribution getDistribution() {
+        return null; //not supported yet
     }
 }
