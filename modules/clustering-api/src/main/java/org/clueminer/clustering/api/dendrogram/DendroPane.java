@@ -3,6 +3,7 @@ package org.clueminer.clustering.api.dendrogram;
 import java.awt.Color;
 import java.awt.Dimension;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Distribution;
 
 /**
  *
@@ -10,46 +11,46 @@ import org.clueminer.clustering.api.Clustering;
  */
 public interface DendroPane {
 
-     DendrogramMapping getDendrogramData();
+    DendrogramMapping getDendrogramData();
 
-     boolean useDoubleGradient();
+    boolean useDoubleGradient();
 
-     boolean isAntiAliasing();
+    boolean isAntiAliasing();
 
     /**
      * Size of single square in heatmap
      *
      * @return dimension of element in dendrogram
      */
-     Dimension getElementSize();
+    Dimension getElementSize();
 
     /**
      *
      * @return panel background
      */
-     Color getBackground();
+    Color getBackground();
 
     /**
      *
      * @return color scheme used in heatmap
      */
-     ColorScheme getScheme();
+    ColorScheme getScheme();
 
     /**
      * E.g. when user changes cutoff
      *
      * @param clust
      */
-     void fireClusteringChanged(Clustering clust);
+    void fireClusteringChanged(Clustering clust);
 
-     String formatNumber(Object number);
+    String formatNumber(Object number);
 
     /**
      * Heatmap is a visualization of data
      *
      * @return heatmap
      */
-     DendroHeatmap getHeatmap();
+    DendroHeatmap getHeatmap();
 
     /**
      * Cutoff slider diameter
@@ -64,4 +65,11 @@ public interface DendroPane {
      * @return
      */
     int getSliderDiameter();
+
+    /**
+     * Distribution of dataset
+     *
+     * @return
+     */
+    Distribution getDistribution();
 }

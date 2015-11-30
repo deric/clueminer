@@ -16,6 +16,7 @@
  */
 package org.clueminer.dendrogram;
 
+import org.clueminer.clustering.api.Distribution;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -27,9 +28,9 @@ import org.clueminer.stats.AttrNumStats;
  * @author deric
  * @param <E>
  */
-public class DistributionCollector<E extends Instance> {
+public class DistributionCollector<E extends Instance> implements Distribution<E> {
 
-    private int numBins = 100;
+    private int numBins;
     private int[] bins;
     private int numSamples;
     private double min;
@@ -41,6 +42,7 @@ public class DistributionCollector<E extends Instance> {
         clear();
     }
 
+    @Override
     public void datasetChanged(Dataset<E> dataset) {
         Attribute attr;
         double value;
@@ -59,6 +61,7 @@ public class DistributionCollector<E extends Instance> {
         step = (max - min) / (double) numBins;
     }
 
+    @Override
     public final void clear() {
         this.bins = new int[numBins];
         this.numSamples = 0;
@@ -71,11 +74,10 @@ public class DistributionCollector<E extends Instance> {
      *
      * @param value
      */
+    @Override
     public void sample(double value) {
         numSamples++;
-        if (value < min || value > max) {
-            throw new RuntimeException("Value " + value + " is outside of current range [" + min + ", " + max + "]");
-        }
+        checkRange(value);
         int pos = (int) Math.floor(value / step);
         //due to rounding error we might misplace value by one bin
         if (pos >= bins.length) {
@@ -84,12 +86,58 @@ public class DistributionCollector<E extends Instance> {
         bins[pos]++;
     }
 
+    @Override
+    public int hist(double value) {
+        checkRange(value);
+        int pos = (int) Math.floor(value / step);
+        if (pos >= bins.length) {
+            pos = bins.length - 1;
+        }
+        return bins[pos];
+    }
+
+    private void checkRange(double value) {
+        if (value < min || value > max) {
+            throw new RuntimeException("Value " + value + " is outside of current range [" + min + ", " + max + "]");
+        }
+    }
+
+    @Override
     public int[] getBins() {
         return bins;
     }
 
+    public double getStep() {
+        return step;
+    }
+
+    /**
+     * Min and max value in histogram
+     *
+     * @return min at index 0, max at index 1
+     */
+    @Override
+    public int[] binsRange() {
+        int[] range = new int[2];
+        for (int i = 0; i < bins.length; i++) {
+            if (bins[i] < range[0]) {
+                range[0] = bins[i];
+            }
+            if (bins[i] > range[1]) {
+                range[1] = bins[i];
+            }
+        }
+        return range;
+    }
+
+    @Override
     public int getNumSamples() {
         return numSamples;
+    }
+
+    @Override
+    public int getNumBins() {
+        return numBins;
     }
 
     public void dump() {

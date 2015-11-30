@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.dendrogram.DistributionCollector;
 import org.clueminer.dendrogram.gui.ClassAssignment;
 import org.clueminer.dendrogram.gui.ClusterAssignment;
 import org.clueminer.dendrogram.gui.ColumnAnnotation;
@@ -417,6 +418,14 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
             heatmap.setOffset(0);
             dataListeners.add(heatmap);
         }
+    }
+
+    @Override
+    public DistributionCollector getDistribution() {
+        if (heatmap != null) {
+            return heatmap.getDistribution();
+        }
+        return null;
     }
 
     private void createColumnsTree() {

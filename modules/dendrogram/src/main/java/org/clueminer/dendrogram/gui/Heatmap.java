@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.dendrogram.DistributionCollector;
 import org.clueminer.dendrogram.tree.VerticalTree;
 import org.imgscalr.Scalr;
 
@@ -67,6 +68,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private DendroPane panel;
     private Dimension size = new Dimension(10, 10);
     private ColorScheme colorScheme;
+    private final DistributionCollector distribution;
+    private boolean collectData = false;
 
     public Heatmap() {
         setBackground(Color.GRAY);
@@ -74,6 +77,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         setOpaque(true);  //not transparent
         elementSize = new Dimension(10, 10);
         colorScheme = new ColorSchemeImpl();
+        distribution = new DistributionCollector(50);
         updateSize();
     }
 
@@ -86,6 +90,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         addMouseMotionListener(listener);
         this.setDoubleBuffered(false);
         this.elementSize = p.getElementSize();
+        distribution = new DistributionCollector(100);
         updateSize();
     }
 
@@ -285,6 +290,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                 fillRectAt(bufferedGraphics, row, column);
             }
         }
+        //until next dataset change
+        collectData = false;
 
         if (haveColorBar) {
             if (dendroData != null) {
@@ -375,10 +382,15 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         }
         int x = column * elementSize.width + insets.left;
         int y = row * elementSize.height;
+        double value;
         boolean mask = this.firstSelectedRow >= 0 && this.lastSelectedRow >= 0 && (row < this.firstSelectedRow || row > this.lastSelectedRow);
         mask = (mask || this.firstSelectedColumn >= 0 && this.lastSelectedColumn >= 0 && (column < this.firstSelectedColumn || column > this.lastSelectedColumn));
 //System.out.println("orig row "+row+" -> "+rowIndex(row)+" orig col= "+column+" -> "+colIndex(column));
-        g.setColor(colorScheme.getColor(dendroData.get(rowIndex(row), colIndex(column)), dendroData));
+        value = dendroData.get(rowIndex(row), colIndex(column));
+        g.setColor(colorScheme.getColor(value, dendroData));
+        if (collectData) {
+            distribution.sample(value);
+        }
         //System.out.println("x: "+x+", y: "+y+" insets: "+insets+" element size: "+elementSize);
         g.fillRect(x, y + insets.top, elementSize.width, elementSize.height);
         if (mask) {
@@ -553,15 +565,21 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     @Override
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset) {
-        this.dendroData = dataset;
+    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping mapping) {
+        this.dendroData = mapping;
+        distribution.datasetChanged(mapping.getDataset());
         updateSize();
+        collectData = true;
         // this is the expensive function that draws the dendroData plot into a
         // BufferedImage. The dendroData plot is then cheaply drawn to the screen when
         // needed, saving us a lot of time in the end.
         drawData(size);
         //paints whole component
         redraw();
+    }
+
+    public DistributionCollector getDistribution() {
+        return distribution;
     }
 
     /**

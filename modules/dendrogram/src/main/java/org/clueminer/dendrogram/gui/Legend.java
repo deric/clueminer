@@ -7,11 +7,13 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.image.BufferedImage;
 import javax.swing.SwingConstants;
+import org.clueminer.clustering.api.Distribution;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.gui.BPanel;
+import org.clueminer.std.StdScale;
 
 /**
  * Displays color scale for range of numbers
@@ -69,43 +71,72 @@ public class Legend extends BPanel implements DendrogramDataListener {
     private BufferedImage drawData(int colorBarWidth, int colorBarHeight, double min, double max) {
         BufferedImage scaleImg;
         Graphics2D gr;
+
+        double range = max - min;
+        double inc = range / (double) colorBarHeight;
+
+        scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
+        gr = scaleImg.createGraphics();
+
+        gr.setColor(Color.black);
+        gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
+
+        Distribution dist = panel.getDistribution();
+        int[] histRange = null;
+        StdScale scale = null;
+        double histVal = 0.0;
+        if (dist != null) {
+            histRange = dist.binsRange();
+            scale = new StdScale();
+            //make sure we fit into the bin
+            histVal = max - dist.getStep() / 2.0;
+        }
+
         if (orientation == SwingConstants.VERTICAL) {
-            scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
-            gr = scaleImg.createGraphics();
-
-            double range = max - min;
-            double inc = range / (double) colorBarHeight;
-
             int yStart;
-            gr.setColor(Color.black);
-            gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
             //maximum color is at the top
             double value = max;
+            int scaleMin = colorBarWidth / 10;
+            int histWidth;
             //draws box with colors
             for (int y = 2; y < colorBarHeight; y++) {
                 yStart = colorBarHeight - y;
                 gr.setColor(panel.getScheme().getColor(value, data));
                 value -= inc;
-                gr.fillRect(1, yStart, colorBarWidth - 2, 1);
+                histVal -= inc;
+                if (dist != null && scale != null) {
+                    if (histVal < min) {
+                        histVal = min;
+                    }
+                    histWidth = (int) scale.scaleToRange(dist.hist(histVal), histRange[0], histRange[1], scaleMin, colorBarWidth - 2);
+                } else {
+                    histWidth = colorBarWidth - 2;
+                }
+                gr.fillRect(1, yStart, histWidth, 1);
             }
         } else {
-            scaleImg = new BufferedImage(colorBarWidth, colorBarHeight, BufferedImage.TYPE_INT_ARGB);
-            gr = scaleImg.createGraphics();
-
-            double range = max - min;
-            double inc = range / (double) colorBarWidth;
-
             int xStart;
-            gr.setColor(Color.black);
-            gr.drawRect(0, 0, colorBarWidth - 1, colorBarHeight - 1);
-            //maximum color is at the top
+            int scaleMin = colorBarHeight / 10;
+            int histWidth;
+            inc = range / (double) colorBarWidth;
+            //maximum color is at the left side
             double value = max;
             //draws box with colors
             for (int x = 2; x < colorBarWidth; x++) {
                 xStart = colorBarWidth - x;
                 gr.setColor(panel.getScheme().getColor(value, data));
                 value -= inc;
-                gr.fillRect(xStart, 1, 1, colorBarHeight - 2);
+                histVal -= inc;
+                if (dist != null && scale != null) {
+                    if (histVal < min) {
+                        histVal = min;
+                    }
+                    histWidth = (int) scale.scaleToRange(dist.hist(histVal), histRange[0], histRange[1], scaleMin, colorBarHeight - 2);
+                } else {
+                    histWidth = colorBarHeight - 2;
+
+                }
+                gr.fillRect(xStart, 1, 1, histWidth);
             }
         }
         gr.dispose();
@@ -226,7 +257,7 @@ public class Legend extends BPanel implements DendrogramDataListener {
             if (orientation == SwingConstants.VERTICAL) {
                 realSize.height = available.height;
                 realSize.width = stdBarSize;
-                colorBarHeight = available.height - insets.bottom - insets.top - fHeight;
+                colorBarHeight = available.height - insets.bottom - insets.top;
             } else {
                 realSize.height = stdBarSize + spaceBetweenBarAndLabels;
                 if (available.width < 200) {
