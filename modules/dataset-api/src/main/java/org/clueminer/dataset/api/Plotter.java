@@ -7,10 +7,11 @@ import java.io.Serializable;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface Plotter extends Serializable {
+public interface Plotter<E extends Instance> extends Serializable {
 
-    public void addInstance(Instance instance);
+    public void addInstance(E instance);
 
     public void paint(Graphics g);
 

@@ -1,6 +1,7 @@
 package org.clueminer.dataset.api;
 
 import java.util.Collection;
+import java.util.Date;
 import org.clueminer.math.Interpolator;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -23,7 +24,7 @@ public interface Timeseries<E extends ContinuousInstance> extends Dataset<E> {
 
     double[] getTimestampsArray();
 
-    Collection<? extends Number> getTimePointsCollection();
+    Collection<? extends Date> getTimePointsCollection();
 
     void setTimePoints(TimePoint[] tp);
 
