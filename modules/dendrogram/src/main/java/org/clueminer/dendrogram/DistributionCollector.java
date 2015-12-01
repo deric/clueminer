@@ -78,7 +78,7 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
     public void sample(double value) {
         numSamples++;
         checkRange(value);
-        int pos = (int) Math.floor(value / step);
+        int pos = countPos(value);
         //due to rounding error we might misplace value by one bin
         if (pos >= bins.length) {
             pos = bins.length - 1;
@@ -86,10 +86,14 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
         bins[pos]++;
     }
 
+    protected int countPos(double value) {
+        return (int) Math.floor((value - min) / step);
+    }
+
     @Override
     public int hist(double value) {
         checkRange(value);
-        int pos = (int) Math.floor(value / step);
+        int pos = countPos(value);
         if (pos >= bins.length) {
             pos = bins.length - 1;
         }
@@ -107,6 +111,7 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
         return bins;
     }
 
+    @Override
     public double getStep() {
         return step;
     }
@@ -133,6 +138,11 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
     @Override
     public int getNumSamples() {
         return numSamples;
+    }
+
+    public void setNumBins(int bins) {
+        this.numBins = bins;
+        clear();
     }
 
     @Override

@@ -64,4 +64,36 @@ public class DistributionCollectorTest<E extends Instance> {
         //subject.dump();
     }
 
+    /**
+     * Dataset contains negative value
+     */
+    @Test
+    public void testDS() {
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.ds577();
+        subject.setNumBins(10);
+        subject.datasetChanged(dataset);
+        for (int i = 0; i < dataset.size(); i++) {
+            for (int j = 0; j < dataset.attributeCount(); j++) {
+                subject.sample(dataset.get(i, j));
+            }
+        }
+        assertEquals(1154, subject.getNumSamples());
+        int[] bins = subject.getBins();
+        int assigns = 0;
+        for (int i = 0; i < bins.length; i++) {
+            assigns += bins[i];
+        }
+        //subject.dump();
+        //all samples were assigned to some bin
+        assertEquals(1154, assigns);
+
+        //first
+        assertEquals(0, subject.countPos(-0.5));
+        //middle
+        assertEquals(5, subject.countPos(2.5));
+        //last bin
+        assertEquals(subject.getNumBins() - 1, subject.countPos(4.9));
+
+    }
+
 }
