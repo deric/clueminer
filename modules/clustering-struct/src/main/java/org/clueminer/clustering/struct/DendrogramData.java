@@ -38,7 +38,6 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
 
     public DendrogramData(Dataset<E> dataset) {
         setDataset(dataset);
-
     }
 
     public DendrogramData(Dataset<E> dataset, HierarchicalResult rowResult, HierarchicalResult columnResult) {

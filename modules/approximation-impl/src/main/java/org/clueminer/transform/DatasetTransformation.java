@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.AttrHashDataset;
 import org.clueminer.math.Standardisation;
+import org.clueminer.stats.NumericalStats;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
@@ -110,6 +111,7 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
             String[] attrs = a.getParamNames();
             for (String attribute : attrs) {
                 attr = builder.create(attribute, "NUMERIC");
+                attr.registerStatistics(new NumericalStats(attr));
                 attr.setDataset(output);
             }
         }

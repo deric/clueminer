@@ -114,6 +114,8 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     /**
      * Sets the left margin for the viewer
+     *
+     * @param leftMargin
      */
     public void setLeftInset(int leftMargin) {
         insets.left = leftMargin;
@@ -546,10 +548,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     }
 
     private boolean isLegalPosition(int row, int column) {
-        if (isLegalRow(row) && isLegalColumn(column)) {
-            return true;
-        }
-        return false;
+        return isLegalRow(row) && isLegalColumn(column);
     }
 
     private boolean isLegalColumn(int column) {
@@ -815,7 +814,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
         @Override
         public void mouseExited(MouseEvent event) {
-
             mouseOnMap = false;
 //            header.setDrag(false, 0, 0);
             inColorbarDrag = false;

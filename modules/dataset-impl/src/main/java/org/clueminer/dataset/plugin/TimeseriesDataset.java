@@ -2,6 +2,7 @@ package org.clueminer.dataset.plugin;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -553,7 +554,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     }
 
     @Override
-    public Collection<? extends Number> getTimePointsCollection() {
+    public Collection<? extends Date> getTimePointsCollection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
