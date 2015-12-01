@@ -70,7 +70,7 @@ import org.openide.windows.TopComponent;
     "CTL_ExplorerTopComponent=Explorer Window",
     "HINT_ExplorerTopComponent=This is a Explorer window"
 })
-public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>> extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, ToolbarListener {
+public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>> extends CloneableTopComponent implements ExplorerManager.Provider, LookupListener, TaskListener, ToolbarListener<E> {
 
     private static final long serialVersionUID = 5542932858488609860L;
     private final transient ExplorerManager mgr = new ExplorerManager();
@@ -284,28 +284,30 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     }
 
     @Override
-    public void runClustering(final ClusteringAlgorithm alg, final Props props) {
+    public void runClustering(final ClusteringAlgorithm alg, final Dataset<E> data,final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
-        if (dataset == null) {
+        if (data == null) {
             throw new RuntimeException("missing dataset");
         }
         task = RP.create(new Runnable() {
 
             @Override
             public void run() {
+                logger.log(Level.INFO, "clustering {0} [{1}x{2}]",
+                        new Object[]{data.getName(), data.size(), data.attributeCount()});
                 exec.setAlgorithm(alg);
                 Clustering<E, C> clustering;
                 ClusteringType ct = ClusteringType.parse(props.get(AgglParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
                 if (ct == ClusteringType.BOTH) {
-                    DendrogramMapping mapping = exec.clusterAll(dataset, props);
+                    DendrogramMapping mapping = exec.clusterAll(data, props);
                     clustering = mapping.getRowsClustering();
                     children.addClustering(clustering);
                 } else {
-                    clustering = exec.clusterRows(dataset, props);
+                    clustering = exec.clusterRows(data, props);
                     children.addClustering(clustering);
                 }
                 logger.log(Level.INFO, "finished clustering dataset {1} with algorithm {0}",
-                        new Object[]{alg.getName(), dataset.getName()});
+                        new Object[]{alg.getName(), data.getName()});
             }
         });
         task.schedule(0);
@@ -322,7 +324,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 

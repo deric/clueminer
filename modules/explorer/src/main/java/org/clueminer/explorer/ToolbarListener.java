@@ -11,8 +11,9 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface ToolbarListener {
+public interface ToolbarListener<E extends Instance> {
 
     void evolutionAlgorithmChanged(ActionEvent evt);
 
@@ -20,7 +21,7 @@ public interface ToolbarListener {
 
     void evaluatorChanged(ClusterEvaluation eval);
 
-    void runClustering(ClusteringAlgorithm alg, Props props);
+    void runClustering(ClusteringAlgorithm alg, Dataset<E> dataset, Props props);
 
     /**
      *
@@ -37,6 +38,6 @@ public interface ToolbarListener {
      *
      * @return current dataset
      */
-    Dataset<? extends Instance> getDataset();
+    Dataset<E> getDataset();
 
 }

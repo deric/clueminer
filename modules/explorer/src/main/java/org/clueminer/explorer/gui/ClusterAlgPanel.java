@@ -5,6 +5,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,7 +21,7 @@ import org.clueminer.utils.Props;
  *
  * @author Tomas Barton
  */
-public class ClusterAlgPanel extends JPanel {
+public class ClusterAlgPanel<E extends Instance> extends JPanel {
 
     private static final long serialVersionUID = 3764607764760405449L;
 
@@ -29,7 +30,8 @@ public class ClusterAlgPanel extends JPanel {
     private JPanel optPanel;
     private String selected = null;
     private ClusteringDialog dialog = null;
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
+    private Dataset<E> currDataset;
 
     public ClusterAlgPanel() {
         initComponents();
@@ -59,6 +61,7 @@ public class ClusterAlgPanel extends JPanel {
                 selected = (String) cbType.getSelectedItem();
                 removeAll();
                 initComponents();
+                updateCheckbox(dataset);
                 repaint();
                 revalidate();
             }
@@ -68,6 +71,21 @@ public class ClusterAlgPanel extends JPanel {
         c.gridx++;
         cbData = new JComboBox<>();
         add(cbData, c);
+        cbData.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String curr = (String) cbData.getSelectedItem();
+                System.out.println("setting dataset to :" + curr);
+                if (curr.equals(dataset.getName())) {
+                    currDataset = dataset;
+                } else {
+                    currDataset = dataset.getChild(curr);
+                }
+                System.out.println("curr is: " + currDataset.getName());
+            }
+
+        });
 
         c = new GridBagConstraints();
         c.gridx = 0;
@@ -92,7 +110,6 @@ public class ClusterAlgPanel extends JPanel {
         return new JPanel();
     }
 
-
     public ClusteringAlgorithm getAlgorithm() {
         String algName = (String) cbType.getSelectedItem();
         ClusteringAlgorithm algorithm = ClusteringFactory.getInstance().getProvider(algName);
@@ -107,15 +124,36 @@ public class ClusterAlgPanel extends JPanel {
         }
     }
 
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public Dataset<E> getSelectedDataset() {
+        if (currDataset == null) {
+            return dataset;
+        }
+        return currDataset;
+    }
+
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
         updateCheckbox(dataset);
     }
 
-    private void updateCheckbox(Dataset<? extends Instance> dataset) {
+    private void updateCheckbox(Dataset<E> dataset) {
         cbData.removeAll();
+
         if (dataset != null) {
             cbData.addItem(dataset.getName());
+            Iterator<String> iter = dataset.getChildIterator();
+            String key;
+            Dataset<? extends Instance> curr;
+            while (iter.hasNext()) {
+                key = iter.next();
+                curr = dataset.getChild(key);
+                if (curr != null) {
+                    String name = curr.getName();
+                    if (name != null) {
+                        cbData.addItem(name);
+                    }
+                }
+            }
         }
 
     }
