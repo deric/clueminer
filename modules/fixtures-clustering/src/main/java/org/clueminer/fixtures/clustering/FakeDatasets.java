@@ -25,6 +25,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> glassDataset;
     private static Dataset<? extends Instance> kumar;
     private static Dataset<? extends Instance> vehicle;
+    private static Dataset<? extends Instance> ds577;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -45,11 +46,10 @@ public class FakeDatasets {
 
     public static Dataset<? extends Instance> glassDataset() {
         if (glassDataset == null) {
-            CommonFixture tf = new CommonFixture();
             glassDataset = new ArrayDataset(214, 9);
             ARFFHandler arff = new ARFFHandler();
             try {
-                arff.load(tf.glassArff(), glassDataset, 9);
+                arff.load(fixture.glassArff(), glassDataset, 9);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -61,12 +61,11 @@ public class FakeDatasets {
 
     public static Dataset<? extends Instance> irisDataset() {
         if (irisData == null) {
-            CommonFixture tf = new CommonFixture();
             irisData = new ArrayDataset(150, 4);
             irisData.setName("iris");
             ARFFHandler arff = new ARFFHandler();
             try {
-                arff.load(tf.irisArff(), irisData, 4);
+                arff.load(fixture.irisArff(), irisData, 4);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -78,12 +77,11 @@ public class FakeDatasets {
 
     public static Dataset<? extends Instance> vehicleDataset() {
         if (vehicle == null) {
-            CommonFixture tf = new CommonFixture();
             vehicle = new ArrayDataset(846, 18);
             vehicle.setName("vehicle");
             ARFFHandler arff = new ARFFHandler();
             try {
-                arff.load(tf.vehicleArff(), vehicle, 18);
+                arff.load(fixture.vehicleArff(), vehicle, 18);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
@@ -141,6 +139,22 @@ public class FakeDatasets {
             kumar.builder().create(new double[]{0.45, 0.30}, "6");
         }
         return kumar;
+    }
+
+    public static Dataset<? extends Instance> ds577() {
+        if (ds577 == null) {
+            ds577 = new ArrayDataset(577, 2);
+            ds577.setName("DS577");
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(fixture.ds577(), ds577, 18);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return ds577;
     }
 
 }
