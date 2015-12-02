@@ -38,6 +38,8 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
 
@@ -97,6 +99,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
             for (Cluster<? extends Instance> d : clust) {
                 //  c.gridy = i++;
                 //logger.log(Level.INFO, "{0}", new Object[]{d.toString()});
+                System.out.println(d.getName() + " [" + d.size() + "]");
                 Cluster<? extends Instance> dataset = d;
                 //each cluster might have different max
                 xmax = 0.0;

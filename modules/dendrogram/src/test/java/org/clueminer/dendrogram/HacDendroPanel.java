@@ -3,13 +3,16 @@ package org.clueminer.dendrogram;
 import java.util.Map;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
 
@@ -43,8 +46,12 @@ public class HacDendroPanel extends DendroPanel {
 
     @Override
     public DendrogramMapping execute() {
-        Props params = getProperties().copy();
-        return execute(params);
+        Props params = getProperties();
+        if (params == null) {
+            params = new Props();
+            params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        }
+        return execute(params.copy());
     }
 
     public DendrogramMapping execute(Props params) {
@@ -59,7 +66,14 @@ public class HacDendroPanel extends DendroPanel {
         algorithm.setDistanceFunction(func);
 
         exec.setAlgorithm(algorithm);
-        DendrogramMapping dendroData = exec.clusterAll(getDataset(), params);
+        DendrogramMapping dendroData;
+        if (params.getObject(AgglParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
+            HierarchicalResult res = exec.hclustRows(getDataset(), params);
+            dendroData = new DendrogramData(getDataset(), res);
+        } else {
+            dendroData = exec.clusterAll(getDataset(), params);
+        }
+
         memInfo.report();
 
         viewer.setDataset(dendroData);

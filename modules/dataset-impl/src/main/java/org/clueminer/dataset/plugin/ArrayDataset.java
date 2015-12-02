@@ -268,6 +268,9 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
             attrCnt++;
         }
         attributes[i] = attr;
+        if (attr.isNumerical()) {
+            attr.registerStatistics(new NumericalStats(attr));
+        }
     }
 
     /**

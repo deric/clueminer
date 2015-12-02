@@ -19,7 +19,7 @@ import org.openide.util.RequestProcessor;
 public class DendroChameleon extends JFrame {
 
     private static final long serialVersionUID = 579590462477351303L;
-    private HclDendroPanel dendroPanel;
+    private HacDendroPanel dendroPanel;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
 
     public DendroChameleon() throws IOException, CloneNotSupportedException {
@@ -30,7 +30,7 @@ public class DendroChameleon extends JFrame {
                 .put("US arrests", FakeDatasets.usArrestData())
                 .build();
 
-        dendroPanel = new HclDendroPanel(map);
+        dendroPanel = new HacDendroPanel(map);
 
         RP.execute(new Runnable() {
             @Override

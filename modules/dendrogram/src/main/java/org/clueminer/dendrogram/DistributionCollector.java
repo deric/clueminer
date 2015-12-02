@@ -17,10 +17,8 @@
 package org.clueminer.dendrogram;
 
 import org.clueminer.clustering.api.Distribution;
-import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.stats.AttrNumStats;
 
 /**
  * Aggregate histogram data
@@ -44,20 +42,9 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
 
     @Override
     public void datasetChanged(Dataset<E> dataset) {
-        Attribute attr;
-        double value;
         clear();
-        for (int i = 0; i < dataset.attributeCount(); i++) {
-            attr = dataset.getAttribute(i);
-            value = attr.statistics(AttrNumStats.MIN);
-            if (value < min) {
-                min = value;
-            }
-            value = attr.statistics(AttrNumStats.MAX);
-            if (value > max) {
-                max = value;
-            }
-        }
+        min = dataset.min();
+        max = dataset.max();
         step = (max - min) / (double) numBins;
     }
 
