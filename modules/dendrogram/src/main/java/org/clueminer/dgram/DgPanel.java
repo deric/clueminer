@@ -36,7 +36,6 @@ import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dendrogram.gui.Legend;
 import org.clueminer.dendrogram.gui.RowAnnotation;
 import org.clueminer.dendrogram.tree.AbstractScale;
-import org.clueminer.dendrogram.tree.HCLColorBar;
 import org.clueminer.dendrogram.tree.HorizontalScale;
 import org.clueminer.dendrogram.tree.VerticalScale;
 import org.clueminer.dgram.eval.SilhouettePlot;
@@ -57,8 +56,6 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     private CutoffLine cutoff;
     private DendrogramTree columnsTree;
     private AbstractScale columnsScale;
-    //component to draw clusters colors and descriptions
-    protected HCLColorBar colorBar;
     protected DendrogramMapping dendroData;
     //component to draw an experiment dendroData
     protected Heatmap heatmap;
