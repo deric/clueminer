@@ -1,6 +1,7 @@
 package org.clueminer.dgram;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -68,6 +69,13 @@ public class DgLeftTree extends DgTree {
             elementHeight = height;
             recalculate();
         }
+    }
+
+    @Override
+    public DendroNode findSubTree(Point p) {
+        DendroNode node = null;
+
+        return node;
     }
 
 }

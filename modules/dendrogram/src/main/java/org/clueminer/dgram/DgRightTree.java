@@ -2,6 +2,7 @@ package org.clueminer.dgram;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -106,6 +107,27 @@ public class DgRightTree extends DgTree {
             elementHeight = height;
             recalculate();
         }
+    }
+
+    /**
+     * Convert position on component to tree height
+     *
+     * @param pos
+     * @return
+     */
+    protected double reverseScale(double pos) {
+        return scale.scaleToRange(pos, 0, treeHeight, treeData.getRoot().getHeight(), 0);
+    }
+
+    @Override
+    public DendroNode findSubTree(Point p) {
+        DendroNode node = null;
+        double x = p.x - leftOffset;
+        //System.out.println("[" + p.getX() + ", " + p.getY() + " -> " + reverseScale(x));
+        DendroNode root = treeData.getRoot();
+        //System.out.println("root pos " + root.getPosition() + ", h = " + root.getHeight());
+
+        return node;
     }
 
 }

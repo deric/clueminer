@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
-import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -25,7 +27,7 @@ import org.clueminer.std.StdScale;
  *
  * @author Tomas Barton
  */
-public abstract class DgTree extends BPanel implements DendrogramDataListener, DendrogramTree {
+public abstract class DgTree extends BPanel implements DendrogramDataListener, DendrogramTree, MouseMotionListener {
 
     protected DendroTreeData treeData;
     protected DendrogramMapping dendroData;
@@ -40,8 +42,7 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     private Color treeColor = Color.blue;
     private static final long serialVersionUID = -6201677645559622330L;
     protected EventListenerList treeListeners = new EventListenerList();
-    private static final Logger logger = Logger.getLogger(DgTree.class.getName());
-    private final StdScale scale = new StdScale();
+    protected final StdScale scale = new StdScale();
     protected final Insets insets = new Insets(0, 0, 0, 0);
     /**
      * mark nodes in dendrogram with a circle
@@ -56,6 +57,11 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
         elementHeight = elem.height;
         this.fitToSpace = false;
         this.preserveAlpha = true;
+        initComponents();
+    }
+
+    private void initComponents() {
+        addMouseMotionListener(this);
     }
 
     @Override
@@ -261,4 +267,23 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     public String toString() {
         return this.getClass().getSimpleName();
     }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        //
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        findSubTree(e.getPoint());
+    }
+
+    /**
+     * Find subtree below given point
+     *
+     * @param p
+     * @return
+     */
+    public abstract DendroNode findSubTree(Point p);
+
 }
