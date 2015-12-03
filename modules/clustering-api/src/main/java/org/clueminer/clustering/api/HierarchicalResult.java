@@ -3,6 +3,7 @@ package org.clueminer.clustering.api;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.DataVector;
@@ -294,5 +295,15 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
     double getHeightByLevel(int level);
 
     void setNoise(List<Instance> noise);
+
+    /**
+     * Find tree node located below given coordinates (in tree units)
+     *
+     * @param node
+     * @param x tree height (for horizontal trees)
+     * @param y
+     * @return
+     */
+    DendroNode findTreeBelow(DendroNode node, double x, double y);
 
 }

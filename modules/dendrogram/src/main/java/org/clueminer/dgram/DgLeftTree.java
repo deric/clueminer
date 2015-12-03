@@ -2,6 +2,7 @@ package org.clueminer.dgram;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
@@ -19,6 +20,7 @@ public class DgLeftTree extends DgTree {
 
     public DgLeftTree(DendroPane panel) {
         super(panel);
+        this.orientation = SwingConstants.HORIZONTAL;
     }
 
     @Override

@@ -318,6 +318,30 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         }
     }
 
+    @Override
+    public DendroNode findTreeBelow(DendroNode node, double x, double y) {
+        if (node.isLeaf()) {
+            return null;
+        }
+        if (x >= node.getHeight()) {
+            return node;
+        }
+        if (node.getLeft().getHeight() < x && node.getRight().getHeight() < x) {
+            //choose left or right subtree
+            if (node.getPosition() < y) {
+                return node.getLeft();
+            }
+            return node.getRight();
+        }
+        //System.out.println("node [" + node.getHeight() + ", " + node.getPosition() + "]");
+        //DendroNode res;
+
+        if (node.getPosition() < y) {
+            return findTreeBelow(node.getLeft(), x, y);
+        }
+        return findTreeBelow(node.getRight(), x, y);
+    }
+
     private Cluster makeCluster(Clustering clusters) {
         Cluster clust = clusters.createCluster();
         clust.setColor(colorGenerator.next());

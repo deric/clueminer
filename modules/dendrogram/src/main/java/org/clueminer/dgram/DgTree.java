@@ -9,6 +9,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import javax.swing.SwingConstants;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -24,6 +26,7 @@ import org.clueminer.hclust.DLeaf;
 import org.clueminer.std.StdScale;
 
 /**
+ * Visualize dendrogram tree
  *
  * @author Tomas Barton
  */
@@ -44,6 +47,8 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
     protected EventListenerList treeListeners = new EventListenerList();
     protected final StdScale scale = new StdScale();
     protected final Insets insets = new Insets(0, 0, 0, 0);
+    //HORIZONTAL represent rows clustering, while VERTICAL columns clustering
+    protected int orientation;
     /**
      * mark nodes in dendrogram with a circle
      */
@@ -72,6 +77,18 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
 
     @Override
     public abstract void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting);
+
+    /**
+     * Data containing hierarchical clustering result
+     *
+     * @return rows or columns clustering
+     */
+    public HierarchicalResult getHierarchicalData() {
+        if (orientation == SwingConstants.HORIZONTAL) {
+            return dendroData.getRowsResult();
+        }
+        return dendroData.getColsResult();
+    }
 
     @Override
     public void render(Graphics2D g) {
@@ -275,7 +292,22 @@ public abstract class DgTree extends BPanel implements DendrogramDataListener, D
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        findSubTree(e.getPoint());
+        DendroNode node = findSubTree(e.getPoint());
+        if (bufferedImage == null) {
+            return;
+        }
+        if (node != null) {
+            //Graphics2D g2 = bufferedImage.createGraphics();
+            BufferedImage image = new BufferedImage(bufferedImage.getWidth(), bufferedImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = (Graphics2D) image.getGraphics();
+            g2.setColor(Color.RED);
+            drawSubTree(g2, node);
+            bufferedImage.createGraphics().drawImage(image, null, 0, 0);
+            repaint();
+        } else {
+            resetCache();
+        }
+
     }
 
     /**

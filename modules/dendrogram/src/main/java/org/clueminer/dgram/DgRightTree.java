@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import javax.swing.BorderFactory;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -30,6 +31,7 @@ public class DgRightTree extends DgTree {
     public DgRightTree(DendroPane panel) {
         super(panel);
         setBorder(border);
+        this.orientation = SwingConstants.HORIZONTAL;
         insets.left = 0;
 
         leftOffset = panel.getSliderDiameter();
@@ -115,16 +117,28 @@ public class DgRightTree extends DgTree {
      * @param pos
      * @return
      */
-    protected double reverseScale(double pos) {
+    private double reverseScale(double pos) {
         return scale.scaleToRange(pos, 0, treeHeight, treeData.getRoot().getHeight(), 0);
     }
 
+    private double reverseWidth(double pos) {
+        return scale.scaleToRange(pos, 0, treeWidth, realSize.height, 0);
+    }
+
+    /**
+     * Find subtree below given point
+     *
+     * @param p point on tree canvas
+     * @return
+     */
     @Override
     public DendroNode findSubTree(Point p) {
-        DendroNode node = null;
-        double x = p.x - leftOffset;
-        //System.out.println("[" + p.getX() + ", " + p.getY() + " -> " + reverseScale(x));
+        DendroNode node;
+        double x = p.x - leftOffset - insets.left;
+        double y = p.y - insets.top;
+        //System.out.println("[" + p.getX() + ", " + p.getY() + "] -> " + reverseScale(x));
         DendroNode root = treeData.getRoot();
+        node = getHierarchicalData().findTreeBelow(root, reverseScale(x), reverseWidth(y));
         //System.out.println("root pos " + root.getPosition() + ", h = " + root.getHeight());
 
         return node;

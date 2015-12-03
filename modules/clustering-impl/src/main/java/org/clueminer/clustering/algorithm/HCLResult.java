@@ -11,6 +11,7 @@ import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.Merge;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -420,6 +421,11 @@ public class HCLResult<E extends Instance, C extends Cluster<E>> implements Hier
     @Override
     public void setDendrogramMapping(DendrogramMapping dendroMap) {
         this.dendroMapping = dendroMap;
+    }
+
+    @Override
+    public DendroNode findTreeBelow(DendroNode node, double x, double y) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
