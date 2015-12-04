@@ -111,7 +111,6 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
         System.out.println("after filtering: " + clusters.size() + ", noise: " + noise.size());
         renumberClusters(clusters, noise);
-
     }
 
     /**
@@ -177,9 +176,11 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
      *
      * @param small
      * @param large
+     * @param noise
      * @param pref
+     * @return
      */
-    private GraphCluster<E> merge(GraphCluster<E> small, GraphCluster<E> large, ArrayList<E> noise, Props pref) {
+    protected GraphCluster<E> merge(GraphCluster<E> small, GraphCluster<E> large, ArrayList<E> noise, Props pref) {
         ArrayList<Node<E>> clusterNodes = large.getNodes();
         Node<E> outlier = small.getNodes().get(0);
         E inst = outlier.getInstance();
