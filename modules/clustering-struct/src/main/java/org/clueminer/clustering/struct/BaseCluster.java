@@ -86,6 +86,10 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     @Override
     public E getCentroid() {
         if (centroid == null) {
+            if (size() == 1) {
+                //one instance is an centroid to itself
+                return (E) get(0);
+            }
             int attrCount = this.attributeCount();
             if (attrCount == 0) {
                 throw new RuntimeException("number of attributes should not be 0");

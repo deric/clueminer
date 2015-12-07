@@ -149,6 +149,19 @@ public class BaseClusterTest {
     }
 
     @Test
+    public void testSingletonCentroid() {
+        Cluster a = new BaseCluster(5);
+        a.attributeBuilder().create("x", "NUMERIC");
+        a.attributeBuilder().create("y", "NUMERIC");
+
+        a.builder().create(new double[]{2, 2});
+        assertEquals(2, a.attributeCount());
+        //centroid should be [2, 3]
+        assertEquals(2, a.getCentroid().get(0), delta);
+        assertEquals(2, a.getCentroid().get(1), delta);
+    }
+
+    @Test
     public void testModifyingCentroid() {
         Cluster a = new BaseCluster(5);
         a.attributeBuilder().create("x", "NUMERIC");

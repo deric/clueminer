@@ -297,6 +297,10 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     @Override
     public E getCentroid() {
         if (centroid == null) {
+            if (size() == 1) {
+                //one instance is an centroid to itself
+                return get(0);
+            }
             int attrCount = this.attributeCount();
             if (attrCount == 0) {
                 throw new RuntimeException("number of attributes should not be 0");
