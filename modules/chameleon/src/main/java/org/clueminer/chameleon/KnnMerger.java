@@ -38,7 +38,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merger<E> {
 
     public static final String name = "k-NN merger";
-    private KDTree<GraphCluster<E>> kdTree;
 
     @Override
     public String getName() {

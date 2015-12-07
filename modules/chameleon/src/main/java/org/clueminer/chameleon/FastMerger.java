@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class FastMerger<E extends Instance> extends PairMerger<E> implements Merger<E> {
 
     public static final String name = "fast merger";
-    private KDTree<GraphCluster<E>> kdTree;
+    protected KDTree<GraphCluster<E>> kdTree;
 
     @Override
     public String getName() {
@@ -138,10 +138,15 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         System.out.println("clusters " + numClusters);
         System.out.println("gps capacity = " + gps.getCapacity());
 
+        E centroid;
         for (GraphCluster<E> a : clusters) {
             try {
                 //find nearest neighbors
-                List<GraphCluster<E>> nn = kdTree.nearest(a.getCentroid().arrayCopy(), k);
+                centroid = a.getCentroid();
+                if (centroid == null) {
+                    throw new RuntimeException("no centroid of cluster " + a.toString());
+                }
+                List<GraphCluster<E>> nn = kdTree.nearest(centroid.arrayCopy(), k);
                 //for each NN compute their similarities
                 for (GraphCluster<E> b : nn) {
                     if (a.getClusterId() != b.getClusterId()) {
