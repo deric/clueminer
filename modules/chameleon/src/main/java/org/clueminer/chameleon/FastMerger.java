@@ -139,31 +139,28 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         System.out.println("gps capacity = " + gps.getCapacity());
 
         for (GraphCluster<E> a : clusters) {
-            //except tiny clusters
-            if (a.size() > 1) {
-                try {
-                    //find nearest neighbors
-                    List<GraphCluster<E>> nn = kdTree.nearest(a.getCentroid().arrayCopy(), k);
-                    //for each NN compute their similarities
-                    for (GraphCluster<E> b : nn) {
-                        if (a.getClusterId() != b.getClusterId()) {
-                            sim = evaluation.score(a, b, pref);
+            try {
+                //find nearest neighbors
+                List<GraphCluster<E>> nn = kdTree.nearest(a.getCentroid().arrayCopy(), k);
+                //for each NN compute their similarities
+                for (GraphCluster<E> b : nn) {
+                    if (a.getClusterId() != b.getClusterId()) {
+                        sim = evaluation.score(a, b, pref);
+                        if (sim > 0) {
+                            pq.add(new PairValue<>(a, b, sim));
+                        } else {
+                            sim = closeness.score(a, b, pref);
                             if (sim > 0) {
+                                System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
                                 pq.add(new PairValue<>(a, b, sim));
-                            } else {
-                                sim = closeness.score(a, b, pref);
-                                if (sim > 0) {
-                                    System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
-                                    pq.add(new PairValue<>(a, b, sim));
-                                }
-                                //System.out.println("excluding pair " + a + ", " + b);
                             }
-                            //gps.dump();
+                            //System.out.println("excluding pair " + a + ", " + b);
                         }
+                        //gps.dump();
                     }
-                } catch (KeySizeException | IllegalArgumentException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
+            } catch (KeySizeException | IllegalArgumentException ex) {
+                Exceptions.printStackTrace(ex);
             }
         }
         System.out.println("pq built " + pq.size());
