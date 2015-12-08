@@ -37,6 +37,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -231,6 +232,11 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     @Override
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
         //
+    }
+
+    @Override
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+        //nothing to do
     }
 
 }

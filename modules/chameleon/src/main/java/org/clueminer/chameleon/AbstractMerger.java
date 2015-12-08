@@ -4,6 +4,7 @@ import edu.umn.metis.HMetisBisector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.factory.Clusterings;
@@ -69,15 +70,6 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         return initialize(clusterList, graph, bisection, params, null);
     }
 
-    /**
-     * Try to detect noise
-     *
-     * @param clusters
-     * @param noise
-     * @param params
-     */
-    public abstract void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params);
-
     @Override
     public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params, ArrayList<E> noise) {
         this.graph = graph;
@@ -90,6 +82,23 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         nodes = initiateTree(clusters, noise);
         return noise;
     }
+
+    /**
+     * Try to detect noise before merging
+     *
+     * @param clusters
+     * @param noise
+     * @param params
+     */
+    public abstract void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params);
+
+    /**
+     * Check clustering result after merging process
+     *
+     * @param clusters
+     * @param pq
+     */
+    public abstract void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq);
 
     protected double computeMedianCl(Clustering<E, GraphCluster<E>> clusters) {
         double connectivities[] = new double[clusters.size()];
@@ -106,7 +115,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     }
 
     /**
-     * Creates clustering from lists of nodes
+     * Creates clustering from lists of nodes. Each of clusters left out after
+     * bisection has one node.
      *
      * @param clusterList
      * @param bisection

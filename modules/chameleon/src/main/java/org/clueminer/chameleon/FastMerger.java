@@ -244,11 +244,11 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             j = curr.B.getClusterId();
         }
 
-        double sigmaA = curr.A.getSigma(pref);
-        double sigmaB = curr.B.getSigma(pref);
+        //double sigmaA = curr.A.getSigma(pref);
+        //double sigmaB = curr.B.getSigma(pref);
         //System.out.println("sigma dist(A)= " + sigmaA);
         //System.out.println("sigma dist(B)= " + sigmaB);
-        double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
+        //double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
         //System.out.println("dist between clusters = " + dist);
 
 //        if (dist < sigmaA && dist < sigmaB) {

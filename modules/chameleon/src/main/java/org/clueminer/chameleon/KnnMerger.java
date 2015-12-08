@@ -17,6 +17,7 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
@@ -57,6 +58,25 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             }
         }
         //renumberClusters(clusters, noise);
+    }
+
+    @Override
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+        int i, j;
+        PairValue<GraphCluster<E>> curr;
+        while (!pq.isEmpty()) {
+            curr = pq.poll();
+            i = curr.A.getClusterId();
+            j = curr.B.getClusterId();
+            if (!blacklist.contains(i) && !blacklist.contains(j)) {
+                blacklist.add(i);
+                blacklist.add(j);
+                if (i == j) {
+                    throw new RuntimeException("Cannot merge two same clusters");
+                }
+
+            }
+        }
     }
 
     /**

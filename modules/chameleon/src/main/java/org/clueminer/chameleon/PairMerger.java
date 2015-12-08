@@ -64,6 +64,11 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
             singleMerge(pq.poll(), pref, clusterId);
             clusterId++;
         }
+        System.out.println("cluster ID = " + clusterId + ", clusters = " + clusters.size());
+
+
+        finalize(clusters, pq);
+
         //getGraphPropertyStore(clusters.get(0)).dump();
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
         treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
@@ -248,6 +253,11 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
             }
         }
         return noise;
+    }
+
+    @Override
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+        //nothing to do
     }
 
 }

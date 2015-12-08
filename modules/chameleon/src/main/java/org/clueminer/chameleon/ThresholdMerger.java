@@ -12,6 +12,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
+import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 
 /**
@@ -146,6 +147,11 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     @Override
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props params) {
         //
+    }
+
+    @Override
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+        //nothing to do
     }
 
 }
