@@ -628,6 +628,14 @@ public class ClusterListTest {
     }
 
     @Test
+    public void testGetNoise() {
+        Clustering<Instance, Cluster<Instance>> list = createClusters();
+        Cluster<Instance> noise = list.getNoise();
+        assertNotNull(noise);
+        assertEquals(0, noise.size());
+    }
+
+    @Test
     public void testSetEvaluationTable() {
     }
 

@@ -308,4 +308,11 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @return true when successful
      */
     boolean remove(int idx);
+
+    /**
+     * Get cluster with outliers
+     *
+     * @return cluster containing noisy data points
+     */
+    C getNoise();
 }

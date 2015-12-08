@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
@@ -710,6 +711,20 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
             cluster.setName(name);
             name2id.put(name, clusterIndex);
         }
+    }
+
+    /**
+     * {@inheritDoc }
+     *
+     * @return outliers clusters
+     */
+    @Override
+    public C getNoise() {
+        if (name2id.containsKey(Algorithm.OUTLIER_LABEL)) {
+            int idx = name2id.get(Algorithm.OUTLIER_LABEL);
+            return data[idx];
+        }
+        return createCluster(size(), 10, Algorithm.OUTLIER_LABEL);
     }
 
     class ClusterIterator<X extends Cluster<E>> implements Iterator<X> {
