@@ -17,10 +17,14 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.kdtree.KDTree;
 import org.clueminer.kdtree.KeyDuplicateException;
 import org.clueminer.kdtree.KeySizeException;
@@ -64,6 +68,17 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
     public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
         int i, j;
         PairValue<GraphCluster<E>> curr;
+        Cluster<E> noise = clusters.getNoise();
+        System.out.println("original clusters " + clusters.size() + " nodes " + nodes.length);
+
+        if (nodes[nodes.length - 1] == null) {
+            System.out.println("no noisy tree node");
+            List<E> n = new ArrayList<>(noise.size());
+            nodes[nodes.length - 1] = new DClusterLeaf(noise.size() + 10, n);
+        }
+        List<E> treeNoise = ((DClusterLeaf) nodes[nodes.length - 1]).getInstances();
+        System.out.println("noise in tree: " + treeNoise.size());
+        int k = 0;
         while (!pq.isEmpty()) {
             curr = pq.poll();
             i = curr.A.getClusterId();
@@ -74,8 +89,29 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
                 if (i == j) {
                     throw new RuntimeException("Cannot merge two same clusters");
                 }
-
+                addToNoise(noise, treeNoise, curr.A);
+                addToNoise(noise, treeNoise, curr.B);
+                k += 2;
             }
+        }
+        if (k > 0) {
+            System.out.println("shrink " + clusters.size());
+            DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
+            System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
+            shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
+            nodes = shrinkNodes;
+        }
+        System.out.println("noisy points " + k);
+        for (int l = 0; l < nodes.length; l++) {
+            System.out.println("node " + l + ": " + nodes[l]);
+        }
+        System.out.println("cluster size: " + clusters.size());
+    }
+
+    private void addToNoise(Cluster<E> noise, List<E> treeNoise, GraphCluster<E> cluster) {
+        for (E inst : cluster) {
+            noise.add(inst);
+            treeNoise.add(inst);
         }
     }
 

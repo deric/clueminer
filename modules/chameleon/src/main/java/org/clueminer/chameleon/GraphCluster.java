@@ -593,9 +593,30 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         return new AttributeCollection<>(this, index);
     }
 
+    class InstanceIterator implements Iterator<E> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size();
+        }
+
+        @Override
+        public E next() {
+            return instance(index++);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from dataset using the iterator.");
+
+        }
+    }
+
     @Override
     public Iterator<E> iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new InstanceIterator();
     }
 
     @Override
