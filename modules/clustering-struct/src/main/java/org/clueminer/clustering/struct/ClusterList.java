@@ -517,7 +517,11 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     public String toString() {
         StringBuilder sb = new StringBuilder("ClusterList(" + size() + ")");
         for (C e : this) {
-            sb.append(e.toString());
+            if (e != null) {
+                sb.append(e.toString());
+            } else {
+                sb.append("NULL CLUSTER!!!");
+            }
         }
 
         return sb.append(getName()).toString();

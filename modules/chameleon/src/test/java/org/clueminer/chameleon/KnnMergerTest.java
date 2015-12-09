@@ -19,6 +19,8 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.chameleon.similarity.Standard;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -60,16 +62,30 @@ public class KnnMergerTest {
         ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         merger = new KnnMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
         merger.setMergeEvaluation(new Standard());
         merger.initialize(partitioningResult, g, bisection, props);
 
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
+        Clustering<Instance, Cluster<Instance>> clust = result.getClustering();
+        int i = 0;
+        int sum = 0;
+        for (Cluster c : clust) {
+            //System.out.println(i + ": " + c);
+            if (c != null) {
+                sum += c.size();
+            }
+            i++;
+        }
+        System.out.println("instances = " + sum);
+        // assertEquals(dataset.size(), clust.instancesCount());
         DendroTreeData tree = result.getTreeData();
+        System.out.println("tree: ");
         tree.print();
     }
 
-    @Test
+    // @Test
     public void testVehicle() {
         Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
         KNNGraphBuilder knn = new KNNGraphBuilder();

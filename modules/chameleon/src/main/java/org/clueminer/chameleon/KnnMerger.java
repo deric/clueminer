@@ -75,10 +75,14 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             System.out.println("no noisy tree node");
             List<E> n = new ArrayList<>(noise.size());
             nodes[nodes.length - 1] = new DClusterLeaf(noise.size() + 10, n);
+            nodes[nodes.length - 1].setHeight(0.0);
+            nodes[nodes.length - 1].setLevel(0);
         }
         List<E> treeNoise = ((DClusterLeaf) nodes[nodes.length - 1]).getInstances();
         System.out.println("noise in tree: " + treeNoise.size());
         int k = 0;
+        int m = 0;
+        //int numClusters = clusters.size();
         while (!pq.isEmpty()) {
             curr = pq.poll();
             i = curr.A.getClusterId();
@@ -93,6 +97,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
                 addToNoise(noise, treeNoise, curr.B);
                 k += 2;
             }
+            m++;
         }
         if (k > 0) {
             System.out.println("shrink " + clusters.size());
@@ -101,6 +106,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
             nodes = shrinkNodes;
         }
+
         System.out.println("noisy points " + k);
         for (int l = 0; l < nodes.length; l++) {
             System.out.println("node " + l + ": " + nodes[l]);
@@ -139,29 +145,29 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
         //System.out.println("dist between clusters = " + dist);
 
-        if (dist < sigmaA && dist < sigmaB) {
-            blacklist.add(i);
-            blacklist.add(j);
-            if (i == j) {
-                throw new RuntimeException("Cannot merge two same clusters");
-            }
-            //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
-            //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
-            //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
-            //WARNING: we copy nodes from previous clusters (we save memory, but
-            //it's not a good idea to work with merged clusters)
-            ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
-            clusterNodes.addAll(curr.B.getNodes());
-            merged(curr);
-            GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
-            clusters.add(newCluster);
-            evaluation.clusterCreated(curr, newCluster, pref);
-            addIntoTree(curr, pref);
-            updateExternalProperties(newCluster, curr.A, curr.B);
-            addIntoQueue(newCluster, pref);
-        } else {
-            System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+        //if (dist < sigmaA && dist < sigmaB) {
+        blacklist.add(i);
+        blacklist.add(j);
+        if (i == j) {
+            throw new RuntimeException("Cannot merge two same clusters");
         }
+        System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
+        //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
+        //WARNING: we copy nodes from previous clusters (we save memory, but
+        //it's not a good idea to work with merged clusters)
+        ArrayList<Node<E>> clusterNodes = curr.A.getNodes();
+        clusterNodes.addAll(curr.B.getNodes());
+        merged(curr);
+        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, newClusterId, bisection, pref);
+        clusters.add(newCluster);
+        evaluation.clusterCreated(curr, newCluster, pref);
+        addIntoTree(curr, pref);
+        updateExternalProperties(newCluster, curr.A, curr.B);
+        addIntoQueue(newCluster, pref);
+        /*   } else {
+            System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+        }*/
     }
 
 }

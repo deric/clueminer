@@ -58,13 +58,14 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
+        int i = 0;
         //number of initial clusters
-        for (int i = 0; i < numClusters - 1; i++) {
-            //while (!pq.isEmpty()) {
+        //for (int i = 0; i < numClusters - 1; i++) {
+        while (!pq.isEmpty() && i < numClusters - 1) {
             singleMerge(pq.poll(), pref, clusterId);
             clusterId++;
+            i++;
         }
-        System.out.println("cluster ID = " + clusterId + ", clusters = " + clusters.size());
 
         finalize(clusters, pq);
 

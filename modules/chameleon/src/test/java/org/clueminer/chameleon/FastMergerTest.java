@@ -34,6 +34,7 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -44,7 +45,7 @@ public class FastMergerTest {
 
     private FastMerger merger;
 
-//    @Test
+    @Test
     public void testUsArrest() {
         Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
@@ -60,11 +61,13 @@ public class FastMergerTest {
         ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
 
         merger = new FastMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
         merger.setMergeEvaluation(new Standard());
         merger.initialize(partitioningResult, g, bisection, props);
 
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
+        assertEquals(dataset.size(), result.getClustering().instancesCount());
         DendroTreeData tree = result.getTreeData();
         tree.print();
     }
