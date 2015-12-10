@@ -26,7 +26,7 @@ public class KdTreeTest {
     }
 
 
-    public class KdTreeImpl extends KdTree {
+    public class KdTreeImpl extends AbstractKdTree {
 
         public KdTreeImpl(int dimensions) {
             super(dimensions, Integer.MIN_VALUE);

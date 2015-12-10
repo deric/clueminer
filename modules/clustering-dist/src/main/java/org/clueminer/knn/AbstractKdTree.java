@@ -29,14 +29,14 @@ import java.util.List;
  * @author Rednaxela
  * @param <T>
  */
-public abstract class KdTree<T> {
+public abstract class AbstractKdTree<T> {
 
     // Static variables
     private static final int bucketSize = 24;
 
     // All types
     private final int dimensions;
-    private final KdTree<T> parent;
+    private final AbstractKdTree<T> parent;
 
     // Root only
     private final LinkedList<double[]> locationStack;
@@ -48,7 +48,7 @@ public abstract class KdTree<T> {
     private int locationCount;
 
     // Stem only
-    private KdTree<T> left, right;
+    private AbstractKdTree<T> left, right;
     private int splitDimension;
     private double splitValue;
 
@@ -66,7 +66,7 @@ public abstract class KdTree<T> {
      * @param dimensions
      * @param sizeLimit
      */
-    protected KdTree(int dimensions, Integer sizeLimit) {
+    protected AbstractKdTree(int dimensions, Integer sizeLimit) {
         this.dimensions = dimensions;
 
         // Init as leaf
@@ -91,7 +91,7 @@ public abstract class KdTree<T> {
      * @param parent
      * @param right
      */
-    protected KdTree(KdTree<T> parent, boolean right) {
+    protected AbstractKdTree(AbstractKdTree<T> parent, boolean right) {
         this.dimensions = parent.dimensions;
 
         // Init as leaf
@@ -122,7 +122,7 @@ public abstract class KdTree<T> {
      * @param value
      */
     public void addPoint(double[] location, T value) {
-        KdTree<T> cursor = this;
+        AbstractKdTree<T> cursor = this;
 
         while (cursor.locations == null || cursor.locationCount >= cursor.locations.length) {
             if (cursor.locations != null) {
@@ -157,8 +157,8 @@ public abstract class KdTree<T> {
                 }
 
                 // Create child leaves
-                KdTree<T> left = new ChildNode(cursor, false);
-                KdTree<T> right = new ChildNode(cursor, true);
+                AbstractKdTree<T> left = new ChildNode(cursor, false);
+                AbstractKdTree<T> right = new ChildNode(cursor, true);
 
                 // Move locations into children
                 for (int i = 0; i < cursor.locationCount; i++) {
@@ -265,7 +265,7 @@ public abstract class KdTree<T> {
      */
     private void removeOld() {
         double[] location = this.locationStack.removeFirst();
-        KdTree<T> cursor = this;
+        AbstractKdTree<T> cursor = this;
 
         // Find the node where the point is
         while (cursor.locations == null) {
@@ -324,7 +324,7 @@ public abstract class KdTree<T> {
      */
     @SuppressWarnings("unchecked")
     public List<Entry<T>> nearestNeighbor(double[] location, int count, boolean sequentialSorting) {
-        KdTree<T> cursor = this;
+        AbstractKdTree<T> cursor = this;
         cursor.status = Status.NONE;
         double range = Double.POSITIVE_INFINITY;
         ResultHeap resultHeap = new ResultHeap(count);
@@ -363,7 +363,7 @@ public abstract class KdTree<T> {
             }
 
             // Going to descend
-            KdTree<T> nextCursor = null;
+            AbstractKdTree<T> nextCursor = null;
             if (cursor.status == Status.NONE) {
                 // At a fresh node, descend the most probably useful direction
                 if (location[cursor.splitDimension] > cursor.splitValue) {
@@ -427,9 +427,9 @@ public abstract class KdTree<T> {
     /**
      * Internal class for child nodes
      */
-    private class ChildNode extends KdTree<T> {
+    private class ChildNode extends AbstractKdTree<T> {
 
-        private ChildNode(KdTree<T> parent, boolean right) {
+        private ChildNode(AbstractKdTree<T> parent, boolean right) {
             super(parent, right);
         }
 
@@ -446,7 +446,7 @@ public abstract class KdTree<T> {
     /**
      * Class for tree with Weighted Squared Euclidean distancing
      */
-    public static class WeightedSqrEuclid<T> extends KdTree<T> {
+    public static class WeightedSqrEuclid<T> extends AbstractKdTree<T> {
 
         private double[] weights;
 
@@ -500,7 +500,7 @@ public abstract class KdTree<T> {
     /**
      * Class for tree with Unweighted Squared Euclidean distancing
      */
-    public static class SqrEuclid<T> extends KdTree<T> {
+    public static class SqrEuclid<T> extends AbstractKdTree<T> {
 
         public SqrEuclid(int dimensions, Integer sizeLimit) {
             super(dimensions, sizeLimit);
@@ -542,7 +542,7 @@ public abstract class KdTree<T> {
     /**
      * Class for tree with Weighted Manhattan distancing
      */
-    public static class WeightedManhattan<T> extends KdTree<T> {
+    public static class WeightedManhattan<T> extends AbstractKdTree<T> {
 
         private double[] weights;
 
@@ -596,7 +596,7 @@ public abstract class KdTree<T> {
     /**
      * Class for tree with Manhattan distancing
      */
-    public static class Manhattan<T> extends KdTree<T> {
+    public static class Manhattan<T> extends AbstractKdTree<T> {
 
         public Manhattan(int dimensions, Integer sizeLimit) {
             super(dimensions, sizeLimit);
