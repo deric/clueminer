@@ -29,6 +29,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.SystemInfo;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -48,7 +49,8 @@ public class HMetisTest extends PartitioningTest {
     public void simpleGraphTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
         assertTrue("binary does not exists", subject.getBinary().exists());
-        if (subject.getBinary().exists()) {
+        //binary won't work or Windows
+        if (subject.getBinary().exists() && SystemInfo.isLinux()) {
             Dataset<? extends Instance> dataset = twoDistinctNeighbors();
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Graph g = new AdjMatrixGraph(dataset.size());
@@ -63,7 +65,9 @@ public class HMetisTest extends PartitioningTest {
     @Test
     public void irisTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
-        if (subject.getBinary().exists()) {
+        assertTrue("binary does not exists", subject.getBinary().exists());
+        //binary won't work or Windows
+        if (subject.getBinary().exists() && SystemInfo.isLinux()) {
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Dataset dataset = FakeDatasets.irisDataset();
             Graph g = new AdjListGraph(dataset.size());

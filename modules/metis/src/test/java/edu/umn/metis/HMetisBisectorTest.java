@@ -27,6 +27,9 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.SystemInfo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -44,11 +47,15 @@ public class HMetisBisectorTest extends PartitioningTest {
 
         Graph g = new AdjMatrixGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 4);
+        assertEquals(28, g.getEdgeCount());
 
         /*GraphPrinter gp = new GraphPrinter(true);
          gp.printGraph(g, 1, output, "knn");*/
-        subject = new HMetisBisector();
-        ArrayList<ArrayList<Node>> result = subject.bisect(g, new Props());
+        if (SystemInfo.isLinux()) {
+            subject = new HMetisBisector();
+            ArrayList<ArrayList<Node>> result = subject.bisect(g, new Props());
+            assertNotNull(result);
+        }
 
 
         /*        assertEquals(4, result.get(1).get(0).getInstance().getIndex());

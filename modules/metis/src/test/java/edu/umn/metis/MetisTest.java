@@ -12,6 +12,7 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.SystemInfo;
 import org.junit.Test;
 
 /**
@@ -33,9 +34,12 @@ public class MetisTest extends PartitioningTest {
         Graph g = new AdjMatrixGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 4);
         subject.setPtype("rb");
-        ArrayList<ArrayList<Node>> res = subject.partition(2, g, new Props());
-        //the result is randomized typically the size should be 4 or 8
-        assertEquals(true, res.size() > 3);
+        assertNotNull(g);
+        if (SystemInfo.isLinux()) {
+            ArrayList<ArrayList<Node>> res = subject.partition(2, g, new Props());
+            //the result is randomized typically the size should be 4 or 8
+            assertEquals(true, res.size() > 3);
+        }
     }
 
     @Test
@@ -45,8 +49,11 @@ public class MetisTest extends PartitioningTest {
         Graph g = new AdjListGraph(dataset.size());
         g = knn.getNeighborGraph(dataset, g, 20);
         subject.setPtype("rb");
-        ArrayList<ArrayList<Node>> res = subject.partition(10, g, new Props());
-        assertNotNull(res);
-        assertEquals(true, res.size() > 10);
+        assertNotNull(g);
+        if (SystemInfo.isLinux()) {
+            ArrayList<ArrayList<Node>> res = subject.partition(10, g, new Props());
+            assertNotNull(res);
+            assertEquals(true, res.size() > 10);
+        }
     }
 }
