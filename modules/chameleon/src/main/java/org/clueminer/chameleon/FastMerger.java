@@ -250,7 +250,6 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         //System.out.println("sigma dist(B)= " + sigmaB);
         //double dist = dm.measure(curr.A.getCentroid(), curr.B.getCentroid());
         //System.out.println("dist between clusters = " + dist);
-
 //        if (dist < sigmaA && dist < sigmaB) {
         blacklist.add(i);
         blacklist.add(j);
@@ -288,17 +287,11 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     @Override
     protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
-        double sim;
 
         try {
             List<GraphCluster<E>> nn = kdTree.nearest(cluster.getCentroid().arrayCopy(), 10);
             for (GraphCluster<E> b : nn) {
-                if (cluster.getClusterId() != b.getClusterId()) {
-                    sim = evaluation.score(cluster, b, pref);
-                    //if (sim > 0) {
-                    pq.add(new PairValue<>(cluster, b, sim));
-                    //}
-                }
+                computeSimilarity(cluster, b, pref);
             }
 
         } catch (KeySizeException | IllegalArgumentException ex) {
@@ -309,6 +302,20 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             kdTree.insert(cluster.getCentroid().arrayCopy(), cluster);
         } catch (KeySizeException | KeyDuplicateException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    protected void computeSimilarity(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
+        double sim;
+        int i = a.getClusterId();
+        int j = b.getClusterId();
+        if (i != j) {
+            if (!blacklist.contains(i) && !blacklist.contains(j)) {
+                sim = evaluation.score(a, b, pref);
+                //if (sim > 0) {
+                pq.add(new PairValue<>(a, b, sim));
+                //}
+            }
         }
     }
 
