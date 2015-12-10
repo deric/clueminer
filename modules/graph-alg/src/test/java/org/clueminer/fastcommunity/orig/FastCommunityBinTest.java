@@ -17,29 +17,40 @@
 package org.clueminer.fastcommunity.orig;
 
 import java.io.IOException;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class FastCommunityBinTest {
+public class FastCommunityBinTest<E extends Instance, C extends Cluster<E>> {
 
     private static FastCommunityBin subject;
 
     public FastCommunityBinTest() {
-        subject = new FastCommunityBin();
+        subject = new FastCommunityBin<>();
     }
 
     @Test
     public void testCluster() {
-
+        Props props = new Props();
+        props.putInt("k", 3);
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.schoolData();
+        Clustering<E, C> clust = subject.cluster(dataset, props);
     }
 
     @Test
     public void testBinary() throws IOException, InterruptedException {
-        assertTrue("binary does not exists", subject.getBinary().exists());
+        assertTrue("binary does not exists", subject.getBinary("community").exists());
     }
 
     @Test

@@ -23,8 +23,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.Enumeration;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.utils.exec.ResourceLoader;
 import org.openide.util.Exceptions;
 
@@ -60,25 +61,21 @@ public class FcLoader<E extends Instance> extends ResourceLoader {
     /**
      * Write dataset into a file as space separated values
      *
-     * @param dataset
+     * @param graph
      * @param file
      * @throws FileNotFoundException
      */
-    public void exportDataset(Dataset<E> dataset, File file) throws FileNotFoundException {
+    public void exportDataset(Graph<E> graph, File file) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
-            sb.append(dataset.size()).append(space).append(dataset.attributeCount()).append(lineEnd);
+            //sb.append(graph.size()).append(space).append(graph.attributeCount()).append(lineEnd);
             writer.write(sb.toString());
 
-            for (E instance : dataset) {
+            for (Edge edge : graph.getEdges()) {
                 sb = new StringBuilder();
-                for (int i = 0; i < instance.size(); i++) {
-                    if (i > 0) {
-                        sb.append(space);
-                    }
-                    sb.append(String.valueOf(instance.get(i)));
-                }
-                sb.append(lineEnd);
+                sb.append(edge.getSource().getInstance().getIndex()).append(space);
+                sb.append(edge.getTarget().getInstance().getIndex()).append(space);
+                sb.append(edge.getWeight()).append(lineEnd);
                 writer.write(sb.toString());
             }
 

@@ -26,9 +26,9 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
@@ -54,23 +54,60 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        if (colorGenerator != null) {
-            colorGenerator.reset();
-        }
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        Graph g = new AdjListGraph(dataset.size());
-        g = knn.getNeighborGraph(dataset, g, props.getInt("k", 20));
-
         Clustering<E, C> clustering = null;
-
-        long current = System.currentTimeMillis();
-        File dataFile = new File("data-" + FcLoader.safeName(dataset.getName()) + "-" + current + ".pairs");
+        Process p = null;
         try {
-            loader.exportDataset(dataset, dataFile);
-        } catch (FileNotFoundException ex) {
+            if (colorGenerator != null) {
+                colorGenerator.reset();
+            }
+            KNNGraphBuilder knn = new KNNGraphBuilder();
+            Graph<E> g = new AdjListGraph(dataset.size());
+            g = knn.getNeighborGraph(dataset, g, props.getInt("k", 20));
+
+            long current = System.currentTimeMillis();
+            File dataFile = new File(FcLoader.safeName(dataset.getName()) + "-" + current + ".pairs");
+            File graph = new File(FcLoader.safeName(dataset.getName()) + "-" + current + ".graph");
+            File weights = new File(FcLoader.safeName(dataset.getName()) + "-" + current + ".weights");
+            File tree = new File(FcLoader.safeName(dataset.getName()) + "-" + current + ".tree");
+            try {
+                loader.exportDataset(g, dataFile);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            StringBuilder cmd = new StringBuilder();
+            cmd.append(getBinary("convert").getPath());
+            cmd.append(" -i ").append(dataFile.getPath());
+            cmd.append(" -o ").append(graph.getPath());
+            cmd.append(" -w ").append(weights.getPath());
+
+            p = Runtime.getRuntime().exec(cmd.toString());
+            p.waitFor();
+            loader.readStdout(p);
+
+            cmd = new StringBuilder();
+            cmd.append(getBinary("community").getPath())
+                    .append(" -w ").append(weights.getAbsolutePath())
+                    .append(" -l -1")
+                    .append(" ").append(graph.getAbsolutePath());
+            //.append(" > ").append(tree.getAbsolutePath());
+
+            System.out.println("cmd: " + cmd.toString());
+            p = Runtime.getRuntime().exec(cmd.toString());
+            p.waitFor();
+            loader.readStdout(p);
+            loader.readStderr(p);
+            System.out.println("exit: " + p.exitValue());
+
+            //TODO parse tree from stdout
+
+            dataFile.deleteOnExit();
+            graph.deleteOnExit();
+            weights.deleteOnExit();
+
+            return clustering;
+        } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
-        System.out.println("file: " + dataFile.getAbsolutePath());
         return clustering;
     }
 
@@ -84,13 +121,13 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
         return false;
     }
 
-    protected File getBinary() throws IOException, InterruptedException {
-        File f = loader.resource("fastcommunity");
+    protected File getBinary(String name) throws IOException, InterruptedException {
+        File f = loader.resource(name);
         if (!f.exists()) {
-            System.err.println("file " + f.getAbsolutePath() + "does not exist!");
+            System.err.println("file " + f.getPath() + "does not exist!");
         }
-        //make sure metis is executable
-        Process p = Runtime.getRuntime().exec("chmod ugo+x " + f.getAbsolutePath());
+        //make sure binary is executable
+        Process p = Runtime.getRuntime().exec("chmod ugo+x " + f.getPath());
         p.waitFor();
         loader.readStdout(p);
         loader.readStderr(p);
