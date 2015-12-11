@@ -21,6 +21,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.SystemInfo;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -41,9 +42,12 @@ public class ClutoTest {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         Props params = new Props();
         params.put("k", 3);
-        Clustering clustering = subject.cluster(dataset, params);
-        assertEquals(2, clustering.size());
-        assertEquals(dataset.size(), clustering.instancesCount());
+        assertEquals(17, dataset.size());
+        if (subject.getBinary().exists() && SystemInfo.isLinux()) {
+            Clustering clustering = subject.cluster(dataset, params);
+            assertEquals(2, clustering.size());
+            assertEquals(dataset.size(), clustering.instancesCount());
+        }
     }
 
     @Test
@@ -51,9 +55,12 @@ public class ClutoTest {
         Dataset<? extends Instance> dataset = FakeDatasets.glassDataset();
         Props params = new Props();
         params.put("k", 9);
-        Clustering clustering = subject.cluster(dataset, params);
-        assertEquals(9, clustering.size());
-        assertEquals(dataset.size(), clustering.instancesCount());
+        assertEquals(214, dataset.size());
+        if (SystemInfo.isLinux()) {
+            Clustering clustering = subject.cluster(dataset, params);
+            assertEquals(9, clustering.size());
+            assertEquals(dataset.size(), clustering.instancesCount());
+        }
     }
 
 }

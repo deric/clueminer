@@ -117,7 +117,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         return clustering;
     }
 
-    private File getBinary() {
+    protected File getBinary() {
         return helper.resource("vcluster");
     }
 
