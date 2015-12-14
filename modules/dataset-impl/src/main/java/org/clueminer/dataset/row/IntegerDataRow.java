@@ -103,6 +103,9 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     @Override
     public void set(int index, Number value) {
         data[index] = value.intValue();
+        if (index >= last) {
+            last = index + 1;
+        }
     }
 
     /**
@@ -111,6 +114,9 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     @Override
     protected void setValue(int index, double value, double defaultValue) {
         data[index] = (int) value;
+        if (index >= last) {
+            last = index + 1;
+        }
     }
 
     /**
