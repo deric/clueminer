@@ -292,6 +292,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         tfNoiseThreshold.setEnabled(false);
 
         buttonGroup1.add(radioNoiseNone);
+        radioNoiseNone.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(radioNoiseNone, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.radioNoiseNone.text")); // NOI18N
         radioNoiseNone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -302,7 +303,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         org.openide.awt.Mnemonics.setLocalizedText(jLabel8, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel8.text")); // NOI18N
 
         buttonGroup1.add(radioNoiseDBSCAN);
-        radioNoiseDBSCAN.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(radioNoiseDBSCAN, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.radioNoiseDBSCAN.text_1")); // NOI18N
         radioNoiseDBSCAN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
