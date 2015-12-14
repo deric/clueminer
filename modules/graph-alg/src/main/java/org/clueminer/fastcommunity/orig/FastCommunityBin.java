@@ -94,8 +94,9 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
             System.out.println("cmd: " + cmd.toString());
             p = Runtime.getRuntime().exec(cmd.toString());
             p.waitFor();
-            loader.readStdout(p);
-            loader.readStderr(p);
+            String out = loader.readStdout(p);
+            System.out.println("out: " + out);
+            loader.printStderr(p);
             System.out.println("exit: " + p.exitValue());
 
             //TODO parse tree from stdout

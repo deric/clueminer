@@ -113,10 +113,10 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             nodes[nodes.length - 1] = null;
         }
 
-        System.out.println("nodes:");
+        /* System.out.println("nodes:");
         for (int l = 0; l < nodes.length; l++) {
             System.out.println("node " + l + ": " + nodes[l]);
-        }
+        }*/
         System.out.println("root: " + nodes[nodes.length - 2]);
         System.out.println("cluster size: " + clusters.size());
 
@@ -188,7 +188,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId() + " -> " + newClusterId);
+        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId() + " -> " + newClusterId);
         //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
         //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
         //WARNING: we copy nodes from previous clusters (we save memory, but

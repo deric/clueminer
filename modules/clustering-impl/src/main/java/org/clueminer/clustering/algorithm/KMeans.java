@@ -151,7 +151,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             double[][] sumPosition = new double[this.k][instanceLength];
             int[] countPosition = new int[this.k];
             for (int i = 0; i < data.size(); i++) {
-                Instance in = data.instance(i);
+                E in = data.instance(i);
                 for (int j = 0; j < instanceLength; j++) {
 
                     sumPosition[assignment[i]][j] += in.value(j);
@@ -165,7 +165,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
                 if (countPosition[i] > 0) {
                     double[] tmp = new double[instanceLength];
                     for (int j = 0; j < instanceLength; j++) {
-                        tmp[j] = (float) sumPosition[i][j] / countPosition[i];
+                        tmp[j] = sumPosition[i][j] / (double) countPosition[i];
                     }
                     Instance newCentroid = new DoubleArrayDataRow(tmp);
                     if (distanceFunction.measure(newCentroid, centroids[i]) > 0.0001) {
@@ -173,14 +173,11 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
                         centroids[i] = newCentroid;
                     }
                 } else {
-                    double[] randomInstance = new double[instanceLength];
                     for (int j = 0; j < instanceLength; j++) {
                         double dist = Math.abs(max.value(j) - min.value(j));
-                        randomInstance[j] = (float) (min.value(j) + random.nextDouble() * dist);
-
+                        centroids[i].set(j, (min.value(j) + random.nextDouble() * dist));
                     }
                     randomCentroids = true;
-                    this.centroids[i] = new DoubleArrayDataRow(randomInstance);
                 }
 
             }

@@ -172,28 +172,40 @@ public abstract class ResourceLoader {
         return file;
     }
 
-    public void readStdout(Process p) {
+    public void printStdout(Process p) {
+        System.out.println(readStdout(p));
+    }
+
+    public String readStdout(Process p) {
+        StringBuilder sb = new StringBuilder();
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = input.readLine()) != null) {
-                System.out.println(line);
+                sb.append(line).append("\n");
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+        return sb.toString();
     }
 
-    public void readStderr(Process p) {
+    public void printStderr(Process p) {
+        System.out.println(readStderr(p));
+    }
+
+    public String readStderr(Process p) {
+        StringBuilder sb = new StringBuilder();
         try {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;
             while ((line = input.readLine()) != null) {
-                System.out.println(line);
+                sb.append(line).append("\n");
             }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+        return sb.toString();
     }
 
     public static String safeName(String name) {

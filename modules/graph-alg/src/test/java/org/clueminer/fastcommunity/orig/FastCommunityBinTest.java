@@ -46,15 +46,12 @@ public class FastCommunityBinTest<E extends Instance, C extends Cluster<E>> {
         props.putInt("k", 3);
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.schoolData();
         Clustering<E, C> clust = subject.cluster(dataset, props);
+
     }
 
     @Test
     public void testBinary() throws IOException, InterruptedException {
         assertTrue("binary does not exists", subject.getBinary("community").exists());
-    }
-
-    @Test
-    public void testIsLinkageSupported() {
     }
 
 }
