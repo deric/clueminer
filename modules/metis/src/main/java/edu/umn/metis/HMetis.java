@@ -117,7 +117,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected File getBinary() throws IOException, InterruptedException {
         File f = helper.resource("hmetis2");
         if (!f.exists()) {
-            System.err.println("file " + f.getAbsolutePath() + "does not exist!");
+            throw new RuntimeException("file " + f.getAbsolutePath() + "does not exist!");
         }
         //make sure metis is executable
         Process p = Runtime.getRuntime().exec("chmod ugo+x " + f.getAbsolutePath());

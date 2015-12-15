@@ -111,9 +111,6 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         }
-        for (C c : clustering) {
-            System.out.println(c.getName() + ": " + c.size());
-        }
         return clustering;
     }
 
@@ -152,13 +149,11 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
                 if (cluster >= 0) {
                     //assign item given by line number to a cluster
                     assign(clustering, dataset, i, cluster);
+                } else if (i < dataset.size()) {
+                    noise.add(dataset.get(i));
                 } else {
-                    if (i < dataset.size()) {
-                        noise.add(dataset.get(i));
-                    } else {
-                        debug(result);
-                        throw new RuntimeException("trying to add non-existing instance #" + i);
-                    }
+                    debug(result);
+                    throw new RuntimeException("trying to add non-existing instance #" + i);
                 }
                 line = br.readLine();
                 i++;
