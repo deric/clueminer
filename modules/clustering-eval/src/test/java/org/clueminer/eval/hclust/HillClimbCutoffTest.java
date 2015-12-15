@@ -1,6 +1,6 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringType;
@@ -34,7 +34,7 @@ public class HillClimbCutoffTest {
 
     @Test
     public void testFindCutoff() {
-        HACLW alg = new HACLW();
+        HCLW alg = new HCLW();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);

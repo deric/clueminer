@@ -16,21 +16,21 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.junit.After;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  *
  * @author deric
  */
-public class HACLWMSTest {
+public class HCLWMSTest {
 
-    private final HACLWMS subject = new HACLWMS();
+    private final HCLWMS subject = new HCLWMS();
     private static final double delta = 1e-9;
 
-    public HACLWMSTest() {
+    public HCLWMSTest() {
     }
 
     @Before

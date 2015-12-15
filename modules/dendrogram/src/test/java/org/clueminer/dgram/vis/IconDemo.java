@@ -6,7 +6,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -41,7 +41,7 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         Matrix input = new JMatrix(dataset.arrayCopy());
 
         Props params = new Props();
-        AgglomerativeClustering algorithm = new HACLW();
+        AgglomerativeClustering algorithm = new HCLW();
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
         params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);

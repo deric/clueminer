@@ -32,9 +32,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLW<E extends Instance, C extends Cluster<E>> extends HAC<E, C> implements AgglomerativeClustering<E, C> {
+public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String name = "HAC-LW";
+    private final static String name = "HC-LW";
 
     @Override
     public String getName() {

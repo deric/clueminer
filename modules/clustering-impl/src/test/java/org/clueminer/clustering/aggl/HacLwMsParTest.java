@@ -44,7 +44,7 @@ public class HacLwMsParTest {
         //assertEquals(47.18370587395614, root.getHeight(), delta);
         assertEquals(32.54273498033004, root.getHeight(), delta);
         //tree.print();
-        HACLWMS other = new HACLWMS();
+        HCLWMS other = new HCLWMS();
         HierarchicalResult refRes = other.hierarchy(dataset, pref);
         System.out.println("reference: ");
         //refRes.getTreeData().print();

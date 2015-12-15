@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -42,7 +42,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     private OptimalTreeOrder treeOrder = new MOLO();
 
     public ClusteringExecutorCached() {
-        algorithm = new HACLW<>();
+        algorithm = new HCLW<>();
     }
 
     public ClusteringExecutorCached(ClusteringAlgorithm alg) {

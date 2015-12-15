@@ -1,7 +1,7 @@
 package org.clueminer.eval.hclust;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.CentroidLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
@@ -27,12 +27,12 @@ public class HillClimbIncTest {
 
     private static final HillClimbInc subject = new HillClimbInc();
     private final Dataset<? extends Instance> dataset;
-    private final HACLW alg;
+    private final HCLW alg;
 
     public HillClimbIncTest() {
         subject.setEvaluator(new AIC());
         dataset = FakeDatasets.schoolData();
-        alg = new HACLW();
+        alg = new HCLW();
     }
 
     @Test

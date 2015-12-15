@@ -1,8 +1,8 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
-import org.clueminer.clustering.aggl.HACLWMS;
+import org.clueminer.clustering.aggl.HC;
+import org.clueminer.clustering.aggl.HCLW;
+import org.clueminer.clustering.aggl.HCLWMS;
 import org.clueminer.clustering.aggl.HacLwComplete;
 import org.clueminer.clustering.aggl.linkage.AverageLinkage;
 import org.clueminer.clustering.api.AgglParams;
@@ -72,7 +72,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testSingleLinkage() {
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.put(AgglParams.LINKAGE, SingleLinkage.name);
         params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
@@ -89,7 +89,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testCompleteLinkage() {
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.put(AgglParams.LINKAGE, CompleteLinkage.name);
         params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
@@ -107,7 +107,7 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testAverageLinkage() {
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
         params.put(AgglParams.LINKAGE, AverageLinkage.name);
         params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
@@ -128,13 +128,13 @@ public class CopheneticCorrelationTest {
      */
     @Test
     public void testCopheneticMatrix() {
-        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HAC(), new HACLW(), new HACLWMS()};
+        AgglomerativeClustering[] algorithms = new AgglomerativeClustering[]{new HC(), new HCLW(), new HCLWMS()};
 
         for (AgglomerativeClustering alg : algorithms) {
             testSingleLink(alg);
         }
 
-        for (AgglomerativeClustering alg : new AgglomerativeClustering[]{new HACLW(), new HAC(), new HACLWMS(), new HacLwComplete()}) {
+        for (AgglomerativeClustering alg : new AgglomerativeClustering[]{new HCLW(), new HC(), new HCLWMS(), new HacLwComplete()}) {
             testCompleteLink(alg);
         }
     }

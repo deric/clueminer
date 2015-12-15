@@ -1,8 +1,7 @@
 package org.clueminer.clustering.aggl;
 
-import org.clueminer.attributes.BasicAttrType;
+import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.aggl.linkage.AverageLinkage;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
@@ -12,7 +11,6 @@ import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
@@ -24,37 +22,39 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class HACLWTest {
+public class HCTest {
 
-    private final HACLW subject = new HACLW();
-    private static final double delta = 1e-9;
+    private static final HC subject = new HC();
+    private static final double DELTA = 1e-9;
 
-    private Dataset<? extends Instance> simpleData() {
-        Dataset<Instance> data = new ArrayDataset<>(4, 2);
-        data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
-        data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
-        data.builder().create(new double[]{0, 0}, "A");
-        data.builder().create(new double[]{1, 3}, "B");
-        data.builder().create(new double[]{2, 2}, "C");
-        data.builder().create(new double[]{2, 1}, "D");
-        return data;
+    /**
+     * Test of getName method, of class HC1.
+     */
+    @Test
+    public void testGetName() {
+        assertNotNull(subject.getName());
     }
 
     @Test
-    public void testUpdateProximity() {
-        Dataset<? extends Instance> dataset = simpleData();
+    public void testColumnClustering() throws IOException {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
-        assertEquals(similarityMatrix.rowsCount(), dataset.size());
-        assertEquals(similarityMatrix.columnsCount(), dataset.size());
-        System.out.println("simple data - 4 points");
-        similarityMatrix.printLower(5, 2);
+        assertEquals(similarityMatrix.rowsCount(), dataset.attributeCount());
+        assertEquals(similarityMatrix.columnsCount(), dataset.attributeCount());
+
         result.getTreeData().print();
+    }
+
+    @Test
+    public void testTriangleSize() {
+        assertEquals(3, subject.triangleSize(3));
+        assertEquals(6, subject.triangleSize(4));
     }
 
     @Test
@@ -73,21 +73,14 @@ public class HACLWTest {
         System.out.println("kumar - single");
         DendroTreeData tree = result.getTreeData();
         tree.print();
-        //kumar - single
-        //                         /----- #1 - 2
-        //                 /----- #7 (0.14)
-        //                 |       \----- #4 - 5
-        //         /----- #8 (0.14)
-        //         |       |       /----- #2 - 3
-        //         |       \----- #6 (0.10)
-        //         |               \----- #5 - 6
-        // /----- #9 (0.16)
-        // |       \----- #3 - 4
-        //#10 (0.22)
-        // \----- #0 - 1
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.21587033144922907, root.getHeight(), delta);
+        assertEquals(0.21587033144922904, root.getHeight(), DELTA);
+
+        int levels = tree.distinctHeights(1e-7);
+        //TODO: in this example nodes #7 and #8 are on different level,
+        //but their height is the same. should we consider those as different
+        assertEquals(4, levels);
     }
 
     @Test
@@ -97,73 +90,58 @@ public class HACLWTest {
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - single");
         DendroTreeData tree = result.getTreeData();
-        Matrix similarityMatrix = result.getProximityMatrix();
-        similarityMatrix.printLower(5, 2);
         tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(32.542734980330046, root.getHeight(), delta);
+        assertEquals(32.542734980330046, root.getHeight(), DELTA);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+
+        assertEquals(16, tree.distinctHeights());
+        assertEquals(8, tree.treeLevels());
     }
 
     @Test
-    public void testCompleteLinkage() {
-        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
-        assertEquals(6, dataset.size());
+    public void testCompleteLinkageSchool() {
+        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
-        Matrix similarityMatrix = result.getProximityMatrix();
-        assertNotNull(similarityMatrix);
-        assertEquals(similarityMatrix.rowsCount(), dataset.size());
-        assertEquals(similarityMatrix.columnsCount(), dataset.size());
-        System.out.println("kumar - complete");
+        System.out.println("school - complete");
         DendroTreeData tree = result.getTreeData();
         tree.print();
-        //kumar - complete
-        //                 /----- #1 - 2
-        //         /----- #7 (0.14)
-        //         |       \----- #4 - 5
-        // /----- #9 (0.34)
-        // |       \----- #0 - 1
-        //#10 (0.39)
-        // |               /----- #2 - 3
-        // |       /----- #6 (0.10)
-        // |       |       \----- #5 - 6
-        // \----- #8 (0.22)
-        //         \----- #3 - 4
-
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.38600518131237566, root.getHeight(), delta);
+        assertEquals(121.11422748793802, root.getHeight(), DELTA);
+        assertEquals(2 * dataset.size() - 1, tree.numNodes());
+
+        assertEquals(16, tree.distinctHeights());
+        assertEquals(6, tree.treeLevels());
     }
 
     @Test
-    public void testAverageLinkage() {
+    public void testInverseSorting() {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, AverageLinkage.name);
+        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        //inverse ordering
+        pref.put(AgglParams.SMALLEST_FIRST, false);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
-        Matrix similarityMatrix = result.getProximityMatrix();
-        assertNotNull(similarityMatrix);
-        assertEquals(similarityMatrix.rowsCount(), dataset.size());
-        assertEquals(similarityMatrix.columnsCount(), dataset.size());
-        System.out.println("kumar - average");
+        System.out.println("kumar - inverse");
         DendroTreeData tree = result.getTreeData();
         tree.print();
-        //kumar - averate
-
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.27900110873498624, root.getHeight(), delta);
+        assertEquals(0.10198039027185574, root.getHeight(), DELTA);
+
+        assertEquals(5, tree.distinctHeights());
+        assertEquals(4, tree.treeLevels());
     }
 
 }

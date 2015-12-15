@@ -2,7 +2,7 @@ package org.clueminer.clustering.gui.dlg;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
@@ -206,6 +206,6 @@ public class HacDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
-        return algorithm instanceof HAC;
+        return algorithm instanceof HC;
     }
 }

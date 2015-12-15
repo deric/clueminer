@@ -2,7 +2,7 @@ package org.clueminer.clustering;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -35,7 +35,7 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
     private static final Logger logger = Logger.getLogger(ClusteringExecutor.class.getName());
 
     public ClusteringExecutor() {
-        algorithm = new HAC();
+        algorithm = new HC();
     }
 
     @Override

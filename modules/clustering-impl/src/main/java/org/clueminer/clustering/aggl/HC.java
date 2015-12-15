@@ -56,10 +56,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HAC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
+public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String name = "HAC";
-    private static final Logger logger = Logger.getLogger(HAC.class.getName());
+    private final static String name = "HC";
+    private static final Logger logger = Logger.getLogger(HC.class.getName());
 
     @Param(name = AgglParams.LINKAGE,
            factory = "org.clueminer.clustering.api.factory.LinkageFactory",

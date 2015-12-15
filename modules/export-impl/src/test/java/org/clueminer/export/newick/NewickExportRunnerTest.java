@@ -1,6 +1,6 @@
 package org.clueminer.export.newick;
 
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
@@ -30,7 +30,7 @@ public class NewickExportRunnerTest {
         Props pref = new Props();
         pref.put(AgglParams.LINKAGE, SingleLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        HACLW alg = new HACLW();
+        HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
         result.getTreeData().print();
         subject.setIncludeNodeNames(false);
@@ -46,7 +46,7 @@ public class NewickExportRunnerTest {
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
-        HACLW alg = new HACLW();
+        HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
         result.getTreeData().print();
         subject.setIncludeNodeNames(false);
@@ -63,7 +63,7 @@ public class NewickExportRunnerTest {
         pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
         pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
-        HACLW alg = new HACLW();
+        HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
         result.getTreeData().print();
         subject.setIncludeNodeNames(false);

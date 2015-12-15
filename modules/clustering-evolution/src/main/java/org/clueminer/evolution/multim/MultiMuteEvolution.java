@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
@@ -81,7 +81,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
 
     protected final void init(Executor<E, C> executor) {
         this.exec = executor;
-        algorithm = new HACLW();
+        algorithm = new HCLW();
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
         prepare();

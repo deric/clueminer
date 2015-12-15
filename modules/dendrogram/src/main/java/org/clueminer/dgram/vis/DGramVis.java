@@ -2,7 +2,7 @@ package org.clueminer.dgram.vis;
 
 import java.awt.Image;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
@@ -47,7 +47,7 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
              public void run() {
              Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
              Props params = clustering.getParams();
-             AgglomerativeClustering algorithm = new HAC();
+             AgglomerativeClustering algorithm = new HC();
 
              Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
              params.put(AgglParams.CLUSTERING_TYPE, false);
@@ -76,7 +76,7 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
     private DendrogramMapping createMapping(Clustering<E, C> clustering) {
         Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
         Props params = clustering.getParams();
-        AgglomerativeClustering algorithm = new HAC();
+        AgglomerativeClustering algorithm = new HC();
 
         params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);

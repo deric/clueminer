@@ -18,8 +18,8 @@ package org.clueminer.bagging;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.aggl.HAC;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HC;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
@@ -79,7 +79,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         }
 
         //coassoc.printLower(2, 3);
-        HAC hac = new HACLW();
+        HC hac = new HCLW();
         //largest values should be merged first
         //props.put(AgglParams.SMALLEST_FIRST, false);
         props.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);

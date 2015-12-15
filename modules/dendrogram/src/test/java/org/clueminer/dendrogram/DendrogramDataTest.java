@@ -3,7 +3,7 @@ package org.clueminer.dendrogram;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.AgglParams;
-import org.clueminer.clustering.aggl.HAC;
+import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -47,7 +47,7 @@ public class DendrogramDataTest {
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-        algorithm = new HAC();
+        algorithm = new HC();
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this

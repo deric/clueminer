@@ -1,7 +1,7 @@
 package org.clueminer.clustering.order;
 
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.aggl.HACLW;
+import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
@@ -33,7 +33,7 @@ public class MOLOTest {
     public static void setUpClass() {
         subject = new MOLO();
         dataset = FakeClustering.irisDataset();
-        algorithm = new HACLW();
+        algorithm = new HCLW();
 
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this

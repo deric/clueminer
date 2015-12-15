@@ -19,7 +19,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public class HacLwMsPar<E extends Instance, C extends Cluster<E>> extends HACLWMS<E, C> {
+public class HacLwMsPar<E extends Instance, C extends Cluster<E>> extends HCLWMS<E, C> {
 
     private final static String name = "HAC-LW-MS-PAR";
     private int threads = 4;

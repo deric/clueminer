@@ -18,7 +18,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HACLW<E, C> implements AgglomerativeClustering<E, C> {
+public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HCLW<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HAC-LW-Complete";
 

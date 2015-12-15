@@ -40,14 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = ClusteringAlgorithm.class)
-public class HACLWMS<E extends Instance, C extends Cluster<E>> extends HAC<E, C> implements AgglomerativeClustering<E, C> {
+public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String name = "HAC-LW-MS";
-    private static final Logger logger = Logger.getLogger(HACLWMS.class.getName());
+    private final static String NAME = "HAC-LW-MS";
+    private static final Logger logger = Logger.getLogger(HCLWMS.class.getName());
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
