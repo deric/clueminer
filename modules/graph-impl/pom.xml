@@ -73,26 +73,26 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>dataset-impl</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>fixtures</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>dataset-io</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>

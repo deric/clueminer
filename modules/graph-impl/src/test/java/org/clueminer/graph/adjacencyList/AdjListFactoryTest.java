@@ -1,8 +1,9 @@
 package org.clueminer.graph.adjacencyList;
 
 import org.clueminer.graph.api.Edge;
-import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -15,7 +16,7 @@ public class AdjListFactoryTest {
     public void singletonTest() {
         AdjListFactory first = AdjListFactory.getInstance();
         AdjListFactory second = AdjListFactory.getInstance();
-        Assert.assertSame(first, second);
+        assertSame(first, second);
     }
 
     /**
@@ -26,15 +27,16 @@ public class AdjListFactoryTest {
     public void newNodeTest() {
         long id;
         long expected = AdjListFactory.getNodeCount();
-        id = AdjListFactory.getInstance().newNode().getId();
+        AdjListFactory factory = AdjListFactory.getInstance();
+        id = factory.newNode().getId();
         assertEquals(expected++, id);
-        id = AdjListFactory.getInstance().newNode().getId();
+        id = factory.newNode().getId();
         assertEquals(expected++, id);
-        id = AdjListFactory.getInstance().newNode().getId();
+        id = factory.newNode().getId();
         assertEquals(expected++, id);
-        id = AdjListFactory.getInstance().newNode().getId();
+        id = factory.newNode().getId();
         assertEquals(expected++, id);
-        id = AdjListFactory.getInstance().newNode().getId();
+        id = factory.newNode().getId();
         assertEquals(expected++, id);
     }
 
@@ -44,15 +46,15 @@ public class AdjListFactoryTest {
         AdjListNode target = new AdjListNode(2);
         long expected = AdjListFactory.getEdgeCount();
         Edge edge = AdjListFactory.getInstance().newEdge(source, target);
-        Assert.assertEquals(expected++, edge.getId());
-        Assert.assertSame(source, edge.getSource());
-        Assert.assertSame(target, edge.getTarget());
+        assertEquals(expected++, edge.getId());
+        assertSame(source, edge.getSource());
+        assertSame(target, edge.getTarget());
         source = new AdjListNode(3);
         target = new AdjListNode(4);
         edge = AdjListFactory.getInstance().newEdge(source, target, true);
-        Assert.assertEquals(expected++, edge.getId());
-        Assert.assertSame(source, edge.getSource());
-        Assert.assertSame(target, edge.getTarget());
-        Assert.assertTrue(edge.isDirected());
+        assertEquals(expected++, edge.getId());
+        assertSame(source, edge.getSource());
+        assertSame(target, edge.getTarget());
+        assertTrue(edge.isDirected());
     }
 }
