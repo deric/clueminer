@@ -27,7 +27,8 @@ public class AdjListFactory<E extends Instance> implements GraphFactory<E> {
         return instance;
     }
 
-    protected AdjListFactory() {
+    private AdjListFactory() {
+        //nobody should be able to call this
     }
 
     @Override

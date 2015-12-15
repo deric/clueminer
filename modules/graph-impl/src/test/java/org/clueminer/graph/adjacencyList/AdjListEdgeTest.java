@@ -58,7 +58,8 @@ public class AdjListEdgeTest {
     @Test
     public void testAttributes() {
         AdjListGraph graph = new AdjListGraph();
-        Commons.buildSmallGraph(graph, new AdjListFactory());
+        Commons.buildSmallGraph(graph, AdjListFactory.getInstance());
+
         assertEquals(7, graph.getNodeCount());
         int nodeCnt = 0;
         for (Node n : graph.getNodes()) {
@@ -66,6 +67,7 @@ public class AdjListEdgeTest {
             nodeCnt++;
         }
         assertEquals(7, nodeCnt);
-        assertEquals(true, graph.getNode(0).getAttribute("visited"));
+        long someNodeId = graph.getNodeCount() - 1;
+        assertEquals(true, graph.getNode(someNodeId).getAttribute("visited"));
     }
 }
