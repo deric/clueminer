@@ -24,13 +24,13 @@ import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Does not improve performance as expected
  *
  * @author deric
  */
-@ServiceProvider(service = MergeEvaluation.class)
+@Deprecated
 public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
     public static final String name = "BBK2";
