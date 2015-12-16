@@ -14,7 +14,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
-import org.clueminer.dendrogram.tree.VerticalTree;
 
 public class RowAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
 
@@ -154,7 +153,7 @@ public class RowAnnotation extends AbstractAnnotation implements DendrogramDataL
 
     @Override
     public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
-        if (source instanceof VerticalTree) {
+        if (source.isVertical()) {
             this.selectRows(cluster.firstElem, cluster.lastElem);
         } else {
             //horizontal tree

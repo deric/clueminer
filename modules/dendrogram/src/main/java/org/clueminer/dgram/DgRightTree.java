@@ -144,4 +144,14 @@ public class DgRightTree extends DgTree {
         return node;
     }
 
+    @Override
+    public boolean isHorizontal() {
+        return true;
+    }
+
+    @Override
+    public boolean isVertical() {
+        return false;
+    }
+
 }

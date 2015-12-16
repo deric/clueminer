@@ -125,4 +125,14 @@ public class DgBottomTree extends DgTree {
         return node;
     }
 
+    @Override
+    public boolean isHorizontal() {
+        return false;
+    }
+
+    @Override
+    public boolean isVertical() {
+        return true;
+    }
+
 }

@@ -15,7 +15,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
-import org.clueminer.dendrogram.tree.HorizontalTree;
 import org.clueminer.stats.AttrNumStats;
 
 /**
@@ -196,11 +195,7 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
 
     @Override
     public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
-        if (source instanceof HorizontalTree) {
-            this.selectColumns(cluster.firstElem, cluster.lastElem);
-        } else {
-            //vertical tree
-        }
+        //TODO: implement selection
     }
 
     @Override

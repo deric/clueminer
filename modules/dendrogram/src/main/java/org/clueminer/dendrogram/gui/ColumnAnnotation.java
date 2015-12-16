@@ -17,7 +17,6 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dendrogram.tree.HorizontalTree;
 
 public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
 
@@ -136,11 +135,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
 
     @Override
     public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
-        if (source instanceof HorizontalTree) {
-            this.selectColumns(cluster.firstElem, cluster.lastElem);
-        } else {
-            //vertical tree
-        }
+        //TODO: implement selection
     }
 
     @Override

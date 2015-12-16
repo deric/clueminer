@@ -27,7 +27,6 @@ import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.DistributionCollector;
-import org.clueminer.dendrogram.tree.VerticalTree;
 import org.imgscalr.Scalr;
 
 /**
@@ -633,7 +632,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
     @Override
     public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
-        if (source instanceof VerticalTree) {
+        if (source.isVertical()) {
             this.selectRows(cluster.firstElem, cluster.lastElem);
         } else {
             //horizontal tree
