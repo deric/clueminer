@@ -127,6 +127,8 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         int iterationCount = 0;
         boolean centroidsChanged = true;
         boolean randomCentroids = true;
+        double dist, minDist;
+        Instance tmp = new DoubleArrayDataRow(instanceLength);
         while (randomCentroids || (iterationCount < this.iterations && centroidsChanged)) {
             iterationCount++;
             // Assign each object to the group that has the closest centroid.
@@ -135,7 +137,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
                 int tmpCluster = 0;
                 double minDistance = distanceFunction.measure(centroids[0], data.instance(i));
                 for (int j = 1; j < centroids.length; j++) {
-                    double dist = distanceFunction.measure(centroids[j], data.instance(i));
+                    dist = distanceFunction.measure(centroids[j], data.instance(i));
                     if (distanceFunction.compare(dist, minDistance)) {
                         minDistance = dist;
                         tmpCluster = j;
@@ -153,9 +155,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             for (int i = 0; i < data.size(); i++) {
                 E in = data.instance(i);
                 for (int j = 0; j < instanceLength; j++) {
-
                     sumPosition[assignment[i]][j] += in.value(j);
-
                 }
                 countPosition[assignment[i]]++;
             }
@@ -163,18 +163,17 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             randomCentroids = false;
             for (int i = 0; i < this.k; i++) {
                 if (countPosition[i] > 0) {
-                    double[] tmp = new double[instanceLength];
                     for (int j = 0; j < instanceLength; j++) {
-                        tmp[j] = sumPosition[i][j] / (double) countPosition[i];
+                        tmp.set(j, sumPosition[i][j] / (double) countPosition[i]);
                     }
-                    Instance newCentroid = new DoubleArrayDataRow(tmp);
-                    if (distanceFunction.measure(newCentroid, centroids[i]) > 0.0001) {
+                    if (distanceFunction.measure(tmp, centroids[i]) > 0.0001) {
                         centroidsChanged = true;
-                        centroids[i] = newCentroid;
+                        //in order to avoid unnecessary memory allocation tmp variable is shared
+                        centroids[i] = tmp.copy();
                     }
                 } else {
                     for (int j = 0; j < instanceLength; j++) {
-                        double dist = Math.abs(max.value(j) - min.value(j));
+                        dist = Math.abs(max.value(j) - min.value(j));
                         centroids[i].set(j, (min.value(j) + random.nextDouble() * dist));
                     }
                     randomCentroids = true;
@@ -204,11 +203,11 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         }
         for (int i = 0; i < data.size(); i++) {
             int tmpCluster = 0;
-            double minDistance = distanceFunction.measure(centroids[0], data.instance(i));
+            minDist = distanceFunction.measure(centroids[0], data.instance(i));
             for (int j = 0; j < centroids.length; j++) {
-                double dist = distanceFunction.measure(centroids[j], data.instance(i));
-                if (distanceFunction.compare(dist, minDistance)) {
-                    minDistance = dist;
+                dist = distanceFunction.measure(centroids[j], data.instance(i));
+                if (distanceFunction.compare(dist, minDist)) {
+                    minDist = dist;
                     tmpCluster = j;
                 }
             }
