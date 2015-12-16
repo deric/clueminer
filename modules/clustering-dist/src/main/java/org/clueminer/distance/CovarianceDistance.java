@@ -2,7 +2,6 @@ package org.clueminer.distance;
 
 import org.clueminer.distance.api.AbstractDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -14,85 +13,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Distance.class)
 public class CovarianceDistance extends AbstractDistance implements Distance {
 
-    private static final String name = "Covariance";
-    private static float similarityFactor = -1.0f;
-    private static int offset = -1;
+    private static final String NAME = "Covariance";
     private static final long serialVersionUID = -7431617150502590047L;
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    @Override
-    public double columns(Matrix matrix, int e1, int e2) {
-        int n, j, k;
-        double xt, yt;
-        double sxy = 0.0;
-        double ax = 0.0;
-        double ay = 0.0;
-        k = matrix.rowsCount();
-        n = 0;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(matrix.get(j, e1))) && (!Double.isNaN(matrix.get(j, e2)))) {
-                ax += matrix.get(j, e1);
-                ay += matrix.get(j, e2);
-                n++;
-            }
-        }
-        ax /= n;
-        ay /= n;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(matrix.get(j, e1))) && (!Double.isNaN(matrix.get(j, e2)))) {
-                xt = matrix.get(j, e1) - ax;
-                yt = matrix.get(j, e2) - ay;
-                sxy += xt * yt;
-            }
-        }
-        return (sxy / ((n - 1) * 1.0f));
-    }
-
-    @Override
-    public double rows(Matrix A, Matrix B, int g1, int g2) {
-        double xt, yt;
-        double sxy = 0.0;
-        double ax = 0.0;
-        double ay = 0.0;
-        int k = A.columnsCount();
-        int n = 0;
-        int j;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(A.get(g1, j))) && (!Double.isNaN(B.get(g2, j)))) {
-                ax += A.get(g1, j);
-                ay += B.get(g2, j);
-                n++;
-            }
-        }
-        ax /= n;
-        ay /= n;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(A.get(g1, j))) && (!Double.isNaN(B.get(g2, j)))) {
-                xt = A.get(g1, j) - ax;
-                yt = B.get(g2, j) - ay;
-                sxy += xt * yt;
-            }
-        }
-        return (sxy / ((n - 1) * 1.0));
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        return similarityFactor;
-    }
-
-    @Override
-    public int getNodeOffset() {
-        return offset;
-    }
-
-    @Override
-    public boolean useTreeHeight() {
-        return true;
+        return NAME;
     }
 
     @Override

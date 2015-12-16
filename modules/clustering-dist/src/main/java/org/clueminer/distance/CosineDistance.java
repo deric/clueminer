@@ -2,7 +2,6 @@ package org.clueminer.distance;
 
 import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -24,84 +23,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Distance.class)
 public class CosineDistance extends SymmetricDistance {
 
-    private static final String name = "Cosine";
-    private static float similarityFactor = 1.0f;
-    /**
-     * should be minNodeHeight - when computing tree heights, the distances must
-     * be positive, therefore we have to add the minimal distance
-     */
-    private static int offset = 0;
+    private static final String NAME = "Cosine";
     private static final long serialVersionUID = 4102385223200185396L;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
-    /**
-     * Calculate distance between 2 columns in given matrix
-     *
-     * @param matrix
-     * @param e1
-     * @param e2
-     * @return
-     */
-    @Override
-    public double columns(Matrix matrix, int e1, int e2) {
-        int j, k;
-        double sxy = 0.0;
-        double sxx = 0.0;
-        double syy = 0.0;
-        double tx;
-        double ty;
-        k = matrix.rowsCount();
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(matrix.get(j, e1))) && (!Double.isNaN(matrix.get(j, e2)))) {
-                tx = matrix.get(j, e1);
-                ty = matrix.get(j, e2);
-                sxy += tx * ty;
-                sxx += tx * tx;
-                syy += ty * ty;
-            }
-        }
-        return (1 - (sxy / (Math.sqrt(sxx) * Math.sqrt(syy))));
-    }
-
-    @Override
-    public double rows(Matrix A, Matrix B, int e1, int e2) {
-        double sxy = 0.0;
-        double sxx = 0.0;
-        double syy = 0.0;
-        double tx;
-        double ty;
-        int k = A.columnsCount();
-        int j;
-        for (j = 0; j < k; j++) {
-            if ((!Double.isNaN(A.get(e1, j))) && (!Double.isNaN(B.get(e2, j)))) {
-                tx = A.get(e1, j);
-                ty = B.get(e2, j);
-                sxy += tx * ty;
-                sxx += tx * tx;
-                syy += ty * ty;
-            }
-        }
-        return (1 - (sxy / (Math.sqrt(sxx) * Math.sqrt(syy))));
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        return similarityFactor;
-    }
-
-    @Override
-    public int getNodeOffset() {
-        return offset;
-    }
-
-    @Override
-    public boolean useTreeHeight() {
-        return true;
-    }
 
     /**
      * The value returned lies in the interval [0,2].

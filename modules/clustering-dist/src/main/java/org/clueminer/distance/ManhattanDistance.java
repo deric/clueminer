@@ -16,9 +16,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Distance.class)
 public class ManhattanDistance extends MinkowskiDistance implements Distance {
 
-    private static final String name = "Manhattan";
-    private static float similarityFactor = 1.0f;
-    private static int offset = 0;
+    private static final String NAME = "Manhattan";
     private static final long serialVersionUID = 3287053682318427095L;
 
     public ManhattanDistance() {
@@ -27,7 +25,7 @@ public class ManhattanDistance extends MinkowskiDistance implements Distance {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public double columns(Matrix matrix, int e1, int e2) {
@@ -52,16 +50,6 @@ public class ManhattanDistance extends MinkowskiDistance implements Distance {
             }
         }
         return sum;
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        return similarityFactor;
-    }
-
-    @Override
-    public int getNodeOffset() {
-        return offset;
     }
 
     @Override

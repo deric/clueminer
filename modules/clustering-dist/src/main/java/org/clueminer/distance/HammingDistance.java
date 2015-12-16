@@ -18,7 +18,6 @@ package org.clueminer.distance;
 
 import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -30,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HammingDistance extends SymmetricDistance implements Distance {
 
     private static final long serialVersionUID = -2968578452009496222L;
-    private static final String name = "Hamming";
+    private static final String NAME = "Hamming";
     private static HammingDistance instance;
 
     public static HammingDistance getInstance() {
@@ -42,27 +41,7 @@ public class HammingDistance extends SymmetricDistance implements Distance {
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getNodeOffset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double rows(Matrix a, Matrix b, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double columns(Matrix a, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return NAME;
     }
 
     @Override

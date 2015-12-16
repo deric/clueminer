@@ -17,13 +17,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class BrayCurtisDistance extends SymmetricDistance {
 
     private static final long serialVersionUID = -9160673893231083803L;
-    private static final String name = "Bray-Curtis";
-    private static float similarityFactor = 1.0f;
-    private static int offset = 0;
+    private static final String NAME = "Bray-Curtis";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -82,21 +80,6 @@ public class BrayCurtisDistance extends SymmetricDistance {
     @Override
     public double measure(Vector<Double> x, Vector<Double> y, double[] weights) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        return similarityFactor;
-    }
-
-    @Override
-    public int getNodeOffset() {
-        return offset;
-    }
-
-    @Override
-    public boolean useTreeHeight() {
-        return true;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.clueminer.distance;
 
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 
 /**
@@ -51,26 +50,6 @@ public class MinkowskiDistance extends SymmetricDistance {
         }
 
         return Math.pow(sum, 1 / power);
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public int getNodeOffset() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double rows(Matrix a, Matrix b, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double columns(Matrix a, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

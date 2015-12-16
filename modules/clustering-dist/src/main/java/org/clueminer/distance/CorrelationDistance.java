@@ -2,7 +2,6 @@ package org.clueminer.distance;
 
 import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.SymmetricDistance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -17,32 +16,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Distance.class)
 public class CorrelationDistance extends SymmetricDistance implements Distance {
 
-    private static final String name = "Correlation";
+    private static final String NAME = "Correlation";
     private static final long serialVersionUID = -564035509212244896L;
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    @Override
-    public float getSimilarityFactor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getNodeOffset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double rows(Matrix a, Matrix b, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double columns(Matrix a, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return NAME;
     }
 
     /**

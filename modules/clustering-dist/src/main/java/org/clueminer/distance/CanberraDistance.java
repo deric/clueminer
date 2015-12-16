@@ -56,16 +56,6 @@ public class CanberraDistance extends SymmetricDistance implements Distance {
     }
 
     @Override
-    public float getSimilarityFactor() {
-        return similarityFactor;
-    }
-
-    @Override
-    public int getNodeOffset() {
-        return offset;
-    }
-
-    @Override
     public double measure(Vector<Double> x, Vector<Double> y) {
         checkInput(x, y);
         double sum = 0.0;
