@@ -3,9 +3,11 @@ package org.clueminer.distance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.math.Vector;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -14,7 +16,7 @@ import static org.junit.Assert.*;
 public class CosineDistanceTest {
 
     private static CosineDistance subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public CosineDistanceTest() {
     }
@@ -36,7 +38,7 @@ public class CosineDistanceTest {
         Instance a = new DoubleArrayDataRow(data);
         Instance b = new DoubleArrayDataRow(data2);
 
-        assertEquals(0, subject.measure(a, a), delta);
+        assertEquals(0, subject.measure(a, a), DELTA);
         assertTrue(subject.measure(a, b) > 0);
     }
 
@@ -47,7 +49,7 @@ public class CosineDistanceTest {
         Instance a = new DoubleArrayDataRow(x);
         Instance b = new DoubleArrayDataRow(y);
 
-        assertEquals(0.6666666666666666, subject.measure(a, b), delta);
+        assertEquals(0.6666666666666666, subject.measure(a, b), DELTA);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class CosineDistanceTest {
         y = new DoubleArrayDataRow(new double[]{4, 15, 20, 5, 5});
         double dist = subject.measure(x, y);
 
-        assertEquals(0.40629405295727883, dist, delta);
+        assertEquals(0.40629405295727883, dist, DELTA);
     }
 
     @Test
@@ -85,7 +87,7 @@ public class CosineDistanceTest {
         z = new DoubleArrayDataRow(new double[]{13, 55, 7});
         double dist = subject.measure(x, y);
         //@see http://reference.wolfram.com/language/ref/CosineDistance.html
-        assertEquals(1 - 17 * Math.sqrt(2.0 / 581.0), dist, delta);
+        assertEquals(1 - 17 * Math.sqrt(2.0 / 581.0), dist, DELTA);
         double dist2 = subject.measure(x, z);
         //dist is better (closer) than dist2
         assertEquals(true, subject.compare(dist, dist2));
