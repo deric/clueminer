@@ -1,7 +1,6 @@
 package org.clueminer.distance.api;
 
 import java.io.Serializable;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 
 /**
@@ -74,65 +73,6 @@ public interface Distance extends Serializable {
      * @return maximum possible value of the distance metric
      */
     double getMaxValue();
-
-    /**
-     * @deprecated @param a
-     * @param b
-     * @param i
-     * @param j
-     * @return
-     */
-    double rows(Matrix a, Matrix b, int i, int j);
-
-    /**
-     * @deprecated @param a
-     * @param i
-     * @param j
-     * @return
-     */
-    double columns(Matrix a, int i, int j);
-
-    /**
-     * @deprecated @param matrix
-     * @param e1
-     * @param e2
-     * @param factor
-     * @return
-     */
-    double rows(Matrix matrix, int e1, int e2, float factor);
-
-    /**
-     * @deprecated @param matrix
-     * @param e1
-     * @param e2
-     * @return
-     */
-    double rows(Matrix matrix, int e1, int e2);
-
-    /**
-     * @deprecated @param A
-     * @param B
-     * @param e1
-     * @param e2
-     * @param factor
-     * @return
-     */
-    double rows(Matrix A, Matrix B, int e1, int e2, float factor);
-
-    /**
-     * @deprecated @param matrix
-     * @param e1
-     * @param e2
-     * @param factor
-     * @return
-     */
-    double columns(Matrix matrix, int e1, int e2, float factor);
-
-    int getNodeOffset();
-
-    boolean useTreeHeight();
-
-    float getSimilarityFactor();
 
     /**
      * Returns true if {@code d(x,y) == d(y,x)} is true for any {@code x},
