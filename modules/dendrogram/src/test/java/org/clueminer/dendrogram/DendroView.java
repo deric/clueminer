@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
@@ -20,9 +21,9 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.DgViewer;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 
 /**
  * Should serve for testing DendroView component
@@ -33,21 +34,25 @@ public class DendroView extends JFrame {
 
     private DendroViewer frame;
     private DendroToolbar toolbar;
-    private static final Logger logger = Logger.getLogger(DendroView.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DendroView.class.getName());
 
     public DendroView() {
+        load();
+    }
+
+    private void load() {
         setLayout(new GridBagLayout());
         Logger.getGlobal().setLevel(Level.FINEST);
 
         // Log a FINE tracing message
-        logger.fine("doing stuff");
+        LOGGER.fine("doing stuff");
         try {
             initComponents();
         } catch (Exception ex) {
             // Log the exception
-            logger.log(Level.WARNING, "trouble sneezing", ex);
+            LOGGER.log(Level.WARNING, "trouble sneezing", ex);
         }
-        logger.fine("done");
+        LOGGER.fine("done");
 
         final Dataset<? extends Instance> data = FakeDatasets.irisDataset();
 
@@ -85,8 +90,7 @@ public class DendroView extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

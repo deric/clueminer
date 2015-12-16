@@ -28,7 +28,6 @@ public class DendroView2 extends JFrame {
     private DendroToolbar toolbar;
 
     public DendroView2() {
-        setLayout(new GridBagLayout());
         initComponents();
 
         final Dataset<? extends Instance> data = FakeDatasets.schoolData();
@@ -64,6 +63,7 @@ public class DendroView2 extends JFrame {
     }
 
     private void initComponents() {
+        setLayout(new GridBagLayout());
         frame = new DgViewer();
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
