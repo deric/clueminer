@@ -13,7 +13,7 @@ import org.junit.Test;
  */
 public class AdjListEdgeTest {
 
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     @Test
     public void completeConstructorTest() {
@@ -27,7 +27,7 @@ public class AdjListEdgeTest {
         assertSame(source, edge.getSource());
         assertSame(target, edge.getTarget());
         assertEquals(directed, edge.isDirected());
-        assertEquals(weight, edge.getWeight(), delta);
+        assertEquals(weight, edge.getWeight(), DELTA);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AdjListEdgeTest {
         assertSame(source, edge.getSource());
         assertSame(target, edge.getTarget());
         assertFalse(edge.isDirected());
-        assertEquals(1, edge.getWeight(), delta);
+        assertEquals(1, edge.getWeight(), DELTA);
     }
 
     @Test
@@ -50,9 +50,9 @@ public class AdjListEdgeTest {
         AdjListNode target = new AdjListNode(2);
         double weight = 10.0;
         AdjListEdge edge = new AdjListEdge(id, source, target, false, weight);
-        assertEquals(weight, edge.getWeight(), delta);
+        assertEquals(weight, edge.getWeight(), DELTA);
         edge.setWeight(-5.0);
-        assertEquals(-5.0, edge.getWeight(), delta);
+        assertEquals(-5.0, edge.getWeight(), DELTA);
     }
 
     @Test
@@ -62,12 +62,13 @@ public class AdjListEdgeTest {
 
         assertEquals(7, graph.getNodeCount());
         int nodeCnt = 0;
+        long lastId = 0;
         for (Node n : graph.getNodes()) {
             n.setAttribute("visited", true);
+            lastId = n.getId();
             nodeCnt++;
         }
         assertEquals(7, nodeCnt);
-        long someNodeId = graph.getNodeCount() - 1;
-        assertEquals(true, graph.getNode(someNodeId).getAttribute("visited"));
+        assertEquals(true, graph.getNode(lastId).getAttribute("visited"));
     }
 }
