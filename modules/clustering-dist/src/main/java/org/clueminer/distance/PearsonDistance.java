@@ -25,9 +25,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Distance.class)
 public class PearsonDistance extends SymmetricDistance {
 
-    private static String NAME = "Pearson";
+    private static final String NAME = "Pearson";
     private static final long serialVersionUID = -5861415196767414635L;
-    private static double TINY = Double.MIN_VALUE;
 
     @Override
     public String getName() {

@@ -7,7 +7,6 @@ import edu.hawaii.jmotif.logic.sax.alphabet.NormalAlphabet;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 
 /**
@@ -75,51 +74,6 @@ public class MinDist implements Distance {
 
     @Override
     public double getMaxValue() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double rows(Matrix a, Matrix b, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double columns(Matrix a, int i, int j) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double rows(Matrix matrix, int e1, int e2, float factor) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double rows(Matrix matrix, int e1, int e2) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double rows(Matrix A, Matrix B, int e1, int e2, float factor) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public double columns(Matrix matrix, int e1, int e2, float factor) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public int getNodeOffset() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public boolean useTreeHeight() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public float getSimilarityFactor() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
