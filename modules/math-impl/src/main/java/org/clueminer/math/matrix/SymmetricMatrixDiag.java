@@ -26,6 +26,7 @@ import org.clueminer.math.Matrix;
  */
 public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
+    private static final long serialVersionUID = -6828075338981173574L;
     private double[] A;
     private int n;
 
