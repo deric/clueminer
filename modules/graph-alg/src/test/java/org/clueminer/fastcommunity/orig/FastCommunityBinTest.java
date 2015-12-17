@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.SystemInfo;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -45,13 +46,16 @@ public class FastCommunityBinTest<E extends Instance, C extends Cluster<E>> {
         Props props = new Props();
         props.putInt("k", 3);
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.schoolData();
-        Clustering<E, C> clust = subject.cluster(dataset, props);
-
+        if (SystemInfo.isLinux()) {
+            Clustering<E, C> clust = subject.cluster(dataset, props);
+        }
     }
 
     @Test
     public void testBinary() throws IOException, InterruptedException {
-        assertTrue("binary does not exists", subject.getBinary("community").exists());
+        if (SystemInfo.isLinux()) {
+            assertTrue("binary does not exists", subject.getBinary("community").exists());
+        }
     }
 
 }
