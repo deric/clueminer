@@ -18,8 +18,6 @@ package edu.umn.metis;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -30,6 +28,8 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.SystemInfo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -39,23 +39,24 @@ import org.junit.Test;
  */
 public class HMetisTest extends PartitioningTest {
 
-    private static HMetis subject;
+    private static HMetis Subject;
 
     public HMetisTest() {
-        subject = new HMetis();
+        Subject = new HMetis();
     }
 
     @Test
     public void simpleGraphTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
-        assertTrue("binary does not exists", subject.getBinary().exists());
+
         //binary won't work or Windows
-        if (subject.getBinary().exists() && SystemInfo.isLinux()) {
+        if (SystemInfo.isLinux()) {
+            assertTrue("binary does not exists", Subject.getBinary().exists());
             Dataset<? extends Instance> dataset = twoDistinctNeighbors();
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Graph g = new AdjMatrixGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 4);
-            ArrayList<ArrayList<Node>> res = subject.partition(2, g, new Props());
+            ArrayList<ArrayList<Node>> res = Subject.partition(2, g, new Props());
             //doesn't work on Travis
             //assertEquals(4, res.size());
             assertNotNull(res);
@@ -65,14 +66,14 @@ public class HMetisTest extends PartitioningTest {
     @Test
     public void irisTest() throws IOException, InterruptedException {
         //skip test when binary is not found (e.g. on Travis)
-        assertTrue("binary does not exists", subject.getBinary().exists());
         //binary won't work or Windows
-        if (subject.getBinary().exists() && SystemInfo.isLinux()) {
+        if (SystemInfo.isLinux()) {
+            assertTrue("binary does not exists", Subject.getBinary().exists());
             KNNGraphBuilder knn = new KNNGraphBuilder();
             Dataset dataset = FakeDatasets.irisDataset();
             Graph g = new AdjListGraph(dataset.size());
             g = knn.getNeighborGraph(dataset, g, 20);
-            ArrayList<ArrayList<Node>> res = subject.partition(10, g, new Props());
+            ArrayList<ArrayList<Node>> res = Subject.partition(10, g, new Props());
             assertNotNull(res);
             //the result is randomized - we can't be sure to get exactly
             //the same number of partitions as requested
