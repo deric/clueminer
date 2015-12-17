@@ -27,6 +27,7 @@ import org.clueminer.math.Vector;
 public class MSE extends SymmetricDistance {
 
     private static final String NAME = "MSE";
+    private static final long serialVersionUID = -7402972399401757130L;
 
     @Override
     public String getName() {

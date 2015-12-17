@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.MSE;
 import org.clueminer.exception.ParameterException;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
@@ -80,7 +81,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         }
 
         //initialize similarities
-        Matrix S;
+        Matrix S = similarity(dataset);
 
         //initialize messages
         Matrix A = new JMatrix(nSample, nSample);
@@ -93,14 +94,15 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         return clustering;
     }
 
-    private Matrix similarity(Dataset<E> dataset) {
+    protected Matrix similarity(Dataset<E> dataset) {
         Matrix sim = new SymmetricMatrix(dataset.size());
+        MSE dist = new MSE();
         for (int i = 0; i < sim.rowsCount(); i++) {
             for (int j = i + 1; j < sim.rowsCount(); j++) {
-
+                sim.set(i, j, dist.measure(dataset.get(i), dataset.get(j)));
             }
-
         }
+        return sim;
     }
 
     /**
