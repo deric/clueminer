@@ -190,6 +190,8 @@ public class JMatrix extends AbstractMatrix implements Cloneable, java.io.Serial
 
     /**
      * Clone the JMatrix object.
+     *
+     * @return
      */
     @Override
     public Object clone() {
