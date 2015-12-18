@@ -16,9 +16,13 @@
  */
 package org.clueminer.ap;
 
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
+import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -36,13 +40,27 @@ public class AffinityPropagationTest {
 
     @Test
     public void testCluster() {
+        Dataset data = FakeDatasets.schoolData();
+        Props props = new Props();
+        Clustering clust = AP.cluster(data, props);
+        assertNotNull(clust);
+        assertEquals(2, clust.size());
     }
 
     @Test
+    public void testIris() {
+        Dataset data = FakeDatasets.irisDataset();
+        Props props = new Props();
+        Clustering clust = AP.cluster(data, props);
+        assertNotNull(clust);
+        assertEquals(24, clust.size());
+    }
+
+    //@Test
     public void testSimilarity() {
         Dataset data = FakeDatasets.schoolData();
         Matrix s = AP.similarity(data);
-        s.printLower(2, 2);
+        //s.printLower(2, 2);
         assertTrue("should contain negative values", s.get(0, 4) < 0);
     }
 
