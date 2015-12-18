@@ -55,7 +55,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
     /**
      * Damping factor between 0.5 and 1.
      */
-    @Param(name = DAMPING, description = "Damping factor (lambda)")
+    @Param(name = DAMPING, description = "Damping factor (lambda)", min = 0.5, max = 1.0)
     protected double damping = 0.5;
 
     public static final String MAX_ITERATIONS = "max_iterations";
