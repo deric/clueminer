@@ -18,15 +18,16 @@ package org.clueminer.graph.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.clueminer.ap.AffinityPropagation;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
-import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -41,9 +42,12 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
 
     private JTextField tfLambda;
     private JTextField tfMaxIter;
+    private JTextField tfMaxConvIter;
+    private JComboBox comboDistance;
 
     public AffinityPropagationDialog() {
         initComponents();
+        comboDistance.setSelectedItem("Euclidean");
     }
 
     private void initComponents() {
@@ -56,9 +60,18 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
         c.weighty = 1.0;
         c.insets = new java.awt.Insets(5, 5, 5, 5);
 
-        //lambda
         c.gridx = 0;
         c.gridy = 0;
+
+        //distance measure
+        add(new JLabel("Distance:"), c);
+        c.gridx = 1;
+        comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
+        add(comboDistance, c);
+
+        //lambda
+        c.gridx = 0;
+        c.gridy++;
         add(new JLabel("Damping (lambda):"), c);
         c.gridx = 1;
         tfLambda = new JTextField("0.5", 4);
@@ -72,6 +85,14 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
         c.gridx = 1;
         add(tfMaxIter, c);
 
+        //max convergence iterations
+        c.gridy++;
+        c.gridx = 0;
+        add(new JLabel("Max. convergence iter.:"), c);
+        tfMaxConvIter = new JTextField("100", 4);
+        c.gridx = 1;
+        add(tfMaxConvIter, c);
+
     }
 
     @Override
@@ -82,8 +103,10 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         params.put(AffinityPropagation.DAMPING, Double.valueOf(tfLambda.getText()));
+        params.put(AffinityPropagation.MAX_ITERATIONS, Integer.valueOf(tfMaxIter.getText()));
+        params.put(AffinityPropagation.CONV_ITER, Integer.valueOf(tfMaxConvIter.getText()));
+        params.put(Algorithm.DISTANCE, (String) comboDistance.getSelectedItem());
         return params;
     }
 

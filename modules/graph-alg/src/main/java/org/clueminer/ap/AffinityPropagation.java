@@ -27,7 +27,7 @@ import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.exception.ParameterException;
 import org.clueminer.math.IntMatrix;
 import org.clueminer.math.Matrix;
@@ -78,7 +78,12 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         double lambda = props.getDouble(DAMPING, damping);
         int maxIter = props.getInt(MAX_ITERATIONS, maxIterations);
         int convits = props.getInt(CONV_ITER, convergenceIter);
-
+        if (props.containsKey(DISTANCE)) {
+            distanceFunction = DistanceFactory.getInstance().getProvider(props.get(DISTANCE));
+        } else {
+            distanceFunction = EuclideanDistance.getInstance();
+            props.put(DISTANCE, distanceFunction.getName());
+        }
         if (lambda < 0.5 || lambda >= 1) {
             throw new ParameterException("damping must be >= 0.5 and < 1");
         }
@@ -220,6 +225,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
             i++;
         }
 
+        props.put("algorithm", getName());
         Clustering<E, C> res = (Clustering<E, C>) Clusterings.newList(K);
         Cluster<E> curr;
         HashMap<Integer, Integer> mapping = new HashMap<>(K);
@@ -251,11 +257,9 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
 
     protected Matrix similarity(Dataset<E> dataset) {
         Matrix sim = new SymmetricMatrixDiag(dataset.size());
-        //Distance dist = new MSE();
-        Distance dist = EuclideanDistance.getInstance();
         for (int i = 0; i < sim.rowsCount(); i++) {
             for (int j = i + 1; j < sim.rowsCount(); j++) {
-                sim.set(i, j, dist.measure(dataset.get(i), dataset.get(j)));
+                sim.set(i, j, distanceFunction.measure(dataset.get(i), dataset.get(j)));
             }
         }
         return sim;
