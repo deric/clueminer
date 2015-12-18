@@ -142,7 +142,7 @@ public interface Matrix extends Serializable {
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c  Array of column indices.
+     * @param c Array of column indices.
      * @return A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
@@ -151,13 +151,13 @@ public interface Matrix extends Serializable {
     /**
      * Get a submatrix.
      *
-     * @param r  Array of row indices.
+     * @param r Array of row indices.
      * @param i0 Initial column index
      * @param i1 Final column index
-     * @return A(r(:),j0:j1)
+     * @return A(r(:),i0:i1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
-    Matrix getMatrix(int[] r, int j0, int j1);
+    Matrix getMatrix(int[] r, int i0, int i1);
 
     /**
      * Set a single element.
@@ -170,13 +170,20 @@ public interface Matrix extends Serializable {
     void set(int i, int j, double s);
 
     /**
+     * Set given value on matrix diagonal (works only with square matrix).
+     *
+     * @param value
+     */
+    void setDiagonal(double value);
+
+    /**
      * Set a submatrix.
      *
      * @param i0 Initial row index
      * @param i1 Final row index
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X  A(i0:i1,j0:j1)
+     * @param X A(i0:i1,j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     void setMatrix(int i0, int i1, int j0, int j1, Matrix X);
@@ -194,10 +201,10 @@ public interface Matrix extends Serializable {
     /**
      * Set a submatrix.
      *
-     * @param r  Array of row indices.
+     * @param r Array of row indices.
      * @param j0 Initial column index
      * @param j1 Final column index
-     * @param X  A(r(:),j0:j1)
+     * @param X A(r(:),j0:j1)
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     void setMatrix(int[] r, int j0, int j1, Matrix X);
@@ -207,8 +214,8 @@ public interface Matrix extends Serializable {
      *
      * @param i0 Initial row index
      * @param i1 Final row index
-     * @param c  Array of column indices.
-     * @param X  A(i0:i1,c(:))
+     * @param c Array of column indices.
+     * @param X A(i0:i1,c(:))
      * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     void setMatrix(int i0, int i1, int[] c, Matrix X);
@@ -468,8 +475,8 @@ public interface Matrix extends Serializable {
      * with a Fortran-like 'Fw.d' style format.
      *
      * @param output Output stream.
-     * @param w      Column width.
-     * @param d      Number of digits after the decimal.
+     * @param w Column width.
+     * @param d Number of digits after the decimal.
      */
     void print(PrintWriter output, int w, int d);
 
@@ -480,7 +487,7 @@ public interface Matrix extends Serializable {
      * NumberFormat that is set to US Locale.
      *
      * @param format A Formatting object for individual elements.
-     * @param width  Field width for each column.
+     * @param width Field width for each column.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
     void print(NumberFormat format, int width);
@@ -497,7 +504,7 @@ public interface Matrix extends Serializable {
      *
      * @param output the output stream.
      * @param format A formatting object to format the matrix elements
-     * @param width  Column width.
+     * @param width Column width.
      * @see java.text.DecimalFormat#setDecimalFormatSymbols
      */
     void print(PrintWriter output, NumberFormat format, int width);

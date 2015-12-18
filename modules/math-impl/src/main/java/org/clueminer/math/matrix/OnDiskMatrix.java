@@ -580,4 +580,9 @@ public class OnDiskMatrix implements Matrix {
     public void printFancy(int w, int d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void setDiagonal(double value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

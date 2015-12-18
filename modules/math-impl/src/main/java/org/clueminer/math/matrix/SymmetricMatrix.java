@@ -343,4 +343,9 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
         int mapped = map(i, j);
         return mapped < A.length && mapped >= 0;
     }
+
+    @Override
+    public void setDiagonal(double value) {
+        throw new UnsupportedOperationException("Changing diagonal elemets is not supported. Use {@link SymmetricMatrixDiag} instead.");
+    }
 }

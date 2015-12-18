@@ -368,4 +368,11 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
         return mapped < A.length && mapped >= 0;
     }
 
+    @Override
+    public void setDiagonal(double value) {
+        for (int i = 0; i < n; i++) {
+            set(i, i, value);
+        }
+    }
+
 }

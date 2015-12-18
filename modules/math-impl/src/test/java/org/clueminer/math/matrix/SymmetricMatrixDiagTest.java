@@ -127,4 +127,15 @@ public class SymmetricMatrixDiagTest {
         }
     }
 
+    @Test
+    public void testSetDiagonal() {
+        int n = 5;
+        Matrix M = new SymmetricMatrixDiag(n);
+        M.setDiagonal(10);
+
+        for (int i = 0; i < n; i++) {
+            assertEquals(10.0, M.get(i, i), eps);
+        }
+    }
+
 }

@@ -11,9 +11,9 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.QRDecomposition;
 import org.clueminer.math.SingularValueDecomposition;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * TestMatrix tests the functionality of the Jama Matrix class and associated
@@ -28,8 +28,8 @@ import static org.junit.Assert.*;
  * whether the functionality is correctly implemented. Exception handling is
  * also tested.
  * <P>
- * The test is designed to run to completion and give a summary
- * of any implementation errors encountered. The final output should be:
+ * The test is designed to run to completion and give a summary of any
+ * implementation errors encountered. The final output should be:
  *
  *
  * <BLOCKQUOTE><PRE><CODE>
@@ -46,6 +46,8 @@ import static org.junit.Assert.*;
  *
  */
 public class JMatrixTest {
+
+    private static final double DELTA = 1e-9;
 
     org.clueminer.math.Matrix A, B, C, Z, O, I, R, S, X, SUB, M, T, SQ, DEF, SOL;
     // Uncomment this to test IO in a different locale.
@@ -71,20 +73,24 @@ public class JMatrixTest {
     /*
      * should trigger bad shape for construction with val
      */
-    int raggedr = 0; /*
+    int raggedr = 0;
+    /*
      * (raggedr,raggedc) should be out of bounds in ragged array
      */
 
     int raggedc = 4;
-    int validld = 3; /*
+    int validld = 3;
+    /*
      * leading dimension of intended test Matrices
      */
 
-    int nonconformld = 4; /*
+    int nonconformld = 4;
+    /*
      * leading dimension which is valid, but nonconforming
      */
 
-    int ib = 1, ie = 2, jb = 1, je = 3; /*
+    int ib = 1, ie = 2, jb = 1, je = 3;
+    /*
      * index ranges for sub Matrix
      */
 
@@ -145,10 +151,10 @@ public class JMatrixTest {
              */
             A = new JMatrix(columnwise, invalidld);
             errorCount = try_failure(errorCount, "Catch invalid length in packed constructor... ",
-                                     "exception not thrown for invalid input");
+                    "exception not thrown for invalid input");
         } catch (IllegalArgumentException e) {
             try_success("Catch invalid length in packed constructor... ",
-                        e.getMessage());
+                    e.getMessage());
         }
         try {
             /**
@@ -159,10 +165,10 @@ public class JMatrixTest {
             tmp = A.get(raggedr, raggedc);
         } catch (IllegalArgumentException e) {
             try_success("Catch ragged input to default constructor... ",
-                        e.getMessage());
+                    e.getMessage());
         } catch (java.lang.ArrayIndexOutOfBoundsException e) {
             errorCount = try_failure(errorCount, "Catch ragged input to constructor... ",
-                                     "exception not thrown in construction...ArrayIndexOutOfBoundsException thrown later");
+                    "exception not thrown in construction...ArrayIndexOutOfBoundsException thrown later");
         }
         try {
             /**
@@ -1292,20 +1298,8 @@ public class JMatrixTest {
 
     /**
      * Test of print method, of class JMatrix.
-     */
-    @Test
-    public void testPrint_3args_1() {
-    }
-
-    /**
-     * Test of print method, of class JMatrix.
-     */
-    @Test
-    public void testPrint_NumberFormat_int() {
-    }
-
-    /**
-     * Test of print method, of class JMatrix.
+     *
+     * @throws java.io.IOException
      */
     @Test
     public void testPrint_3args_2() throws IOException {
@@ -1331,10 +1325,15 @@ public class JMatrixTest {
         }
     }
 
-    /**
-     * Test of read method, of class JMatrix.
-     */
     @Test
-    public void testRead() throws Exception {
+    public void testSetDiagonal() {
+        int n = 5;
+        Matrix M = new JMatrix(n, n);
+        M.setDiagonal(10);
+
+        for (int i = 0; i < n; i++) {
+            assertEquals(10.0, M.get(i, i), DELTA);
+        }
     }
+
 }
