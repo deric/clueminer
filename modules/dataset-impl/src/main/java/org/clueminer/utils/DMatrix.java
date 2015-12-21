@@ -15,6 +15,8 @@ import org.clueminer.math.matrix.AbstractMatrix;
  */
 public class DMatrix extends AbstractMatrix implements Matrix {
 
+    private static final long serialVersionUID = 2773447440937952315L;
+
     private final Dataset<? extends Instance> dataset;
 
     public DMatrix(Dataset<? extends Instance> dataset) {
@@ -199,6 +201,11 @@ public class DMatrix extends AbstractMatrix implements Matrix {
     @Override
     public boolean has(int i, int j) {
         return i < dataset.size() && j < dataset.attributeCount() && i >= 0 && j >= 0;
+    }
+
+    @Override
+    public void setDiagonal(double value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
