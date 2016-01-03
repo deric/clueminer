@@ -99,6 +99,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
 
         //initialize similarities
         Matrix S = similarity(dataset);
+        //S.printLower(2, 3);
         //Place preference on the diagonal of S
         S.setDiagonal(pref);
 

@@ -40,8 +40,10 @@ public abstract class AbstractDistance implements Distance {
         return Double.POSITIVE_INFINITY;
     }
 
-
     protected void checkInput(Vector<Double> x, Vector<Double> y) {
+        if (x == null || y == null) {
+            throw new ArithmeticException("Can't compute distance for null vector.");
+        }
         if (x.size() != y.size()) {
             throw new ArithmeticException("Both instances should contain the same number of values! x size: " + x.size() + " != y size: " + y.size());
         }
