@@ -18,6 +18,9 @@ package org.clueminer.graph.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,10 +43,12 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
 
     private static final long serialVersionUID = 1327676005267510122L;
 
+    private JTextField tfPreference;
     private JTextField tfLambda;
     private JTextField tfMaxIter;
     private JTextField tfMaxConvIter;
     private JComboBox comboDistance;
+    private JCheckBox chckPref;
 
     public AffinityPropagationDialog() {
         initComponents();
@@ -68,6 +73,24 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
         add(comboDistance, c);
+
+        //preference
+        c.gridx = 0;
+        c.gridy++;
+        add(new JLabel("Preference:"), c);
+        c.gridx++;
+        tfPreference = new JTextField("-50", 4);
+        tfPreference.setEnabled(false);
+        add(tfPreference, c);
+        chckPref = new JCheckBox("auto", true);
+        c.gridx++;
+        add(chckPref, c);
+        chckPref.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tfPreference.setEnabled(!chckPref.isSelected());
+            }
+        });
 
         //lambda
         c.gridx = 0;
@@ -107,6 +130,9 @@ public class AffinityPropagationDialog extends JPanel implements ClusteringDialo
         params.put(AffinityPropagation.MAX_ITERATIONS, Integer.valueOf(tfMaxIter.getText()));
         params.put(AffinityPropagation.CONV_ITER, Integer.valueOf(tfMaxConvIter.getText()));
         params.put(Algorithm.DISTANCE, (String) comboDistance.getSelectedItem());
+        if (!chckPref.isSelected()) {
+            params.put(AffinityPropagation.PREFERENCE, Double.valueOf(tfPreference.getText()));
+        }
         return params;
     }
 

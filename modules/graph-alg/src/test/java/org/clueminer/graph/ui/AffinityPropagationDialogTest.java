@@ -49,7 +49,7 @@ public class AffinityPropagationDialogTest {
         JFrame frame = new JFrame(getTitle());
         frame.getContentPane().add(new AffinityPropagationDialog(), BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(new Dimension(400, 200));
+        frame.setSize(new Dimension(500, 200));
         frame.setVisible(true);
         return frame;
     }
