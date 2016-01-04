@@ -35,7 +35,6 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.IntegerMatrix;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
-import org.clueminer.utils.Dump;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -135,19 +134,19 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         while (!dn) {
             //first, compute responsibilities
             for (ii = 0; ii < N; ii++) {
-                double max1 = Double.NEGATIVE_INFINITY, max2 = Double.NEGATIVE_INFINITY, avsim;
+                double max1 = Double.NEGATIVE_INFINITY, max2 = Double.NEGATIVE_INFINITY, curr;
                 int yMax = -1;
 
                 //determine second-largest element of AS
                 for (j = 0; j < N; j++) {
-                    avsim = A.get(ii, j) + S.get(ii, j);
+                    curr = A.get(ii, j) + S.get(ii, j);
 
-                    if (avsim > max1) {
+                    if (curr > max1) {
                         max2 = max1;
-                        max1 = avsim;
+                        max1 = curr;
                         yMax = j;
-                    } else if (avsim > max2) {
-                        max2 = avsim;
+                    } else if (curr > max2) {
+                        max2 = curr; //second largest value
                     }
                 }
 
@@ -230,13 +229,12 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
             i++;
         }
 
-        maxCol(S, I);
+        int[] c = maxCol(S, I, K);
+        //Dump.array(c, "assignments");
         props.putInt("k", K);
-        System.out.println("k = " + K);
-
-        Dump.array(I, "I vec");
-
-        return extractClusters(dataset, props, I, K);
+        //System.out.println("k = " + K);
+        //Dump.array(I, "I vec");
+        return extractClusters(dataset, props, c, K);
     }
 
     /**
@@ -249,8 +247,32 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         return Math.abs(d) <= Double.MAX_VALUE;
     }
 
-    private void maxCol(Matrix S, int[] I) {
+    /**
+     * Assign each item to one exemplar.
+     *
+     * @param S similarity matrix
+     * @param I indexes of medoids (exemplars)
+     * @param K number of detected medoids (exemplars)
+     * @return
+     */
+    private int[] maxCol(Matrix S, int[] I, int K) {
+        int[] c = new int[S.columnsCount()];
+        double val, max;
+        int maxIdx;
+        for (int i = 0; i < S.columnsCount(); i++) {
+            max = Double.NEGATIVE_INFINITY;
+            maxIdx = -1;
+            for (int j = 0; j < K; j++) {
+                val = S.get(i, I[j]);
+                if (val > max) {
+                    max = val;
+                    maxIdx = j;
+                }
+            }
+            c[i] = maxIdx;
+        }
 
+        return c;
     }
 
     protected Clustering<E, C> extractClusters(Dataset<E> dataset, Props props, int[] I, int K) {
