@@ -55,4 +55,21 @@ public class FakeDatasetsTest {
         assertEquals("saab", vehicle.get(49).classValue());
     }
 
+    @Test
+    public void testBlobs() {
+        Dataset<? extends Instance> blobs = FakeDatasets.blobs();
+        assertEquals(300, blobs.size());
+        assertEquals(2, blobs.attributeCount());
+        assertEquals("0", blobs.get(0).classValue());
+        assertEquals("1", blobs.get(2).classValue());
+    }
+
+    @Test
+    public void testGaussians1() {
+        Dataset<? extends Instance> gaussians1 = FakeDatasets.gaussians1();
+        assertEquals(100, gaussians1.size());
+        assertEquals(2, gaussians1.attributeCount());
+        assertEquals("1", gaussians1.get(0).classValue());
+        assertEquals("1", gaussians1.get(1).classValue());
+    }
 }

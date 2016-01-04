@@ -26,6 +26,8 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> kumar;
     private static Dataset<? extends Instance> vehicle;
     private static Dataset<? extends Instance> ds577;
+    private static Dataset<? extends Instance> blobs;
+    private static Dataset<? extends Instance> gaussians1;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -157,4 +159,35 @@ public class FakeDatasets {
         return ds577;
     }
 
+    public static Dataset<? extends Instance> blobs() {
+        if (blobs == null) {
+            blobs = new ArrayDataset(300, 2);
+            blobs.setName("blobs");
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(fixture.blobs(), blobs, 2);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return blobs;
+    }
+
+    public static Dataset<? extends Instance> gaussians1() {
+        if (gaussians1 == null) {
+            gaussians1 = new ArrayDataset(100, 2);
+            gaussians1.setName("gaussians1");
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(fixture.gaussians1(), gaussians1, 2);
+            } catch (FileNotFoundException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return gaussians1;
+    }
 }
