@@ -135,7 +135,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         while (!dn) {
             //first, compute responsibilities
             for (ii = 0; ii < N; ii++) {
-                double max1 = Double.MIN_VALUE, max2 = Double.MIN_VALUE, avsim;
+                double max1 = Double.NEGATIVE_INFINITY, max2 = Double.NEGATIVE_INFINITY, avsim;
                 int yMax = -1;
 
                 //determine second-largest element of AS
@@ -155,7 +155,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
                 for (j = 0; j < N; j++) {
                     double oldVal = R.get(ii, j);
                     double newVal = (1 - lambda) * (S.get(ii, j) - (j == yMax ? max2 : max1)) + lambda * oldVal;
-                    R.set(ii, j, (Double.isNaN(newVal) ? Double.MAX_VALUE : newVal));
+                    R.set(ii, j, (!isFinite(newVal) ? Double.MAX_VALUE : newVal));
                 }
             }
 
@@ -237,6 +237,16 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         Dump.array(I, "I vec");
 
         return extractClusters(dataset, props, I, K);
+    }
+
+    /**
+     * Could be replace by Double.isFinite which is available in Java 8
+     *
+     * @param d
+     * @return
+     */
+    public boolean isFinite(double d) {
+        return Math.abs(d) <= Double.MAX_VALUE;
     }
 
     private void maxCol(Matrix S, int[] I) {

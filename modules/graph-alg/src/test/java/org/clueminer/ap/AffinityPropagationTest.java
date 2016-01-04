@@ -44,9 +44,11 @@ public class AffinityPropagationTest {
     public void testCluster() {
         Dataset data = FakeDatasets.schoolData();
         Props props = new Props();
+        props.put(Algorithm.DISTANCE, "Negative Euclidean");
         Clustering clust = AP.cluster(data, props);
         assertNotNull(clust);
-        assertEquals(2, clust.size());
+        //assertEquals(2, clust.size());
+        assertEquals(-923.6858499999972, props.getDouble(AffinityPropagation.PREFERENCE), DELTA);
     }
 
     @Test
