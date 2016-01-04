@@ -262,8 +262,14 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         for (int i = 0; i < S.columnsCount(); i++) {
             max = Double.NEGATIVE_INFINITY;
             maxIdx = -1;
+            //find most similar exemplar
             for (int j = 0; j < K; j++) {
                 val = S.get(i, I[j]);
+                //when comparing to an exemplar, always choose the exemplar
+                if (i == I[j]) {
+                    maxIdx = j;
+                    break;
+                }
                 if (val > max) {
                     max = val;
                     maxIdx = j;
