@@ -17,7 +17,9 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>org.clueminer.ap</publicPackage>
                         <publicPackage>org.clueminer.chinesewhispers</publicPackage>
+                        <publicPackage>org.clueminer.fastcommunity</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
