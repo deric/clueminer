@@ -34,13 +34,14 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * multi-objective merger (heap, memory saving)
  *
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
 public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "multi-objective merger (heap, memory saving)";
+    public static final String name = "MOM-HSX";
 
     private FrontHeapQueueMs<E, C, P> queue;
 

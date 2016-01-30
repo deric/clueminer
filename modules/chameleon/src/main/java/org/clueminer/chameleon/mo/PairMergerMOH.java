@@ -18,7 +18,6 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import org.clueminer.chameleon.Chameleon;
-import static org.clueminer.chameleon.Chameleon.SIM_MEASURE;
 import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -60,7 +59,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
             throw new RuntimeException("you must specify at least 2 objectives");
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
-        eval = mef.getProvider(pref.get(SIM_MEASURE, ShatovskaSimilarity.name));
+        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
         queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
         //initialize queue
