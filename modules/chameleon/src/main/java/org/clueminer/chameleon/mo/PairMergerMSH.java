@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,16 +34,16 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * multi-objective merger (heap, memory saving)
+ * Queue with faster heap filtering
  *
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
+public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "MOM-HSX";
+    public static final String name = "MOM-HSX2";
 
-    protected FrontHeapQueueMs<E, C, P> queue;
+    private FrontHeapQueueMsh<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -85,9 +85,8 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
     }
 
     protected void initQueue(Props pref) {
-        queue = new FrontHeapQueueMs<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+        queue = new FrontHeapQueueMsh<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
     }
-
 
     private void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
@@ -116,7 +115,7 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
-        queue.filterOut();
+        queue.filterOut(curr);
     }
 
     private void addIntoQueue(C cluster, Props pref) {
@@ -127,5 +126,4 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
             }
         }
     }
-
 }
