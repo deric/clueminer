@@ -115,7 +115,8 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
-        queue.filterOut(curr);
+        int removed = queue.filterOut(curr);
+        //System.out.println("removed " + removed);
     }
 
     private void addIntoQueue(C cluster, Props pref) {

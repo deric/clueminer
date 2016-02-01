@@ -344,7 +344,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
      */
     public int filterOut(P pair) {
         int removed = 0;
-        //System.out.println("merging " + item.A.getClusterId() + ", " + item.B.getClusterId());
+        //System.out.println("merging " + pair.A.getClusterId() + ", " + pair.B.getClusterId());
         //blacklist.insertIntoFront(item.A.getClusterId());
         //blacklist.insertIntoFront(item.B.getClusterId());
         //System.out.println("blacklist: " + blacklist);
