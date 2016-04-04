@@ -72,9 +72,8 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         }
 
         clusterNum = clust.size();
-        logger.log(Level.INFO, "got {0} clusters", clusterNum);
+        logger.log(Level.FINE, "got {0} clusters", clusterNum);
 
-        Instance inst;
         Timeseries<ContinuousInstance> ts;
 
         if (clusterNum > 0) {
@@ -96,11 +95,12 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                 }
             }
 
-            for (Cluster<? extends Instance> d : clust) {
+            for (Cluster<E> d : clust) {
                 //  c.gridy = i++;
-                Cluster<? extends Instance> dataset = d;
+                Cluster<E> dataset = d;
                 //each cluster might have different max
                 xmax = 0.0;
+                E inst;
                 if (dataset != null && dataset.size() > 0) {
                     inst = dataset.instance(0);
                     logger.log(Level.FINE, "{0}", new Object[]{dataset.toString()});
@@ -113,8 +113,9 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                     //logger.log(Level.INFO, "dataset is kind of {0}", dataset.getClass().toString());
                     //logger.log(Level.INFO, "instace is kind of {0}", inst.getClass().toString());
 
+                    //we're trying to plot original data before any transformation
                     while (inst.getAncestor() != null) {
-                        inst = inst.getAncestor();
+                        inst = (E) inst.getAncestor();
                     }
 
                     plot = inst.getPlotter();
@@ -122,10 +123,11 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                         for (int k = 1; k < dataset.size(); k++) {
                             inst = dataset.instance(k);
                             while (inst.getAncestor() != null) {
-                                inst = inst.getAncestor();
+                                inst = (E) inst.getAncestor();
                             }
-                            plot.addInstance(inst);
                             //logger.log(Level.INFO, "sample id {0}, name = {1}", new Object[]{inst.classValue(), inst.getName()});
+                            plot.addInstance(inst, dataset.getName());
+
                         }
                     }
                     checkBounds(plot, inst);
@@ -139,6 +141,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                         plot.setTitle(d.getName() + " (" + d.size() + ")");
                         plots[i++] = plot;
                         add((JComponent) plot);
+                        //System.out.println("adding plot " + i);
                     }
                     total += d.size();
                 }
@@ -147,7 +150,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         }
     }
 
-    private void checkBounds(Plotter plot, Instance metaInst) {
+    private void checkBounds(Plotter<E> plot, E metaInst) {
         if (metaInst instanceof ContinuousInstance) {
             ContinuousInstance tsInst = (ContinuousInstance) metaInst;
             Timeseries<ContinuousInstance> ts = (Timeseries<ContinuousInstance>) ((ContinuousInstance) metaInst).getParent();

@@ -48,6 +48,14 @@ public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter
     }
 
     @Override
+    public void addInstance(E instance, String clusterName) {
+        ContinuousInstance inst = (ContinuousInstance) instance;
+        Timeseries dataset = (Timeseries) inst.getParent();
+        setTitle(clusterName);
+        this.addLinePlot(instance.getName(), instance.getColor(), dataset.getTimePointsArray(), instance.arrayCopy());
+    }
+
+    @Override
     public void clearAll() {
         this.removeAllPlots();
     }
@@ -80,4 +88,5 @@ public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter
     public boolean isSupported(PlotType type) {
         return type == PlotType.TIMESERIES;
     }
+
 }

@@ -19,14 +19,17 @@ package org.clueminer.scatter;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.Series;
 import com.xeiam.xchart.StyleManager;
-import com.xeiam.xchart.XChartPanel;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
+import org.clueminer.colors.ColorBrewer;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.PlotType;
 import org.clueminer.dataset.api.Plotter;
@@ -53,6 +56,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     private Collection<Double> yData;
     private Collection<Double> eData;
     private static final Logger LOG = Logger.getLogger(Plot2D.class.getName());
+    private ColorGenerator cg;
 
     public Plot2D() {
         initComponents();
@@ -61,6 +65,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     private void initComponents() {
         setLayout(new GridBagLayout());
         setSize(new Dimension(400, 400));
+        cg = new ColorBrewer();
     }
 
     private Chart createChart() {
@@ -89,9 +94,19 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
         sm.setMarkerSize(markerSize);
 
         //wrap chart in JPanel and add to this component
-        XChartPanel xchart = new XChartPanel(ch);
-        add(xchart);
+        //XChartPanel xchart = new XChartPanel(ch);
+        //add(xchart);
         return ch;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Dimension dim = getSize();
+        Graphics2D g2d = (Graphics2D) g.create();
+        chart.paint(g2d, dim.width, dim.height);
+        g2d.dispose();
     }
 
     /**
@@ -101,6 +116,11 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
      */
     @Override
     public void addInstance(E inst) {
+        addInstance(inst, "data");
+    }
+
+    @Override
+    public void addInstance(E inst, String clusterName) {
         if (inst == null) {
             LOG.warning("null instance for plotting. skipping");
             return;
@@ -112,8 +132,8 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
             eData = new ArrayList<>();
             addDataPoint(inst);
             //TODO: find appropriate name for the series
-            data = chart.addSeries("data", xData, yData);
-            data.setMarkerColor(inst.getColor());
+            data = chart.addSeries(clusterName, xData, yData);
+            data.setMarkerColor(cg.next());
         } else {
             addDataPoint(inst);
             data.replaceData(xData, yData, eData);

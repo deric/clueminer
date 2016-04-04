@@ -42,6 +42,14 @@ public interface Plotter<E extends Instance> extends Serializable {
      */
     void addInstance(E instance);
 
+    /**
+     * Add data with assignment to cluster
+     *
+     * @param instance
+     * @param clusterName
+     */
+    void addInstance(E instance, String clusterName);
+
     void paint(Graphics g);
 
     /**

@@ -32,7 +32,7 @@ public class VisualizePanelTest {
 
     public VisualizePanelTest() {
         subject = new VisualizePanel();
-        subject.setClustering(FakeClustering.iris());
+        subject.setClustering(FakeClustering.irisMostlyWrong());
     }
 
     protected JFrame showInFrame() {
