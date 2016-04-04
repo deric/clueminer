@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Affinity Propagation
  *
+ * @param <E>
+ * @param <C>
  * @cite Clustering by Passing Messages Between Data Points. Brendan J. Frey and
  * Delbert Dueck, University of Toronto Science 315, 972–976, February 2007
  *
