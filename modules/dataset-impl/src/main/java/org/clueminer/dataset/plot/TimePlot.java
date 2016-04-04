@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Font;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.PlotType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.math.plot.Plot2DPanel;
@@ -66,5 +67,17 @@ public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter
     @Override
     public void setYBounds(double min, double max) {
         this.setFixedBounds(1, min, max);
+    }
+
+    @Override
+    public void prepare(PlotType type) {
+        if (!isSupported(type)) {
+            throw new RuntimeException("plot type " + type.name() + " is not supported");
+        }
+    }
+
+    @Override
+    public boolean isSupported(PlotType type) {
+        return type == PlotType.TIMESERIES;
     }
 }
