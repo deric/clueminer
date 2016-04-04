@@ -98,13 +98,12 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
 
             for (Cluster<? extends Instance> d : clust) {
                 //  c.gridy = i++;
-                //logger.log(Level.INFO, "{0}", new Object[]{d.toString()});
-                System.out.println(d.getName() + " [" + d.size() + "]");
                 Cluster<? extends Instance> dataset = d;
                 //each cluster might have different max
                 xmax = 0.0;
                 if (dataset != null && dataset.size() > 0) {
                     inst = dataset.instance(0);
+                    logger.log(Level.FINE, "{0}", new Object[]{dataset.toString()});
                     /**
                      * @TODO We can't support visualization of all possible
                      * kinds of data, this ability should be implemented

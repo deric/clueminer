@@ -99,6 +99,11 @@
             <artifactId>commons</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>scatter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -111,6 +116,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.algorithm</publicPackage>
                         <publicPackage>org.clueminer.attributes</publicPackage>
+                        <publicPackage>org.clueminer.dataset.plot</publicPackage>
                         <publicPackage>org.clueminer.dataset.plugin</publicPackage>
                         <publicPackage>org.clueminer.dataset.row</publicPackage>
                         <publicPackage>org.clueminer.dataset.std</publicPackage>

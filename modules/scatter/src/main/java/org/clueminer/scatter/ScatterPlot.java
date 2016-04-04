@@ -37,6 +37,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * Simple and fast 2D chart.
  *
  * @author deric
  * @param <E>
@@ -50,6 +51,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private MouseListener mouseListener;
     private MouseMotionListener mouseMotionListener;
     private Chart currChart;
+    private String title = null;
     private boolean simple = false;
 
     public ScatterPlot() {
@@ -97,6 +99,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         int attrY = 1;
 
         Chart chart = new Chart(getWidth(), getHeight());
+        if (title != null) {
+            chart.setChartTitle(title);
+        }
         StyleManager sm = chart.getStyleManager();
         sm.setChartType(StyleManager.ChartType.Scatter);
 
@@ -206,6 +211,11 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
             return currChart.getPlotArea();
         }
         throw new RuntimeException("current chart not set");
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+        repaint();
     }
 
 }
