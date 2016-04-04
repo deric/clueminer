@@ -272,7 +272,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
             throw new RuntimeException("could not find plotting backend");
         }
         Plotter plotter = iter.next();
-        plotter.addInstance(ancestor);
+        plotter.addInstance(this);
         return plotter;
     }
 
