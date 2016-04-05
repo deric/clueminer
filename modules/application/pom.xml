@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.clueminer</groupId>
         <artifactId>clueminer-parent</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
@@ -347,5 +347,5 @@
             </build>
         </profile>
     </profiles>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 </project>

@@ -4,13 +4,13 @@
     <parent>
         <artifactId>clueminer-parent</artifactId>
         <groupId>org.clueminer</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../..</relativePath>
     </parent>
 
     <groupId>org.clueminer</groupId>
     <artifactId>dendrogram</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>dendrogram</name>
@@ -189,7 +189,7 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>chameleon</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>

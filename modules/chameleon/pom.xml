@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.clueminer</groupId>
         <artifactId>clueminer-parent</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>chameleon</artifactId>
@@ -106,38 +106,38 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>fixtures-clustering</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-impl</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>gui-utils</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>clustering-eval</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>partitioning-impl</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -168,7 +168,7 @@
         <dependency>
             <groupId>edu.umn</groupId>
             <artifactId>metis</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <properties>
