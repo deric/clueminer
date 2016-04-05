@@ -19,6 +19,7 @@ import org.clueminer.chart.renderer.Line;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.PlotType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
@@ -30,8 +31,9 @@ import org.clueminer.events.DatasetListener;
  * just one instance
  *
  * @author Tomas Barton
+ * @param <E> type of base data type
  */
-public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener, Serializable, Plotter {
+public class PreviewFrame<E extends Instance> extends JPanel implements ChartConfig, DatasetListener, Serializable, Plotter<E> {
 
     private static final long serialVersionUID = 6847417134740120657L;
     private ChartDataImpl chartData = null;
@@ -122,6 +124,7 @@ public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener
         previewPanel.paint(g);
 
     }
+
     /*
      @Override
      public void clusterSelected(DendrogramTree source, TreeCluster cluster, DendrogramMapping data) {
@@ -147,7 +150,6 @@ public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener
      public void treeUpdated(DendrogramTree source, int width, int height) {
      //not used not
      }*/
-
     @Override
     public void deselectAll() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -174,7 +176,7 @@ public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener
     }
 
     @Override
-    public void addInstance(Instance instance) {
+    public void addInstance(E instance) {
         chartData.setVisible(visible);
         previewPanel.repaint();
     }
@@ -229,5 +231,20 @@ public class PreviewFrame extends JPanel implements ChartConfig, DatasetListener
     @Override
     public void addOverlay(Overlay overlay) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void prepare(PlotType type) {
+        //
+    }
+
+    @Override
+    public void addInstance(E instance, String clusterName) {
+        addInstance(instance);
+    }
+
+    @Override
+    public boolean isSupported(PlotType type) {
+        return type == PlotType.TIMESERIES;
     }
 }
