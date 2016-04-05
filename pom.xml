@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.clueminer</groupId>
     <artifactId>clueminer-parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>clueminer-parent</name>
     <licenses>
@@ -31,7 +31,11 @@
         <project.organization>clueminer.org</project.organization>
         <maven.compiler>2.5.1</maven.compiler>
     </properties>
-
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
     <repositories>
         <!--
         Repository hosting NetBeans modules, especially APIs.
