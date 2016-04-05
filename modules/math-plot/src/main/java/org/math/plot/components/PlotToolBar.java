@@ -65,7 +65,6 @@ public class PlotToolBar extends JToolBar {
 
         buttonGroup = new ButtonGroup();
 
-
         buttonCenter = new JToggleButton(ImageUtilities.loadImageIcon("org/math/plot/icons/center.png", false));
         buttonCenter.setToolTipText("Center axes");
         buttonCenter.setSelected(plotCanvas.ActionMode == PlotCanvas.TRANSLATION);
@@ -76,10 +75,8 @@ public class PlotToolBar extends JToolBar {
 
         //buttonEdit = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/edit.png")));
         //buttonEdit.setToolTipText("Edit mode");
-
         //buttonViewCoords = new JToggleButton(new ImageIcon(PlotPanel.class.getResource("icons/position.png")));
         //buttonViewCoords.setToolTipText("Highlight coordinates / Highlight plot");
-
         buttonSetScales = new JButton(ImageUtilities.loadImageIcon("org/math/plot/icons/scale.png", false));
         buttonSetScales.setToolTipText("Set scales");
 
@@ -97,7 +94,6 @@ public class PlotToolBar extends JToolBar {
          plotCanvas.ActionMode = PlotCanvas.EDIT;
          }
          });*/
-
         buttonZoom.setSelected(true);
         buttonZoom.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -116,7 +112,6 @@ public class PlotToolBar extends JToolBar {
          plotCanvas.setNoteCoords(buttonViewCoords.isSelected());
          }
          });*/
-
         buttonSetScales.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 plotCanvas.displaySetScalesFrame();
@@ -165,9 +160,7 @@ public class PlotToolBar extends JToolBar {
         }
 
         //buttonEdit.setEnabled(plotCanvas.getEditable());
-
         //buttonViewCoords.setEnabled(plotCanvas.getNotable());
-
         // allow mixed (2D/3D) plots managed by one toolbar
         if (plotCanvas instanceof Plot3DCanvas) {
             if (buttonRotate == null) {
@@ -185,14 +178,12 @@ public class PlotToolBar extends JToolBar {
             } else {
                 buttonRotate.setEnabled(true);
             }
-        } else {
-            if (buttonRotate != null) {
-                // no removal/disabling just disable
-                if (plotCanvas.ActionMode == Plot3DCanvas.ROTATION) {
-                    plotCanvas.ActionMode = PlotCanvas.ZOOM;
-                }
-                buttonRotate.setEnabled(false);
+        } else if (buttonRotate != null) {
+            // no removal/disabling just disable
+            if (plotCanvas.ActionMode == Plot3DCanvas.ROTATION) {
+                plotCanvas.ActionMode = PlotCanvas.ZOOM;
             }
+            buttonRotate.setEnabled(false);
         }
     }
 

@@ -36,7 +36,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import org.openide.util.Exceptions;
-import org.openide.util.Utilities;
 
 /**
  * Loader of text/binary files from java classpath
@@ -64,7 +63,7 @@ public abstract class ResourceLoader {
      * for all elements of java.class.path get a Collection of resources Pattern
      * pattern = Pattern.compile(".*"); gets all resources
      *
-     * @param needle first part of path
+     * @param needle      first part of path
      * @param packageName hint a package name to search
      * @return the resources in the order they are found
      */
@@ -79,7 +78,7 @@ public abstract class ResourceLoader {
                 Enumeration<URL> en = searchURL(packageName);
                 if (en.hasMoreElements()) {
                     URL metaInf = en.nextElement();
-                    File fileMetaInf = Utilities.toFile(metaInf.toURI());
+                    File fileMetaInf = new File(metaInf.toURI());
                     browseFiles(retval, fileMetaInf, pattern);
                 }
             } catch (IOException | URISyntaxException ex) {
@@ -246,12 +245,10 @@ public abstract class ResourceLoader {
         final File file = new File(element);
         if (file.isDirectory()) {
             retval.addAll(getResourcesFromDirectory(file, pattern));
+        } else if (file.exists()) {
+            retval.addAll(findResourcesInJarFile(file, pattern, packageName));
         } else {
-            if (file.exists()) {
-                retval.addAll(findResourcesInJarFile(file, pattern, packageName));
-            } else {
-                System.err.println("can't open file: " + file);
-            }
+            System.err.println("can't open file: " + file);
         }
         return retval;
     }
