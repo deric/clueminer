@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = FileImporter.class)
-public class ArffImporter extends AbstractImporter implements FileImporter, LongTask {
+public class ArffImporter extends AbstractLineImporter implements FileImporter, LongTask {
 
     public static final String name = "ARFF";
     private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());

@@ -16,23 +16,35 @@
  */
 package org.clueminer.importer.impl;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.LineNumberReader;
+import java.io.Reader;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
+import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.types.FileType;
+import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
-public class JsonImporter extends AbstractImporter implements FileImporter, LongTask {
+@ServiceProvider(service = FileImporter.class)
+public class JsonImporter extends BaseImporter implements FileImporter, LongTask {
 
     private static final String NAME = "JSON";
+    private ContainerLoader loader;
+    private static final Logger logger = Logger.getLogger(JsonImporter.class.getName());
+    private int numInstances;
 
     @Override
     public String getName() {
@@ -40,8 +52,27 @@ public class JsonImporter extends AbstractImporter implements FileImporter, Long
     }
 
     @Override
-    public boolean execute(Container container, LineNumberReader reader) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean execute(Container container, Reader reader) throws IOException {
+        this.numInstances = 0;
+        this.container = container;
+        if (container.getFile() != null) {
+            logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
+        }
+        this.loader = container.getLoader();
+        loader.reset(); //remove all previous instances
+        loader.setDataset(null);
+        loader.setNumberOfLines(0);
+        this.report = new Report();
+        logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
+
+        for (AttributeDraft attr : loader.getAttributes()) {
+            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
+        }
+
+        importData(loader, reader);
+        fireAnalysisFinished();
+
+        return !cancel;
     }
 
     @Override
@@ -61,6 +92,62 @@ public class JsonImporter extends AbstractImporter implements FileImporter, Long
     public boolean isMatchingImporter(FileObject fileObject) {
         String ext = fileObject.getExt();
         return ext.equalsIgnoreCase("json");
+    }
+
+    @Override
+    public void reload(File file) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void reload(FileObject file, Reader reader) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean execute(Container container, FileObject file) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean cancel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    protected void importData(ContainerLoader loader, Reader reader) throws IOException {
+        numInstances = 0;
+        //if it's not the first time we are trying to load the file,
+        //number of lines will be known
+        int numLines = loader.getNumberOfLines();
+        if (numLines > 0) {
+            //if we know number of lines
+            Progress.switchToDeterminate(progressTicket, numLines);
+        } else {
+            Progress.start(progressTicket);
+        }
+
+        int count;
+        int prev = -1;
+        boolean reading = true;
+
+        while (reader.ready() && reading) {
+            /* String line = reader.readLine();
+               count = reader.getLineNumber();
+            //logger.log(Level.INFO, "line {0}: {1}", new Object[]{count, line});
+            if (line != null && !line.isEmpty()) {
+                lineRead(loader, count, line);
+            }
+            //we should have read a next line, but we didn't
+            if (count == prev) {
+                reading = false;
+                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line #{0}: {1}", new Object[]{count, line});
+            }
+             * prev = count; */
+        }
+        loader.setNumberOfLines(prev);
+        //close the input
+        reader.close();
+        Progress.finish(progressTicket);
     }
 
 }

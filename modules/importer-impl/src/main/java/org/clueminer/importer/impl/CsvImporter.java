@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = FileImporter.class)
-public class CsvImporter extends AbstractImporter implements FileImporter, LongTask {
+public class CsvImporter extends AbstractLineImporter implements FileImporter, LongTask {
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;

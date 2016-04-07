@@ -11,40 +11,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.event.EventListenerList;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.ParsingError;
-import org.clueminer.io.importer.api.Report;
-import org.clueminer.longtask.LongTaskErrorHandler;
-import org.clueminer.longtask.LongTaskExecutor;
 import org.clueminer.longtask.spi.LongTask;
-import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
-import org.clueminer.utils.progress.ProgressTicket;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
+ * Importer which reads file line by line.
  *
  * @author Tomas Barton
  */
-public abstract class AbstractImporter implements FileImporter, LongTask {
+public abstract class AbstractLineImporter extends BaseImporter implements FileImporter, LongTask {
 
-    protected Container container;
-    protected Report report;
-    protected ProgressTicket progressTicket;
-    private static final Logger logger = Logger.getLogger(AbstractImporter.class.getName());
-    private final LongTaskErrorHandler errorHandler;
-    private final LongTaskExecutor executor;
-    protected final transient EventListenerList importListeners = new EventListenerList();
-    protected boolean cancel = false;
+    private static final Logger logger = Logger.getLogger(AbstractLineImporter.class.getName());
     protected static final int INITIAL_READ_SIZE = 128;
     protected String pending;
     protected boolean ignoreQuotations = false;
@@ -58,33 +45,8 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     protected List<String> missing = new LinkedList<>();
     protected boolean replaceMissingValues = true;
 
-    public AbstractImporter() {
-        errorHandler = new LongTaskErrorHandler() {
-            @Override
-            public void fatalError(Throwable t) {
-                if (t instanceof OutOfMemoryError) {
-                    return;
-                }
-
-                Exceptions.printStackTrace(t);
-            }
-        };
-        executor = new LongTaskExecutor(true, "Importer", 10);
-    }
-
-    @Override
-    public Container getContainer() {
-        return container;
-    }
-
-    @Override
-    public Report getReport() {
-        return report;
-    }
-
-    @Override
-    public void setProgressTicket(ProgressTicket progressTicket) {
-        this.progressTicket = progressTicket;
+    public AbstractLineImporter() {
+        super();
     }
 
     @Override
@@ -96,7 +58,7 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
         }
         final FileImporter importer = this;
         final ImportController controller = Lookup.getDefault().lookup(ImportController.class);
-        String taskName = NbBundle.getMessage(AbstractImporter.class, "AbstractImporter.taskName");
+        String taskName = NbBundle.getMessage(AbstractLineImporter.class, "AbstractImporter.taskName");
         if (!executor.isRunning()) {
             executor.execute(task, new Runnable() {
                 @Override
@@ -117,28 +79,6 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
     @Override
     public void reload(File file) {
 
-    }
-
-    @Override
-    public void addAnalysisListener(AnalysisListener listener) {
-        importListeners.add(AnalysisListener.class, listener);
-    }
-
-    @Override
-    public void removeListener(AnalysisListener listener) {
-        importListeners.remove(AnalysisListener.class, listener);
-    }
-
-    protected void fireAnalysisFinished() {
-        for (AnalysisListener im : importListeners.getListeners(AnalysisListener.class)) {
-            im.analysisFinished(container);
-        }
-    }
-
-    protected void fireAttributeChanged(AttributeDraft attribute, Object property) {
-        for (AnalysisListener im : importListeners.getListeners(AnalysisListener.class)) {
-            im.attributeChanged(attribute, property);
-        }
     }
 
     @Override
@@ -214,11 +154,9 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
                 tokensOnThisLine.add(sb.toString());
                 sb = new StringBuilder(INITIAL_READ_SIZE); // start work on next token
                 inField = false;
-            } else {
-                if (!strictQuotes || (inQuotes && !ignoreQuotations)) {
-                    sb.append(c);
-                    inField = true;
-                }
+            } else if (!strictQuotes || (inQuotes && !ignoreQuotations)) {
+                sb.append(c);
+                inField = true;
             }
         }
         tokensOnThisLine.add(sb.toString());
@@ -270,14 +208,6 @@ public abstract class AbstractImporter implements FileImporter, LongTask {
             }
         }
         return result;
-    }
-
-    public boolean isCancel() {
-        return cancel;
-    }
-
-    public void setCancel(boolean cancel) {
-        this.cancel = cancel;
     }
 
     public boolean isIgnoreQuotations() {
