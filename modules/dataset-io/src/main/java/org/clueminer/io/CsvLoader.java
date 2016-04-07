@@ -1,6 +1,6 @@
 package org.clueminer.io;
 
-import au.com.bytecode.opencsv.CSVReader;
+import org.clueminer.csv.CSVReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;

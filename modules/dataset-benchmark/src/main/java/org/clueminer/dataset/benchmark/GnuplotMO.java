@@ -16,7 +16,7 @@
  */
 package org.clueminer.dataset.benchmark;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import org.clueminer.csv.CSVWriter;
 import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileNotFoundException;

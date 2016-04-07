@@ -1,7 +1,5 @@
 package org.clueminer.io;
 
-import be.abeel.io.ColumnIterator;
-import be.abeel.io.LineIterator;
 import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

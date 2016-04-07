@@ -1,6 +1,6 @@
 package org.clueminer.io.importer.api;
 
-import org.clueminer.io.database.drivers.SQLDriver;
+import org.clueminer.io.db.SQLDriver;
 
 /**
  *

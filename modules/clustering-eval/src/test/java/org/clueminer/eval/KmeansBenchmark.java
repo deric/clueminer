@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import au.com.bytecode.opencsv.CSVWriter;
+import org.clueminer.csv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
 import java.io.File;
 import java.io.FileNotFoundException;

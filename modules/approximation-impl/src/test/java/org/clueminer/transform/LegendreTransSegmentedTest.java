@@ -1,6 +1,6 @@
 package org.clueminer.transform;
 
-import au.com.bytecode.opencsv.CSVReader;
+import org.clueminer.csv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

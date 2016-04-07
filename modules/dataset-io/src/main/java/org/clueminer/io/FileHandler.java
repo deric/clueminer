@@ -1,6 +1,5 @@
 package org.clueminer.io;
 
-import be.abeel.io.GZIPPrintWriter;
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;

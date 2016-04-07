@@ -16,7 +16,6 @@
  */
 package org.clueminer.io;
 
-import be.abeel.io.LineIterator;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.regex.Matcher;

@@ -1,6 +1,5 @@
 package org.clueminer.io;
 
-import be.abeel.io.LineIterator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
