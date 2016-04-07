@@ -17,12 +17,15 @@
 package org.clueminer.importer.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.exception.ParserError;
+import org.clueminer.importer.Issue;
 import org.clueminer.io.JsonLoader;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -45,7 +48,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
 
     private static final String NAME = "JSON";
     private ContainerLoader<Instance> loader;
-    private static final Logger logger = Logger.getLogger(JsonImporter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
     private int numInstances;
 
     @Override
@@ -58,17 +61,17 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         this.numInstances = 0;
         this.container = container;
         if (container.getFile() != null) {
-            logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
+            LOGGER.log(Level.INFO, "importing file {0}", container.getFile().getName());
         }
         this.loader = container.getLoader();
         loader.reset(); //remove all previous instances
         loader.setDataset(null);
         loader.setNumberOfLines(0);
         this.report = new Report();
-        logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
+        LOGGER.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
 
         for (AttributeDraft attr : loader.getAttributes()) {
-            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
+            LOGGER.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
         }
 
         importData(loader, reader);
@@ -133,7 +136,14 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         boolean reading = true;
 
         JsonLoader jsonLoader = new JsonLoader();
-        jsonLoader.load(reader, loader.getDataset());
+        try {
+            //try parsing json and load into draft dataset
+            jsonLoader.load(reader, loader.getDataset());
+        } catch (FileNotFoundException ex) {
+            report.logIssue(new Issue(ex.getMessage(), Issue.Level.CRITICAL));
+        } catch (ParserError ex) {
+            report.logIssue(new Issue(ex.getMessage(), Issue.Level.WARNING));
+        }
 
 
         /* while (reader.ready() && reading) {

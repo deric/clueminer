@@ -39,7 +39,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;
-    private static final String name = "CSV";
+    private static final String NAME = "CSV";
     /**
      * header is typically on first line, unless we have some comments before
      * header - true when header was parser
@@ -57,7 +57,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public char getSeparator() {
@@ -133,9 +133,9 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             Progress.start(progressTicket);
         }
 
-        /*it.setSkipBlanks(true);
-         it.setCommentIdentifier("#");
-         it.setSkipComments(true);*/
+        /* it.setSkipBlanks(true);
+         * it.setCommentIdentifier("#");
+         * it.setSkipComments(true); */
         int count;
         int prev = -1;
         boolean reading = true;
@@ -165,10 +165,8 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         String[] columns = parseLine(line);
         if (prevColCnt != columns.length && prevColCnt > -1) {
             report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class, "CsvImporter_error_differentLineLength", num), Issue.Level.WARNING));
-        } else {
-            if (prevColCnt != columns.length) {
-                prevColCnt = columns.length;
-            }
+        } else if (prevColCnt != columns.length) {
+            prevColCnt = columns.length;
         }
         //Dump.array(columns, "line " + num + " (" + columns.length + ")");
         if (hasHeader && !skipHeader && !parsedHeader) {
@@ -242,6 +240,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             // TODO: type has value "java.lang.Double" but we're passing "double"
             if (!attr.getType().equals(res)) {
                 logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getType()});
+                report.logIssue(new Issue(loader.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getType(), Issue.Level.INFO));
                 attr.setType(res);
                 fireAttributeChanged(loader.getAttribute(attrIndex), "type");
             }
@@ -338,7 +337,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         return pending != null;
     }
 
-
     public boolean isHasHeader() {
         return hasHeader;
     }
@@ -362,7 +360,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     public void setQuotechar(char quotechar) {
         this.quotechar = quotechar;
     }
-
 
     /**
      * Conversion to FileObject might fail, so we have a backup BufferedReader

@@ -15,6 +15,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Converts preloaded data into actual dataset structure.
  *
  * @author Tomas Barton
  * @param <E>
@@ -22,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Processor.class)
 public class DefaultProcessor<E extends Instance> extends AbstractProcessor<E> implements Processor<E> {
 
-    private static final Logger logger = Logger.getLogger(DefaultProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DefaultProcessor.class.getName());
 
     @Override
     public String getDisplayName() {
@@ -45,12 +46,11 @@ public class DefaultProcessor<E extends Instance> extends AbstractProcessor<E> i
             Attribute attr = dataset.attributeBuilder().build(attrd.getName(), getType(attrd.getType()), attrd.getRole());
             attr.setIndex(index);
             dataset.setAttribute(index, attr);
-            logger.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
+            LOGGER.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
             inputMap.put(attrd.getIndex(), index);
             index++;
         }
         return inputMap;
     }
-
 
 }

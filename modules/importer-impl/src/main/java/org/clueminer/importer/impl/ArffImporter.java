@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.AttrHolder;
-import org.clueminer.io.ParserError;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = FileImporter.class)
 public class ArffImporter extends AbstractLineImporter implements FileImporter, LongTask {
 
-    public static final String name = "ARFF";
+    public static final String NAME = "ARFF";
     private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());
 
     private static final Pattern klassAttr = Pattern.compile("^@attribute\\s+['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
@@ -59,7 +59,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
     @Override
 
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**

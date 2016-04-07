@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.clueminer.importer.Issue;
 import org.clueminer.importer.Issue.Level;
 
-
 /**
  * Report is a log and issue container. Filled with information, details, minor
  * or major issues, it is stored in an issue list and can be retrieved to
@@ -20,7 +19,7 @@ import org.clueminer.importer.Issue.Level;
  */
 public final class Report {
 
-    private final Queue<ReportEntry> entries = new ConcurrentLinkedQueue<ReportEntry>();
+    private final Queue<ReportEntry> entries = new ConcurrentLinkedQueue<>();
     private Issue.Level exceptionLevel = Issue.Level.CRITICAL;
 
     /**
@@ -60,7 +59,7 @@ public final class Report {
      * @return a collection of all issues written in the report
      */
     public List<Issue> getIssues() {
-        List<Issue> res = new ArrayList<Issue>();
+        List<Issue> res = new ArrayList<>();
         for (ReportEntry re : entries) {
             if (re.issue != null) {
                 res.add(re.issue);
@@ -92,7 +91,7 @@ public final class Report {
      * Returns the report logs and issues, presented as basic multi-line text.
      *
      * @return a string of all messages and issues written in the report, one
-     * per line
+     *         per line
      */
     public String getText() {
         StringBuilder builder = new StringBuilder();
@@ -125,7 +124,7 @@ public final class Report {
      * <code>Level.CRITICAL</code>
      *
      * @param exceptionLevel the exception level where exceptions are to be
-     * thrown
+     *                       thrown
      */
     public void setExceptionLevel(Level exceptionLevel) {
         this.exceptionLevel = exceptionLevel;
@@ -151,62 +150,73 @@ public final class Report {
         if (entries.size() > limit) {
             int step = 0;
             while (entries.size() > limit && step < 3) {
-                if (step == 0) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                            lastIssue = issue;
-                            itr.remove();
+                switch (step) {
+                    case 0: {
+                        ReportEntry lastIssue = null;
+                        for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                            ReportEntry issue = itr.next();
+                            if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                                lastIssue = issue;
+                                itr.remove();
+                            }
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                    }
-                    step = 1;
-                } else if (step == 1) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
-                            lastIssue = issue;
-                            itr.remove();
+                        if (lastIssue != null) {
+                            entries.add(lastIssue);
+                            entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
                         }
+                        step = 1;
+                        break;
                     }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
-                    }
-                    step = 2;
-                } else if (step == 2) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
-                            lastIssue = issue;
-                            itr.remove();
+                    case 1: {
+                        ReportEntry lastIssue = null;
+                        for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                            ReportEntry issue = itr.next();
+                            if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.WARNING)) {
+                                lastIssue = issue;
+                                itr.remove();
+                            }
                         }
-                    }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
-                    }
-                    step = 3;
-                } else if (step == 3) {
-                    ReportEntry lastIssue = null;
-                    for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
-                        ReportEntry issue = itr.next();
-                        if (issue.issue == null) {
-                            lastIssue = issue;
-                            itr.remove();
+                        if (lastIssue != null) {
+                            entries.add(lastIssue);
+                            entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.WARNING)));
                         }
+                        step = 2;
+                        break;
                     }
-                    if (lastIssue != null) {
-                        entries.add(lastIssue);
-                        entries.add(new ReportEntry("More messages not listed..."));
+                    case 2: {
+                        ReportEntry lastIssue = null;
+                        for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                            ReportEntry issue = itr.next();
+                            if (issue.issue != null && issue.issue.getLevel().equals(Issue.Level.INFO)) {
+                                lastIssue = issue;
+                                itr.remove();
+                            }
+                        }
+                        if (lastIssue != null) {
+                            entries.add(lastIssue);
+                            entries.add(new ReportEntry(new Issue("More issues not listed...", Issue.Level.INFO)));
+                        }
+                        step = 3;
+                        break;
                     }
-                    step = 4;
+                    case 3: {
+                        ReportEntry lastIssue = null;
+                        for (Iterator<ReportEntry> itr = entries.iterator(); itr.hasNext();) {
+                            ReportEntry issue = itr.next();
+                            if (issue.issue == null) {
+                                lastIssue = issue;
+                                itr.remove();
+                            }
+                        }
+                        if (lastIssue != null) {
+                            entries.add(lastIssue);
+                            entries.add(new ReportEntry("More messages not listed..."));
+                        }
+                        step = 4;
+                        break;
+                    }
+                    default:
+                        break;
                 }
             }
         }

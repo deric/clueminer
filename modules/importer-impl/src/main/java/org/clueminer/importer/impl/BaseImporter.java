@@ -55,6 +55,7 @@ public abstract class BaseImporter implements FileImporter, LongTask {
             }
         };
         executor = new LongTaskExecutor(true, "Importer", 10);
+        report = new Report();
     }
 
     @Override

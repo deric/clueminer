@@ -41,7 +41,7 @@ public class ImportControllerImpl implements ImportController {
     private final List<FileImporter> fileImporters;
     private final ImporterUI[] uis;
     private MimeHelper helper;
-    private static final Logger log = Logger.getLogger(ImportControllerImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ImportControllerImpl.class.getName());
     private final HashMap<String, Container> containers;
 
     public ImportControllerImpl() {
@@ -50,7 +50,7 @@ public class ImportControllerImpl implements ImportController {
         helper = new MimeHelper();
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
-        log.info("creating new ImportController");
+        LOGGER.info("creating new ImportController");
     }
 
     @Override
@@ -103,20 +103,20 @@ public class ImportControllerImpl implements ImportController {
         //Create Container
         Container container;
         String path = file.getPath();
-        log.log(Level.INFO, "reload {0}, file: {1}", new Object[]{reload, path});
+        LOGGER.log(Level.INFO, "reload {0}, file: {1}", new Object[]{reload, path});
         // unique container for path
         if (containers.containsKey(path)) {
             container = containers.get(path);
         } else {
-            log.log(Level.INFO, "did not find container for {0}, size = {1}", new Object[]{path, containers.size()});
+            LOGGER.log(Level.INFO, "did not find container for {0}, size = {1}", new Object[]{path, containers.size()});
             container = new ImportContainerImpl();
             containers.put(path, container);
             container.setFile(file);
         }
 
         //container = Lookup.getDefault().lookup(Container.class);
-        log.log(Level.INFO, "importer contr num attr: {0}", container.getLoader().getAttributeCount());
-        log.log(Level.INFO, "importer contr num inst: {0}", container.getLoader().getInstanceCount());
+        LOGGER.log(Level.INFO, "importer contr num attr: {0}", container.getLoader().getAttributeCount());
+        LOGGER.log(Level.INFO, "importer contr num inst: {0}", container.getLoader().getInstanceCount());
         //Report
         Report report = new Report();
         container.setReport(report);
@@ -198,7 +198,7 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public FileType[] getFileTypes() {
-        ArrayList<FileType> list = new ArrayList<FileType>();
+        ArrayList<FileType> list = new ArrayList<>();
         for (FileImporter im : fileImporters) {
             list.addAll(Arrays.asList(im.getFileTypes()));
         }
