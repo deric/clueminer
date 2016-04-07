@@ -1,9 +1,8 @@
 package org.clueminer.dendrogram;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.aggl.HC;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -11,6 +10,7 @@ import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
@@ -42,9 +42,7 @@ public class DendrogramDataTest {
         ARFFHandler arff = new ARFFHandler();
         try {
             arff.load(tf.irisArff(), dataset, 4);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         algorithm = new HC();
