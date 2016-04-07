@@ -13,6 +13,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
@@ -59,9 +60,10 @@ public class DunnIndexTest {
      *
      * @throws java.io.IOException
      * @throws java.io.FileNotFoundException
+     * @throws org.clueminer.exception.ParserError
      */
     @Test
-    public void testScore() throws IOException, FileNotFoundException {
+    public void testScore() throws IOException, FileNotFoundException, ParserError {
         ClusteringAlgorithm km = new KMeans();
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> iris = new ArrayDataset(150, 4);

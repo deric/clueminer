@@ -13,6 +13,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.eval.external.ExternalTest;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
@@ -36,7 +37,7 @@ public class CountingPairsTest extends ExternalTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws FileNotFoundException, IOException {
+    public static void setUpClass() throws FileNotFoundException, IOException, ParserError {
         clusters = FakeClustering.iris();
 
         //now try some real clustering

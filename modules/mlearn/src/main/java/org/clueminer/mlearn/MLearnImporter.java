@@ -57,9 +57,9 @@ public class MLearnImporter implements LongTask, Runnable {
 
     public void loadTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = '\t';
-        dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        dataset = new TimeseriesDataset<>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> skipped = new ArrayList<Integer>();
+        ArrayList<Integer> skipped = new ArrayList<>();
         skipped.add(0); //first one is ID
 
         String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
@@ -80,8 +80,7 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.setClassIndex(last);
         loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
-        loader.setDataset(d);
-        loader.load(file);
+        loader.load(file, d);
     }
 
     /**
@@ -93,9 +92,9 @@ public class MLearnImporter implements LongTask, Runnable {
      */
     public void loadMTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
-        dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        dataset = new TimeseriesDataset<>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+        ArrayList<Integer> metaAttr = new ArrayList<>();
         //skipped.add(0); //first one is ID
         for (int i = 1; i < 7; i++) {
             metaAttr.add(i);

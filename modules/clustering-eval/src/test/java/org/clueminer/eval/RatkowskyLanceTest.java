@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -27,6 +26,7 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.io.ARFFHandler;
@@ -54,9 +54,7 @@ public class RatkowskyLanceTest {
         ARFFHandler arff = new ARFFHandler();
         try {
             arff.load(tf.irisArff(), irisData, 4);
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
 

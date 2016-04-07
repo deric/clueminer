@@ -1,11 +1,11 @@
 package org.clueminer.fixtures.clustering;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
@@ -52,9 +52,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.glassArff(), glassDataset, 9);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -68,9 +66,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.irisArff(), irisData, 4);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -84,9 +80,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.vehicleArff(), vehicle, 18);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -150,9 +144,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.ds577(), ds577, 18);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -166,9 +158,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.blobs(), blobs, 2);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -182,9 +172,7 @@ public class FakeDatasets {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(fixture.gaussians1(), gaussians1, 2);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }

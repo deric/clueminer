@@ -15,6 +15,7 @@ import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -44,7 +45,7 @@ public class CIndexTest {
      * @throws java.io.FileNotFoundException
      */
     // @Test
-    public void testScore() throws IOException, FileNotFoundException {
+    public void testScore() throws IOException, FileNotFoundException, ParserError {
         CommonFixture tf = new CommonFixture();
         Dataset<? extends Instance> data = new ArrayDataset(10, 2);
         ARFFHandler arff = new ARFFHandler();

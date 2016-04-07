@@ -69,6 +69,10 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
         return false;
     }
 
+    public boolean load(File file) throws IOException {
+        checkDataset();
+        return load(new CSVReader(new FileReader(file)));
+    }
     /**
      *
      * @param reader input file reader
