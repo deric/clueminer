@@ -26,9 +26,10 @@ import org.openide.util.NbBundle;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
-public class ImportContainerImpl implements Container, ContainerLoader {
+public class ImportContainerImpl<E extends Instance> implements Container, ContainerLoader<E> {
 
     private String source;
     private FileObject file;
@@ -36,7 +37,7 @@ public class ImportContainerImpl implements Container, ContainerLoader {
 
     private ObjectList<InstanceDraft> instanceList;
     private Int2ObjectOpenHashMap<AttributeDraft> attributeList;
-    private Dataset<? extends Instance> dataset;
+    private Dataset<E> dataset;
     private Object2ObjectMap<String, AttributeDraft> attributeMap;
     private Report report;
     private Object2IntMap<String> instanceMap;
@@ -127,12 +128,12 @@ public class ImportContainerImpl implements Container, ContainerLoader {
     }
 
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 

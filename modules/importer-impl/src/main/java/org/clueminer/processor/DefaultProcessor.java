@@ -17,9 +17,10 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 @ServiceProvider(service = Processor.class)
-public class DefaultProcessor extends AbstractProcessor implements Processor {
+public class DefaultProcessor<E extends Instance> extends AbstractProcessor<E> implements Processor<E> {
 
     private static final Logger logger = Logger.getLogger(DefaultProcessor.class.getName());
 
@@ -29,7 +30,7 @@ public class DefaultProcessor extends AbstractProcessor implements Processor {
     }
 
     @Override
-    protected Dataset<? extends Instance> createDataset(ArrayList<AttributeDraft> inputAttr) {
+    protected Dataset<E> createDataset(ArrayList<AttributeDraft> inputAttr) {
         return new ArrayDataset(container.getInstanceCount(), inputAttr.size());
     }
 

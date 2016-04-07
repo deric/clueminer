@@ -1,5 +1,6 @@
 package org.clueminer.io;
 
+import be.abeel.io.LineIterator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -61,7 +63,7 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadIris() throws FileNotFoundException, IOException {
+    public void testLoadIris() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), data, 4);
         assertEquals(4, data.attributeCount());
@@ -69,7 +71,7 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadIrisWithoutClassIndex() throws FileNotFoundException, IOException {
+    public void testLoadIrisWithoutClassIndex() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(150, 4);
         arff.load(tf.irisArff(), data);
         assertEquals(4, data.attributeCount());
@@ -79,11 +81,11 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadYeast() throws FileNotFoundException, IOException {
+    public void testLoadYeast() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(1484, 8);
         ArrayList<Integer> skippedIndexes = new ArrayList<>();
         skippedIndexes.add(0); //we skip instance name
-        arff.load(tf.yeastData(), data, 9, "\\s+", skippedIndexes);
+        arff.load(new LineIterator(tf.yeastData()), data, 9, "\\s+", skippedIndexes);
         assertEquals(8, data.attributeCount());
         assertEquals(1484, data.size());
     }
@@ -105,7 +107,7 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadZoo2() throws FileNotFoundException, IOException {
+    public void testLoadZoo2() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(101, 16);
         arff.load(tf.zoo2Arff(), data);
         assertEquals(16, data.attributeCount());
@@ -113,7 +115,7 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadGlass() throws FileNotFoundException, IOException {
+    public void testLoadGlass() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(217, 9);
         arff.load(tf.glassArff(), data);
         assertEquals(9, data.attributeCount());
@@ -177,7 +179,7 @@ public class ARFFHandlerTest {
     }
 
     @Test
-    public void testLoadIonosphere() throws FileNotFoundException, IOException {
+    public void testLoadIonosphere() throws FileNotFoundException, IOException, ParserError {
         Dataset<? extends Instance> data = new ArrayDataset(351, 34);
         arff.load(tf.ionosphereArff(), data);
         assertEquals(34, data.attributeCount());

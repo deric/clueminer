@@ -26,6 +26,8 @@ public interface Importer {
     String getName();
 
     /**
+     * Tries to import data from reader into container. Then user can modify customize
+     * import setting before container unloading.
      *
      * @param container
      * @param reader
@@ -35,6 +37,8 @@ public interface Importer {
     boolean execute(Container container, Reader reader) throws IOException;
 
     /**
+     * Tries to import data from FileObject into container. Then user can modify customize
+     * import setting before container unloading.
      *
      * @param container
      * @param file

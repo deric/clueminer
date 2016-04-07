@@ -22,6 +22,8 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.io.JsonLoader;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -42,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class JsonImporter extends BaseImporter implements FileImporter, LongTask {
 
     private static final String NAME = "JSON";
-    private ContainerLoader loader;
+    private ContainerLoader<Instance> loader;
     private static final Logger logger = Logger.getLogger(JsonImporter.class.getName());
     private int numInstances;
 
@@ -130,20 +132,23 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         int prev = -1;
         boolean reading = true;
 
-        while (reader.ready() && reading) {
-            /* String line = reader.readLine();
-               count = reader.getLineNumber();
-            //logger.log(Level.INFO, "line {0}: {1}", new Object[]{count, line});
-            if (line != null && !line.isEmpty()) {
-                lineRead(loader, count, line);
-            }
-            //we should have read a next line, but we didn't
-            if (count == prev) {
-                reading = false;
-                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line #{0}: {1}", new Object[]{count, line});
-            }
-             * prev = count; */
-        }
+        JsonLoader jsonLoader = new JsonLoader();
+        jsonLoader.load(reader, loader.getDataset());
+
+
+        /* while (reader.ready() && reading) {
+         * String line = reader.readLine(); count = reader.getLineNumber();
+         * //logger.log(Level.INFO, "line {0}: {1}", new Object[]{count, line});
+         * if (line != null && !line.isEmpty()) {
+         * lineRead(loader, count, line);
+         * }
+         * //we should have read a next line, but we didn't
+         * if (count == prev) {
+         * reading = false;
+         * logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line #{0}: {1}", new Object[]{count, line});
+         * }
+         * prev = count;
+         * } */
         loader.setNumberOfLines(prev);
         //close the input
         reader.close();

@@ -1,8 +1,6 @@
 package org.clueminer.importer.impl;
 
-import eu.medsea.mimeutil.MimeUtil2;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +13,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.importer.FileImporterFactory;
-import org.clueminer.types.FileType;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
@@ -27,6 +24,7 @@ import org.clueminer.spi.FileImporter;
 import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
 import org.clueminer.spi.ImporterWizardUI;
+import org.clueminer.types.FileType;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -124,6 +122,7 @@ public class ImportControllerImpl implements ImportController {
         container.setReport(report);
 
         try {
+            //actual data import - loads data into container
             if (importer.execute(container, reader)) {
                 if (importer.getReport() != null) {
                     report.append(importer.getReport());

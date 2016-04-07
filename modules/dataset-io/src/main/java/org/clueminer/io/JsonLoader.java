@@ -21,10 +21,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonReader;
+import com.google.gson.JsonSyntaxException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -32,6 +33,7 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.exception.ParserError;
 import org.clueminer.utils.DatasetLoader;
 
 /**
@@ -47,34 +49,43 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     private int numMeta = 0;
 
     @Override
-    public boolean load(File file, Dataset<E> output) throws FileNotFoundException {
-        JsonReader reader = new JsonReader(new FileReader(file));
+    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError {
+        JsonElement json;
+        try {
+            json = new JsonParser().parse(reader);
 
-        JsonElement json = new JsonParser().parse(reader);
+            InstanceBuilder builder = output.builder();
+            int i = 0;
+            /* Type collectionType = new TypeToken<Collection<Integer>>() {
+             * }.getType();
+             * gson.fromJson(json, collectionType); */
+            if (json.isJsonArray()) {
+                JsonArray ja = json.getAsJsonArray();
+                Iterator<JsonElement> iter = ja.iterator();
 
-        InstanceBuilder builder = output.builder();
-        int i = 0;
-        /* Type collectionType = new TypeToken<Collection<Integer>>() {
-         * }.getType();
-         * gson.fromJson(json, collectionType); */
-        if (json.isJsonArray()) {
-            JsonArray ja = json.getAsJsonArray();
-            Iterator<JsonElement> iter = ja.iterator();
+                while (iter.hasNext()) {
+                    JsonElement elem = iter.next();
+                    if (i == 0) {
+                        createStructure(output, elem);
+                    }
+                    parse(i, builder, elem);
 
-            while (iter.hasNext()) {
-                JsonElement elem = iter.next();
-                if (i == 0) {
-                    createStructure(output, elem);
+                    i++;
                 }
-                parse(i, builder, elem);
-
-                i++;
+            } else {
+                throw new UnsupportedOperationException("not supported yet");
             }
-        } else {
-            throw new UnsupportedOperationException("not supported yet");
+        } catch (JsonSyntaxException ex) {
+            throw new ParserError(ex);
         }
 
         return true;
+    }
+
+    @Override
+    public boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError {
+        FileReader reader = new FileReader(file);
+        return load(reader, output);
     }
 
     /**
@@ -136,9 +147,9 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
 
                 } else if (val.isJsonArray()) {
                     JsonArray ary = val.getAsJsonArray();
-                    if (ary.size() != numValues) {
-                        throw new RuntimeException("unexpected data row size " + ary.size() + ". expected length: " + numValues);
-                    }
+                    /* if (ary.size() != numValues) {
+                     * throw new RuntimeException("unexpected data row size " + ary.size() + ". expected length: " + numValues);
+                     * } */
                     //array of arrays -> probably timeseries
                     if (ary.isJsonArray()) {
                         JsonArray e = ary.getAsJsonArray();

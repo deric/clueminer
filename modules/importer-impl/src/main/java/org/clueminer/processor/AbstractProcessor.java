@@ -25,12 +25,13 @@ import org.openide.util.Lookup;
  * with efficient representation of input data.
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public abstract class AbstractProcessor implements Processor {
+public abstract class AbstractProcessor<E extends Instance> implements Processor<E> {
 
     protected Workspace workspace;
-    protected ContainerLoader container;
-    protected Dataset<Instance> dataset;
+    protected ContainerLoader<E> container;
+    protected Dataset<E> dataset;
     private static final Logger logger = Logger.getLogger(AbstractProcessor.class.getName());
 
     @Override
@@ -39,7 +40,7 @@ public abstract class AbstractProcessor implements Processor {
     }
 
     @Override
-    public void setContainer(ContainerLoader container) {
+    public void setContainer(ContainerLoader<E> container) {
         this.container = container;
     }
 
@@ -63,7 +64,7 @@ public abstract class AbstractProcessor implements Processor {
      * @param inputAttr
      * @return
      */
-    protected abstract Dataset<? extends Instance> createDataset(ArrayList<AttributeDraft> inputAttr);
+    protected abstract Dataset<E> createDataset(ArrayList<AttributeDraft> inputAttr);
 
     /**
      * Create attribute definition from drafts
@@ -95,7 +96,7 @@ public abstract class AbstractProcessor implements Processor {
 
         logger.log(Level.INFO, "found {0} meta attributes, and input attributes {1}", new Object[]{metaCnt, inputAttr.size()});
 
-        dataset = (Dataset<Instance>) createDataset(inputAttr);
+        dataset = createDataset(inputAttr);
 
         logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), inputAttr.size()});
 
@@ -168,7 +169,7 @@ public abstract class AbstractProcessor implements Processor {
             if (inst.getName() == null && inst.classValue() != null) {
                 inst.setName(inst.classValue().toString());
             }
-            dataset.add(inst);
+            dataset.add((E) inst);
             logger.log(Level.ALL, inst.toString());
             i++;
         }

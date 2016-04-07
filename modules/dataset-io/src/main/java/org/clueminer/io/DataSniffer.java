@@ -20,10 +20,10 @@ import be.abeel.io.LineIterator;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
+import org.clueminer.exception.ParserError;
 import static org.clueminer.io.ARFFHandler.relation;
 import org.clueminer.utils.DataFileInfo;
 import org.clueminer.utils.DatasetSniffer;
-import org.openide.util.Exceptions;
 
 /**
  * A set of heuristics to detect most common file types, right now it's not very
@@ -41,7 +41,7 @@ public class DataSniffer implements DatasetSniffer {
      * @return
      */
     @Override
-    public DataFileInfo scan(File file) {
+    public DataFileInfo scan(File file) throws ParserError {
         String name = file.getName();
         int pos = name.indexOf(".");
         DataFileInfo df = new DataFileInfo();
@@ -58,7 +58,7 @@ public class DataSniffer implements DatasetSniffer {
         }
     }
 
-    private DataFileInfo parseArff(File file, DataFileInfo df) {
+    private DataFileInfo parseArff(File file, DataFileInfo df) throws ParserError {
         LineIterator it = new LineIterator(file);
         it.setSkipBlanks(true);
         it.setCommentIdentifier("%");
@@ -76,20 +76,18 @@ public class DataSniffer implements DatasetSniffer {
                 relationFound = true;
             } else if (handler.isValidAttributeDefinition(line)) {
                 AttrHolder ah;
-                try {
-                    ah = handler.parseAttribute(line);
-                    String attrName = ah.getName().toLowerCase();
-                    switch (attrName) {
-                        case "class":
-                        case "type":
-                            df.classIndex = numAttr;
-                            break;
-                        default:
-                            df.numAttributes++;
-                    }
-                } catch (ParserError ex) {
-                    Exceptions.printStackTrace(ex);
+
+                ah = handler.parseAttribute(line);
+                String attrName = ah.getName().toLowerCase();
+                switch (attrName) {
+                    case "class":
+                    case "type":
+                        df.classIndex = numAttr;
+                        break;
+                    default:
+                        df.numAttributes++;
                 }
+
             } else if (line.equalsIgnoreCase("@data")) {
                 df.separator = ",";
                 return df;

@@ -1,5 +1,6 @@
 package org.clueminer.io;
 
+import org.clueminer.exception.ParserError;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

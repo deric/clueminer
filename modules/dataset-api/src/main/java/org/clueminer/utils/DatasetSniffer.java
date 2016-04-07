@@ -17,6 +17,7 @@
 package org.clueminer.utils;
 
 import java.io.File;
+import org.clueminer.exception.ParserError;
 
 /**
  *
@@ -29,6 +30,7 @@ public interface DatasetSniffer {
      *
      * @param file
      * @return number of numerical attributes (without meta data)
+     * @throws org.clueminer.exception.ParserError
      */
-    DataFileInfo scan(File file);
+    DataFileInfo scan(File file) throws ParserError;
 }

@@ -40,13 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * Time series data importer
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = Processor.class)
-public class TimeseriesProcessor extends AbstractProcessor implements Processor {
+public class TimeseriesProcessor<E extends Instance> extends AbstractProcessor<E> implements Processor<E> {
 
-    private static final Logger logger = Logger.getLogger(TimeseriesProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TimeseriesProcessor.class.getName());
 
-    private static final Pattern number = Pattern.compile("^\\d+(\\.\\d+)?");
+    private static final Pattern NUMBER = Pattern.compile("^\\d+(\\.\\d+)?");
     private static final Pattern numberWithPrefix = Pattern.compile("([a-z_ ]+)(\\d+(\\.\\d+)?)(\\w+)?", Pattern.CASE_INSENSITIVE);
     private static final Pattern numberSuffix = Pattern.compile("\\d+(\\.\\d+)?(\\w+)");
 
@@ -56,7 +57,7 @@ public class TimeseriesProcessor extends AbstractProcessor implements Processor 
     }
 
     @Override
-    protected Dataset<? extends Instance> createDataset(ArrayList<AttributeDraft> inputAttr) {
+    protected Dataset<E> createDataset(ArrayList<AttributeDraft> inputAttr) {
         return new TimeseriesDataset(container.getInstanceCount());
     }
 
@@ -73,7 +74,7 @@ public class TimeseriesProcessor extends AbstractProcessor implements Processor 
             attrd = inputAttr.get(i);
             String name = attrd.getName();
             String input = null;
-            if (number.matcher(name).matches()) {
+            if (NUMBER.matcher(name).matches()) {
                 //just number in the attribute name
                 input = name;
             } else if ((nmatch = numberWithPrefix.matcher(name)).matches()) {
@@ -94,7 +95,7 @@ public class TimeseriesProcessor extends AbstractProcessor implements Processor 
                     inputMap.put(attrd.getIndex(), i);
                     parsed++;
                 } catch (NumberFormatException e) {
-                    logger.log(Level.WARNING, "failed to parse ''{0}'' as a number", name);
+                    LOGGER.log(Level.WARNING, "failed to parse ''{0}'' as a number", name);
                     NotifyUtil.warn("time attribute error", "failed to parse '"
                             + name + "' as a number", true);
                 }

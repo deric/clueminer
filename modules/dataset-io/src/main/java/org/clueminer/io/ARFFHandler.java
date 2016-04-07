@@ -3,12 +3,13 @@ package org.clueminer.io;
 import be.abeel.io.LineIterator;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.utils.DatasetLoader;
-import org.openide.util.Exceptions;
 
 /**
  * Provides method to load data from ARFF formatted files.
@@ -62,45 +63,50 @@ public class ARFFHandler implements DatasetLoader {
      * Java-ML design only numeric attributes can be read. This method does not
      * read class labels.
      *
-     * @param file the file to read the data from
+     * @param file    the file to read the data from
      * @param dataset
      *
      * @return the data set represented in the provided file
      * @throws FileNotFoundException if the file can not be found.
      */
     @Override
-    public boolean load(File file, Dataset dataset) throws FileNotFoundException {
-        return load(file, dataset, -1, ",", new ArrayList<Integer>());
+    public boolean load(File file, Dataset dataset) throws FileNotFoundException, ParserError {
+        return load(new LineIterator(file), dataset, -1, ",", new ArrayList<Integer>());
     }
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
      * Java-ML design only numeric attributes can be read.
      *
-     * @param file - the file to read the data from
+     * @param file       - the file to read the data from
      * @param dataset
      * @param classIndex - the index of the class label
      * @return the data set represented in the provided file
      * @throws FileNotFoundException - if the file can not be found
      */
-    public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException {
-        return load(file, dataset, classIndex, ",", new ArrayList<Integer>());
+    public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException, ParserError {
+        return load(new LineIterator(file), dataset, classIndex, ",", new ArrayList<Integer>());
+    }
+
+    @Override
+    public boolean load(Reader reader, Dataset output) throws FileNotFoundException, ParserError {
+        return load(new LineIterator(reader), output, -1, ",", new ArrayList<Integer>());
     }
 
     /**
      *
-     * @param file
+     * @param it             line iterator
      * @param out
-     * @param classIndex - indexed from zero!
-     * @param separator - for eliminating all white characters (" ",\n, \t)
-     * use "\\s+"
+     * @param classIndex     - indexed from zero!
+     * @param separator      - for eliminating all white characters (" ",\n, \t)
+     *                       use "\\s+"
      * @param skippedIndexes - indexes of columns that won't be imported
      * @return
+     * @throws org.clueminer.exception.ParserError
      * @throws IllegalArgumentException when type is not convertible to Enum
-     * IAttributeType
+     *                                  IAttributeType
      */
-    public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) {
-        LineIterator it = new LineIterator(file);
+    public boolean load(LineIterator it, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws ParserError {
         it.setSkipBlanks(true);
         it.setCommentIdentifier("%");
         it.setSkipComments(true);
@@ -152,36 +158,30 @@ public class ARFFHandler implements DatasetLoader {
                     }
                 }
                 out.builder().create(values, classValue);
-            } else {
-                if ((rmatch = relation.matcher(line)).matches()) {
-                    out.setName(rmatch.group(1));
-                } else if (isValidAttributeDefinition(line)) {
-                    if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
-                        AttrHolder ah;
-                        try {
-                            //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
-                            ah = parseAttribute(line);
-                            String attrName = ah.getName().toLowerCase();
-                            switch (attrName) {
-                                case "class":
-                                case "type":
-                                    classIndex = numAttr;
-                                    break;
-                                default:
-                                    //TODO: use range and set of valid value for further parsing
-                                    out.attributeBuilder().create(ah.getName(), ah.getType());
-                            }
-                        } catch (ParserError ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
+            } else if ((rmatch = relation.matcher(line)).matches()) {
+                out.setName(rmatch.group(1));
+            } else if (isValidAttributeDefinition(line)) {
+                if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
+                    AttrHolder ah;
 
-                        numAttr++;
+                    //System.out.println(headerLine + ": " + line + " attr num=" + numAttr);
+                    ah = parseAttribute(line);
+                    String attrName = ah.getName().toLowerCase();
+                    switch (attrName) {
+                        case "class":
+                        case "type":
+                            classIndex = numAttr;
+                            break;
+                        default:
+                            //TODO: use range and set of valid value for further parsing
+                            out.attributeBuilder().create(ah.getName(), ah.getType());
                     }
-                    headerLine++;
-
-                } else if (line.equalsIgnoreCase("@data")) {
-                    dataMode = true;
+                    numAttr++;
                 }
+                headerLine++;
+
+            } else if (line.equalsIgnoreCase("@data")) {
+                dataMode = true;
             }
         }
         return true;
@@ -226,7 +226,7 @@ public class ARFFHandler implements DatasetLoader {
     /**
      * Removes string subpart 'meal' from a 'food' string
      *
-     * @param food the whole thing
+     * @param food    the whole thing
      * @param starter a starting meal
      * @return
      * @throws ParserError

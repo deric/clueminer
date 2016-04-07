@@ -7,11 +7,12 @@ import org.openide.filesystems.FileObject;
 
 /**
  * ContainerUnloader is responsible for transforming pre-loaded data into real
- * data-structure
+ * data-structure.
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface ContainerLoader {
+public interface ContainerLoader<E extends Instance> {
 
     /**
      * Set name for this dataset
@@ -115,14 +116,14 @@ public interface ContainerLoader {
 
     void setAttributeBuilder(AttributeBuilder builder);
 
-    void setDataset(Dataset<? extends Instance> dataset);
+    void setDataset(Dataset<E> dataset);
 
     /**
      * Loaded dataset
      *
      * @return
      */
-    Dataset<? extends Instance> getDataset();
+    Dataset<E> getDataset();
 
     void setFile(FileObject file);
 

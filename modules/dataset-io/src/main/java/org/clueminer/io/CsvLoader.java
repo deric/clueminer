@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -17,10 +18,12 @@ import org.clueminer.utils.DatasetLoader;
 import org.openide.util.Exceptions;
 
 /**
+ * Parses CSV into Dataset structure.
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class CsvLoader implements DatasetLoader {
+public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;
@@ -30,16 +33,18 @@ public class CsvLoader implements DatasetLoader {
     private ArrayList<Integer> skipIndex = new ArrayList<>();
     private ArrayList<Integer> nameAttr = new ArrayList<>();
     private ArrayList<Integer> metaAttr = new ArrayList<>();
-    private Dataset<Instance> dataset;
+    private Dataset<E> dataset;
     private String nameJoinChar = " ";
     private String defaultDataType = "NUMERICAL";
     private static final Logger logger = Logger.getLogger(CsvLoader.class.getName());
 
     @Override
-    public boolean load(File file, Dataset output) throws FileNotFoundException {
+    public boolean load(File file, Dataset<E> output) throws FileNotFoundException {
+        logger.log(Level.INFO, "loading file {0}", file.getName());
         setDataset(output);
         try {
-            return load(file);
+            CSVReader reader = new CSVReader(new FileReader(file), separator, quotechar);
+            return load(reader);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -52,20 +57,30 @@ public class CsvLoader implements DatasetLoader {
         }
     }
 
+    @Override
+    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException {
+        setDataset(output);
+        try {
+            CSVReader csvreader = new CSVReader(reader, separator, quotechar);
+            return load(csvreader);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return false;
+    }
+
     /**
      *
-     * @param file input CSV file
+     * @param reader input file reader
      * @return
      * @throws java.io.IOException
      */
-    public boolean load(File file) throws IOException {
-        CSVReader reader = new CSVReader(new FileReader(file), separator, quotechar);
-        logger.log(Level.INFO, "loading file {0}", file.getName());
+    public boolean load(CSVReader reader) throws IOException {
         Iterator<String[]> iter = reader.iterator();
         Instance inst;
-        /*it.setSkipBlanks(true);
-         it.setCommentIdentifier("#");
-         it.setSkipComments(true);*/
+        /* it.setSkipBlanks(true);
+         * it.setCommentIdentifier("#");
+         * it.setSkipComments(true); */
         checkDataset();
         InstanceBuilder builder = dataset.builder();
 
@@ -126,17 +141,14 @@ public class CsvLoader implements DatasetLoader {
                             skip++;
                         } else if (skipIndex.contains(i)) {
                             skip++;
-                        } else {
-
-                            if (!arr[i].isEmpty()) {
-                                try {
-                                    val = Double.parseDouble(arr[i]);
-                                } catch (NumberFormatException e) {
-                                    logger.log(Level.WARNING, "Number format exception, line {0}, attr {1}: {2}", new Object[]{num, i, e.getMessage()});
-                                    val = Double.NaN;
-                                }
-                                values[i - skip] = val;
+                        } else if (!arr[i].isEmpty()) {
+                            try {
+                                val = Double.parseDouble(arr[i]);
+                            } catch (NumberFormatException e) {
+                                logger.log(Level.WARNING, "Number format exception, line {0}, attr {1}: {2}", new Object[]{num, i, e.getMessage()});
+                                val = Double.NaN;
                             }
+                            values[i - skip] = val;
                         }
                     }
                     if (!nameAttr.isEmpty() && nameAttr.contains(i)) {
@@ -214,12 +226,12 @@ public class CsvLoader implements DatasetLoader {
         this.skipIndex = skipIndex;
     }
 
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
-    public void setDataset(Dataset<? extends Instance> dataset) {
-        this.dataset = (Dataset<Instance>) dataset;
+    public void setDataset(Dataset<E> dataset) {
+        this.dataset = dataset;
     }
 
     /**
