@@ -86,6 +86,11 @@
             <artifactId>utils</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>guava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

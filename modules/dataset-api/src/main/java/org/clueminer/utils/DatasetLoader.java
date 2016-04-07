@@ -3,12 +3,15 @@ package org.clueminer.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 
 /**
+ * Imports data from file into Clueminer dataset representation.
  *
  * @author Tomas Barton
+ * @param <E> data base type
  */
-public interface DatasetLoader {
+public interface DatasetLoader<E extends Instance> {
 
     /**
      * Convert input @param file into @param output. Dataset could not be empty
@@ -21,5 +24,5 @@ public interface DatasetLoader {
      * @return
      * @throws FileNotFoundException
      */
-    public boolean load(File file, Dataset output) throws FileNotFoundException;
+    boolean load(File file, Dataset<E> output) throws FileNotFoundException;
 }
