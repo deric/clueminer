@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -36,7 +38,11 @@ public class DendrogramDataTest {
     private Dataset<? extends Instance> loadIris() throws FileNotFoundException, IOException {
         Dataset<? extends Instance> irisData = new ArrayDataset(150, 4);
         ARFFHandler arff = new ARFFHandler();
-        arff.load(tf.irisArff(), irisData, 4);
+        try {
+            arff.load(tf.irisArff(), irisData, 4);
+        } catch (ParserError ex) {
+            Exceptions.printStackTrace(ex);
+        }
         return irisData;
     }
 

@@ -18,10 +18,11 @@ package org.clueminer.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import static org.clueminer.knn.KnnTest.delta;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import static org.clueminer.knn.KnnTest.DELTA;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -66,7 +67,7 @@ public class CachingKNNTest extends KnnTest {
         for (int i = 0; i < 2; i++) {
             inst = (Instance) nn[i].key;
             for (int j = 0; j < d.attributeCount(); j++) {
-                assertEquals(ref.get(j), inst.get(j), delta);
+                assertEquals(ref.get(j), inst.get(j), DELTA);
             }
         }
         assertEquals(k, nn.length);

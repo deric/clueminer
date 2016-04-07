@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
@@ -19,6 +20,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -414,7 +416,11 @@ public class ClusterListTest {
         if (irisCache == null) {
             irisCache = new ArrayDataset(150, 4);
             ARFFHandler arff = new ARFFHandler();
-            arff.load(tf.irisArff(), irisCache, 4);
+            try {
+                arff.load(tf.irisArff(), irisCache, 4);
+            } catch (ParserError ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
         return irisCache;
     }

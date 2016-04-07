@@ -9,6 +9,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
@@ -69,7 +70,7 @@ public class BaseClusterTest {
                 arff.load(tf.irisArff(), irisData, 4);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }

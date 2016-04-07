@@ -6,12 +6,13 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.stats.AttrNumStats;
 import org.junit.AfterClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
@@ -20,7 +21,7 @@ import org.junit.BeforeClass;
 public class NumericalStatsTest {
 
     private static Dataset<? extends Instance> dataset;
-    private static CommonFixture tf = new CommonFixture();
+    private static final CommonFixture tf = new CommonFixture();
     private static final double precision = 0.001;
 
     public NumericalStatsTest() {
@@ -31,7 +32,7 @@ public class NumericalStatsTest {
         irisDataset();
     }
 
-    public static Dataset<? extends Instance> irisDataset() throws FileNotFoundException, IOException {
+    public static Dataset<? extends Instance> irisDataset() throws FileNotFoundException, IOException, ParserError {
         if (dataset == null) {
             ARFFHandler arff = new ARFFHandler();
             dataset = new ArrayDataset(150, 4);

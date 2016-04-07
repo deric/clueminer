@@ -17,6 +17,7 @@
 package org.clueminer.io;
 
 import java.io.IOException;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.utils.DataFileInfo;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +38,7 @@ public class DataSnifferTest {
     }
 
     @Test
-    public void testNumAttributes() throws IOException {
+    public void testNumAttributes() throws IOException, ParserError {
         DataFileInfo df = subject.scan(tf.irisArff());
         assertEquals(4, df.numAttributes);
 

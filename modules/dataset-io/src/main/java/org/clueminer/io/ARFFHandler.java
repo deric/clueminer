@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.ParserError;
 import org.clueminer.utils.DatasetLoader;
 
@@ -19,9 +20,10 @@ import org.clueminer.utils.DatasetLoader;
  *
  * @author Thomas Abeel
  * @author Tomas Barton
+ * @param <E>
  *
  */
-public class ARFFHandler implements DatasetLoader {
+public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
 
     private Matcher match;
     /**
@@ -83,6 +85,7 @@ public class ARFFHandler implements DatasetLoader {
      * @param classIndex - the index of the class label
      * @return the data set represented in the provided file
      * @throws FileNotFoundException - if the file can not be found
+     * @throws org.clueminer.exception.ParserError
      */
     public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException, ParserError {
         return load(new LineIterator(file), dataset, classIndex, ",", new ArrayList<Integer>());
@@ -93,6 +96,9 @@ public class ARFFHandler implements DatasetLoader {
         return load(new LineIterator(reader), output, -1, ",", new ArrayList<Integer>());
     }
 
+    public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws ParserError {
+        return load(new LineIterator(file), out, classIndex, separator, skippedIndexes);
+    }
     /**
      *
      * @param it             line iterator

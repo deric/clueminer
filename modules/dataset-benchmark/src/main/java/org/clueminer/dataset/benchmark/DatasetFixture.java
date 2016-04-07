@@ -8,6 +8,7 @@ import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.openide.util.Exceptions;
@@ -21,8 +22,9 @@ public class DatasetFixture {
     private static final CommonFixture tf = new CommonFixture();
 
     public static Map<Dataset<? extends Instance>, Integer> allDatasets() {
-        //dataset, num_true_classes
         Map<Dataset<? extends Instance>, Integer> datasets = new HashMap<>();
+
+        //dataset, num_true_classes
         datasets.put(DatasetFixture.dermatology(), 6);
         datasets.put(DatasetFixture.glass(), 7);
         datasets.put(DatasetFixture.insect(), 3);
@@ -33,6 +35,7 @@ public class DatasetFixture {
         datasets.put(DatasetFixture.vehicle(), 4);
         datasets.put(DatasetFixture.yeast(), 10);
         datasets.put(DatasetFixture.zoo(), 6);
+
         return datasets;
     }
 
@@ -43,7 +46,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.irisArff(), data, 4);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -58,7 +61,7 @@ public class DatasetFixture {
             File file = tf.wineArff();
             ARFFHandler arff = new ARFFHandler();
             arff.load(file, data, 0);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -75,7 +78,7 @@ public class DatasetFixture {
             data.setName(datasetName);
             ARFFHandler arff = new ARFFHandler();
             arff.load(file, data, 9, "\\s+", skippedIndexes);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -88,7 +91,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.insectArff(), data, 3);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -101,7 +104,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.vehicleArff(), data, 18);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -114,7 +117,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.ionosphereArff(), data, 34);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -127,7 +130,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.glassArff(), data, 9);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -140,7 +143,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.sonarArff(), data, 60);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -153,7 +156,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.dermatologyArff(), data, 33);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;
@@ -166,7 +169,7 @@ public class DatasetFixture {
             ARFFHandler arff = new ARFFHandler();
             arff.load(tf.zoo2Arff(), data, 18);
             data.setName(datasetName);
-        } catch (IOException ex) {
+        } catch (IOException | ParserError ex) {
             Exceptions.printStackTrace(ex);
         }
         return data;

@@ -1,16 +1,17 @@
 package org.clueminer.cluster;
 
-import org.clueminer.clustering.struct.ClusterList;
-import org.clueminer.clustering.struct.BaseCluster;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
@@ -93,7 +94,7 @@ public class FakeClustering {
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(tf.irisArff(), irisData, 4);
-            } catch (FileNotFoundException ex) {
+            } catch (FileNotFoundException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);

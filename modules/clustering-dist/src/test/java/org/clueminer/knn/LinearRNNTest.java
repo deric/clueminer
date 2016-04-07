@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -46,7 +47,7 @@ public class LinearRNNTest extends KnnTest {
         double range = 0.029;
         subject.range(ref, range, neighbors);
         for (Neighbor<Instance> neighbor : neighbors) {
-            assertEquals(0.0, neighbor.distance, delta);
+            assertEquals(0.0, neighbor.distance, DELTA);
         }
         //there are 2 same instances
         assertEquals(2, neighbors.size());

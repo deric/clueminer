@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.neighbor.Neighbor;
@@ -34,7 +35,7 @@ import org.openide.util.Exceptions;
  */
 public class KnnTest {
 
-    protected static final double delta = 1e-9;
+    protected static final double DELTA = 1e-9;
     private Dataset<? extends Instance> irisData;
     private Dataset<? extends Instance> insectData;
 
@@ -47,7 +48,7 @@ public class KnnTest {
                 arff.load(tf.insectArff(), insectData, 3);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -63,7 +64,7 @@ public class KnnTest {
                 arff.load(tf.irisArff(), irisData, 4);
             } catch (FileNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
+            } catch (IOException | ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
         }

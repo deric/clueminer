@@ -32,7 +32,7 @@ public class MetaLoaderRunner implements Runnable {
     private ProgressHandle ph;
     private Dataset<? extends Instance>[] result;
     private final static Logger logger = Logger.getLogger(MetaLoaderRunner.class.getName());
-    private final Map<Integer, Color> colors = new HashMap<Integer, Color>();
+    private final Map<Integer, Color> colors = new HashMap<>();
     private Color[] baseColors = {Color.red, Color.green, Color.blue, Color.MAGENTA, Color.DARK_GRAY, Color.pink, Color.CYAN};
 
     public MetaLoaderRunner(File[] files, Preferences pref, ProgressHandle ph, Dataset<? extends Instance>[] result) {
@@ -67,9 +67,9 @@ public class MetaLoaderRunner implements Runnable {
 
     protected Dataset<? extends Instance> loadMTimeseries(File file) throws FileNotFoundException, IOException {
         char separator = ',';
-        Dataset<? extends Instance> dataset = new TimeseriesDataset<ContinuousInstance>(254);
+        Dataset<? extends Instance> dataset = new TimeseriesDataset<>(254);
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> metaAttr = new ArrayList<Integer>();
+        ArrayList<Integer> metaAttr = new ArrayList<>();
         //skipped.add(0); //first one is ID
         loader.setClassIndex(0);
         for (int i = 1; i < 7; i++) {
@@ -102,8 +102,7 @@ public class MetaLoaderRunner implements Runnable {
         //loader.setClassIndex(0);
         loader.setSkipHeader(true);
         Dataset<Instance> d = (Dataset<Instance>) dataset;
-        loader.setDataset(d);
-        loader.load(file);
+        loader.load(file, d);
         return dataset;
     }
 

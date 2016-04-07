@@ -11,6 +11,7 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.utils.Props;
@@ -36,7 +37,7 @@ public class ClusterListTest {
     }
 
     @BeforeClass
-    public static void setUpClass() throws IOException {
+    public static void setUpClass() throws IOException, ParserError {
         CommonFixture tf = new CommonFixture();
         data = new SampleDataset();
         ARFFHandler arff = new ARFFHandler();

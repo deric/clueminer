@@ -2,11 +2,7 @@ package org.clueminer.dataset.benchmark;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -14,32 +10,6 @@ import org.junit.Test;
  * @author tombart
  */
 public class DatasetFixtureTest {
-
-    public DatasetFixtureTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of allDatasets method, of class DatasetFixture.
-     */
-    @Test
-    public void testAllDatasets() {
-    }
 
     @Test
     public void testIris() {

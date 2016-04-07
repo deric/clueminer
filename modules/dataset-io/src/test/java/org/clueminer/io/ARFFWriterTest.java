@@ -17,6 +17,7 @@
 package org.clueminer.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -46,7 +48,7 @@ public class ARFFWriterTest {
     }
 
     @Test
-    public void testWriteHeader() throws IOException {
+    public void testWriteHeader() throws IOException, FileNotFoundException, ParserError {
         File tmpFile;
         FileWriter fwriter;
         ARFFWriter writer;
