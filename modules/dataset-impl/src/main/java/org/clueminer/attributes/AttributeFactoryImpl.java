@@ -76,12 +76,12 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
             case NUMERIC:
             case INTEGER:
             case REAL: //right now it's handled the very same way
-                ret = new NumericalAttribute(name, role);
-                break;
+                return new NumericalAttribute(name, role);
+            case STRING:
+                return new StringAttribute(name, role);
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
-        return ret;
     }
 
     @Override
