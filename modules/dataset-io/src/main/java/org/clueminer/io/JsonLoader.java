@@ -16,11 +16,11 @@
  */
 package org.clueminer.io;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,6 +31,7 @@ import java.util.Set;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.utils.DatasetLoader;
 
 /**
@@ -42,13 +43,16 @@ import org.clueminer.utils.DatasetLoader;
  */
 public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
 
+    private int numValues = 0;
+    private int numMeta = 0;
+
     @Override
     public boolean load(File file, Dataset<E> output) throws FileNotFoundException {
         JsonReader reader = new JsonReader(new FileReader(file));
 
         JsonElement json = new JsonParser().parse(reader);
 
-        Gson gson = new Gson();
+        InstanceBuilder builder = output.builder();
         int i = 0;
         /* Type collectionType = new TypeToken<Collection<Integer>>() {
          * }.getType();
@@ -62,7 +66,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                 if (i == 0) {
                     createStructure(output, elem);
                 }
-                parse(output, elem);
+                parse(i, builder, elem);
 
                 i++;
             }
@@ -85,16 +89,18 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
             JsonObject obj = elem.getAsJsonObject();
             Set<Entry<String, JsonElement>> set = obj.entrySet();
             for (Entry<String, JsonElement> entry : set) {
-                System.out.println("entry: " + entry.getKey());
                 JsonElement val = entry.getValue();
                 if (val.isJsonPrimitive()) {
-                    System.out.println(entry.getKey() + ": " + convertType(val));
                     builder.create(entry.getKey(), convertType(val), "META");
+                    numMeta++;
                 } else if (val.isJsonArray()) {
-                    System.out.println("data object " + val);
+                    //the actual data
+                    JsonArray ary = val.getAsJsonArray();
+                    numValues = ary.size();
                 } else if (val.isJsonNull()) {
                     //TODO: skip null?
-                    System.out.println("null entry: " + entry.getKey());
+                    builder.create(entry.getKey(), "STRING", "META");
+                    numMeta++;
                 } else {
                     throw new RuntimeException("unexpected type: " + entry.getKey());
                 }
@@ -105,20 +111,65 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     }
 
     private String convertType(JsonElement val) {
-        Class<?> c = val.getClass();
-        if (c.isPrimitive()) {
-            switch (c.getTypeName()) {
-                case "Double":
-                    return "NUMERIC";
-                default:
-                    throw new RuntimeException("unknown type " + c.getTypeName());
+        if (val.isJsonPrimitive()) {
+            JsonPrimitive jp = val.getAsJsonPrimitive();
+            if (jp.isBoolean()) {
+                return "BOOLEAN";
+            } else if (jp.isNumber()) {
+                return "NUMERIC";
+            } else {
+                return "STRING";
             }
         }
         return "STRING";
     }
 
-    private void parse(Dataset<E> output, JsonElement elem) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void parse(int line, InstanceBuilder builder, JsonElement elem) {
+        Instance inst;
+        double[] values = new double[numValues];
+        if (elem.isJsonObject()) {
+            JsonObject obj = elem.getAsJsonObject();
+            Set<Entry<String, JsonElement>> set = obj.entrySet();
+            for (Entry<String, JsonElement> entry : set) {
+                JsonElement val = entry.getValue();
+                if (val.isJsonPrimitive()) {
+
+                } else if (val.isJsonArray()) {
+                    JsonArray ary = val.getAsJsonArray();
+                    if (ary.size() != numValues) {
+                        throw new RuntimeException("unexpected data row size " + ary.size() + ". expected length: " + numValues);
+                    }
+                    //array of arrays -> probably timeseries
+                    if (ary.isJsonArray()) {
+                        JsonArray e = ary.getAsJsonArray();
+                        for (JsonElement j : e) {
+                            if (j.isJsonArray()) {
+                                JsonArray je = j.getAsJsonArray();
+                                if (je.size() == 2) {
+                                    System.out.println("data: " + je.toString());
+                                } else {
+                                    throw new RuntimeException("parsing error [" + line + "]: expected array with 2 elements, got " + e.size());
+                                }
+                            } else {
+                                throw new RuntimeException("parsing error [" + line + "]: expected array got " + j);
+                            }
+                        }
+                    } else {
+                        //expect array of doubles
+                        int i = 0;
+                        for (JsonElement e : ary) {
+                            values[i++] = e.getAsDouble();
+                        }
+                    }
+                } else if (val.isJsonNull()) {
+
+                } else {
+                    throw new RuntimeException("unexpected type: " + entry.getKey());
+                }
+            }
+        } else {
+            throw new RuntimeException("unexpected element: " + elem);
+        }
     }
 
 }
