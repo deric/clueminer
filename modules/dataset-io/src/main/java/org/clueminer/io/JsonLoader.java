@@ -56,9 +56,6 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
 
             InstanceBuilder builder = output.builder();
             int i = 0;
-            /* Type collectionType = new TypeToken<Collection<Integer>>() {
-             * }.getType();
-             * gson.fromJson(json, collectionType); */
             if (json.isJsonArray()) {
                 JsonArray ja = json.getAsJsonArray();
                 Iterator<JsonElement> iter = ja.iterator();
@@ -108,6 +105,15 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                     //the actual data
                     JsonArray ary = val.getAsJsonArray();
                     numValues = ary.size();
+                    JsonArray e = ary.getAsJsonArray();
+                    for (JsonElement j : e) {
+                        if (j.isJsonArray()) {
+                            JsonArray je = j.getAsJsonArray();
+                            if (je.size() == 2) {
+                                //required 2 attributes
+                            }
+                        }
+                    }
                 } else if (val.isJsonNull()) {
                     //TODO: skip null?
                     builder.create(entry.getKey(), "STRING", "META");
