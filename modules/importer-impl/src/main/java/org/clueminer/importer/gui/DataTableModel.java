@@ -55,7 +55,7 @@ public class DataTableModel<E extends Instance> extends AbstractTableModel imple
             if (rowIndex < container.getInstanceCount()) {
                 InstanceDraft draft = container.getInstance(rowIndex);
                 if (columnIndex < draft.size()) {
-                    return draft.getValue(columnIndex);
+                    return draft.getObject(columnIndex);
                 }
             }
         }
@@ -93,7 +93,7 @@ public class DataTableModel<E extends Instance> extends AbstractTableModel imple
             int j = 0;
             for (InstanceDraft draft : container.getInstances()) {
                 for (int i = 0; i < draft.size(); i++) {
-                    setValueAt(draft.getValue(i), j, i);
+                    setValueAt(draft.getObject(i), j, i);
                 }
                 fireTableChanged(new TableModelEvent(this, j));
                 j++;

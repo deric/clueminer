@@ -142,22 +142,22 @@ public abstract class AbstractProcessor<E extends Instance> implements Processor
                     if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                         if (attr.isNumerical()) {
                             realIdx = inputMap.get(j);
-                            inst.set(realIdx, (Double) instd.getValue(j));
+                            inst.set(realIdx, (Double) instd.getObject(j));
                         } else {
-                            logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getValue(j)});
+                            logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getObject(j)});
                         }
                     } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
-                        inst.setClassValue(instd.getValue(j));
-                        inst.setId((String) instd.getValue(j));
-                        inst.setName((String) instd.getValue(j));
-                        logger.log(Level.FINEST, "setting class {0}: {1}", new Object[]{i, instd.getValue(j)});
+                        inst.setClassValue(instd.getObject(j));
+                        inst.setId((String) instd.getObject(j));
+                        inst.setName((String) instd.getObject(j));
+                        logger.log(Level.FINEST, "setting class {0}: {1}", new Object[]{i, instd.getObject(j)});
                     } else if (attr.getRole().equals(BasicAttrRole.ID)) {
-                        inst.setId((String) instd.getValue(j));
-                        inst.setName((String) instd.getValue(j));
+                        inst.setId((String) instd.getObject(j));
+                        inst.setName((String) instd.getObject(j));
                     }
 
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getValue(j), e.toString()});
+                    logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getObject(j), e.toString()});
                     Exceptions.printStackTrace(e);
                 }
                 //dataset.setAttributeValue(i, j, (Double) instd.getValue(i));

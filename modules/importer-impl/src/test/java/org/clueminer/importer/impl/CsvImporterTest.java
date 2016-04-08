@@ -402,8 +402,8 @@ public class CsvImporterTest {
             assertEquals(1, loader.getInstanceCount());
             InstanceDraft inst = loader.getInstance(0);
             System.out.println("inst " + inst.toString());
-            assertEquals(1.0, inst.getValue(1));
-            assertEquals(Double.NaN, inst.getValue(2));
+            assertEquals(1.0, inst.getObject(1));
+            assertEquals(Double.NaN, inst.getObject(2));
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

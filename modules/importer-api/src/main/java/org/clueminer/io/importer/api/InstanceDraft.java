@@ -1,20 +1,21 @@
 package org.clueminer.io.importer.api;
 
 /**
+ * Stores data during import before casted to actual types.
  *
  * @author Tomas Barton
  */
 public interface InstanceDraft {
 
-    public String getId();
+    String getId();
 
-    public void setId(String id);
+    void setId(String id);
 
-    public int size();
+    int size();
 
-    public void setType(Object type);
+    void setType(Object type);
 
-    public Object getType();
+    Object getType();
 
     /**
      * Value for attribute specified by the key
@@ -22,7 +23,7 @@ public interface InstanceDraft {
      * @param key attribute identification
      * @return
      */
-    public Object getValue(String key);
+    Object getValue(String key);
 
     /**
      * Value of ith attribute
@@ -30,10 +31,10 @@ public interface InstanceDraft {
      * @param i th attribute
      * @return
      */
-    public Object getValue(int i);
+    Object getObject(int i);
 
-    public void setValue(String key, Object value);
+    void setValue(String key, Object value);
 
-    public void setValue(int index, Object value);
+    void setValue(int index, Object value);
 
 }

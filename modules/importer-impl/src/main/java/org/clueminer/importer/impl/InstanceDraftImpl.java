@@ -81,7 +81,7 @@ public class InstanceDraftImpl implements InstanceDraft {
     }
 
     @Override
-    public Object getValue(int i) {
+    public Object getObject(int i) {
         return values[i];
     }
 

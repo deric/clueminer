@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
@@ -119,7 +120,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    protected void importData(ContainerLoader loader, Reader reader) throws IOException {
+    public void importData(ContainerLoader loader, Reader reader) throws IOException {
         numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
@@ -138,7 +139,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         JsonLoader jsonLoader = new JsonLoader();
         try {
             //try parsing json and load into draft dataset
-            jsonLoader.load(reader, loader.getDataset());
+            jsonLoader.load(reader, (Dataset) loader);
         } catch (FileNotFoundException ex) {
             report.logIssue(new Issue(ex.getMessage(), Issue.Level.CRITICAL));
         } catch (ParserError ex) {
