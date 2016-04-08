@@ -18,7 +18,7 @@ package org.clueminer.importer.impl;
 
 import java.io.FileReader;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.importer.api.ContainerLoader;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
@@ -32,10 +32,15 @@ public class JsonImporterTest {
 
     @Test
     public void testImportData() throws Exception {
-        ContainerLoader loader = new DraftContainer();
+        DraftContainer loader = new DraftContainer();
         FileReader reader = new FileReader(CF.simpleJson());
 
         subject.importData(loader, reader);
+        for (Object attr : loader.getAttrIter()) {
+            System.out.println("attr: " + attr);
+        }
+        assertEquals(13, loader.attributeCount());
+//        assertEquals(13, loader.size());
     }
 
 }

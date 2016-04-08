@@ -58,10 +58,14 @@ public class ImportControllerImpl implements ImportController {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            LOGGER.log(Level.INFO, "searching importer for {0}, ext: {1}", new Object[]{fileObject.getName(), fileObject.getExt()});
             FileImporter importer = getMatchingImporter(fileObject);
             if (importer == null) {
+                LOGGER.info("no importer found by extension");
                 //try to find importer by MIME type
                 importer = getMatchingImporter(helper.detectMIME(file));
+            } else {
+                LOGGER.log(Level.INFO, "using importer {0}", importer.getName());
             }
             if (fileObject != null && importer != null) {
                 Container c = importFile(fileObject, fileObject.getInputStream(), importer, false);
