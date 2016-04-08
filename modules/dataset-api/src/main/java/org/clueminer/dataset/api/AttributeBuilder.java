@@ -1,10 +1,13 @@
 package org.clueminer.dataset.api;
 
 /**
+ * Used for defining attributes in a dataset. Supported attributes types are
+ * loaded in runtime, which makes it easy to create a new type.
  *
  * @author Tomas Barton
+ * @param <A> type of attribute being created
  */
-public interface AttributeBuilder {
+public interface AttributeBuilder<A extends Attribute> {
 
     /**
      * By default should create a numeric continuous attribute (role: input)
@@ -13,7 +16,7 @@ public interface AttributeBuilder {
      * @param type
      * @return
      */
-    public Attribute create(String name, AttributeType type);
+    A create(String name, AttributeType type);
 
     /**
      *
@@ -23,7 +26,7 @@ public interface AttributeBuilder {
      *             data
      * @return
      */
-    public Attribute create(String name, AttributeType type, AttributeRole role);
+    A create(String name, AttributeType type, AttributeRole role);
 
     /**
      * By default should create a numeric attribute with input data role
@@ -32,7 +35,7 @@ public interface AttributeBuilder {
      * @param type
      * @return
      */
-    public Attribute create(String name, String type);
+    A create(String name, String type);
 
     /**
      * In order to be independent on specific implementation a lookup by type
@@ -43,7 +46,7 @@ public interface AttributeBuilder {
      * @param role
      * @return
      */
-    public Attribute create(String name, String type, String role);
+    A create(String name, String type, String role);
 
     /**
      * Creates new instance of an attribute, but does not add it to the dataset;
@@ -53,11 +56,11 @@ public interface AttributeBuilder {
      * @param role
      * @return
      */
-    public Attribute build(String name, String type, String role);
+    A build(String name, String type, String role);
 
-    public Attribute build(String name, AttributeType type, AttributeRole role);
+    A build(String name, AttributeType type, AttributeRole role);
 
-    public Attribute build(String name, String type);
+    A build(String name, String type);
 
-    public Attribute build(String name, AttributeType type);
+    A build(String name, AttributeType type);
 }

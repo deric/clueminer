@@ -70,6 +70,10 @@ public class AttributeDescription implements Serializable {
         return type;
     }
 
+    public void setType(AttributeType type) {
+        this.type = type;
+    }
+
     public void setDefault(double value) {
         defaultValue = value;
     }

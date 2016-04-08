@@ -159,6 +159,13 @@ public interface Attribute extends Serializable, DataVector {
     AttributeType getType();
 
     /**
+     * Set attribute type
+     *
+     * @param type
+     */
+    void setType(AttributeType type);
+
+    /**
      * Set role of the attribute
      *
      * @param role

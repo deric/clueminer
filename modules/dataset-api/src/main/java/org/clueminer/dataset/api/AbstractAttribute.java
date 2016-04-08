@@ -98,12 +98,16 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     /**
-     * Returns the statistics type of this attribute.
+     * Returns the type of this attribute.
      *
      * @return
      */
     public AttributeType getType() {
         return this.attributeDescription.getType();
+    }
+
+    public void setType(AttributeType type) {
+        this.attributeDescription.setType(type);
     }
 
     /**
