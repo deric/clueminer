@@ -116,7 +116,7 @@ public class DataTableModel<E extends Instance> extends AbstractTableModel imple
             TableColumnModel tcm = th.getColumnModel();
             TableColumn tc;
             int index;
-            for (AttributeDraft attr : container.getAttributes()) {
+            for (AttributeDraft attr : container.getAttrIter()) {
                 index = attr.getIndex();
                 if (index < tcm.getColumnCount()) {
                     tc = tcm.getColumn(attr.getIndex());

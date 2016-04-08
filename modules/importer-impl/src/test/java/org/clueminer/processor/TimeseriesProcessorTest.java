@@ -25,7 +25,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.importer.impl.CsvImporter;
-import org.clueminer.importer.impl.ImportContainerImpl;
+import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -50,7 +50,7 @@ public class TimeseriesProcessorTest {
     public void testTimeSeries() throws IOException {
         TimeseriesFixture tf = new TimeseriesFixture();
         File tsFile = tf.ap01();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         csv.execute(container, tsFile);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(tsFile.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);

@@ -109,7 +109,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         this.report = new Report();
         logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
 
-        for (AttributeDraft attr : loader.getAttributes()) {
+        for (AttributeDraft attr : loader.getAttrIter()) {
             logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
         }
         parseHeader(loader, reader);

@@ -12,14 +12,14 @@ import org.junit.Test;
 public class InstanceDraftImplTest {
 
     private InstanceDraftImpl subject;
-    private ImportContainerImpl container;
+    private DraftContainer container;
 
     public InstanceDraftImplTest() {
     }
 
     @Before
     public void setUp() {
-        container = new ImportContainerImpl();
+        container = new DraftContainer();
         subject = new InstanceDraftImpl(container);
     }
 

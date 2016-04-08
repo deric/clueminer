@@ -95,7 +95,7 @@ public interface ContainerLoader<E extends Instance> {
      *
      * @return attribute drafts
      */
-    Iterable<AttributeDraft> getAttributes();
+    Iterable<AttributeDraft> getAttrIter();
 
     /**
      * Adds new Instance draft

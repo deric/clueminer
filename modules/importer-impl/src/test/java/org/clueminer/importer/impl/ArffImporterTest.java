@@ -70,7 +70,7 @@ public class ArffImporterTest {
     @Test
     public void testExecute_Container_Reader() throws Exception {
         File insect = fixtures.insectArff();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         subject.execute(container, insect);
         ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
@@ -83,7 +83,7 @@ public class ArffImporterTest {
     @Test
     public void testIris() throws IOException {
         File iris = fixtures.irisArff();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         subject.execute(container, iris);
         ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
@@ -96,7 +96,7 @@ public class ArffImporterTest {
     @Test
     public void testVehicle() throws IOException {
         File vehicle = fixtures.vehicleArff();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         subject.execute(container, vehicle);
         ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
@@ -120,7 +120,7 @@ public class ArffImporterTest {
     @Test
     public void testIonosphere() throws IOException {
         File iono = fixtures.ionosphereArff2();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         subject.execute(container, iono);
         ContainerLoader loader = container.getLoader();
         //name of relation from ARFF

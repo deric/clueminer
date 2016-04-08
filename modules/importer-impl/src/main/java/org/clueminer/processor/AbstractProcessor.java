@@ -84,7 +84,7 @@ public abstract class AbstractProcessor<E extends Instance> implements Processor
         ArrayList<AttributeDraft> inputAttr = new ArrayList<>(container.getAttributeCount());
         //scan attributes
         int metaCnt = 0;
-        for (AttributeDraft attrd : container.getAttributes()) {
+        for (AttributeDraft attrd : container.getAttrIter()) {
             if (attrd.getRole().equals(BasicAttrRole.INPUT)) {
                 inputAttr.add(attrd);
             } else {

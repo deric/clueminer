@@ -51,7 +51,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                     ContainerLoader loader = container.getLoader();
                     logger.log(Level.INFO, "md5: {0}", container.getMD5());
                     if (loader != null) {
-                        Iterable<AttributeDraft> attrs = loader.getAttributes();
+                        Iterable<AttributeDraft> attrs = loader.getAttrIter();
                         logger.log(Level.INFO, "detected {0} attributes", loader.getAttributeCount());
                         if (numAttributes != loader.getAttributeCount()) {
                             numAttributes = loader.getAttributeCount();

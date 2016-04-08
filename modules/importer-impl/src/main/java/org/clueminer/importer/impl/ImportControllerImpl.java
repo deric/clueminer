@@ -109,7 +109,7 @@ public class ImportControllerImpl implements ImportController {
             container = containers.get(path);
         } else {
             LOGGER.log(Level.INFO, "did not find container for {0}, size = {1}", new Object[]{path, containers.size()});
-            container = new ImportContainerImpl();
+            container = new DraftContainer();
             containers.put(path, container);
             container.setFile(file);
         }

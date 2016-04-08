@@ -9,7 +9,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.importer.impl.ArffImporter;
-import org.clueminer.importer.impl.ImportContainerImpl;
+import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -36,7 +36,7 @@ public class DefaultProcessorTest {
     @Test
     public void testIris() throws IOException {
         File iris = fixtures.irisArff();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         arff.execute(container, iris);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(iris.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
@@ -60,7 +60,7 @@ public class DefaultProcessorTest {
     @Test
     public void testVehicle() throws IOException {
         File vehicle = fixtures.vehicleArff();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         arff.execute(container, vehicle);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(vehicle.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);

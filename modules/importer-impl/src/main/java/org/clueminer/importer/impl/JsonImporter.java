@@ -70,7 +70,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         this.report = new Report();
         LOGGER.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
 
-        for (AttributeDraft attr : loader.getAttributes()) {
+        for (AttributeDraft attr : loader.getAttrIter()) {
             LOGGER.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
         }
 

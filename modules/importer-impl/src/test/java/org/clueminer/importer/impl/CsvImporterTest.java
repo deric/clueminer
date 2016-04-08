@@ -43,7 +43,7 @@ public class CsvImporterTest {
     @Before
     public void setUp() {
         subject = new CsvImporter();
-        subject.setLoader(new ImportContainerImpl());
+        subject.setLoader(new DraftContainer());
     }
 
     @After
@@ -104,7 +104,7 @@ public class CsvImporterTest {
      */
     //   @Test
     public void testExecute() throws IOException {
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
 
         subject.execute(container, FileUtil.toFileObject(fixtures.irisData()));
         assertEquals(150, container.getLoader().getNumberOfLines());
@@ -384,7 +384,7 @@ public class CsvImporterTest {
     @Test
     public void testMissingValues() {
         CsvImporter importer = new CsvImporter();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         importer.setSeparator(';');
         importer.setHasHeader(false);
         List<String> missing = new LinkedList<String>();
@@ -413,7 +413,7 @@ public class CsvImporterTest {
     @Test
     public void testParsingHeader() {
         CsvImporter importer = new CsvImporter();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         importer.setSeparator(',');
         importer.setHasHeader(true);
         String line = "id,meta_1,input_1,foo,bar";
@@ -436,7 +436,7 @@ public class CsvImporterTest {
     @Test
     public void testParsingTypes() {
         CsvImporter importer = new CsvImporter();
-        Container container = new ImportContainerImpl();
+        Container container = new DraftContainer();
         importer.setSeparator(',');
         importer.setHasHeader(true);
         String line = "attr1,attr2,attr3\ndouble,double,string";
