@@ -19,7 +19,7 @@ import org.clueminer.chart.renderer.Line;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.PlotType;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
@@ -234,7 +234,7 @@ public class PreviewFrame<E extends Instance> extends JPanel implements ChartCon
     }
 
     @Override
-    public void prepare(PlotType type) {
+    public void prepare(DataType type) {
         //
     }
 
@@ -244,7 +244,7 @@ public class PreviewFrame<E extends Instance> extends JPanel implements ChartCon
     }
 
     @Override
-    public boolean isSupported(PlotType type) {
-        return type == PlotType.TIMESERIES;
+    public boolean isSupported(DataType type) {
+        return type == DataType.TIMESERIES;
     }
 }

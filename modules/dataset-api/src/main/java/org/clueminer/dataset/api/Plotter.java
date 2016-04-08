@@ -33,7 +33,7 @@ public interface Plotter<E extends Instance> extends Serializable {
      *
      * @param type
      */
-    void prepare(PlotType type);
+    void prepare(DataType type);
 
     /**
      * Add data row to chart
@@ -109,5 +109,5 @@ public interface Plotter<E extends Instance> extends Serializable {
      * @param type
      * @return
      */
-    boolean isSupported(PlotType type);
+    boolean isSupported(DataType type);
 }

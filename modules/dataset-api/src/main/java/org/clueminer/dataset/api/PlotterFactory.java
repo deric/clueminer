@@ -46,7 +46,7 @@ public class PlotterFactory extends ServiceFactory<Plotter> {
         sort();
     }
 
-    public Collection<Plotter> filter(PlotType type) {
+    public Collection<Plotter> filter(DataType type) {
         Collection<Plotter> res = new LinkedList<>();
         for (Plotter p : getAll()) {
             if (p.isSupported(type)) {

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.PlotType;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.math.Vector;
@@ -266,7 +266,7 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     @Override
     public Plotter getPlotter() {
         //TODO: allow using prefered chart provider
-        Collection<Plotter> backend = PlotterFactory.getInstance().filter(PlotType.SCATTER);
+        Collection<Plotter> backend = PlotterFactory.getInstance().filter(DataType.DISCRETE);
         Iterator<Plotter> iter = backend.iterator();
         if (!iter.hasNext()) {
             throw new RuntimeException("could not find plotting backend");

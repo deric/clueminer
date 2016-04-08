@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.PlotType;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -169,7 +169,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     }
 
     @Override
-    public void prepare(PlotType type) {
+    public void prepare(DataType type) {
         if (!isSupported(type)) {
             throw new RuntimeException("plot type " + type.name() + " is not supported");
         }
@@ -177,8 +177,8 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     }
 
     @Override
-    public boolean isSupported(PlotType type) {
-        return type == PlotType.SCATTER;
+    public boolean isSupported(DataType type) {
+        return type == DataType.DISCRETE;
     }
 
 }

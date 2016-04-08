@@ -2,7 +2,7 @@ package org.clueminer.timechart;
 
 import javax.swing.JPanel;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.PlotType;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 
 /**
@@ -40,7 +40,7 @@ public class TimeChart<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public void prepare(PlotType type) {
+    public void prepare(DataType type) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -50,7 +50,7 @@ public class TimeChart<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public boolean isSupported(PlotType type) {
+    public boolean isSupported(DataType type) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
