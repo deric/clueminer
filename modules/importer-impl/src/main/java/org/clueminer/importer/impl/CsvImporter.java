@@ -241,7 +241,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             if (!attr.getJavaType().equals(res)) {
                 logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getJavaType()});
                 report.logIssue(new Issue(loader.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
-                attr.setType(res);
+                attr.setJavaType(res);
                 fireAttributeChanged(loader.getAttribute(attrIndex), "type");
             }
             return true;

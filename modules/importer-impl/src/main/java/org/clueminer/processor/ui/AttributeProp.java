@@ -155,7 +155,7 @@ public class AttributeProp extends javax.swing.JPanel {
             String item = (String) cbType.getSelectedItem();
             Class<?> type = stringToClass(item);
             if (type != attr.getJavaType()) {
-                attr.setType(type);
+                attr.setJavaType(type);
                 log.log(Level.INFO, "attr {0} type changed to {1}", new Object[]{attr.getName(), type});
                 importerUI.fireImporterChanged();
             }

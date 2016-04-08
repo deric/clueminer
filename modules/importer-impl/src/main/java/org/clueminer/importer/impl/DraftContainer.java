@@ -61,11 +61,11 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     private FileObject file;
     protected static final int NULL_INDEX = -1;
 
-    private ObjectList<InstanceDraft> instanceList;
-    private Int2ObjectOpenHashMap<AttributeDraft> attributeList;
+    protected ObjectList<InstanceDraft> instanceList;
+    protected Int2ObjectOpenHashMap<AttributeDraft> attributeList;
     private Dataset<E> dataset;
-    private Object2ObjectMap<String, AttributeDraft> attributeMap;
-    private Report report;
+    protected Object2ObjectMap<String, AttributeDraft> attributeMap;
+    protected Report report;
     private Object2IntMap<String> instanceMap;
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
@@ -192,6 +192,8 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
 
     /**
      * {@inheritDoc}
+     *
+     * @deprecated use attribute builder instead
      */
     @Override
     public AttributeDraft createAttribute(int index, String name) {
@@ -200,7 +202,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
         if (!hasAttributeAtIndex(index)) {
             attr = new AttributeDraftImpl(name);
             attr.setIndex(index);
-            attr.setType(defaultNumericType);
+            attr.setJavaType(defaultNumericType);
             attr.setRole(BasicAttrRole.INPUT);
             attributeMap.put(name, attr);
             attributeList.put(index, attr);
@@ -485,12 +487,12 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
 
     @Override
     public InstanceBuilder<E> builder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new InstanceDraftBuilder<>();
     }
 
     @Override
     public AttributeBuilder attributeBuilder() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AttributeDraftBuilder(this);
     }
 
     @Override

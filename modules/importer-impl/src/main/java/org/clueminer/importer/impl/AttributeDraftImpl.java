@@ -28,6 +28,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     private Class<?> type;
     private Object defaultValue;
     private AttributeRole role;
+    private AttributeType attrType;
     private boolean skipped;
 
     public AttributeDraftImpl() {
@@ -39,7 +40,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     }
 
     @Override
-    public void setType(Class<?> t) {
+    public void setJavaType(Class<?> t) {
         this.type = t;
     }
 
@@ -239,6 +240,11 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public Attribute duplicate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setType(AttributeType type) {
+        this.attrType = type;
     }
 
 }

@@ -1,7 +1,6 @@
 package org.clueminer.io.importer.api;
 
 import org.clueminer.dataset.api.Attribute;
-import org.clueminer.dataset.api.AttributeRole;
 
 /**
  * Draft is used during data import.
@@ -10,19 +9,11 @@ import org.clueminer.dataset.api.AttributeRole;
  */
 public interface AttributeDraft extends Attribute {
 
-    String getName();
-
-    void setName(String name);
-
     Class<?> getJavaType();
 
-    void setType(Class<?> t);
-
-    boolean isMeta();
+    void setJavaType(Class<?> t);
 
     void setMeta(boolean b);
-
-    boolean isNumerical();
 
     void setNumerical(boolean b);
 
@@ -33,19 +24,6 @@ public interface AttributeDraft extends Attribute {
     Object getDefaultValue();
 
     void setDefaultValue(Object value);
-
-    int getIndex();
-
-    void setIndex(int index);
-
-    /**
-     * Role of the attribute input/meta/id etc.
-     *
-     * @return
-     */
-    AttributeRole getRole();
-
-    void setRole(AttributeRole role);
 
     /**
      *

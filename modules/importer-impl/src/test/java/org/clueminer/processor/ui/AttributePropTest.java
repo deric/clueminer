@@ -20,7 +20,7 @@ public class AttributePropTest {
 
     public AttributePropTest() {
         AttributeDraft attr = new AttributeDraftImpl("test");
-        attr.setType(Double.class);
+        attr.setJavaType(Double.class);
         attr.setRole(BasicAttrRole.INPUT);
         subject = new AttributeProp(attr, new CsvImporterUI());
     }

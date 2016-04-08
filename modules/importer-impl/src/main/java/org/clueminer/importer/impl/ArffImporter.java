@@ -143,7 +143,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
                 attrd = loader.createAttribute(attrNum, amatch.group(1));
                 //convertType(amatch.group(2).toUpperCase()))
                 attrd.setRole(BasicAttrRole.CLASS);
-                attrd.setType(String.class);
+                attrd.setJavaType(String.class);
                 attrNum++;
             } else if (arff.isValidAttributeDefinition(line)) {
                 //System.out.println(line);
@@ -154,7 +154,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
                         //System.out.println(headerLine + ": " + line + " attr num= " + attrNum);
                         AttrHolder ah = arff.parseAttribute(line);
                         attrd = loader.createAttribute(attrNum, ah.getName());
-                        attrd.setType(convertType(ah.getType()));
+                        attrd.setJavaType(convertType(ah.getType()));
                         attrd.setRole(BasicAttrRole.INPUT);
                     } catch (ParserError ex) {
                         Exceptions.printStackTrace(ex);
