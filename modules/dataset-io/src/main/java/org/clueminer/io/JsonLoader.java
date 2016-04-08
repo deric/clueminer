@@ -94,7 +94,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
      * @param output
      * @param elem
      */
-    private void createStructure(Dataset<E> output, JsonElement elem) {
+    private void createStructure(Dataset<E> output, JsonElement elem) throws ParserError {
         AttributeBuilder builder = output.attributeBuilder();
         if (elem.isJsonObject()) {
             JsonObject obj = elem.getAsJsonObject();
@@ -113,11 +113,11 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                     builder.create(entry.getKey(), "STRING", "META");
                     numMeta++;
                 } else {
-                    throw new RuntimeException("unexpected type: " + entry.getKey());
+                    throw new ParserError("unexpected type: " + entry.getKey());
                 }
             }
         } else {
-            throw new RuntimeException("unexpected element: " + elem);
+            throw new ParserError("unexpected element: " + elem);
         }
     }
 
@@ -135,7 +135,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
         return "STRING";
     }
 
-    private void parse(int line, InstanceBuilder builder, JsonElement elem) {
+    private void parse(int line, InstanceBuilder builder, JsonElement elem) throws ParserError {
         Instance inst;
         double[] values = new double[numValues];
         if (elem.isJsonObject()) {
@@ -159,10 +159,10 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                                 if (je.size() == 2) {
                                     System.out.println("data: " + je.toString());
                                 } else {
-                                    throw new RuntimeException("parsing error [" + line + "]: expected array with 2 elements, got " + e.size());
+                                    throw new ParserError("parsing error [" + line + "]: expected array with 2 elements, got " + e.size());
                                 }
                             } else {
-                                throw new RuntimeException("parsing error [" + line + "]: expected array got " + j);
+                                throw new ParserError("parsing error [" + line + "]: expected array got " + j);
                             }
                         }
                     } else {
@@ -175,11 +175,11 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                 } else if (val.isJsonNull()) {
 
                 } else {
-                    throw new RuntimeException("unexpected type: " + entry.getKey());
+                    throw new ParserError("unexpected type: " + entry.getKey());
                 }
             }
         } else {
-            throw new RuntimeException("unexpected element: " + elem);
+            throw new ParserError("unexpected element: " + elem);
         }
     }
 
