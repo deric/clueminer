@@ -1,6 +1,7 @@
 package org.clueminer.importer.impl;
 
 import java.util.Iterator;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
@@ -232,6 +233,11 @@ public class AttributeDraftImpl implements AttributeDraft {
 
     @Override
     public String asString(double value, int digits, boolean quoteNominal) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Attribute duplicate() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

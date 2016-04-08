@@ -528,6 +528,11 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Map<Integer, Attribute> getAttributes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
 
         private final Collection<T> collection;

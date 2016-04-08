@@ -4,10 +4,11 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 /**
+ * For copying attribute copying constructor should be used.
  *
  * @author Tomas Barton
  */
-public interface Attribute extends Cloneable, Serializable, DataVector {
+public interface Attribute extends Serializable, DataVector {
 
     /**
      * Indicates a missing value for nominal values. For the internal values and
@@ -214,11 +215,12 @@ public interface Attribute extends Cloneable, Serializable, DataVector {
     int hashCode();
 
     /**
-     * Clones this attribute.
+     * Clone in Java is kind of broken. The method should return a deep copy of the
+     * attribute.
      *
      * @return
      */
-    Object clone();
+    Attribute duplicate();
 
     /**
      * Returns a human readable string that describes this attribute.

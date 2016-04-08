@@ -68,7 +68,7 @@ public class NumericalAttribute extends AbstractAttribute {
      * Clones this attribute.
      */
     @Override
-    public Object clone() {
+    public NumericalAttribute duplicate() {
         return new NumericalAttribute(this);
     }
 

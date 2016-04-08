@@ -57,7 +57,7 @@ public class TimePointAttribute extends AbstractAttribute implements TimePoint, 
     }
 
     @Override
-    public Object clone() {
+    public TimePointAttribute duplicate() {
         return new TimePointAttribute(this, this.index);
     }
 

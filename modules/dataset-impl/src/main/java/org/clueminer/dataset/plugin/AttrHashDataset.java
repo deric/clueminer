@@ -84,7 +84,7 @@ public class AttrHashDataset<E extends Instance> extends ArrayDataset<E> impleme
         copy.attrNames = this.attrNames;
         Map<Integer, Attribute> attrs = new HashMap<>(this.attributeCount());
         for (int i = 0; i < this.attributeCount(); i++) {
-            attrs.put(i, (Attribute) attributes[i].clone());
+            attrs.put(i, attributes[i].duplicate());
         }
         copy.setAttributes(attrs);
         return copy;

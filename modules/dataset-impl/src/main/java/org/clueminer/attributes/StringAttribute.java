@@ -45,7 +45,7 @@ public class StringAttribute extends AbstractAttribute {
     }
 
     @Override
-    public Object clone() {
+    public StringAttribute duplicate() {
         return new StringAttribute(this);
     }
 

@@ -40,7 +40,7 @@ public abstract class AbstractAttribute implements Attribute {
      */
     protected AbstractAttribute(AbstractAttribute other) {
         this.statisticsProviders = new HashMap<>();
-        this.attributeDescription = new AttributeDescription(other.getName(), other.getJavaType(), 0.0d);
+        this.attributeDescription = new AttributeDescription(other.getName(), other.getType(), 0.0d);
 
         // copy statistics
         this.statistics = new LinkedList<>();
@@ -102,7 +102,7 @@ public abstract class AbstractAttribute implements Attribute {
      *
      * @return
      */
-    public AttributeType getJavaType() {
+    public AttributeType getType() {
         return this.attributeDescription.getType();
     }
 
@@ -153,12 +153,6 @@ public abstract class AbstractAttribute implements Attribute {
     public void setRole(AttributeRole role) {
         this.role = role;
     }
-
-    /**
-     * Clones this attribute.
-     */
-    @Override
-    public abstract Object clone();
 
     @Override
     public void resetStats() {

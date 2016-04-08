@@ -22,7 +22,7 @@ public class MetaAttribute extends AbstractAttribute {
     }
 
     @Override
-    public Object clone() {
+    public MetaAttribute duplicate() {
         return new MetaAttribute(this);
     }
 

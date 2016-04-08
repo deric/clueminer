@@ -314,7 +314,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
     public Attribute[] copyAttributes() {
         Attribute[] copy = new Attribute[attributeCount()];
         for (int i = 0; i < copy.length; i++) {
-            copy[i] = (Attribute) getAttribute(i).clone();
+            copy[i] = getAttribute(i).duplicate();
             copy[i].setIndex(i);
         }
         return copy;
@@ -394,7 +394,7 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
         Attribute attr;
         for (Entry<Integer, Attribute> entry : attrs.entrySet()) {
             //deep copy to avoid unexpected behaviour
-            attr = (Attribute) entry.getValue().clone();
+            attr = entry.getValue().duplicate();
             //TODO this is ugly but somehow clone does not work
             if (attr.isNumerical()) {
                 attr.registerStatistics(new NumericalStats(attr));
