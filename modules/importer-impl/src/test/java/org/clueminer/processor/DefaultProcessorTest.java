@@ -30,10 +30,6 @@ public class DefaultProcessorTest {
     }
 
     @Test
-    public void testGetDisplayName() {
-    }
-
-    @Test
     public void testIris() throws IOException {
         File iris = fixtures.irisArff();
         Container container = new DraftContainer();

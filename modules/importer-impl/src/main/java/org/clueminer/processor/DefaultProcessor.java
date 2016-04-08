@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.plugin.ArrayDataset;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -21,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = Processor.class)
-public class DefaultProcessor<E extends Instance> extends AbstractProcessor<E> implements Processor<E> {
+public class DefaultProcessor<D extends InstanceDraft, E extends Instance> extends AbstractProcessor<D, E> implements Processor<D> {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultProcessor.class.getName());
 

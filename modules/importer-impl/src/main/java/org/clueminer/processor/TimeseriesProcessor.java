@@ -31,6 +31,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.plugin.TimeseriesDataset;
 import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.types.TimePoint;
 import org.openide.util.NbBundle;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = Processor.class)
-public class TimeseriesProcessor<E extends Instance> extends AbstractProcessor<E> implements Processor<E> {
+public class TimeseriesProcessor<D extends InstanceDraft, E extends Instance> extends AbstractProcessor<D, E> implements Processor<D> {
 
     private static final Logger LOGGER = Logger.getLogger(TimeseriesProcessor.class.getName());
 

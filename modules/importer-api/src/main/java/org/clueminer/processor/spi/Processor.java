@@ -1,7 +1,7 @@
 package org.clueminer.processor.spi;
 
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.project.api.Workspace;
 
 /**
@@ -16,7 +16,7 @@ import org.clueminer.project.api.Workspace;
  * @author Tomas Barton
  * @param <E>
  */
-public interface Processor<E extends Instance> {
+public interface Processor<E extends InstanceDraft> {
 
     /**
      * Process data <b>from</b> the container <b>to</b> the workspace. This task

@@ -24,13 +24,13 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.JsonLoader;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
@@ -48,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class JsonImporter extends BaseImporter implements FileImporter, LongTask {
 
     private static final String NAME = "JSON";
-    private ContainerLoader<Instance> loader;
+    private ContainerLoader<InstanceDraft> loader;
     private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
     private int numInstances;
 

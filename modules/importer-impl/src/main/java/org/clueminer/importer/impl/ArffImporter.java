@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.ARFFHandler;
@@ -102,7 +101,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         if (container.getFile() != null) {
             logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
         }
-        ContainerLoader<Instance> loader = container.getLoader();
+        ContainerLoader<InstanceDraft> loader = container.getLoader();
         loader.reset(); //remove all previous instances
         loader.setDataset(null);
         loader.setNumberOfLines(0);

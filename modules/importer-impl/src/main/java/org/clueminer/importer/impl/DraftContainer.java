@@ -33,10 +33,11 @@ import javax.swing.JComponent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.AttributeRole;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.plugin.AbstractDataset;
 import org.clueminer.importer.Issue;
 import org.clueminer.importer.Issue.Level;
 import org.clueminer.io.importer.api.AttributeDraft;
@@ -44,6 +45,7 @@ import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
+import org.clueminer.math.Matrix;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
@@ -55,15 +57,15 @@ import org.openide.util.NbBundle;
  * @param <E>
  */
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
-public class DraftContainer<E extends Instance> extends AbstractDataset<E> implements Dataset<E>, Container, ContainerLoader<E> {
+public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Container, ContainerLoader<E> {
 
     private String source;
     private FileObject file;
     protected static final int NULL_INDEX = -1;
 
-    protected ObjectList<InstanceDraft> instanceList;
+    protected ObjectList<E> instanceList;
     protected Int2ObjectOpenHashMap<AttributeDraft> attributeList;
-    private Dataset<E> dataset;
+    private Dataset<? extends Instance> dataset;
     protected Object2ObjectMap<String, AttributeDraft> attributeMap;
     protected Report report;
     private Object2IntMap<String> instanceMap;
@@ -103,7 +105,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     }
 
     @Override
-    public void addInstance(InstanceDraft instance, int row) {
+    public void addInstance(E instance, int row) {
         checkInstanceDraft(instance);
 
         if (instanceMap.containsKey(instance.getId())) {
@@ -116,6 +118,11 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
         int index = instanceList.size();
         instanceList.add(instance);
         instanceMap.put(instance.getId(), index);
+    }
+
+    @Override
+    public E set(int instanceIdx, E inst) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -155,12 +162,12 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     }
 
     @Override
-    public void setDataset(Dataset<E> dataset) {
+    public void setDataset(Dataset<? extends Instance> dataset) {
         this.dataset = dataset;
     }
 
     @Override
-    public Dataset<E> getDataset() {
+    public Dataset<? extends Instance> getDataset() {
         return dataset;
     }
 
@@ -170,7 +177,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     }
 
     @Override
-    public Iterable<InstanceDraft> getInstances() {
+    public Iterable<E> getInstances() {
         return new NullFilterIterable<>(instanceList);
     }
 
@@ -218,7 +225,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
         return attr;
     }
 
-    public InstanceDraft getInstance(String id) {
+    public E getInstance(String id) {
         checkId(id);
 
         int index = instanceMap.getInt(id);
@@ -348,7 +355,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     }
 
     @Override
-    public InstanceDraft getInstance(int index) {
+    public E getInstance(int index) {
         return instanceList.get(index);
     }
 
@@ -532,6 +539,156 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
 
     @Override
     public Map<Integer, Attribute> getAttributes() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getId() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setId(String id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean add(E i) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public E get(int index) {
+        return (E) instanceList.get(index);
+    }
+
+    @Override
+    public boolean hasIndex(int idx) {
+        return instanceList.get(idx) != null;
+    }
+
+    @Override
+    public int size() {
+        return instanceList.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return instanceList.size() == 0;
+    }
+
+    @Override
+    public Dataset<E> getParent() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setParent(Dataset<E> parent) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean hasParent() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Attribute[] attributeByRole(AttributeRole role) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(int instanceIdx, int attrIdx, double value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[][] arrayCopy() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setColorGenerator(ColorGenerator cg) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void ensureCapacity(int size) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int getCapacity() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addChild(String key, Dataset<E> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Dataset<E> getChild(String key) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<String> getChildIterator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Matrix asMatrix() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Object[] toArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

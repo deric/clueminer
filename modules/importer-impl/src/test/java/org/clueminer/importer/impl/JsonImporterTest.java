@@ -40,7 +40,7 @@ public class JsonImporterTest {
             System.out.println("attr: " + attr);
         }
         assertEquals(13, loader.attributeCount());
-//        assertEquals(13, loader.size());
+        //    assertEquals(5, loader.size());
     }
 
 }

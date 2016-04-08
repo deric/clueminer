@@ -12,7 +12,7 @@ import org.openide.filesystems.FileObject;
  * @author Tomas Barton
  * @param <E>
  */
-public interface ContainerLoader<E extends Instance> {
+public interface ContainerLoader<E extends InstanceDraft> {
 
     /**
      * Set name for this dataset
@@ -34,7 +34,7 @@ public interface ContainerLoader<E extends Instance> {
      */
     int getInstanceCount();
 
-    Iterable<InstanceDraft> getInstances();
+    Iterable<E> getInstances();
 
     /**
      * Return instance by index
@@ -42,7 +42,7 @@ public interface ContainerLoader<E extends Instance> {
      * @param index
      * @return
      */
-    InstanceDraft getInstance(int index);
+    E getInstance(int index);
 
     /**
      * Return number of detected attributes in parsed file
@@ -82,7 +82,7 @@ public interface ContainerLoader<E extends Instance> {
      * @param index
      * @return
      */
-    public boolean hasAttributeAtIndex(int index);
+    boolean hasAttributeAtIndex(int index);
 
     /**
      * Basically we check for unique ID column
@@ -103,7 +103,7 @@ public interface ContainerLoader<E extends Instance> {
      * @param instance
      * @param row      number of row (or other hint like PK)
      */
-    void addInstance(InstanceDraft instance, int row);
+    void addInstance(E instance, int row);
 
     /**
      * Text representation of source
@@ -116,14 +116,14 @@ public interface ContainerLoader<E extends Instance> {
 
     void setAttributeBuilder(AttributeBuilder builder);
 
-    void setDataset(Dataset<E> dataset);
+    void setDataset(Dataset<? extends Instance> dataset);
 
     /**
      * Loaded dataset
      *
      * @return
      */
-    Dataset<E> getDataset();
+    Dataset<? extends Instance> getDataset();
 
     void setFile(FileObject file);
 

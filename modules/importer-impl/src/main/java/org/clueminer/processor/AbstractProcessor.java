@@ -25,12 +25,12 @@ import org.openide.util.Lookup;
  * with efficient representation of input data.
  *
  * @author Tomas Barton
- * @param <E>
+ * @param <D>
  */
-public abstract class AbstractProcessor<E extends Instance> implements Processor<E> {
+public abstract class AbstractProcessor<D extends InstanceDraft, E extends Instance> implements Processor<D> {
 
     protected Workspace workspace;
-    protected ContainerLoader<E> container;
+    protected ContainerLoader<D> container;
     protected Dataset<E> dataset;
     private static final Logger logger = Logger.getLogger(AbstractProcessor.class.getName());
 
@@ -40,7 +40,7 @@ public abstract class AbstractProcessor<E extends Instance> implements Processor
     }
 
     @Override
-    public void setContainer(ContainerLoader<E> container) {
+    public void setContainer(ContainerLoader<D> container) {
         this.container = container;
     }
 

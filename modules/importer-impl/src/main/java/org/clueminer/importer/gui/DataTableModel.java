@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -21,7 +20,7 @@ import org.clueminer.spi.AnalysisListener;
  * @author Tomas Barton
  * @param <E>
  */
-public class DataTableModel<E extends Instance> extends AbstractTableModel implements AnalysisListener {
+public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel implements AnalysisListener {
 
     private static final long serialVersionUID = 8958158241016938460L;
 

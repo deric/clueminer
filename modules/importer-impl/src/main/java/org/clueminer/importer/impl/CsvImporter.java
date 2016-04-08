@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -48,7 +47,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     private int prevColCnt = -1;
     private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
-    private ContainerLoader<Instance> loader;
+    private ContainerLoader<InstanceDraft> loader;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
