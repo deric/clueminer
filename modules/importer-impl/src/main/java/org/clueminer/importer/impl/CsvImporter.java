@@ -313,9 +313,9 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
                 if (role == BasicAttrRole.ID) {
                     draft.setId(value);
                 } else if (role == BasicAttrRole.INPUT) {
-                    draft.setValue(i, parseValue(attr, value, i, num, draft));
+                    draft.setObject(i, parseValue(attr, value, i, num, draft));
                 } else {
-                    draft.setValue(i, value);
+                    draft.setObject(i, value);
                 }
             } catch (Exception e) {
                 report.logIssue(new Issue("Invalid type (" + num + "): " + e.toString(), Issue.Level.WARNING));

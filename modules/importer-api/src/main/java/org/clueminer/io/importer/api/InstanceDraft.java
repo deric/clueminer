@@ -1,17 +1,13 @@
 package org.clueminer.io.importer.api;
 
+import org.clueminer.dataset.api.Instance;
+
 /**
  * Stores data during import before casted to actual types.
  *
  * @author Tomas Barton
  */
-public interface InstanceDraft {
-
-    String getId();
-
-    void setId(String id);
-
-    int size();
+public interface InstanceDraft extends Instance {
 
     void setType(Object type);
 
@@ -33,8 +29,8 @@ public interface InstanceDraft {
      */
     Object getObject(int i);
 
-    void setValue(String key, Object value);
+    void setObject(String key, Object value);
 
-    void setValue(int index, Object value);
+    void setObject(int index, Object value);
 
 }
