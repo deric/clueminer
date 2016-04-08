@@ -1,6 +1,7 @@
 package org.clueminer.io.importer.api;
 
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.filesystems.FileObject;
@@ -167,19 +168,19 @@ public interface ContainerLoader<E extends InstanceDraft> {
     AttributeDraft getAttribute(String key, Class typeClass);
 
     /**
-     * Set type of data which could be used for optimization of inner data
-     * structure representation
+     * Set required data type (imported dataset has special requirement). Could
+     * be used for optimization of inner data structure representation
      *
      * @param dataType
      */
-    void setDataType(String dataType);
+    void setDataType(DataType dataType);
 
     /**
      * Data type is usually either discrete or continuous
      *
      * @return type of data
      */
-    String getDataType();
+    DataType getDataType();
 
     /**
      * Should clear already pre-loaded instances

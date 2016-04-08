@@ -35,6 +35,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -72,10 +73,10 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
     private AttributeBuilder attributeBuilder;
     private int linesCnt;
     private Class<?> defaultNumericType = Double.class;
-    private String dataType = "discrete";
     private String md5 = null;
     private String name;
     private final TreeSet<Object> classes = new TreeSet<>();
+    private DataType dataType;
 
     public DraftContainer() {
         report = new Report();
@@ -313,16 +314,13 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
      * {@inheritDoc}
      */
     @Override
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
+    public DataType getDataType() {
+        return dataType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public String getDataType() {
-        return dataType;
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
     }
 
     /**
