@@ -1,6 +1,13 @@
 package org.clueminer.importer.impl;
 
+import java.util.Iterator;
 import org.clueminer.dataset.api.AttributeRole;
+import org.clueminer.dataset.api.AttributeType;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.IStats;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.NominalMapping;
+import org.clueminer.dataset.api.Statistics;
 import org.clueminer.importer.parser.DoubleParser;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.AttributeParser;
@@ -36,7 +43,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<?> getJavaType() {
         return type;
     }
 
@@ -142,10 +149,90 @@ public class AttributeDraftImpl implements AttributeDraft {
         StringBuilder sb = new StringBuilder("AttributeDraft [ ");
         sb.append(getIndex()).append(": ");
         sb.append(getName()).append(", ");
-        sb.append("type: ").append(getType().getName()).append(", ");
+        sb.append("type: ").append(getJavaType().getName()).append(", ");
         sb.append("role: ").append(getRole()).append(", ");
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public void setDataset(Dataset<? extends Instance> dataset) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<Statistics> getAllStatistics() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void registerStatistics(Statistics statistics) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double statistics(IStats name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void resetStats() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void updateStatistics(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public NominalMapping getMapping() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setMapping(NominalMapping nominalMapping) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setDefault(double value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getDefault() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isNominal() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public AttributeType getType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Iterator<? extends Object> values() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[] asDoubleArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int size() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String asString(double value, int digits, boolean quoteNominal) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

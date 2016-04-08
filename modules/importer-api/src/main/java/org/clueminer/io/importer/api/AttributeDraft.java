@@ -1,18 +1,20 @@
 package org.clueminer.io.importer.api;
 
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeRole;
 
 /**
+ * Draft is used during data import.
  *
  * @author Tomas Barton
  */
-public interface AttributeDraft {
+public interface AttributeDraft extends Attribute {
 
     String getName();
 
     void setName(String name);
 
-    Class<?> getType();
+    Class<?> getJavaType();
 
     void setType(Class<?> t);
 

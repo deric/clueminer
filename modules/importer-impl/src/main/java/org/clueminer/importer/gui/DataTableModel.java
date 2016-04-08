@@ -83,7 +83,7 @@ public class DataTableModel<E extends Instance> extends AbstractTableModel imple
     public Class<?> getColumnClass(int columnIndex) {
         AttributeDraft attr = container.getAttribute(columnIndex);
         if (attr != null) {
-            return attr.getType().getClass();
+            return attr.getJavaType().getClass();
         }
         return null;
     }
@@ -125,7 +125,7 @@ public class DataTableModel<E extends Instance> extends AbstractTableModel imple
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
+                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
             }
             th.repaint();
         }

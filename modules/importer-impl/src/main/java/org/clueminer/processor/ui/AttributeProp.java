@@ -26,7 +26,7 @@ public class AttributeProp extends javax.swing.JPanel {
         this.attr = atrd;
         this.importerUI = importerUI;
         initComponents();
-        setType(atrd.getType());
+        setType(atrd.getJavaType());
         setRole(atrd.getRole().toString());
         setAttrName(atrd.getName());
     }
@@ -154,7 +154,7 @@ public class AttributeProp extends javax.swing.JPanel {
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             String item = (String) cbType.getSelectedItem();
             Class<?> type = stringToClass(item);
-            if (type != attr.getType()) {
+            if (type != attr.getJavaType()) {
                 attr.setType(type);
                 log.log(Level.INFO, "attr {0} type changed to {1}", new Object[]{attr.getName(), type});
                 importerUI.fireImporterChanged();

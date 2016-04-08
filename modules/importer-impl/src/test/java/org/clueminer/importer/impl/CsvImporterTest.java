@@ -446,9 +446,9 @@ public class CsvImporterTest {
 
             ContainerLoader loader = container.getLoader();
             assertEquals(2, loader.getNumberOfLines());
-            assertEquals(Double.class, loader.getAttribute(0).getType());
-            assertEquals(Double.class, loader.getAttribute(1).getType());
-            assertEquals(String.class, loader.getAttribute(2).getType());
+            assertEquals(Double.class, loader.getAttribute(0).getJavaType());
+            assertEquals(Double.class, loader.getAttribute(1).getJavaType());
+            assertEquals(String.class, loader.getAttribute(2).getJavaType());
             assertEquals(3, loader.getAttributeCount());
             assertEquals(0, loader.getInstanceCount());
         } catch (IOException ex) {

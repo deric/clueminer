@@ -98,7 +98,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
 
         for (AttributeDraft attr : loader.getAttrIter()) {
-            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getType(), attr.getRole()});
+            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
 
         importData(lineReader);
@@ -238,9 +238,9 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             }
             attr = getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
-            if (!attr.getType().equals(res)) {
-                logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getType()});
-                report.logIssue(new Issue(loader.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getType(), Issue.Level.INFO));
+            if (!attr.getJavaType().equals(res)) {
+                logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getJavaType()});
+                report.logIssue(new Issue(loader.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
                 attr.setType(res);
                 fireAttributeChanged(loader.getAttribute(attrIndex), "type");
             }

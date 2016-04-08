@@ -57,14 +57,14 @@ public class ARFFWriter<E extends Instance> implements Closeable, Flushable {
             sb = new StringBuilder();
             sb.append("@ATTRIBUTE ");
             sb.append(attr.getName()).append(" ");
-            switch (attr.getType().toString()) {
+            switch (attr.getJavaType().toString()) {
                 case "NUMERICAL":
                 case "NUMERIC":
                 case "REAL":
                     sb.append("REAL");
                     break;
                 default:
-                    throw new RuntimeException("type '" + attr.getType().toString() + "'not supported");
+                    throw new RuntimeException("type '" + attr.getJavaType().toString() + "'not supported");
             }
             writeLine(sb);
         }

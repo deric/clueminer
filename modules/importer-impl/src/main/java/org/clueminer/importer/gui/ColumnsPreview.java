@@ -103,7 +103,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         int idx = attr.getIndex();
         if (idx < attrPanels.length) {
             attrPanels[idx].setAttrName(attr.getName());
-            attrPanels[idx].setType(attr.getType());
+            attrPanels[idx].setType(attr.getJavaType());
             attrPanels[idx].setRole(attr.getRole().toString().toLowerCase());
         }
     }

@@ -122,7 +122,7 @@ public class DraftContainer<E extends Instance> extends AbstractDataset<E> imple
     public AttributeDraft getAttribute(String key, Class typeClass) {
         AttributeDraft attr = attributeMap.get(key);
 
-        if (!attr.getType().equals(typeClass)) {
+        if (!attr.getJavaType().equals(typeClass)) {
             report.logIssue(new Issue(NbBundle.getMessage(DraftContainer.class,
                     "ImportContainerException_Attribute_Type_Mismatch",
                     key, attr.getClass()), Level.SEVERE));
