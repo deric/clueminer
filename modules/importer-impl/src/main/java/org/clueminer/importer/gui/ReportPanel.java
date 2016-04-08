@@ -226,6 +226,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         fileImporter.addAnalysisListener(dataTableModel);
         fileImporter.addAnalysisListener(this);
         logger.log(Level.INFO, "new file importer: {0}", fileImporter.getName());
+        cbImporter.setSelectedItem(fileImporter.getName());
         if (controller != null) {
             importerUI = controller.getUI(importer);
             if (importerUI != null) {
