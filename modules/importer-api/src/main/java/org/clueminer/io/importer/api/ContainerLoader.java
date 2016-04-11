@@ -193,4 +193,12 @@ public interface ContainerLoader<E extends InstanceDraft> {
      */
     void resetAttributes();
 
+    /**
+     * Returns the report associated to this container, if exists.
+     *
+     * @return the report set for this container or <code>null</code> if no
+     *         report is defined
+     */
+    Report getReport();
+
 }

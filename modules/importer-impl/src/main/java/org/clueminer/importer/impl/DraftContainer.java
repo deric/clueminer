@@ -492,7 +492,7 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
 
     @Override
     public InstanceBuilder<E> builder() {
-        return new InstanceDraftBuilder<>();
+        return new InstanceDraftBuilder<>(this, this);
     }
 
     @Override

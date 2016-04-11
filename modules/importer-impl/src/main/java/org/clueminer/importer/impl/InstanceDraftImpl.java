@@ -11,6 +11,7 @@ import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.math.Vector;
 
 /**
+ * A container for wrapping data during import without strong typing.
  *
  * @author Tomas Barton
  */
