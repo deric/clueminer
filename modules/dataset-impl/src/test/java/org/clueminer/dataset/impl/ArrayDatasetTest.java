@@ -1,5 +1,6 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import org.clueminer.dataset.impl.ArrayDataset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

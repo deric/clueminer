@@ -12,8 +12,8 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.plugin.ArrayDataset;
-import org.clueminer.dataset.plugin.DoubleArrayFactory;
+import org.clueminer.dataset.impl.ArrayDataset;
+import org.clueminer.dataset.impl.DoubleArrayFactory;
 import org.clueminer.stats.AttrNumStats;
 
 /**

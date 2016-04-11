@@ -14,8 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import org.clueminer.dataset.impl.AttributeCollection;
+import org.clueminer.dataset.impl.ArrayDataset;
 import java.util.Iterator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;

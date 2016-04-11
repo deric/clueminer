@@ -3,7 +3,7 @@ package org.clueminer.chart;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.types.TimePoint;
 import org.junit.After;
 import org.junit.AfterClass;

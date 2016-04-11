@@ -1,5 +1,7 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import org.clueminer.dataset.impl.DoubleArrayFactory;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.junit.After;

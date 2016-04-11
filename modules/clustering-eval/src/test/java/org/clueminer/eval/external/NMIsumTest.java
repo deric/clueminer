@@ -23,7 +23,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;

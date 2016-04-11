@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.stats.AttrNumStats;

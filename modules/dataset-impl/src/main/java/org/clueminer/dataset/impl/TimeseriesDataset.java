@@ -1,4 +1,4 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
 import java.util.Arrays;
 import java.util.Collection;

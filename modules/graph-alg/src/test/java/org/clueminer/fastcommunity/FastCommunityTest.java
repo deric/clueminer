@@ -3,7 +3,7 @@ package org.clueminer.fastcommunity;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;

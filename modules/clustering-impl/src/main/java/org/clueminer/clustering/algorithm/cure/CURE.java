@@ -33,7 +33,7 @@ import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;

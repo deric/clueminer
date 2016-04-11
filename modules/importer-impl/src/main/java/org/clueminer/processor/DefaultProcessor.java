@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;

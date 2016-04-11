@@ -22,7 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 

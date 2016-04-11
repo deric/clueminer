@@ -1,5 +1,6 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import org.clueminer.dataset.impl.AttrHashDataset;
 import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.attributes.BasicAttrType;

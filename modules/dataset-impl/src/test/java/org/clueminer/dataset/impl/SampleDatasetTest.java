@@ -1,5 +1,6 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import org.clueminer.dataset.impl.SampleDataset;
 import java.util.Random;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;

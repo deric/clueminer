@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
 import org.junit.After;

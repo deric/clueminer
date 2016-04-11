@@ -1,6 +1,5 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,30 +16,26 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.DMatrix;
 
 /**
+ * Until java will have mix-ins we need this sort of code duplication:
+ * AbstractDataset and AbstractArrayDataset are pretty much same just one use
+ * methods inherited from ArrayList and the other use array storage.
  *
  * @author Tomas Barton
  * @param <E>
  */
-public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> implements Dataset<E> {
+public abstract class AbstractArrayDataset<E extends Instance> implements Dataset<E> {
 
-    private static final long serialVersionUID = -7361108601629091897L;
+    private static final long serialVersionUID = 2328076020347060920L;
     transient protected EventListenerList datasetListener;
     protected String id;
     protected String name;
     protected ColorGenerator colorGenerator;
     protected Dataset<E> parent = null;
-    //default capacity same as with ArrayList
-    private int capacity = 10;
     protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
 
-    public AbstractDataset() {
+    public AbstractArrayDataset() {
         //do nothing
-    }
-
-    public AbstractDataset(int capacity) {
-        super(capacity);
-        this.capacity = capacity;
     }
 
     @Override
@@ -105,25 +100,8 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
         eventListenerList().add(DatasetListener.class, listener);
     }
 
-    @Override
-    public double[][] arrayCopy() {
-        double[][] res = new double[this.size()][attributeCount()];
-        int cols = this.attributeCount();
-        if (cols <= 0) {
-            throw new ArrayIndexOutOfBoundsException("given dataset has width " + cols);
-        }
-        for (int i = 0; i < this.size(); i++) {
-            Instance inst = instance(i);
-            for (int j = 0; j < inst.size(); j++) {
-                res[i][j] = inst.value(j);///scaleToRange((float)inst.value(j), min, max, -10, 10);
-            }
-        }
-        return res;
-    }
-
     /**
-     * {@inheritDoc}
-     *
+     * @{@inheritDoc }
      * @param instanceIdx
      * @param attrIdx
      * @param value
@@ -138,14 +116,19 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     }
 
     @Override
-    public int getCapacity() {
-        return capacity;
-    }
-
-    @Override
-    public void ensureCapacity(int size) {
-        this.capacity = size;
-        super.ensureCapacity(capacity);
+    public double[][] arrayCopy() {
+        double[][] res = new double[this.size()][attributeCount()];
+        int cols = this.attributeCount();
+        if (cols <= 0) {
+            throw new ArrayIndexOutOfBoundsException("given dataset has width " + cols);
+        }
+        for (int i = 0; i < this.size(); i++) {
+            Instance inst = instance(i);
+            for (int j = 0; j < inst.size(); j++) {
+                res[i][j] = inst.value(j);///scaleToRange((float)inst.value(j), min, max, -10, 10);
+            }
+        }
+        return res;
     }
 
     @Override
@@ -175,11 +158,6 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
             children = new HashMap<>(5);
         }
         return children.keySet().iterator();
-    }
-
-    @Override
-    public boolean hasIndex(int idx) {
-        return idx >= 0 && idx < size();
     }
 
     @Override

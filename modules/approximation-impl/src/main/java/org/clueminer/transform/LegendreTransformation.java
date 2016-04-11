@@ -16,7 +16,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.AttrHashDataset;
+import org.clueminer.dataset.impl.AttrHashDataset;
 import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;

@@ -2,7 +2,7 @@ package org.clueminer.utils;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

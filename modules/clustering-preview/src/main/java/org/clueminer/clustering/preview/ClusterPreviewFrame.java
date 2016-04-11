@@ -28,7 +28,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 

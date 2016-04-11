@@ -4,7 +4,7 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.dataset.row.SparseInstance;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;

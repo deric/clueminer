@@ -25,7 +25,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.plugin.ArrayDataset;
+import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.knn.LinearRNN;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;

@@ -1,5 +1,6 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -16,26 +17,30 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.DMatrix;
 
 /**
- * Until java will have mix-ins we need this sort of code duplication:
- * AbstractDataset and AbstractArrayDataset are pretty much same just one use
- * methods inherited from ArrayList and the other use array storage.
  *
  * @author Tomas Barton
  * @param <E>
  */
-public abstract class AbstractArrayDataset<E extends Instance> implements Dataset<E> {
+public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> implements Dataset<E> {
 
-    private static final long serialVersionUID = 2328076020347060920L;
+    private static final long serialVersionUID = -7361108601629091897L;
     transient protected EventListenerList datasetListener;
     protected String id;
     protected String name;
     protected ColorGenerator colorGenerator;
     protected Dataset<E> parent = null;
+    //default capacity same as with ArrayList
+    private int capacity = 10;
     protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
 
-    public AbstractArrayDataset() {
+    public AbstractDataset() {
         //do nothing
+    }
+
+    public AbstractDataset(int capacity) {
+        super(capacity);
+        this.capacity = capacity;
     }
 
     @Override
@@ -100,21 +105,6 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
         eventListenerList().add(DatasetListener.class, listener);
     }
 
-    /**
-     * @{@inheritDoc }
-     * @param instanceIdx
-     * @param attrIdx
-     * @param value
-     */
-    @Override
-    public void set(int instanceIdx, int attrIdx, double value) {
-        if (attrIdx > -1) {
-            instance(instanceIdx).set(attrIdx, value);
-        } else {
-            throw new RuntimeException("Invalid attribute index: " + attrIdx);
-        }
-    }
-
     @Override
     public double[][] arrayCopy() {
         double[][] res = new double[this.size()][attributeCount()];
@@ -129,6 +119,33 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
             }
         }
         return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param instanceIdx
+     * @param attrIdx
+     * @param value
+     */
+    @Override
+    public void set(int instanceIdx, int attrIdx, double value) {
+        if (attrIdx > -1) {
+            instance(instanceIdx).set(attrIdx, value);
+        } else {
+            throw new RuntimeException("Invalid attribute index: " + attrIdx);
+        }
+    }
+
+    @Override
+    public int getCapacity() {
+        return capacity;
+    }
+
+    @Override
+    public void ensureCapacity(int size) {
+        this.capacity = size;
+        super.ensureCapacity(capacity);
     }
 
     @Override
@@ -158,6 +175,11 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
             children = new HashMap<>(5);
         }
         return children.keySet().iterator();
+    }
+
+    @Override
+    public boolean hasIndex(int idx) {
+        return idx >= 0 && idx < size();
     }
 
     @Override

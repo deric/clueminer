@@ -15,7 +15,7 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.io.CsvLoader;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;

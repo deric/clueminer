@@ -111,6 +111,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.algorithm</publicPackage>
                         <publicPackage>org.clueminer.attributes</publicPackage>
+                        <publicPackage>org.clueminer.dataset.impl</publicPackage>
                         <publicPackage>org.clueminer.dataset.plot</publicPackage>
                         <publicPackage>org.clueminer.dataset.plugin</publicPackage>
                         <publicPackage>org.clueminer.dataset.row</publicPackage>

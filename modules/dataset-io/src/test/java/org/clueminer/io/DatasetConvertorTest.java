@@ -2,7 +2,7 @@ package org.clueminer.io;
 
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;

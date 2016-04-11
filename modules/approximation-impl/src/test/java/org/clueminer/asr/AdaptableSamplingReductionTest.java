@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.io.CsvLoader;

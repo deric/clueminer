@@ -1,4 +1,4 @@
-package org.clueminer.dataset.plugin;
+package org.clueminer.dataset.impl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.row.FloatArrayDataRow;
+import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.row.Tools;
 import org.clueminer.exception.EscapeException;
 
@@ -16,55 +16,56 @@ import org.clueminer.exception.EscapeException;
  * @author Tomas Barton
  * @param <E>
  */
-public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E> {
+public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E> {
 
     private static final int DEFAULT_CAPACITY = 5;
+    private final Dataset<E> dataset;
     /**
      * The decimal point character.
      */
     private char decimalPointCharacter = '.';
-    private Dataset<Instance> dataset;
 
-    public FloatArrayFactory(Dataset<? extends Instance> dataset) {
-        this.dataset = (Dataset<Instance>) dataset;
+    public DoubleArrayFactory(Dataset<E> dataset) {
+        this.dataset = dataset;
     }
 
     /**
-     * @param dataset
-     * @param decimalPointCharacter the letter for decimal points, usually '.'
+     * @param dataset               parent dataset
+     * @param decimalPointCharacter the character for decimal points, usually '.'
      */
-    public FloatArrayFactory(Dataset<? extends Instance> dataset, char decimalPointCharacter) {
+    public DoubleArrayFactory(Dataset<E> dataset, char decimalPointCharacter) {
+        this.dataset = dataset;
         this.decimalPointCharacter = decimalPointCharacter;
     }
 
     @Override
     public E create(double[] values) {
-        E inst = build(values);
-        dataset.add(inst);
-        return inst;
+        E row = build(values);
+        dataset.add(row);
+        return row;
     }
 
     @Override
     public E build(double[] values) {
-        FloatArrayDataRow row = new FloatArrayDataRow(values.length);
+        DoubleArrayDataRow row = new DoubleArrayDataRow(values.length);
         for (int i = 0; i < values.length; i++) {
-            row.set(i, (float) values[i]);
+            row.set(i, values[i]);
         }
         return (E) row;
     }
 
     @Override
     public E create(double[] values, Object classValue) {
-        E inst = build(values, (String) classValue);
-        dataset.add(inst);
-        return inst;
+        E row = create(values);
+        row.setClassValue(classValue);
+        return row;
     }
 
     @Override
     public E create(double[] values, String classValue) {
-        E inst = build(values, classValue);
-        dataset.add(inst);
-        return inst;
+        E row = build(values, classValue);
+        dataset.add(row);
+        return row;
     }
 
     @Override
@@ -74,16 +75,35 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
         return row;
     }
 
+    /**
+     * Build and add Instance to Dataset
+     *
+     * @return
+     */
     @Override
     public E create() {
-        E inst = build();
-        dataset.add(inst);
-        return inst;
+        E row = build();
+        dataset.add(row);
+        return row;
     }
 
     @Override
     public E build() {
-        return (E) new FloatArrayDataRow(DEFAULT_CAPACITY);
+        return (E) new DoubleArrayDataRow(DEFAULT_CAPACITY);
+    }
+
+    @Override
+    public E createCopyOf(E orig) {
+        DoubleArrayDataRow row = new DoubleArrayDataRow(orig.size());
+        row.setId(orig.getId());
+        row.setIndex(orig.getIndex());
+        row.setClassValue(orig.classValue());
+        return (E) row;
+    }
+
+    @Override
+    public E createCopyOf(E orig, Dataset<E> parent) {
+        return createCopyOf(orig);
     }
 
     /**
@@ -93,26 +113,15 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
      */
     @Override
     public E create(int size) {
-        E inst = build(size);
-        dataset.add(inst);
-        return inst;
+        E row = build(size);
+        dataset.add(row);
+        return row;
+
     }
 
     @Override
     public E build(int capacity) {
-        return (E) new FloatArrayDataRow(capacity);
-    }
-
-    @Override
-    public E createCopyOf(E orig) {
-        FloatArrayDataRow row = new FloatArrayDataRow(orig.size());
-        row.setClassValue(orig.classValue());
-        return (E) row;
-    }
-
-    @Override
-    public E createCopyOf(E orig, Dataset<E> parent) {
-        return createCopyOf(orig);
+        return (E) new DoubleArrayDataRow(capacity);
     }
 
     /**
@@ -127,7 +136,7 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
      */
     @Override
     public E create(String[] strings, Attribute[] attributes) {
-        FloatArrayDataRow dataRow = (FloatArrayDataRow) create(strings.length);
+        DoubleArrayDataRow dataRow = (DoubleArrayDataRow) create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();
@@ -141,7 +150,7 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    dataRow.setValue(attributes[i], string2Float(strings[i], this.decimalPointCharacter));
+                    dataRow.setValue(attributes[i], string2Double(strings[i], this.decimalPointCharacter));
                 }
             } else {
                 dataRow.setValue(attributes[i], Double.NaN);
@@ -190,6 +199,7 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
      * @param attributes
      * @return
      * @throws ClassCastException if data class does not match attribute type
+     * @see DatabaseDataRowReader
      */
     public DataRow create(Double[] data, Attribute[] attributes) {
         DataRow dataRow = (DataRow) create(data.length);
@@ -208,18 +218,18 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
         return dataRow;
     }
 
-    private static float string2Float(String str, char decimalPointCharacter) {
+    private static double string2Double(String str, char decimalPointCharacter) {
 
         if (str == null) {
-            return Float.NaN;
+            return Double.NaN;
         }
         try {
             str = str.replace(decimalPointCharacter, '.');
-            return Float.parseFloat(str);
+            return Double.parseDouble(str);
         } catch (NumberFormatException e) {
-            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "DataRowFactory.string2Float(String): ''{0}'' is not a valid number!", str);
-            return Float.NaN;
+            Logger.getLogger(DoubleArrayFactory.class.getName())
+                    .log(Level.SEVERE, "DoubleArrayFactory.string2Double(String): ''{0}'' is not a valid number!", str);
+            return Double.NaN;
         }
     }
-
 }

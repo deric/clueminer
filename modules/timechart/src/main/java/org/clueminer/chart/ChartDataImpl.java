@@ -21,7 +21,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.TimeseriesDataset;
+import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.math.Interpolator;
