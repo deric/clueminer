@@ -12,7 +12,6 @@ import javax.swing.event.EventListenerList;
 import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
-import org.clueminer.importer.gui.ImportControllerUIImpl;
 import org.clueminer.importer.gui.ReportPanel;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
@@ -72,7 +71,7 @@ public class ImportTaskImpl implements ImportTask {
         }
 
         try {
-            logger.log(Level.INFO, "imporing file: {0}", containerSource);
+            logger.log(Level.INFO, "preloading file: {0}", containerSource);
 
             MessageDigest md = MessageDigest.getInstance("MD5");
             DigestInputStream dis = new DigestInputStream(stream, md);
@@ -87,7 +86,7 @@ public class ImportTaskImpl implements ImportTask {
             }
 
             logger.log(Level.INFO, "file MD5: {0}", convertMD5(digest));
-            logger.log(Level.INFO, "displaing import dialog...");
+            logger.log(Level.INFO, "showing import dialog...");
             //display import window
             finishImport(container);
         } catch (NoSuchAlgorithmException ex) {
@@ -124,7 +123,7 @@ public class ImportTaskImpl implements ImportTask {
             reportPanel.setCurrentFile(fileObject);
             reportPanel.setData(report, container);
             reportPanel.fileImporterChanged(importer);
-            DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ImportControllerUIImpl.class, "ReportPanel.title"));
+            DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ReportPanel.class, "ReportPanel.title"));
             if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                 reportPanel.destroy();
                 return;
@@ -144,6 +143,7 @@ public class ImportTaskImpl implements ImportTask {
                     workspace = pc.getCurrentWorkspace();
                 }
                 logger.log(Level.INFO, "processing input file");
+                //actual data import
                 controller.process(container, processor, workspace);
                 fireDataLoaded();
             } else {

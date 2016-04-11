@@ -9,9 +9,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.explorer.ExplorerTopComponent;
 import org.clueminer.importer.ImportController;
-import org.clueminer.importer.ImportControllerUI;
 import org.clueminer.importer.ImportTask;
-import org.clueminer.importer.gui.ImportControllerUIImpl;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
@@ -39,12 +37,10 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
     private ImportTask importTask;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ImportController controller;
-    private final ImportControllerUI controllerUI;
     private static final Logger logger = Logger.getLogger(MLearnFileOpener.class.getName());
 
     public MLearnFileOpener() {
         controller = Lookup.getDefault().lookup(ImportController.class);
-        controllerUI = new ImportControllerUIImpl(controller);
     }
 
     /**
@@ -66,7 +62,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
         File f = FileUtil.toFile(fileObject);
         try {
             if (isFileSupported(f)) {
-                importTask = controllerUI.importFile(fileObject);
+                importTask = controller.preload(fileObject);
                 if (importTask != null) {
                     importTask.addListener(this);
                     RP.post(importTask);

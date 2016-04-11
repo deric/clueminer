@@ -10,14 +10,17 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.ImportController;
+import org.clueminer.importer.ImportTask;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
+import org.clueminer.project.api.MostRecentFiles;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.spi.DatabaseImporter;
 import org.clueminer.spi.FileImporter;
@@ -25,10 +28,13 @@ import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
 import org.clueminer.spi.ImporterWizardUI;
 import org.clueminer.types.FileType;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,6 +57,39 @@ public class ImportControllerImpl implements ImportController {
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
         LOGGER.info("creating new ImportController");
+    }
+
+    @Override
+    public ImportTask preload(FileObject fileObject) {
+        try {
+            final FileImporter importer = getFileImporter(FileUtil.toFile(fileObject));
+            if (importer == null) {
+                NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "ImportController.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(msg);
+                return null;
+            }
+
+            //MRU
+            MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
+            mostRecentFiles.addFile(fileObject.getPath());
+
+            //Execute task
+            fileObject = getArchivedFile(fileObject);
+            return new ImportTaskImpl(importer, fileObject, this);
+        } catch (MissingResourceException ex) {
+            Logger.getLogger("").log(Level.WARNING, "", ex);
+        }
+        return null;
+    }
+
+    @Override
+    public ImportTask preload(InputStream stream, String importerName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ImportTask preload(Reader reader, String importerName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -151,6 +190,12 @@ public class ImportControllerImpl implements ImportController {
         }
     }
 
+    /**
+     * Finds appropriate file importer.
+     *
+     * @param file
+     * @return
+     */
     @Override
     public FileImporter getFileImporter(File file) {
         FileObject fileObject = FileUtil.toFileObject(file);
@@ -342,4 +387,5 @@ public class ImportControllerImpl implements ImportController {
         }
         return null;
     }
+
 }
