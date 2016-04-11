@@ -593,6 +593,11 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
         return new AttributeCollection<>(this, index);
     }
 
+    @Override
+    public void setBuilder(InstanceBuilder<E> builder) {
+        this.builder = builder;
+    }
+
     class InstanceIterator implements Iterator<E> {
 
         private int index = 0;

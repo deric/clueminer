@@ -33,12 +33,11 @@ import javax.swing.JComponent;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
-import org.clueminer.dataset.api.AttributeRole;
-import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.importer.Issue;
 import org.clueminer.importer.Issue.Level;
 import org.clueminer.io.importer.api.AttributeDraft;
@@ -46,7 +45,6 @@ import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
-import org.clueminer.math.Matrix;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
@@ -58,7 +56,7 @@ import org.openide.util.NbBundle;
  * @param <E>
  */
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
-public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Container, ContainerLoader<E> {
+public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> implements Dataset<E>, Container, ContainerLoader<E> {
 
     private String source;
     private FileObject file;
@@ -74,7 +72,6 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
     private int linesCnt;
     private Class<?> defaultNumericType = Double.class;
     private String md5 = null;
-    private String name;
     private final TreeSet<Object> classes = new TreeSet<>();
     private DataType dataType;
 
@@ -387,16 +384,6 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
     }
 
     @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
     public SortedSet<Object> getClasses() {
         return classes;
     }
@@ -581,67 +568,7 @@ public class DraftContainer<E extends InstanceDraft> implements Dataset<E>, Cont
     }
 
     @Override
-    public Dataset<E> getParent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setParent(Dataset<E> parent) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean hasParent() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Attribute[] attributeByRole(AttributeRole role) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void set(int instanceIdx, int attrIdx, double value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double[][] arrayCopy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setColorGenerator(ColorGenerator cg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public void ensureCapacity(int size) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getCapacity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addChild(String key, Dataset<E> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Dataset<E> getChild(String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Iterator<String> getChildIterator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Matrix asMatrix() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
