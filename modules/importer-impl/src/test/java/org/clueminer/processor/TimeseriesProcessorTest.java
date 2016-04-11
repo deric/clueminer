@@ -31,26 +31,42 @@ import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.ContainerLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * Test timeseries data import
  *
  * @author deric
  */
 public class TimeseriesProcessorTest {
 
     private final CsvImporter csv = new CsvImporter();
-    private final TimeseriesProcessor subject;
+    private TimeseriesProcessor subject;
+    private Container container;
+    private static final TimeseriesFixture TF = new TimeseriesFixture();
 
     public TimeseriesProcessorTest() {
         subject = new TimeseriesProcessor();
     }
 
+    @Before
+    public void setUp() {
+        subject = new TimeseriesProcessor();
+        container = new DraftContainer();
+    }
+
     @Test
+    public void testFileRead() throws IOException {
+        File tsFile = TF.ap01();
+        csv.execute(container, tsFile);
+        //Dataset<? extends Instance> dataset = loader.getDataset();
+        assertNotNull(container.getReport());
+    }
+
+    //@Test
     public void testTimeSeries() throws IOException {
-        TimeseriesFixture tf = new TimeseriesFixture();
-        File tsFile = tf.ap01();
-        Container container = new DraftContainer();
+        File tsFile = TF.ap01();
         csv.execute(container, tsFile);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(tsFile.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);

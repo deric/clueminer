@@ -18,6 +18,7 @@ import org.clueminer.math.Vector;
 public class InstanceDraftImpl implements InstanceDraft {
 
     private String id;
+    private String name;
     private String label;
     private Object type;
     private Object[] values;
@@ -112,12 +113,12 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public String getName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
 
     @Override
     public void setName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.name = name;
     }
 
     @Override

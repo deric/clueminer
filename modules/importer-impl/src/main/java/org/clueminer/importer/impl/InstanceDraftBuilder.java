@@ -24,7 +24,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.impl.AbstractRowFactory;
-import static org.clueminer.dataset.impl.AbstractRowFactory.string2Double;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -75,7 +74,8 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                         case NUMERIC:
                         case REAL:
                             try {
-                                row.set(attr.getIndex(), string2Double(value.toString(), df));
+                                //row.set(attr.getIndex(), string2Double(value.toString(), df));
+                                ((InstanceDraft) row).setObject(attr.getIndex(), value);
                             } catch (RuntimeException ex) {
                                 ((InstanceDraft) row).setObject(attr.getIndex(), value);
                                 // container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
