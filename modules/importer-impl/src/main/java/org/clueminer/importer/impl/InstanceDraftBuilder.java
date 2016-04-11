@@ -74,7 +74,12 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                         case NUMERICAL:
                         case NUMERIC:
                         case REAL:
-                            row.set(attr.getIndex(), string2Double(value.toString(), df));
+                            try {
+                                row.set(attr.getIndex(), string2Double(value.toString(), df));
+                            } catch (RuntimeException ex) {
+                                ((InstanceDraft) row).setObject(attr.getIndex(), value);
+                                // container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
+                            }
                             break;
                         case STRING:
                             ((InstanceDraft) row).setObject(attr.getIndex(), value);
