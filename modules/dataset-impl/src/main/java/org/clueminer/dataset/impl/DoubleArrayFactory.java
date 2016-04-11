@@ -95,7 +95,7 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    dataRow.setValue(attributes[i], string2Double(strings[i], this.decimalPointCharacter));
+                    dataRow.setValue(attributes[i], string2Double(strings[i], this.decimalFormat));
                 }
             } else {
                 dataRow.setValue(attributes[i], Double.NaN);

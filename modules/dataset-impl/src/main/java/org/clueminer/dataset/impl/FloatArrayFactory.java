@@ -16,6 +16,8 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
@@ -93,7 +95,7 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    dataRow.setValue(attributes[i], string2Float(strings[i], this.decimalPointCharacter));
+                    dataRow.setValue(attributes[i], string2Float(strings[i], this.decimalFormat));
                 }
             } else {
                 dataRow.setValue(attributes[i], Double.NaN);
@@ -160,16 +162,22 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
         return dataRow;
     }
 
-    private static float string2Float(String str, char decimalPointCharacter) {
-
+    private static float string2Float(String str, DecimalFormat df) {
         if (str == null) {
             return Float.NaN;
         }
         try {
-            str = str.replace(decimalPointCharacter, '.');
-            return Float.parseFloat(str);
+            if (df == null) {
+                return Float.parseFloat(str);
+            } else {
+                Number num = df.parse(str);
+                return num.floatValue();
+            }
         } catch (NumberFormatException e) {
-            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "DataRowFactory.string2Float(String): ''{0}'' is not a valid number!", str);
+            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "string2Float(String): ''{0}'' is not a valid number!", str);
+            return Float.NaN;
+        } catch (ParseException ex) {
+            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "string2Float(String): ''{0}'' is not a valid number!", str);
             return Float.NaN;
         }
     }

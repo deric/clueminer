@@ -16,6 +16,9 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
@@ -33,11 +36,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
 
     protected final Dataset<E> dataset;
     public static final int DEFAULT_CAPACITY = 5;
-
-    /**
-     * The decimal point character.
-     */
-    protected char decimalPointCharacter = '.';
+    protected DecimalFormat decimalFormat;
 
     public AbstractRowFactory(Dataset<E> dataset) {
         this.dataset = dataset;
@@ -45,7 +44,17 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
 
     public AbstractRowFactory(Dataset<E> dataset, char decimalPointChar) {
         this.dataset = dataset;
-        this.decimalPointCharacter = decimalPointCharacter;
+        decimalFormat = setupFormat(decimalPointChar);
+    }
+
+    private DecimalFormat setupFormat(char decimalPointChar) {
+        //some locales (e.g. French, Czech) have ',' as a decimal separator
+        DecimalFormat df = new DecimalFormat();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setDecimalSeparator(decimalPointChar);
+        //symbols.setGroupingSeparator(' ');
+        df.setDecimalFormatSymbols(symbols);
+        return df;
     }
 
     @Override
@@ -120,18 +129,28 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         return inst;
     }
 
-    public static double string2Double(String str, char decimalPointCharacter) {
-
+    public static double string2Double(String str, DecimalFormat df) {
         if (str == null) {
             return Double.NaN;
         }
         try {
-            str = str.replace(decimalPointCharacter, '.');
-            return Double.parseDouble(str);
+            //default English numbers
+            if (df == null) {
+                return Double.parseDouble(str);
+            } else {
+                Number num = df.parse(str);
+                return num.doubleValue();
+            }
         } catch (NumberFormatException e) {
             Logger.getLogger(DoubleArrayFactory.class.getName())
-                    .log(Level.SEVERE, "AbstractRowFactory.string2Double(String): ''{0}'' is not a valid number!", str);
-            return Double.NaN;
+                    .log(Level.SEVERE, "string2Double(String): ''{0}'' is not a valid number!", str);
+            //TODO allow supressing exceptions by a parameter
+            throw new RuntimeException("AbstractRowFactory.string2Double(String): " + str + " is not a valid number!");
+            //return Double.NaN;
+        } catch (ParseException ex) {
+            Logger.getLogger(DoubleArrayFactory.class.getName())
+                    .log(Level.SEVERE, "string2Double(String): ''{0}'' is not a valid number!", str);
+            throw new RuntimeException("AbstractRowFactory.string2Double(String): " + str + " is not a valid number!");
         }
     }
 

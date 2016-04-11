@@ -83,7 +83,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalPointCharacter));
+                    dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
                 }
             } else {
                 dataRow.set(attributes[i].getIndex(), Double.NaN);

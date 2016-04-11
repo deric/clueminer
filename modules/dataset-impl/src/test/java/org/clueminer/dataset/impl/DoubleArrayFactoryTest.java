@@ -44,10 +44,17 @@ public class DoubleArrayFactoryTest {
         assertEquals(2, inst.size());
         assertEquals(1.0, dataset.instance(0).get(0), DELTA);
         assertEquals(2.0, dataset.instance(0).get(1), DELTA);
+        assertEquals("foo", inst.classValue());
     }
 
     @Test
-    public void testBuild_doubleArr_String() {
+    public void testDecimalCharacterSeparator() {
+        subject = new DoubleArrayFactory(dataset, ',');
+        Instance inst = subject.create(new String[]{"1,0", "2,0"}, "foo");
+        assertEquals(2, inst.size());
+        assertEquals(1.0, dataset.instance(0).get(0), DELTA);
+        assertEquals(2.0, dataset.instance(0).get(1), DELTA);
+        assertEquals("foo", inst.classValue());
     }
 
     @Test
