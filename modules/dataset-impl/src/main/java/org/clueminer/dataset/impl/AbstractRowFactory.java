@@ -18,6 +18,7 @@ package org.clueminer.dataset.impl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -75,6 +76,11 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         return row;
     }
 
+    @Override
+    public E build() {
+        return build(DEFAULT_CAPACITY);
+    }
+
     /**
      * Build and add Instance to Dataset
      *
@@ -87,6 +93,13 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         return row;
     }
 
+    @Override
+    public E createCopyOf(E orig, Dataset<E> parent) {
+        E copy = createCopyOf(orig);
+        copy.setParent(parent);
+        return copy;
+    }
+
     /**
      * Creates a new DataRow with the given initial capacity.
      *
@@ -97,6 +110,14 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         E row = build(size);
         dataset.add(row);
         return row;
+    }
+
+    @Override
+    public E create(String[] values, Object classValue) {
+        Attribute[] attr = (Attribute[]) dataset.getAttributes().values().toArray(new Attribute[dataset.attributeCount()]);
+        E inst = create(values, attr);
+        inst.setClassValue(classValue);
+        return inst;
     }
 
     public static double string2Double(String str, char decimalPointCharacter) {

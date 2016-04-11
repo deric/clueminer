@@ -1,10 +1,8 @@
 package org.clueminer.dataset.impl;
 
-import org.clueminer.dataset.impl.DoubleArrayFactory;
-import org.clueminer.dataset.impl.ArrayDataset;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,19 +15,14 @@ public class DoubleArrayFactoryTest {
 
     private DoubleArrayFactory subject;
     private Dataset<? extends Instance> dataset;
-    private static final double delta = 1e-9;
-
-    public DoubleArrayFactoryTest() {
-    }
+    private static final double DELTA = 1e-9;
 
     @Before
     public void setUp() {
         dataset = new ArrayDataset<>(2, 2);
+        dataset.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+        dataset.attributeBuilder().create("y", BasicAttrType.NUMERIC);
         subject = new DoubleArrayFactory(dataset);
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
@@ -37,8 +30,8 @@ public class DoubleArrayFactoryTest {
         assertEquals(0, dataset.size());
         subject.create(new double[]{1.0, 2.0});
         assertEquals(1, dataset.size());
-        assertEquals(1.0, dataset.instance(0).get(0), delta);
-        assertEquals(2.0, dataset.instance(0).get(1), delta);
+        assertEquals(1.0, dataset.instance(0).get(0), DELTA);
+        assertEquals(2.0, dataset.instance(0).get(1), DELTA);
     }
 
     @Test
@@ -46,11 +39,11 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testCreate_doubleArr_Object() {
-    }
-
-    @Test
     public void testCreate_doubleArr_String() {
+        Instance inst = subject.create(new String[]{"1.0", "2.0"}, "foo");
+        assertEquals(2, inst.size());
+        assertEquals(1.0, dataset.instance(0).get(0), DELTA);
+        assertEquals(2.0, dataset.instance(0).get(1), DELTA);
     }
 
     @Test
@@ -73,27 +66,11 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testCreateCopyOf_GenericType() {
-    }
-
-    @Test
-    public void testCreateCopyOf_GenericType_Dataset() {
-    }
-
-    @Test
     public void testCreate_int() {
     }
 
     @Test
     public void testBuild_int() {
-    }
-
-    @Test
-    public void testCreate_StringArr_AttributeArr() {
-    }
-
-    @Test
-    public void testCreate_ObjectArr_AttributeArr() {
     }
 
     @Test

@@ -15,7 +15,7 @@ public interface InstanceBuilder<E extends Instance> {
      *
      * @return
      */
-     E create();
+    E create();
 
     /**
      * Build will use same data structure for storing data, as other instances
@@ -23,7 +23,7 @@ public interface InstanceBuilder<E extends Instance> {
      *
      * @return new instance without adding to the dataset
      */
-     E build();
+    E build();
 
     /**
      * Depending on implementation copies relevant (meta)data from the original
@@ -32,7 +32,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @param orig
      * @return new Instance
      */
-     E createCopyOf(E orig);
+    E createCopyOf(E orig);
 
     /**
      *
@@ -40,7 +40,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @param parent dataset which will be considered as new instance parent
      * @return
      */
-     E createCopyOf(E orig, Dataset<E> parent);
+    E createCopyOf(E orig, Dataset<E> parent);
 
     /**
      *
@@ -57,13 +57,14 @@ public interface InstanceBuilder<E extends Instance> {
      * @return
      */
     E build(int capacity);
+
     /**
      * Create an instance from double values
      *
      * @param values
      * @return
      */
-     E create(double[] values);
+    E create(double[] values);
 
     /**
      * Build an instance from given values
@@ -72,6 +73,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @return
      */
     E build(double[] values);
+
     /**
      * Create an instance from double values
      *
@@ -100,4 +102,13 @@ public interface InstanceBuilder<E extends Instance> {
     E build(double[] values, String classValue);
 
     E create(String[] strings, Attribute[] attributes);
+
+    /**
+     * Convert values from strings
+     *
+     * @param values
+     * @param classValue
+     * @return
+     */
+    E create(String[] values, Object classValue);
 }
