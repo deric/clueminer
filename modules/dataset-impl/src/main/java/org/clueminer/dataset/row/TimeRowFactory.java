@@ -2,39 +2,26 @@ package org.clueminer.dataset.row;
 
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.impl.AbstractRowFactory;
 
 /**
  *
  * @author Tomas Barton
  */
-public class TimeRowFactory implements InstanceBuilder<TimeRow> {
+public class TimeRowFactory<E extends TimeRow> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     private int capacity = 50;
-    private Dataset<Instance> dataset;
 
-    public TimeRowFactory(Dataset<? extends Instance> dataset) {
-        this.dataset = (Dataset<Instance>) dataset;
+    public TimeRowFactory(Dataset<E> dataset) {
+        super(dataset);
     }
 
-    public TimeRowFactory(Dataset<? extends Instance> dataset, int capacity) {
-        this.dataset = (Dataset<Instance>) dataset;
+    public TimeRowFactory(Dataset<E> dataset, int capacity) {
+        super(dataset);
         if (capacity > 0) {
             this.capacity = capacity;
         }
-    }
-
-    @Override
-    public TimeRow create() {
-        TimeRow inst = build();
-        dataset.add(inst);
-        return inst;
-    }
-
-    @Override
-    public TimeRow build() {
-        return new TimeRow(Double.class, capacity);
     }
 
     @Override
@@ -45,31 +32,26 @@ public class TimeRowFactory implements InstanceBuilder<TimeRow> {
     }
 
     @Override
-    public TimeRow createCopyOf(TimeRow orig, Dataset<TimeRow> parent) {
-        return createCopyOf(orig);
-    }
-
-    @Override
-    public TimeRow create(int capacity) {
+    public E create(int capacity) {
         TimeRow inst = build(capacity);
-        dataset.add(inst);
-        return inst;
+        dataset.add((E) inst);
+        return (E) inst;
     }
 
     @Override
-    public TimeRow build(int capacity) {
-        return new TimeRow(Double.class, capacity);
+    public E build(int capacity) {
+        return (E) new TimeRow(Double.class, capacity);
     }
 
     @Override
-    public TimeRow create(double[] values) {
+    public E create(double[] values) {
         TimeRow inst = build(values);
-        dataset.add(inst);
-        return inst;
+        dataset.add((E) inst);
+        return (E) inst;
     }
 
     @Override
-    public TimeRow build(double[] values) {
+    public E build(double[] values) {
         if (values.length != capacity) {
             throw new RuntimeException("expected " + capacity + " but got " + values.length);
         }
@@ -77,37 +59,37 @@ public class TimeRowFactory implements InstanceBuilder<TimeRow> {
         for (int i = 0; i < values.length; i++) {
             inst.set(i, values[i]);
         }
-        return inst;
+        return (E) inst;
     }
 
     @Override
-    public TimeRow create(double[] values, Object classValue) {
-        TimeRow inst = build(values, (String) classValue);
+    public E create(double[] values, Object classValue) {
+        E inst = build(values, (String) classValue);
         dataset.add(inst);
         return inst;
     }
 
     @Override
-    public TimeRow create(double[] values, String classValue) {
+    public E create(double[] values, String classValue) {
         TimeRow inst = create(values);
         inst.setClassValue(classValue);
-        return inst;
+        return (E) inst;
     }
 
     @Override
-    public TimeRow create(String[] strings, Attribute[] attributes) {
+    public E create(String[] strings, Attribute[] attributes) {
         double val[] = new double[strings.length];
         int i = 0;
         for (String str : strings) {
             val[i++] = Double.valueOf(str);
         }
-        return create(val);
+        return (E) create(val);
     }
 
     @Override
-    public TimeRow build(double[] values, String classValue) {
+    public E build(double[] values, String classValue) {
         TimeRow inst = create(values);
         inst.setClassValue(classValue);
-        return inst;
+        return (E) inst;
     }
 }
