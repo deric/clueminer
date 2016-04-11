@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.TransferHandler;
-import org.clueminer.importer.ImportControllerUI;
+import org.clueminer.importer.ImportController;
 import org.clueminer.project.api.ProjectControllerUI;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -64,9 +64,9 @@ public class DragNDropFrameAdapter {
                             DialogDisplayer.getDefault().notify(msg);
                         }
                     } else {
-                        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                        if (importController.getImportController().isFileSupported(file)) {
-                            importController.importFile(fileObject);
+                        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+                        if (importController.isFileSupported(file)) {
+                            importController.preload(fileObject);
                         } else {
                             return false;
                         }

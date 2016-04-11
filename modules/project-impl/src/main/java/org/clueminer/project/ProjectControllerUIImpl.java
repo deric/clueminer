@@ -8,9 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import org.clueminer.types.FileType;
 import org.clueminer.gui.DialogFileFilter;
-import org.clueminer.importer.ImportControllerUI;
+import org.clueminer.importer.ImportController;
 import org.clueminer.longtask.LongTaskErrorHandler;
 import org.clueminer.longtask.LongTaskExecutor;
 import org.clueminer.longtask.LongTaskListener;
@@ -23,6 +22,7 @@ import org.clueminer.project.api.ProjectInformation;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.project.api.WorkspaceProvider;
 import org.clueminer.spi.ProjectPropertiesUI;
+import org.clueminer.types.FileType;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -400,8 +400,8 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         DialogFileFilter clueminerFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
         clueminerFilter.addExtension("."+PROJECT_EXTENSION);
 
-        ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-        for (FileType fileType : importController.getImportController().getFileTypes()) {
+        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+        for (FileType fileType : importController.getFileTypes()) {
             DialogFileFilter dialogFileFilter = new DialogFileFilter(fileType.getName());
             dialogFileFilter.addExtensions(fileType.getExtensions());
             chooser.addChoosableFileFilter(dialogFileFilter);
@@ -443,7 +443,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
                 }
             } else {
                 //Import
-                importController.importFile(fileObject);
+                importController.preload(fileObject);
             }
         }
     }

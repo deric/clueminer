@@ -5,7 +5,7 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.clueminer.importer.ImportControllerUI;
+import org.clueminer.importer.ImportController;
 import org.clueminer.project.api.MostRecentFiles;
 import org.clueminer.project.api.ProjectControllerUI;
 import org.openide.filesystems.FileObject;
@@ -61,9 +61,9 @@ public class RecentFiles extends CallableSystemAction {
                                 Exceptions.printStackTrace(ex);
                             }
                         } else {
-                            ImportControllerUI importController = Lookup.getDefault().lookup(ImportControllerUI.class);
-                            if (importController.getImportController().isFileSupported(file)) {
-                                importController.importFile(fileObject);
+                            ImportController importController = Lookup.getDefault().lookup(ImportController.class);
+                            if (importController.isFileSupported(file)) {
+                                importController.preload(fileObject);
                             }
                         }
                     }
