@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.importer.gui;
 
 import java.awt.GridBagConstraints;
@@ -10,7 +26,6 @@ import javax.swing.SwingUtilities;
 import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.processor.ui.AttributeProp;
 import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
@@ -48,13 +63,12 @@ public class ColumnsPreview extends JPanel implements ImportListener {
             public void run() {
                 if (container != null) {
                     // we might have to check if reload was completed
-                    ContainerLoader loader = container.getLoader();
                     logger.log(Level.INFO, "md5: {0}", container.getMD5());
-                    if (loader != null) {
-                        Iterable<AttributeDraft> attrs = loader.getAttrIter();
-                        logger.log(Level.INFO, "detected {0} attributes", loader.getAttributeCount());
-                        if (numAttributes != loader.getAttributeCount()) {
-                            numAttributes = loader.getAttributeCount();
+                    if (container != null) {
+                        Iterable<AttributeDraft> attrs = container.getAttrIter();
+                        logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
+                        if (numAttributes != container.getAttributeCount()) {
+                            numAttributes = container.getAttributeCount();
                             preview.removeAll();
                             attributes = new AttributeDraft[numAttributes];
                             attrPanels = new AttributeProp[numAttributes];

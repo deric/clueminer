@@ -28,7 +28,6 @@ import org.clueminer.importer.impl.CsvImporter;
 import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -72,14 +71,13 @@ public class TimeseriesProcessorTest {
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
         csv.execute(container, reader);
-        ContainerLoader loader = container.getLoader();
 
-        subject.setContainer(loader);
+        subject.setContainer(container);
         //convert preloaded data to a real dataset
         subject.run();
 
         //name of relation from ARFF
-        Dataset<? extends Instance> dataset = loader.getDataset();
+        Dataset<? extends Instance> dataset = container.getDataset();
         //assertEquals("AP01", dataset.getName());
         /**
          * TODO: fix creating attributes
@@ -87,7 +85,7 @@ public class TimeseriesProcessorTest {
         assertEquals(15, dataset.attributeCount());
         assertEquals(1536, dataset.size());
         //there are 4 classes in the dataset
-        assertNotNull(loader.getDataset());
+        assertNotNull(container.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
     }
 

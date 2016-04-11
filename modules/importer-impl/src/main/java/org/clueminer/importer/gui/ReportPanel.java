@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.importer.gui;
 
 import java.awt.Color;
@@ -29,7 +45,6 @@ import org.clueminer.importer.ImportController;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorFactory;
@@ -292,8 +307,8 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 }
 
                 sourceLabel.setText(source);
-                lbNumLines.setText(String.valueOf(container.getLoader().getInstanceCount()));
-                lbAttr.setText(String.valueOf(container.getLoader().getAttributeCount()));
+                lbNumLines.setText(String.valueOf(container.getInstanceCount()));
+                lbAttr.setText(String.valueOf(container.getAttributeCount()));
             }
         });
     }
@@ -529,8 +544,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     }// </editor-fold>//GEN-END:initComponents
 
     private void cbDataTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDataTypeActionPerformed
-        ContainerLoader loader = container.getLoader();
-        if (loader != null) {
+        if (container != null) {
             //loader.setDataType((String) cbDataType.getSelectedItem());
             initProcessorsUI();
         }
@@ -577,8 +591,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             logger.severe("container is null!");
             return;
         } else {
-            final ContainerLoader loader = cont.getLoader();
-            triggerReimport((FileImporter) importer, loader);
+            triggerReimport((FileImporter) importer, cont);
         }
 
         this.validate();
@@ -586,7 +599,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         this.repaint();
     }
 
-    private void triggerReimport(final FileImporter importer, final ContainerLoader loader) {
+    private void triggerReimport(final FileImporter importer, final Container loader) {
         if (currentFile != null) {
             RP.post(new Runnable() {
                 @Override

@@ -6,7 +6,7 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.types.FileType;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -72,12 +72,11 @@ public class ArffImporterTest {
         File insect = fixtures.insectArff();
         Container container = new DraftContainer();
         subject.execute(container, insect);
-        ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
-        assertEquals("insect", loader.getName());
+        assertEquals("insect", container.getName());
         //two attributes and class
-        assertEquals(4, loader.getAttributeCount());
-        assertEquals(30, loader.getInstanceCount());
+        assertEquals(4, container.getAttributeCount());
+        assertEquals(30, container.getInstanceCount());
     }
 
     @Test
@@ -85,12 +84,11 @@ public class ArffImporterTest {
         File iris = fixtures.irisArff();
         Container container = new DraftContainer();
         subject.execute(container, iris);
-        ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
-        assertEquals("iris", loader.getName());
+        assertEquals("iris", container.getName());
         //two attributes and class
-        assertEquals(5, loader.getAttributeCount());
-        assertEquals(150, loader.getInstanceCount());
+        assertEquals(5, container.getAttributeCount());
+        assertEquals(150, container.getInstanceCount());
     }
 
     @Test
@@ -98,12 +96,11 @@ public class ArffImporterTest {
         File vehicle = fixtures.vehicleArff();
         Container container = new DraftContainer();
         subject.execute(container, vehicle);
-        ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
-        assertEquals("vehicle", loader.getName());
+        assertEquals("vehicle", container.getName());
         //two attributes and class
-        assertEquals(19, loader.getAttributeCount());
-        assertEquals(846, loader.getInstanceCount());
+        assertEquals(19, container.getAttributeCount());
+        assertEquals(846, container.getInstanceCount());
         //there are 4 classes in the dataset
         //assertNotNull(loader.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
@@ -120,18 +117,17 @@ public class ArffImporterTest {
     @Test
     public void testIonosphere() throws IOException {
         File iono = fixtures.ionosphereArff2();
-        Container container = new DraftContainer();
+        Container<InstanceDraft> container = new DraftContainer();
         subject.execute(container, iono);
-        ContainerLoader loader = container.getLoader();
         //name of relation from ARFF
-        assertEquals("ionosphere", loader.getName());
+        assertEquals("ionosphere", container.getName());
         //two attributes and class
-        assertEquals(35, loader.getAttributeCount());
-        assertEquals(351, loader.getInstanceCount());
+        assertEquals(35, container.getAttributeCount());
+        assertEquals(351, container.getInstanceCount());
 
         AttributeDraft attrd;
-        for (int i = 0; i < loader.getAttributeCount(); i++) {
-            attrd = loader.getAttribute(i);
+        for (int i = 0; i < container.getAttributeCount(); i++) {
+            attrd = container.getAttribute(i);
             if (i < 34) {
                 System.out.println("attr " + i + ": " + attrd.getRole().toString());
                 assertEquals(BasicAttrRole.INPUT, attrd.getRole());

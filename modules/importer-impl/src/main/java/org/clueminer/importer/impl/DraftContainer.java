@@ -45,7 +45,6 @@ import org.clueminer.importer.Issue;
 import org.clueminer.importer.Issue.Level;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.openide.filesystems.FileObject;
@@ -60,7 +59,7 @@ import org.openide.util.NbBundle;
  * @param <E>
  */
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
-public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> implements Dataset<E>, Container, ContainerLoader<E> {
+public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> implements Dataset<E>, Container<E> {
 
     private String source;
     private FileObject file;
@@ -103,11 +102,6 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     @Override
     public String getSource() {
         return source;
-    }
-
-    @Override
-    public ContainerLoader getLoader() {
-        return this;
     }
 
     /**
@@ -680,7 +674,6 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
         this.missing = missing;
         builder().setMissing(missing);
     }
-
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
 

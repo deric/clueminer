@@ -12,7 +12,6 @@ import org.clueminer.importer.impl.ArffImporter;
 import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
@@ -38,15 +37,14 @@ public class DefaultProcessorTest {
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
         arff.execute(container, reader);
-        ContainerLoader loader = container.getLoader();
         DefaultProcessor subject = new DefaultProcessor();
 
-        subject.setContainer(loader);
+        subject.setContainer(container);
         //convert preloaded data to a real dataset
         subject.run();
 
-        assertEquals("iris", loader.getName());
-        Dataset<? extends Instance> dataset = loader.getDataset();
+        assertEquals("iris", container.getName());
+        Dataset<? extends Instance> dataset = container.getDataset();
         assertNotNull(dataset);
         assertEquals(4, dataset.attributeCount());
         assertEquals(150, dataset.size());
@@ -62,22 +60,21 @@ public class DefaultProcessorTest {
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
         arff.execute(container, reader);
-        ContainerLoader loader = container.getLoader();
         DefaultProcessor subject = new DefaultProcessor();
 
-        subject.setContainer(loader);
+        subject.setContainer(container);
         //convert preloaded data to a real dataset
         subject.run();
 
         //importer.execute(container, stream);
         //importer.run();
         //name of relation from ARFF
-        assertEquals("vehicle", loader.getName());
-        Dataset<? extends Instance> dataset = loader.getDataset();
+        assertEquals("vehicle", container.getName());
+        Dataset<? extends Instance> dataset = container.getDataset();
         assertEquals(18, dataset.attributeCount());
         assertEquals(846, dataset.size());
         //there are 4 classes in the dataset
-        assertNotNull(loader.getDataset());
+        assertNotNull(container.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
     }
 

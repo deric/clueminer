@@ -32,7 +32,6 @@ import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.AttrHolder;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
@@ -117,18 +116,17 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         if (container.getFile() != null) {
             logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
         }
-        ContainerLoader<InstanceDraft> loader = container.getLoader();
-        loader.reset(); //remove all previous instances
-        loader.setDataset(null);
-        loader.setNumberOfLines(0);
+        container.reset(); //remove all previous instances
+        container.setDataset(null);
+        container.setNumberOfLines(0);
         this.report = new Report();
-        logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
+        logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (AttributeDraft attr : loader.getAttrIter()) {
+        for (AttributeDraft attr : container.getAttrIter()) {
             logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
-        parseHeader(loader, reader);
-        importData(loader, reader);
+        parseHeader(container, reader);
+        importData(container, reader);
         fireAnalysisFinished();
 
         return !cancel;
@@ -141,7 +139,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
      * @param reader
      * @throws IOException
      */
-    protected void parseHeader(ContainerLoader loader, LineNumberReader reader) throws IOException {
+    protected void parseHeader(Container loader, LineNumberReader reader) throws IOException {
         //number of attributes
         int attrNum = 0;
         int headerLine = 0;
@@ -210,7 +208,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         }
     }
 
-    protected void importData(ContainerLoader loader, LineNumberReader reader) throws IOException {
+    protected void importData(Container loader, LineNumberReader reader) throws IOException {
         numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
@@ -246,13 +244,13 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         Progress.finish(progressTicket);
     }
 
-    protected void lineRead(ContainerLoader loader, int num, String line) throws IOException {
+    protected void lineRead(Container loader, int num, String line) throws IOException {
         if (!line.startsWith(comment)) {
             addInstance(loader, num, parseLine(line));
         }
     }
 
-    private void addInstance(ContainerLoader loader, int num, String[] columns) {
+    private void addInstance(Container loader, int num, String[] columns) {
         InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
         int i = 0;
         AttributeRole role;

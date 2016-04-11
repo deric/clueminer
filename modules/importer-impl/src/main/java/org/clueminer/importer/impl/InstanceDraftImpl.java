@@ -6,7 +6,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.io.importer.api.AttributeDraft;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.math.Vector;
 
@@ -22,15 +22,15 @@ public class InstanceDraftImpl implements InstanceDraft {
     private String label;
     private Object type;
     private Object[] values;
-    private final ContainerLoader container;
+    private final Container container;
     private int last = -1;
 
-    public InstanceDraftImpl(ContainerLoader parent) {
+    public InstanceDraftImpl(Container parent) {
         this.values = new Object[0];
         this.container = parent;
     }
 
-    public InstanceDraftImpl(ContainerLoader parent, int size) {
+    public InstanceDraftImpl(Container parent, int size) {
         this.values = new Object[size];
         this.container = parent;
     }

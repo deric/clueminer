@@ -1,6 +1,6 @@
 package org.clueminer.processor.spi;
 
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.project.api.Workspace;
 
@@ -32,7 +32,7 @@ public interface Processor<E extends InstanceDraft> {
      *
      * @param container the container where data are
      */
-    void setContainer(ContainerLoader<E> container);
+    void setContainer(Container<E> container);
 
     /**
      * Sets the destination workspace for the data in the container. If no

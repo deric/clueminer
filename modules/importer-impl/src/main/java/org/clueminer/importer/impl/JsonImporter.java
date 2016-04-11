@@ -29,7 +29,6 @@ import org.clueminer.importer.Issue;
 import org.clueminer.io.JsonLoader;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
@@ -48,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class JsonImporter extends BaseImporter implements FileImporter, LongTask {
 
     private static final String NAME = "JSON";
-    private ContainerLoader<InstanceDraft> loader;
+    private Container<InstanceDraft> container;
     private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
     private int numInstances;
 
@@ -64,18 +63,17 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         if (container.getFile() != null) {
             LOGGER.log(Level.INFO, "importing file {0}", container.getFile().getName());
         }
-        this.loader = container.getLoader();
-        loader.reset(); //remove all previous instances
-        loader.setDataset(null);
-        loader.setNumberOfLines(0);
+        container.reset(); //remove all previous instances
+        container.setDataset(null);
+        container.setNumberOfLines(0);
         this.report = new Report();
-        LOGGER.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
+        LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (AttributeDraft attr : loader.getAttrIter()) {
+        for (AttributeDraft attr : container.getAttrIter()) {
             LOGGER.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
 
-        importData(loader, reader);
+        importData(container, reader);
         fireAnalysisFinished();
 
         return !cancel;
@@ -125,7 +123,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void importData(ContainerLoader loader, Reader reader) throws IOException {
+    public void importData(Container loader, Reader reader) throws IOException {
         numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known

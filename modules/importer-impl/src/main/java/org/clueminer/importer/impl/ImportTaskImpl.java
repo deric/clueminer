@@ -14,7 +14,6 @@ import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
 import org.clueminer.importer.gui.ReportPanel;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorUI;
@@ -50,8 +49,8 @@ public class ImportTaskImpl implements ImportTask {
     }
 
     @Override
-    public ContainerLoader getContainer() {
-        return importer.getContainer().getLoader();
+    public Container getContainer() {
+        return importer.getContainer();
     }
 
     @Override

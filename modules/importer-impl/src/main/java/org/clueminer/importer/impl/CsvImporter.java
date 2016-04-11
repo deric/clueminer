@@ -31,7 +31,6 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.spi.LongTask;
@@ -60,7 +59,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     private boolean parsedHeader = false;
     private int prevColCnt = -1;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
-    private ContainerLoader<InstanceDraft> loader;
+    private Container<InstanceDraft> container;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
@@ -81,8 +80,8 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             this.separator = separator;
             //might change number of detected attributes, it's safer to remove
             //all of them
-            if (loader != null) {
-                loader.resetAttributes();
+            if (container != null) {
+                container.resetAttributes();
             }
         }
     }
@@ -100,16 +99,15 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         if (container.getFile() != null) {
             logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
         }
-        this.loader = container.getLoader();
-        loader.reset(); //remove all previous instances
-        loader.setDataset(null);
-        loader.setNumberOfLines(0);
+        container.reset(); //remove all previous instances
+        container.setDataset(null);
+        container.setNumberOfLines(0);
         this.report = new Report();
         parsedHeader = false;
         logger.log(Level.INFO, "has header = {0}", hasHeader);
-        logger.log(Level.INFO, "number of attributes = {0}", loader.getAttributeCount());
+        logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (AttributeDraft attr : loader.getAttrIter()) {
+        for (AttributeDraft attr : container.getAttrIter()) {
             logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
 
@@ -136,7 +134,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     protected void importData(LineNumberReader reader) throws IOException {
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
-        int numLines = loader.getNumberOfLines();
+        int numLines = container.getNumberOfLines();
         if (numLines > 0) {
             //if we know number of lines
             Progress.switchToDeterminate(progressTicket, numLines);
@@ -166,7 +164,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             }
             prev = count;
         }
-        loader.setNumberOfLines(prev);
+        container.setNumberOfLines(prev);
         //close the input
         reader.close();
         Progress.finish(progressTicket);
@@ -193,9 +191,9 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
              * like type, role etc.
              */
 
-            if (loader.getAttributeCount() != columns.length) {
-                logger.log(Level.INFO, "expected: {0} but got {1}", new Object[]{loader.getAttributeCount(), columns.length});
-                loader.resetAttributes();
+            if (container.getAttributeCount() != columns.length) {
+                logger.log(Level.INFO, "expected: {0} but got {1}", new Object[]{container.getAttributeCount(), columns.length});
+                container.resetAttributes();
             }
 
             //LineNumberReader counts from 1, so this is 2nd line
@@ -211,7 +209,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
                     return;
                 }
             }
-            loader.createInstance(num, columns);
+            container.createInstance(num, columns);
         }
     }
 
@@ -250,10 +248,10 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             attr = getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
             if (!attr.getJavaType().equals(res)) {
-                logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{loader.getAttribute(attrIndex).getName(), type, attr.getJavaType()});
-                report.logIssue(new Issue(loader.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
+                logger.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{container.getAttribute(attrIndex).getName(), type, attr.getJavaType()});
+                report.logIssue(new Issue(container.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
                 attr.setJavaType(res);
-                fireAttributeChanged(loader.getAttribute(attrIndex), "type");
+                fireAttributeChanged(container.getAttribute(attrIndex), "type");
             }
             return true;
         }
@@ -266,21 +264,21 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         String lower;
         AttributeDraft attrd;
         for (String attrName : columns) {
-            if (loader.hasAttributeAtIndex(i)) {
-                if (!loader.getAttribute(i).getName().equals(attrName) && loader.hasAttribute(attrName)) {
+            if (container.hasAttributeAtIndex(i)) {
+                if (!container.getAttribute(i).getName().equals(attrName) && container.hasAttribute(attrName)) {
                     //this should be unique. TODO: really?
-                    attrd = loader.createAttribute(i, attrName + "_" + i);
+                    attrd = container.createAttribute(i, attrName + "_" + i);
                 } else {
                     //get or update attribute name
-                    attrd = loader.createAttribute(i, attrName);
+                    attrd = container.createAttribute(i, attrName);
                 }
             } else {
                 //create new attribute
-                if (loader.hasAttribute(attrName)) {
+                if (container.hasAttribute(attrName)) {
                     //duplicate attribute name
-                    attrd = loader.createAttribute(i, attrName + "_" + i);
+                    attrd = container.createAttribute(i, attrName + "_" + i);
                 } else {
-                    attrd = loader.createAttribute(i, attrName);
+                    attrd = container.createAttribute(i, attrName);
                 }
                 logger.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
             }
@@ -307,11 +305,11 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
      */
     private AttributeDraft getAttribute(int i) {
         AttributeDraft attr;
-        if (i < loader.getAttributeCount() && i > -1) {
-            attr = loader.getAttribute(i);
+        if (i < container.getAttributeCount() && i > -1) {
+            attr = container.getAttribute(i);
         } else {
             logger.log(Level.INFO, "created dummy attr {0}", new Object[]{i});
-            attr = loader.createAttribute(i, "attr_" + i);
+            attr = container.createAttribute(i, "attr_" + i);
             logger.log(Level.INFO, "attr name {0}, role = {1}", new Object[]{attr.getName(), attr.getRole().toString()});
         }
 
@@ -363,14 +361,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             return new LineNumberReader(br);
         }
         return ImportUtils.getTextReader(fileObject);
-    }
-
-    protected ContainerLoader getLoader() {
-        return loader;
-    }
-
-    protected void setLoader(ContainerLoader loader) {
-        this.loader = loader;
     }
 
     /**

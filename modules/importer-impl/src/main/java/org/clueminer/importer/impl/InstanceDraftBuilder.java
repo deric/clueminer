@@ -25,7 +25,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.impl.AbstractRowFactory;
 import org.clueminer.importer.Issue;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 
 /**
@@ -34,7 +34,7 @@ import org.clueminer.io.importer.api.InstanceDraft;
  */
 public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
-    private final ContainerLoader container;
+    private final Container container;
 
     static {
         dispatch.put(Double.class, new TypeHandler() {
@@ -91,12 +91,12 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
 
     }
 
-    public InstanceDraftBuilder(Dataset<E> dataset, ContainerLoader container) {
+    public InstanceDraftBuilder(Dataset<E> dataset, Container container) {
         super(dataset);
         this.container = container;
     }
 
-    public InstanceDraftBuilder(Dataset<E> dataset, char decimalSeparator, ContainerLoader container) {
+    public InstanceDraftBuilder(Dataset<E> dataset, char decimalSeparator, Container container) {
         super(dataset, decimalSeparator);
         this.container = container;
     }

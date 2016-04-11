@@ -172,8 +172,8 @@ public class ImportControllerImpl implements ImportController {
         }
 
         //container = Lookup.getDefault().lookup(Container.class);
-        LOGGER.log(Level.INFO, "importer contr num attr: {0}", container.getLoader().getAttributeCount());
-        LOGGER.log(Level.INFO, "importer contr num inst: {0}", container.getLoader().getInstanceCount());
+        LOGGER.log(Level.INFO, "importer contr num attr: {0}", container.getAttributeCount());
+        LOGGER.log(Level.INFO, "importer contr num inst: {0}", container.getInstanceCount());
         //Report
         Report report = new Report();
         container.setReport(report);
@@ -254,7 +254,7 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public void process(Container container, Processor processor, Workspace workspace) {
         container.closeLoader();
-        processor.setContainer(container.getLoader());
+        processor.setContainer(container);
         processor.setWorkspace(workspace);
         processor.process();
     }

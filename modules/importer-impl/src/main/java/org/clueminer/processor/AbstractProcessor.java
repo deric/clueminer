@@ -11,7 +11,7 @@ import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.io.importer.api.AttributeDraft;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.ProjectController;
@@ -30,7 +30,7 @@ import org.openide.util.Lookup;
 public abstract class AbstractProcessor<D extends InstanceDraft, E extends Instance> implements Processor<D> {
 
     protected Workspace workspace;
-    protected ContainerLoader<D> container;
+    protected Container<D> container;
     protected Dataset<E> dataset;
     private static final Logger logger = Logger.getLogger(AbstractProcessor.class.getName());
 
@@ -40,7 +40,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
     }
 
     @Override
-    public void setContainer(ContainerLoader<D> container) {
+    public void setContainer(Container<D> container) {
         this.container = container;
     }
 

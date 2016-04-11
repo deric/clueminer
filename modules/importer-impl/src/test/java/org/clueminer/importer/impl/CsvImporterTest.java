@@ -7,7 +7,6 @@ import java.util.HashSet;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +27,7 @@ public class CsvImporterTest {
     @Before
     public void setUp() {
         subject = new CsvImporter();
-        subject.setLoader(new DraftContainer());
+        //subject.setLoader(new DraftContainer());
     }
 
     /**
@@ -88,7 +87,7 @@ public class CsvImporterTest {
         Container container = new DraftContainer();
 
         subject.execute(container, FileUtil.toFileObject(fixtures.irisData()));
-        assertEquals(150, container.getLoader().getNumberOfLines());
+        assertEquals(150, container.getNumberOfLines());
     }
 
     /**
@@ -274,7 +273,8 @@ public class CsvImporterTest {
 
     @Test
     public void testParseType() {
-        subject.getLoader().createAttribute(0, "test");
+        Container cont = new DraftContainer();
+        cont.createAttribute(0, "test");
         subject.parseType("Double", 0);
     }
 
@@ -369,13 +369,12 @@ public class CsvImporterTest {
         try {
             importer.execute(container, reader);
 
-            ContainerLoader loader = container.getLoader();
-            loader.setMissing(missing);
-            assertEquals(1, loader.getNumberOfLines());
-            assertEquals(BasicAttrRole.INPUT, loader.getAttribute(0).getRole());
-            assertEquals(17, loader.getAttributeCount());
-            assertEquals(1, loader.getInstanceCount());
-            InstanceDraft inst = loader.getInstance(0);
+            container.setMissing(missing);
+            assertEquals(1, container.getNumberOfLines());
+            assertEquals(BasicAttrRole.INPUT, container.getAttribute(0).getRole());
+            assertEquals(17, container.getAttributeCount());
+            assertEquals(1, container.getInstanceCount());
+            InstanceDraft inst = container.getInstance(0);
             System.out.println("inst " + inst.toString());
             assertEquals(1.0, inst.getObject(1));
             assertEquals(Double.NaN, inst.getObject(2));
@@ -396,13 +395,12 @@ public class CsvImporterTest {
         try {
             importer.execute(container, reader);
 
-            ContainerLoader loader = container.getLoader();
-            assertEquals(1, loader.getNumberOfLines());
-            assertEquals(BasicAttrRole.ID, loader.getAttribute(0).getRole());
-            assertEquals(BasicAttrRole.META, loader.getAttribute(1).getRole());
-            assertEquals(BasicAttrRole.INPUT, loader.getAttribute(2).getRole());
-            assertEquals(5, loader.getAttributeCount());
-            assertEquals(0, loader.getInstanceCount());
+            assertEquals(1, container.getNumberOfLines());
+            assertEquals(BasicAttrRole.ID, container.getAttribute(0).getRole());
+            assertEquals(BasicAttrRole.META, container.getAttribute(1).getRole());
+            assertEquals(BasicAttrRole.INPUT, container.getAttribute(2).getRole());
+            assertEquals(5, container.getAttributeCount());
+            assertEquals(0, container.getInstanceCount());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -419,13 +417,12 @@ public class CsvImporterTest {
         try {
             importer.execute(container, reader);
 
-            ContainerLoader loader = container.getLoader();
-            assertEquals(2, loader.getNumberOfLines());
-            assertEquals(Double.class, loader.getAttribute(0).getJavaType());
-            assertEquals(Double.class, loader.getAttribute(1).getJavaType());
-            assertEquals(String.class, loader.getAttribute(2).getJavaType());
-            assertEquals(3, loader.getAttributeCount());
-            assertEquals(0, loader.getInstanceCount());
+            assertEquals(2, container.getNumberOfLines());
+            assertEquals(Double.class, container.getAttribute(0).getJavaType());
+            assertEquals(Double.class, container.getAttribute(1).getJavaType());
+            assertEquals(String.class, container.getAttribute(2).getJavaType());
+            assertEquals(3, container.getAttributeCount());
+            assertEquals(0, container.getInstanceCount());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
