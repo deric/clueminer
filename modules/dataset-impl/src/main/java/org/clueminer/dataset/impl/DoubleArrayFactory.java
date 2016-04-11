@@ -16,17 +16,10 @@ import org.clueminer.exception.EscapeException;
  * @author Tomas Barton
  * @param <E>
  */
-public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E> {
-
-    private static final int DEFAULT_CAPACITY = 5;
-    private final Dataset<E> dataset;
-    /**
-     * The decimal point character.
-     */
-    private char decimalPointCharacter = '.';
+public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     public DoubleArrayFactory(Dataset<E> dataset) {
-        this.dataset = dataset;
+        super(dataset);
     }
 
     /**
@@ -34,15 +27,7 @@ public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E
      * @param decimalPointCharacter the character for decimal points, usually '.'
      */
     public DoubleArrayFactory(Dataset<E> dataset, char decimalPointCharacter) {
-        this.dataset = dataset;
-        this.decimalPointCharacter = decimalPointCharacter;
-    }
-
-    @Override
-    public E create(double[] values) {
-        E row = build(values);
-        dataset.add(row);
-        return row;
+        super(dataset, decimalPointCharacter);
     }
 
     @Override
@@ -52,39 +37,6 @@ public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E
             row.set(i, values[i]);
         }
         return (E) row;
-    }
-
-    @Override
-    public E create(double[] values, Object classValue) {
-        E row = create(values);
-        row.setClassValue(classValue);
-        return row;
-    }
-
-    @Override
-    public E create(double[] values, String classValue) {
-        E row = build(values, classValue);
-        dataset.add(row);
-        return row;
-    }
-
-    @Override
-    public E build(double[] values, String classValue) {
-        E row = build(values);
-        row.setClassValue(classValue);
-        return row;
-    }
-
-    /**
-     * Build and add Instance to Dataset
-     *
-     * @return
-     */
-    @Override
-    public E create() {
-        E row = build();
-        dataset.add(row);
-        return row;
     }
 
     @Override
@@ -104,19 +56,6 @@ public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E
     @Override
     public E createCopyOf(E orig, Dataset<E> parent) {
         return createCopyOf(orig);
-    }
-
-    /**
-     * Creates a new DataRow with the given initial capacity.
-     *
-     * @param size
-     */
-    @Override
-    public E create(int size) {
-        E row = build(size);
-        dataset.add(row);
-        return row;
-
     }
 
     @Override
@@ -218,18 +157,4 @@ public class DoubleArrayFactory<E extends Instance> implements InstanceBuilder<E
         return dataRow;
     }
 
-    private static double string2Double(String str, char decimalPointCharacter) {
-
-        if (str == null) {
-            return Double.NaN;
-        }
-        try {
-            str = str.replace(decimalPointCharacter, '.');
-            return Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            Logger.getLogger(DoubleArrayFactory.class.getName())
-                    .log(Level.SEVERE, "DoubleArrayFactory.string2Double(String): ''{0}'' is not a valid number!", str);
-            return Double.NaN;
-        }
-    }
 }

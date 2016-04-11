@@ -16,32 +16,18 @@ import org.clueminer.exception.EscapeException;
  * @author Tomas Barton
  * @param <E>
  */
-public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E> {
+public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
-    private static final int DEFAULT_CAPACITY = 5;
-    /**
-     * The decimal point character.
-     */
-    private char decimalPointCharacter = '.';
-    private Dataset<Instance> dataset;
-
-    public FloatArrayFactory(Dataset<? extends Instance> dataset) {
-        this.dataset = (Dataset<Instance>) dataset;
+    public FloatArrayFactory(Dataset<E> dataset) {
+        super(dataset);
     }
 
     /**
      * @param dataset
      * @param decimalPointCharacter the letter for decimal points, usually '.'
      */
-    public FloatArrayFactory(Dataset<? extends Instance> dataset, char decimalPointCharacter) {
-        this.decimalPointCharacter = decimalPointCharacter;
-    }
-
-    @Override
-    public E create(double[] values) {
-        E inst = build(values);
-        dataset.add(inst);
-        return inst;
+    public FloatArrayFactory(Dataset<E> dataset, char decimalPointCharacter) {
+        super(dataset, decimalPointCharacter);
     }
 
     @Override
@@ -54,48 +40,8 @@ public class FloatArrayFactory<E extends Instance> implements InstanceBuilder<E>
     }
 
     @Override
-    public E create(double[] values, Object classValue) {
-        E inst = build(values, (String) classValue);
-        dataset.add(inst);
-        return inst;
-    }
-
-    @Override
-    public E create(double[] values, String classValue) {
-        E inst = build(values, classValue);
-        dataset.add(inst);
-        return inst;
-    }
-
-    @Override
-    public E build(double[] values, String classValue) {
-        E row = build(values);
-        row.setClassValue(classValue);
-        return row;
-    }
-
-    @Override
-    public E create() {
-        E inst = build();
-        dataset.add(inst);
-        return inst;
-    }
-
-    @Override
     public E build() {
         return (E) new FloatArrayDataRow(DEFAULT_CAPACITY);
-    }
-
-    /**
-     * Creates a new DataRow with the given initial capacity.
-     *
-     * @param size
-     */
-    @Override
-    public E create(int size) {
-        E inst = build(size);
-        dataset.add(inst);
-        return inst;
     }
 
     @Override
