@@ -16,17 +16,16 @@
  */
 package org.clueminer.dataset.impl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.DecimalFormat;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
+import static org.clueminer.dataset.impl.AbstractRowFactory.dispatch;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
-import org.clueminer.dataset.row.Tools;
-import org.clueminer.exception.EscapeException;
 
 /**
  *
@@ -38,26 +37,42 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
     static {
         dispatch.put(Double.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row) {
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
                 row.set(attr.getIndex(), (Double) value);
             }
         });
         dispatch.put(Float.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row) {
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
                 row.set(attr.getIndex(), (Float) value);
             }
         });
         dispatch.put(Integer.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row) {
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
                 row.set(attr.getIndex(), (Integer) value);
             }
         });
         dispatch.put(Boolean.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row) {
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
                 row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
+            }
+        });
+        dispatch.put(String.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                switch (at) {
+                    case NUMERICAL:
+                    case NUMERIC:
+                    case REAL:
+                        row.set(attr.getIndex(), string2Double(value.toString(), df));
+                        break;
+                    default:
+                        throw new RuntimeException("conversion to " + at + " is not supported for '" + value + "'");
+                }
+
             }
         });
 
@@ -155,26 +170,4 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
         dataRow.trim();
         return dataRow;
     }
-
-    @Override
-    public void set(String value, Attribute attr, E row) {
-        if (value != null) {
-            value = value.trim();
-        }
-        if ((value != null) && (value.length() > 0) && (!value.equals("?"))) {
-            if (attr.isNominal()) {
-                try {
-                    String unescaped = Tools.unescape(value);
-                    row.set(attr.getIndex(), attr.getMapping().mapString(unescaped));
-                } catch (EscapeException ex) {
-                    Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                row.set(attr.getIndex(), string2Double(value, this.decimalFormat));
-            }
-        } else {
-            row.set(attr.getIndex(), Double.NaN);
-        }
-    }
-
 }

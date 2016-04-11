@@ -20,6 +20,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +43,10 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     protected DecimalFormat decimalFormat;
     // Make a map that translates a Class object to a Handler
     protected static final Map<Class, TypeHandler> dispatch = new HashMap<>();
+    /**
+     * values considered as missing values
+     */
+    protected static HashSet<String> missing = new HashSet<>(2);
 
     public AbstractRowFactory(Dataset<E> dataset) {
         this.dataset = dataset;
@@ -205,8 +210,19 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
                 // Throw an exception: unknown type
                 throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
             }
-            h.handle(value, attr, row);
+            h.handle(value, attr, row, decimalFormat);
         }
     }
+
+    @Override
+    public HashSet<String> getMissing() {
+        return missing;
+    }
+
+    @Override
+    public void setMissing(HashSet<String> missing) {
+        this.missing = missing;
+    }
+
 
 }

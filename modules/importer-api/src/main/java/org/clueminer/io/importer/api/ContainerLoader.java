@@ -1,5 +1,6 @@
 package org.clueminer.io.importer.api;
 
+import java.util.HashSet;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
@@ -107,6 +108,14 @@ public interface ContainerLoader<E extends InstanceDraft> {
     void addInstance(E instance, int row);
 
     /**
+     * Parse columns into types supported by storage backend.
+     *
+     * @param num     index of line or primary key
+     * @param columns
+     */
+    void createInstance(int num, Object[] columns);
+
+    /**
      * Text representation of source
      *
      * @return
@@ -201,4 +210,12 @@ public interface ContainerLoader<E extends InstanceDraft> {
      */
     Report getReport();
 
+    /**
+     * List of strings which are considered as missing values
+     *
+     * @return
+     */
+    HashSet<String> getMissing();
+
+    void setMissing(HashSet<String> missing);
 }

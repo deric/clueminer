@@ -65,7 +65,7 @@ public class AttributeDraftBuilder implements AttributeBuilder<AttributeDraft> {
 
     @Override
     public AttributeDraft create(String name, AttributeType type) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return create(container.attributeCount(), name, type, BasicAttrRole.INPUT);
     }
 
     @Override

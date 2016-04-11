@@ -26,8 +26,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.FloatArrayDataRow;
-import org.clueminer.dataset.row.Tools;
-import org.clueminer.exception.EscapeException;
 
 /**
  *
@@ -147,34 +145,5 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
         }
     }
 
-    @Override
-    public void set(String value, Attribute attr, E row) {
-        if (value != null) {
-            value = value.trim();
-        }
-        if ((value != null) && (value.length() > 0) && (!value.equals("?"))) {
-            if (attr.isNominal()) {
-                try {
-                    String unescaped = Tools.unescape(value);
-                    row.set(attr.getIndex(), attr.getMapping().mapString(unescaped));
-                } catch (EscapeException ex) {
-                    Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                row.set(attr.getIndex(), string2Float(value, this.decimalFormat));
-            }
-        } else {
-            row.set(attr.getIndex(), Float.NaN);
-        }
-    }
-
-    @Override
-    public void set(Object value, Attribute attr, E row) {
-        if (attr.isNominal()) {
-            row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
-        } else {
-            //row.set(attr.getIndex(), value);
-        }
-    }
 
 }

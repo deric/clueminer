@@ -16,11 +16,10 @@
  */
 package org.clueminer.dataset.api;
 
-import org.clueminer.dataset.api.Attribute;
-import org.clueminer.dataset.api.Instance;
+import java.text.DecimalFormat;
 
 /**
- * Interface for casting objects into appropriate representation in Java.
+ * Interface for casting/converting objects into appropriate representation in Java.
  *
  * @author deric
  */
@@ -33,5 +32,5 @@ public interface TypeHandler<E extends Instance> {
      * @param attr
      * @param row
      */
-    void handle(Object value, Attribute attr, E row);
+    void handle(Object value, Attribute attr, E row, DecimalFormat df);
 }

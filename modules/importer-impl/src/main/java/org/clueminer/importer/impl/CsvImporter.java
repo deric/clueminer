@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.importer.impl;
 
 import java.io.BufferedReader;
@@ -12,7 +28,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
-import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -25,7 +40,6 @@ import org.clueminer.types.FileType;
 import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,7 +59,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
      */
     private boolean parsedHeader = false;
     private int prevColCnt = -1;
-    private int numInstances;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
     private ContainerLoader<InstanceDraft> loader;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
@@ -121,7 +134,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     }
 
     protected void importData(LineNumberReader reader) throws IOException {
-        numInstances = 0;
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
         int numLines = loader.getNumberOfLines();
@@ -199,7 +211,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
                     return;
                 }
             }
-            addInstance(num, columns);
+            loader.createInstance(num, columns);
         }
     }
 
@@ -287,6 +299,12 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         }
     }
 
+    /**
+     *
+     * @deprecated should be handled within loader container
+     * @param i
+     * @return
+     */
     private AttributeDraft getAttribute(int i) {
         AttributeDraft attr;
         if (i < loader.getAttributeCount() && i > -1) {
@@ -298,35 +316,6 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         }
 
         return attr;
-    }
-
-    private void addInstance(int num, String[] columns) {
-        InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
-        int i = 0;
-        AttributeRole role;
-        AttributeDraft attr;
-        for (String value : columns) {
-            try {
-                attr = getAttribute(i);
-                role = attr.getRole();
-                if (role == BasicAttrRole.ID) {
-                    draft.setId(value);
-                } else if (role == BasicAttrRole.INPUT) {
-                    draft.setObject(i, parseValue(attr, value, i, num, draft));
-                } else {
-                    draft.setObject(i, value);
-                }
-            } catch (Exception e) {
-                report.logIssue(new Issue("Invalid type (" + num + "): " + e.toString(), Issue.Level.WARNING));
-                Exceptions.printStackTrace(e);
-            }
-            i++;
-        }
-        if (!loader.hasPrimaryKey()) {
-            draft.setId(String.valueOf(numInstances));
-        }
-        loader.addInstance(draft, num);
-        numInstances++;
     }
 
     /**

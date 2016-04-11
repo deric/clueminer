@@ -24,6 +24,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -31,8 +32,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.swing.JComponent;
 import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -46,6 +49,7 @@ import org.clueminer.io.importer.api.ContainerLoader;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.openide.filesystems.FileObject;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -68,12 +72,14 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     protected Object2ObjectMap<String, AttributeDraft> attributeMap;
     protected Report report;
     private Object2IntMap<String> instanceMap;
-    private AttributeBuilder attributeBuilder;
+    private AttributeDraftBuilder attributeBuilder;
+    private InstanceDraftBuilder<E> builder;
     private int linesCnt;
     private Class<?> defaultNumericType = Double.class;
     private String md5 = null;
     private final TreeSet<Object> classes = new TreeSet<>();
     private DataType dataType;
+    private HashSet<String> missing;
 
     public DraftContainer() {
         report = new Report();
@@ -82,6 +88,8 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
         attributeMap = new Object2ObjectOpenHashMap<>();
         instanceMap = new Object2IntOpenHashMap<>();
         instanceMap.defaultReturnValue(NULL_INDEX);
+        attributeBuilder = new AttributeDraftBuilder(this);
+        missing = new HashSet<>(5);
     }
 
     @Override
@@ -100,6 +108,48 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     @Override
     public ContainerLoader getLoader() {
         return this;
+    }
+
+    /**
+     * Parse columns into types supported by storage backend.
+     *
+     * @param num
+     * @param columns
+     */
+    public void createInstance(int num, Object[] columns) {
+        //TODO: compute number of numeric/string attributes
+        E draft = builder().build(columns.length);
+        int i = 0;
+        AttributeRole role;
+        AttributeDraft attr;
+        for (Object value : columns) {
+            try {
+                if (hasAttributeAtIndex(i)) {
+                    attr = getAttribute(i);
+                } else {
+                    report.logIssue(new Issue("no name " + i + "-th attribute", Level.WARNING));
+                    //create no-name attribute
+                    attr = attributeBuilder.create(i, "attr_" + i);
+                }
+                role = attr.getRole();
+                if (role == BasicAttrRole.ID) {
+                    draft.setId(value.toString());
+                } else if (role == BasicAttrRole.INPUT) {
+                    //draft.setObject(i, parseValue(attr, value, i, num, draft));
+                    builder().set(value, attr, draft);
+                } else {
+                    draft.setObject(i, value);
+                }
+            } catch (Exception e) {
+                report.logIssue(new Issue("Invalid type (line " + num + "): " + e.toString(), Issue.Level.WARNING));
+                Exceptions.printStackTrace(e);
+            }
+            i++;
+        }
+        if (!hasPrimaryKey()) {
+            draft.setId(String.valueOf(num));
+        }
+        addInstance(draft, num);
     }
 
     @Override
@@ -202,24 +252,28 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
      */
     @Override
     public AttributeDraft createAttribute(int index, String name) {
-        AttributeDraft attr;
-        //try to avoid duplicate attribute
-        if (!hasAttributeAtIndex(index)) {
-            attr = new AttributeDraftImpl(name);
-            attr.setIndex(index);
-            attr.setJavaType(defaultNumericType);
-            attr.setRole(BasicAttrRole.INPUT);
-            attributeMap.put(name, attr);
-            attributeList.put(index, attr);
-        } else {
-            attr = attributeList.get(index);
-            if (!attr.getName().equals(name)) {
-                //update attribute's names map
-                attributeMap.remove(attr.getName());
-                attr.setName(name);
-                attributeMap.put(name, attr);
-            }
-        }
+        AttributeDraft attr = attributeBuilder.create(name, BasicAttrType.NUMERIC);
+        attr.setIndex(index);
+
+        /* AttributeDraft attr;
+         * //try to avoid duplicate attribute
+         * if (!hasAttributeAtIndex(index)) {
+         * attr = new AttributeDraftImpl(name);
+         * attr.setIndex(index);
+         * attr.setJavaType(defaultNumericType);
+         * attr.setRole(BasicAttrRole.INPUT);
+         * attributeMap.put(name, attr);
+         * attributeList.put(index, attr);
+         * } else {
+         * attr = attributeList.get(index);
+         * if (!attr.getName().equals(name)) {
+         * //update attribute's names map
+         * attributeMap.remove(attr.getName());
+         * attr.setName(name);
+         * attributeMap.put(name, attr);
+         * }
+         * }
+         * return attr; */
         return attr;
     }
 
@@ -266,7 +320,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public void setAttributeBuilder(AttributeBuilder builder) {
-        this.attributeBuilder = builder;
+        this.attributeBuilder = (AttributeDraftBuilder) builder;
     }
 
     @Override
@@ -479,12 +533,18 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public InstanceBuilder<E> builder() {
-        return new InstanceDraftBuilder<>(this, this);
+        if (builder == null) {
+            builder = new InstanceDraftBuilder<>(this, this);
+        }
+        return builder;
     }
 
     @Override
     public AttributeBuilder attributeBuilder() {
-        return new AttributeDraftBuilder(this);
+        if (attributeBuilder == null) {
+            attributeBuilder = new AttributeDraftBuilder(this);
+        }
+        return attributeBuilder;
     }
 
     @Override
@@ -524,16 +584,6 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setId(String id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -616,6 +666,21 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * List of strings which are considered as missing values
+     *
+     * @return
+     */
+    public HashSet<String> getMissing() {
+        return missing;
+    }
+
+    public void setMissing(HashSet<String> missing) {
+        this.missing = missing;
+        builder().setMissing(missing);
+    }
+
 
     private static class NullFilterIterable<T extends InstanceDraft> implements Iterable<T> {
 

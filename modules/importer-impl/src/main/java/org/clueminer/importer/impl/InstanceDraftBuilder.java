@@ -16,20 +16,18 @@
  */
 package org.clueminer.importer.impl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.text.DecimalFormat;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.impl.AbstractRowFactory;
 import static org.clueminer.dataset.impl.AbstractRowFactory.string2Double;
-import org.clueminer.dataset.impl.DoubleArrayFactory;
-import org.clueminer.dataset.row.Tools;
-import org.clueminer.dataset.row.XYInstance;
-import org.clueminer.exception.EscapeException;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.InstanceDraft;
 
 /**
  *
@@ -38,6 +36,55 @@ import org.clueminer.io.importer.api.ContainerLoader;
 public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     private final ContainerLoader container;
+
+    static {
+        dispatch.put(Double.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Double) value);
+            }
+        });
+        dispatch.put(Float.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Float) value);
+            }
+        });
+        dispatch.put(Integer.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Integer) value);
+            }
+        });
+        dispatch.put(Boolean.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
+            }
+        });
+        dispatch.put(String.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                String val = value.toString();
+                if (missing.contains(val)) {
+                    row.set(attr.getIndex(), Double.NaN);
+                } else {
+                    switch (at) {
+                        case NUMERICAL:
+                        case NUMERIC:
+                        case REAL:
+                            row.set(attr.getIndex(), string2Double(value.toString(), df));
+                            break;
+                        case STRING:
+                            ((InstanceDraft) row).setObject(attr.getIndex(), value);
+                            break;
+                    }
+                }
+            }
+        });
+
+    }
 
     public InstanceDraftBuilder(Dataset<E> dataset, ContainerLoader container) {
         super(dataset);
@@ -72,30 +119,26 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
         return (E) row;
     }
 
+    /**
+     * Generic type convertor. Supported types should be initialized in
+     * <code>dispatch</code> variable in child class.
+     *
+     * @param value
+     * @param attr
+     * @param row
+     */
     @Override
-    public E create(String[] strings, Attribute[] attributes) {
-        XYInstance dataRow = (XYInstance) create(strings.length);
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] != null) {
-                strings[i] = strings[i].trim();
+    public void set(Object value, Attribute attr, E row) {
+        if (attr.isNominal()) {
+            row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
+        } else {
+            TypeHandler h = dispatch.get(value.getClass());
+            if (h == null) {
+                //put all problems into report
+                container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
             }
-            if ((strings[i] != null) && (strings[i].length() > 0) && (!strings[i].equals("?"))) {
-                if (attributes[i].isNominal()) {
-                    try {
-                        String unescaped = Tools.unescape(strings[i]);
-                        dataRow.set(attributes[i].getIndex(), attributes[i].getMapping().mapString(unescaped));
-                    } catch (EscapeException ex) {
-                        Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
-                        container.getReport().logIssue(new Issue(attributes[i].getName() + ": " + ex.getMessage(), Issue.Level.INFO, ex));
-                    }
-                } else {
-                    dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
-                }
-            } else {
-                dataRow.set(attributes[i].getIndex(), Double.NaN);
-            }
+            h.handle(value, attr, row, decimalFormat);
         }
-        return (E) dataRow;
     }
 
 }

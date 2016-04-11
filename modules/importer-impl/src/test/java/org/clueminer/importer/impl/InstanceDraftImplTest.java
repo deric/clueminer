@@ -14,9 +14,6 @@ public class InstanceDraftImplTest {
     private InstanceDraftImpl subject;
     private DraftContainer container;
 
-    public InstanceDraftImplTest() {
-    }
-
     @Before
     public void setUp() {
         container = new DraftContainer();
@@ -55,18 +52,11 @@ public class InstanceDraftImplTest {
         assertEquals(0, subject.size());
     }
 
-    /**
-     * Test of setType method, of class InstanceDraftImpl.
-     */
     @Test
-    public void testSetType() {
-    }
-
-    /**
-     * Test of getType method, of class InstanceDraftImpl.
-     */
-    @Test
-    public void testGetType() {
+    public void testIsEmpty() {
+        assertEquals(true, subject.isEmpty());
+        subject.put(1.0);
+        assertEquals(false, subject.isEmpty());
     }
 
     /**

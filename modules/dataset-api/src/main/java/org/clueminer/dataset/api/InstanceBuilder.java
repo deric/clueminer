@@ -1,5 +1,7 @@
 package org.clueminer.dataset.api;
 
+import java.util.HashSet;
+
 /**
  * Builder allows creating new instances without knowing which underlying
  * structure is used for storing data (we delegate this responsibility to class
@@ -75,15 +77,6 @@ public interface InstanceBuilder<E extends Instance> {
     E create(String[] values);
 
     /**
-     * Parse value into attribute <code>attr</code> and store into <code>row</code>.
-     *
-     * @param value
-     * @param row
-     * @param attr
-     */
-    void set(String value, Attribute attr, E row);
-
-    /**
      * Store value as <code>row</code>'s <code>attr</code> value.
      *
      * @param value
@@ -137,4 +130,13 @@ public interface InstanceBuilder<E extends Instance> {
      * @return
      */
     E create(String[] values, Object classValue);
+
+    /**
+     * List of strings which are considered as missing values
+     *
+     * @return
+     */
+    HashSet<String> getMissing();
+
+    void setMissing(HashSet<String> missing);
 }

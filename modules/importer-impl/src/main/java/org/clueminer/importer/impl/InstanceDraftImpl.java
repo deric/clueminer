@@ -22,6 +22,7 @@ public class InstanceDraftImpl implements InstanceDraft {
     private Object type;
     private Object[] values;
     private final ContainerLoader container;
+    private int last = -1;
 
     public InstanceDraftImpl(ContainerLoader parent) {
         this.values = new Object[0];
@@ -84,6 +85,9 @@ public class InstanceDraftImpl implements InstanceDraft {
             System.arraycopy(values, 0, newArray, 0, values.length);
             values = newArray;
         }
+        if (index > last) {
+            last = index;
+        }
         values[index] = value;
     }
 
@@ -133,7 +137,8 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public int put(double value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        setObject(++last, value);
+        return last;
     }
 
     @Override
@@ -143,17 +148,17 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public double value(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (double) values[index];
     }
 
     @Override
     public void set(int index, double value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        setObject(index, type);
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return last == -1;
     }
 
     @Override
