@@ -22,7 +22,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Unique identifier of dataset
      *
      * @return usually it is a number, however to make it more universal, we use
-     * string
+     *         string
      */
     String getId();
 
@@ -229,7 +229,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Get the value of an attribute in given instance (accessing data like in
      * matrix)
      *
-     * @param instanceIdx row index
+     * @param instanceIdx    row index
      * @param attributeIndex column index
      * @return
      */
@@ -248,7 +248,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Set attribute value by its index and position in dataset
      *
      * @param instanceIdx instance index - starts from 0
-     * @param attrIdx attribute index - starts from 0
+     * @param attrIdx     attribute index - starts from 0
      * @param value
      */
     void set(int instanceIdx, int attrIdx, double value);
@@ -290,6 +290,13 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * @return factory for building instances
      */
     InstanceBuilder<E> builder();
+
+    /**
+     * Set factory for creating new "rows" (instances) in the dataset
+     *
+     * @param builder
+     */
+    void setBuilder(InstanceBuilder<E> builder);
 
     /**
      * Builder create supported attributes types
@@ -350,7 +357,7 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      * Add reference to a dataset which was usually created by transformation of
      * this dataset.
      *
-     * @param key must be unique
+     * @param key     must be unique
      * @param dataset
      */
     void addChild(String key, Dataset<E> dataset);

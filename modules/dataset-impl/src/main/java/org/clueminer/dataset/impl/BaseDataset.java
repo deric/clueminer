@@ -13,7 +13,6 @@ import org.clueminer.dataset.api.Instance;
  */
 public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E> implements Dataset<E> {
 
-
     private static final long serialVersionUID = 4300989082762007729L;
     protected Map<Integer, Attribute> attributes = new HashMap<>();
 
@@ -46,7 +45,7 @@ public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E>
     }
 
     @Override
-    public void setAttributes(Map<Integer, Attribute> attr){
+    public void setAttributes(Map<Integer, Attribute> attr) {
         this.attributes = attr;
     }
 
@@ -55,7 +54,7 @@ public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E>
      * @return reference to attribute map
      */
     @Override
-    public Map<Integer, Attribute> getAttributes(){
+    public Map<Integer, Attribute> getAttributes() {
         return attributes;
     }
 
@@ -63,4 +62,5 @@ public abstract class BaseDataset<E extends Instance> extends AbstractDataset<E>
     public Attribute[] copyAttributes() {
         return attributes.values().toArray(new Attribute[attributeCount()]);
     }
+
 }

@@ -32,7 +32,6 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     private static final long serialVersionUID = -6412010424414577127L;
     protected Map<Integer, Attribute> attributes = new HashMap<>();
-    protected InstanceBuilder builder;
     protected AttributeBuilder attributeBuilder;
     protected TreeSet<Object> classes = new TreeSet<>();
     private static final Logger logger = Logger.getLogger(SampleDataset.class.getName());

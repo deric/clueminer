@@ -11,6 +11,7 @@ import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.math.Matrix;
@@ -33,6 +34,7 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     private int capacity = 10;
     protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
+    protected InstanceBuilder<E> builder;
 
     public AbstractDataset() {
         //do nothing
@@ -210,5 +212,10 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
             matrix = new DMatrix(this);
         }
         return matrix;
+    }
+
+    @Override
+    public void setBuilder(InstanceBuilder<E> builder) {
+        this.builder = builder;
     }
 }

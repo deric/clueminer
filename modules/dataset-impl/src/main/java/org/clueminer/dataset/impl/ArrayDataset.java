@@ -34,7 +34,6 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
 
     private static final long serialVersionUID = -5482153886671625555L;
     private Instance[] data;
-    protected InstanceBuilder<E> builder;
     protected AttributeBuilder attributeBuilder;
     private final TreeSet<Object> classes = new TreeSet<>();
     protected Attribute[] attributes;
