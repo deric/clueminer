@@ -67,6 +67,32 @@ public interface InstanceBuilder<E extends Instance> {
     E create(double[] values);
 
     /**
+     * Create an instance from string values
+     *
+     * @param values
+     * @return newly created instance
+     */
+    E create(String[] values);
+
+    /**
+     * Parse value into attribute <code>attr</code> and store into <code>row</code>.
+     *
+     * @param value
+     * @param row
+     * @param attr
+     */
+    void set(String value, Attribute attr, E row);
+
+    /**
+     * Store value as  <code>row</code>'s <code>attr</code> value.
+     *
+     * @param value
+     * @param row
+     * @param attr
+     */
+    void set(double value, Attribute attr, E row);
+
+    /**
      * Build an instance from given values
      *
      * @param values

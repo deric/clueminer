@@ -92,4 +92,14 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
         return (E) dataRow;
     }
 
+    @Override
+    public void set(String value, Attribute attr, E row) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void set(double value, Attribute attr, E row) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

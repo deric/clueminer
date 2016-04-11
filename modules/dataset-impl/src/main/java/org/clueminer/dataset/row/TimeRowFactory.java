@@ -92,4 +92,14 @@ public class TimeRowFactory<E extends TimeRow> extends AbstractRowFactory<E> imp
         inst.setClassValue(classValue);
         return (E) inst;
     }
+
+    @Override
+    public void set(String value, Attribute attr, E row) {
+        row.set(attr.getIndex(), string2Double(value, this.decimalFormat));
+    }
+
+    @Override
+    public void set(double value, Attribute attr, E row) {
+        row.set(attr.getIndex(), value);
+    }
 }

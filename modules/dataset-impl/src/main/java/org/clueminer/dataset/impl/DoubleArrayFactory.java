@@ -70,42 +70,6 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
     }
 
     /**
-     * Creates a data row from an array of Strings. If the corresponding
-     * attribute is nominal, the string is mapped to its index, otherwise it is
-     * parsed using <code>Double.parseDouble(String)</code> .
-     *
-     * @param strings
-     * @param attributes
-     * @return
-     * @see FileDataRowReader
-     */
-    @Override
-    public E create(String[] strings, Attribute[] attributes) {
-        DoubleArrayDataRow dataRow = (DoubleArrayDataRow) create(strings.length);
-        for (int i = 0; i < strings.length; i++) {
-            if (strings[i] != null) {
-                strings[i] = strings[i].trim();
-            }
-            if ((strings[i] != null) && (strings[i].length() > 0) && (!strings[i].equals("?"))) {
-                if (attributes[i].isNominal()) {
-                    try {
-                        String unescaped = Tools.unescape(strings[i]);
-                        dataRow.setValue(attributes[i], attributes[i].getMapping().mapString(unescaped));
-                    } catch (EscapeException ex) {
-                        Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    dataRow.setValue(attributes[i], string2Double(strings[i], this.decimalFormat));
-                }
-            } else {
-                dataRow.setValue(attributes[i], Double.NaN);
-            }
-        }
-        dataRow.trim();
-        return (E) dataRow;
-    }
-
-    /**
      * Creates a data row from an Object array. The classes of the object must
      * match the value type of the corresponding {@link Attribute}. If the
      * corresponding attribute is nominal, <code>data[i]</code> will be cast to
@@ -161,6 +125,36 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
         }
         dataRow.trim();
         return dataRow;
+    }
+
+    @Override
+    public void set(String value, Attribute attr, E row) {
+        if (value != null) {
+            value = value.trim();
+        }
+        if ((value != null) && (value.length() > 0) && (!value.equals("?"))) {
+            if (attr.isNominal()) {
+                try {
+                    String unescaped = Tools.unescape(value);
+                    row.set(attr.getIndex(), attr.getMapping().mapString(unescaped));
+                } catch (EscapeException ex) {
+                    Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                row.set(attr.getIndex(), string2Double(value, this.decimalFormat));
+            }
+        } else {
+            row.set(attr.getIndex(), Double.NaN);
+        }
+    }
+
+    @Override
+    public void set(double value, Attribute attr, E row) {
+        if (attr.isNominal()) {
+            row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
+        } else {
+            row.set(attr.getIndex(), value);
+        }
     }
 
 }

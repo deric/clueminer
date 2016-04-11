@@ -19,6 +19,7 @@ package org.clueminer.dataset.impl;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
@@ -122,11 +123,38 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     }
 
     @Override
+    public E create(String[] values) {
+        Map<Integer, Attribute> attrs = dataset.getAttributes();
+        E row = create(values.length);
+        for (int i = 0; i < values.length; i++) {
+            set(values[i], attrs.get(i), row);
+        }
+        return row;
+    }
+
+    @Override
     public E create(String[] values, Object classValue) {
-        Attribute[] attr = (Attribute[]) dataset.getAttributes().values().toArray(new Attribute[dataset.attributeCount()]);
-        E inst = create(values, attr);
+        E inst = create(values);
         inst.setClassValue(classValue);
         return inst;
+    }
+
+    /**
+     * Creates a data row from an array of Strings. If the corresponding
+     * attribute is nominal, the string is mapped to its index.
+     *
+     * @param strings
+     * @param attributes
+     * @return
+     * @see FileDataRowReader
+     */
+    @Override
+    public E create(String[] strings, Attribute[] attributes) {
+        E row = create(strings.length);
+        for (int i = 0; i < strings.length; i++) {
+            set(strings[i], attributes[i], row);
+        }
+        return row;
     }
 
     public static double string2Double(String str, DecimalFormat df) {
