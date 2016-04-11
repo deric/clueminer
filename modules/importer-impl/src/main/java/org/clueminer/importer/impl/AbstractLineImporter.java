@@ -81,8 +81,20 @@ public abstract class AbstractLineImporter extends BaseImporter implements FileI
 
     }
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     public boolean execute(Container container, Reader reader) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
+        return execute(container, lineReader, -1);
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean execute(Container container, Reader reader, int limit) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         return execute(container, lineReader);
     }

@@ -116,6 +116,11 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
     }
 
     @Override
+    public boolean execute(Container container, Reader reader, int limit) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

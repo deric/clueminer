@@ -106,24 +106,13 @@ public class ImportControllerImpl implements ImportController {
             } else {
                 LOGGER.log(Level.INFO, "using importer {0}", importer.getName());
             }
-            if (fileObject != null && importer != null) {
-                Container c = importFile(fileObject, fileObject.getInputStream(), importer, false);
-                if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
-                    try {
-                        fileObject.delete();
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-                return c;
-            }
+            return importFile(fileObject, fileObject.getInputStream(), importer, false);
         }
         return null;
     }
 
     @Override
-    public Container importFile(File file, FileImporter importer) throws FileNotFoundException {
-        FileObject fileObject = FileUtil.toFileObject(file);
+    public Container importFile(FileObject fileObject, FileImporter importer) throws FileNotFoundException {
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
             if (fileObject != null) {
@@ -141,6 +130,15 @@ public class ImportControllerImpl implements ImportController {
         return null;
     }
 
+    /**
+     * Tries importing data while collecting problems occurred during parsing input.
+     *
+     * @param file     text file / archive / binary file etc.
+     * @param reader
+     * @param importer
+     * @param reload
+     * @return
+     */
     @Override
     public Container importFile(FileObject file, Reader reader, FileImporter importer, boolean reload) {
         //Create Container
@@ -221,9 +219,9 @@ public class ImportControllerImpl implements ImportController {
 
     @Override
     public FileImporter getFileImporter(String importerName) {
-        FileImporter builder = getMatchingImporter(importerName);
-        if (builder != null) {
-            return builder;
+        FileImporter importer = getMatchingImporter(importerName);
+        if (importer != null) {
+            return importer;
         }
         return null;
     }

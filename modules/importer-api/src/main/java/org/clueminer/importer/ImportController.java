@@ -53,7 +53,7 @@ public interface ImportController {
 
     Container importFile(File file) throws FileNotFoundException;
 
-    Container importFile(File file, FileImporter importer) throws FileNotFoundException;
+    Container importFile(FileObject file, FileImporter importer) throws FileNotFoundException;
 
     /**
      *

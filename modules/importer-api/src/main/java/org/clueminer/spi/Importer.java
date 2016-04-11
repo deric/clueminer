@@ -37,6 +37,18 @@ public interface Importer {
     boolean execute(Container container, Reader reader) throws IOException;
 
     /**
+     * Tries to import data from reader into container. Then user can modify customize
+     * import setting before container unloading.
+     *
+     * @param container
+     * @param reader
+     * @param limit     when > 1 number of lines read will be limited
+     * @return
+     * @throws java.io.IOException
+     */
+    boolean execute(Container container, Reader reader, int limit) throws IOException;
+
+    /**
      * Tries to import data from FileObject into container. Then user can modify customize
      * import setting before container unloading.
      *
