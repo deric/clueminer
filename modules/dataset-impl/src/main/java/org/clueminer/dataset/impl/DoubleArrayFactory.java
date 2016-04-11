@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.row.Tools;
 import org.clueminer.exception.EscapeException;
@@ -33,6 +34,34 @@ import org.clueminer.exception.EscapeException;
  * @param <E>
  */
 public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
+
+    static {
+        dispatch.put(Double.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row) {
+                row.set(attr.getIndex(), (Double) value);
+            }
+        });
+        dispatch.put(Float.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row) {
+                row.set(attr.getIndex(), (Float) value);
+            }
+        });
+        dispatch.put(Integer.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row) {
+                row.set(attr.getIndex(), (Integer) value);
+            }
+        });
+        dispatch.put(Boolean.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row) {
+                row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
+            }
+        });
+
+    }
 
     public DoubleArrayFactory(Dataset<E> dataset) {
         super(dataset);
@@ -145,15 +174,6 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
             }
         } else {
             row.set(attr.getIndex(), Double.NaN);
-        }
-    }
-
-    @Override
-    public void set(double value, Attribute attr, E row) {
-        if (attr.isNominal()) {
-            row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
-        } else {
-            row.set(attr.getIndex(), value);
         }
     }
 

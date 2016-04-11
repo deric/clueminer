@@ -84,13 +84,13 @@ public interface InstanceBuilder<E extends Instance> {
     void set(String value, Attribute attr, E row);
 
     /**
-     * Store value as  <code>row</code>'s <code>attr</code> value.
+     * Store value as <code>row</code>'s <code>attr</code> value.
      *
      * @param value
      * @param row
      * @param attr
      */
-    void set(double value, Attribute attr, E row);
+    void set(Object value, Attribute attr, E row);
 
     /**
      * Build an instance from given values

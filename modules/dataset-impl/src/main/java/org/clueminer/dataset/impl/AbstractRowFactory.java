@@ -19,6 +19,7 @@ package org.clueminer.dataset.impl;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.TypeHandler;
 
 /**
  * Common methods for all instance builders.
@@ -38,6 +40,8 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     protected final Dataset<E> dataset;
     public static final int DEFAULT_CAPACITY = 5;
     protected DecimalFormat decimalFormat;
+    // Make a map that translates a Class object to a Handler
+    protected static final Map<Class, TypeHandler> dispatch = new HashMap<>();
 
     public AbstractRowFactory(Dataset<E> dataset) {
         this.dataset = dataset;
@@ -179,6 +183,29 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
             Logger.getLogger(DoubleArrayFactory.class.getName())
                     .log(Level.SEVERE, "string2Double(String): ''{0}'' is not a valid number!", str);
             throw new RuntimeException("AbstractRowFactory.string2Double(String): " + str + " is not a valid number!");
+        }
+    }
+
+    /**
+     * Generic type convertor. Supported types should be initialized in
+     * <code>dispatch</code> variable in child class.
+     *
+     * @param value
+     * @param attr
+     * @param row
+     */
+    @Override
+    public void set(Object value, Attribute attr, E row) {
+        if (attr.isNominal()) {
+            row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
+        } else {
+
+            TypeHandler h = dispatch.get(value.getClass());
+            if (h == null) {
+                // Throw an exception: unknown type
+                throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
+            }
+            h.handle(value, attr, row);
         }
     }
 

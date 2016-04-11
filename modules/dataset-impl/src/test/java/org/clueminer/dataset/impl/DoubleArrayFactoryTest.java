@@ -1,6 +1,7 @@
 package org.clueminer.dataset.impl;
 
 import org.clueminer.attributes.BasicAttrType;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import static org.junit.Assert.*;
@@ -32,10 +33,6 @@ public class DoubleArrayFactoryTest {
         assertEquals(1, dataset.size());
         assertEquals(1.0, dataset.instance(0).get(0), DELTA);
         assertEquals(2.0, dataset.instance(0).get(1), DELTA);
-    }
-
-    @Test
-    public void testBuild_doubleArr() {
     }
 
     @Test
@@ -73,15 +70,54 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testCreate_int() {
+    public void testParseAttrDouble() {
+        Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
+        Instance inst = subject.create();
+        double value = 123.0;
+        subject.set(value, attr, inst);
+        //value should be set as third attribute
+        assertEquals(value, inst.get(2), DELTA);
     }
 
     @Test
-    public void testBuild_int() {
+    public void testParseAttrFloat() {
+        Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
+        Instance inst = subject.create();
+        float value = 123.0f;
+        subject.set(value, attr, inst);
+        //value should be set as third attribute
+        assertEquals(123.0, inst.get(2), DELTA);
     }
 
     @Test
-    public void testCreate_DoubleArr_AttributeArr() {
+    public void testParseAttrInt() {
+        Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
+        Instance inst = subject.create();
+        int value = 123;
+        subject.set(value, attr, inst);
+        //value should be set as third attribute
+        assertEquals(123.0, inst.get(2), DELTA);
+    }
+
+    @Test
+    public void testParseAttrBoolean() {
+        Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
+        Instance inst = subject.create();
+        boolean value = true;
+        subject.set(value, attr, inst);
+        //value should be set as third attribute
+        // TRUE -> converted to 1
+        assertEquals(1.0, inst.get(2), DELTA);
+    }
+
+    @Test
+    public void testParseAttrString() {
+        Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
+        Instance inst = subject.create();
+        String value = "423.123";
+        subject.set(value, attr, inst);
+        //value should be set as third attribute
+        assertEquals(423.123, inst.get(2), DELTA);
     }
 
 }

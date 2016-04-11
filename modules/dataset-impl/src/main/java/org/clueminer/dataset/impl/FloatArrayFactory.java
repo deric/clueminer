@@ -169,11 +169,11 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
     }
 
     @Override
-    public void set(double value, Attribute attr, E row) {
+    public void set(Object value, Attribute attr, E row) {
         if (attr.isNominal()) {
             row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
         } else {
-            row.set(attr.getIndex(), value);
+            //row.set(attr.getIndex(), value);
         }
     }
 
