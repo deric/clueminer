@@ -8,6 +8,7 @@ import javax.swing.event.EventListenerList;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -35,6 +36,7 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     protected HashMap<String, Dataset<E>> children;
     protected Matrix matrix;
     protected InstanceBuilder<E> builder;
+    protected DataType dataType = DataType.DISCRETE;
 
     public AbstractArrayDataset() {
         //do nothing
@@ -195,5 +197,15 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     @Override
     public void setBuilder(InstanceBuilder<E> builder) {
         this.builder = builder;
+    }
+
+    @Override
+    public void setDataType(DataType type) {
+        this.dataType = type;
+    }
+
+    @Override
+    public DataType getDataType() {
+        return this.dataType;
     }
 }

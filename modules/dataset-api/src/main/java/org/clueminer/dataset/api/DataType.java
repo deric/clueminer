@@ -30,6 +30,6 @@ public enum DataType {
     /**
      * 2 dependent variables
      */
-    XY_CONTINOUS,
+    XY_CONTINUOUS,
     TIMESERIES
 }

@@ -411,4 +411,17 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      */
     Collection<? extends Number> attrCollection(int index);
 
+    /**
+     * Set underlying data type. Might influence way how data is stored.
+     *
+     * @param type
+     */
+    void setDataType(DataType type);
+
+    /**
+     *
+     * @return character of data stored
+     */
+    DataType getDataType();
+
 }
