@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
@@ -304,6 +305,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     private AttributeRole guessAttrType(String name, AttributeDraft attrd) {
         if (name.startsWith("meta_") || name.startsWith("name")) {
             attrd.setRole(BasicAttrRole.META);
+            attrd.setType(BasicAttrType.STRING);
             logger.log(Level.INFO, "meta attr {0}", new Object[]{attrd.getIndex()});
         } else if (name.startsWith("id")) {
             attrd.setRole(BasicAttrRole.ID);

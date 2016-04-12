@@ -69,10 +69,14 @@ public class TimeseriesProcessorTest {
         assertEquals(1536, container.getInstanceCount());
     }
 
-    //@Test
+    /**
+     * Fetch data from a reader
+     *
+     * @throws IOException
+     */
+    @Test
     public void testTimeSeries() throws IOException {
         File tsFile = TF.ap01();
-        csv.execute(container, tsFile);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(tsFile.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
@@ -90,9 +94,8 @@ public class TimeseriesProcessorTest {
          */
         assertEquals(15, dataset.attributeCount());
         assertEquals(1536, dataset.size());
-        //there are 4 classes in the dataset
         assertNotNull(container.getDataset());
-        //assertEquals(4, loader.getDataset().getClasses().size());
+        //assertEquals(4, container.getDataset().getClasses().size());
     }
 
 }

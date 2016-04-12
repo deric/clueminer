@@ -10,6 +10,7 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -17,7 +18,6 @@ import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -124,9 +124,10 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
         //create real instances
         int i = 0;
         AttributeDraft attr;
+        InstanceBuilder<E> builder = dataset.builder();
         for (InstanceDraft instd : container.getInstances()) {
             //TODO allocate only numerical attributes
-            inst = dataset.builder().build(dataset.attributeCount());
+            inst = builder.build(dataset.attributeCount());
             //parent is needed to build a map of classes
             inst.setParent(dataset);
             /**
@@ -137,29 +138,31 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
             int realIdx;
             for (int j = 0; j < container.getAttributeCount(); j++) {
                 //right now we support only double attributes
-                try {
-                    attr = container.getAttribute(j);
-                    if (attr.getRole().equals(BasicAttrRole.INPUT)) {
-                        if (attr.isNumerical()) {
-                            realIdx = inputMap.get(j);
-                            inst.set(realIdx, (Double) instd.getObject(j));
-                        } else {
-                            logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getObject(j)});
-                        }
-                    } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
-                        inst.setClassValue(instd.getObject(j));
-                        inst.setId((String) instd.getObject(j));
-                        inst.setName((String) instd.getObject(j));
-                        logger.log(Level.FINEST, "setting class {0}: {1}", new Object[]{i, instd.getObject(j)});
-                    } else if (attr.getRole().equals(BasicAttrRole.ID)) {
-                        inst.setId((String) instd.getObject(j));
-                        inst.setName((String) instd.getObject(j));
+                // try {
+                attr = container.getAttribute(j);
+                if (attr.getRole().equals(BasicAttrRole.INPUT)) {
+                    if (attr.isNumerical()) {
+                        realIdx = inputMap.get(j);
+                        //inst.set(realIdx, (Double) instd.getObject(j));
+                        //delegate type conversion to builders
+                        builder.set(instd.getObject(j), attr, (E) inst);
+                    } else {
+                        logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getObject(j)});
                     }
+                } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
+                    inst.setClassValue(instd.getObject(j));
+                    inst.setId((String) instd.getObject(j));
+                    inst.setName((String) instd.getObject(j));
+                    logger.log(Level.FINEST, "setting class {0}: {1}", new Object[]{i, instd.getObject(j)});
+                } else if (attr.getRole().equals(BasicAttrRole.ID)) {
+                    inst.setId((String) instd.getObject(j));
+                    inst.setName((String) instd.getObject(j));
+                }
 
-                } catch (Exception e) {
+                /* } catch (RuntimeException e) {
                     logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getObject(j), e.toString()});
                     Exceptions.printStackTrace(e);
-                }
+                }*/
                 //dataset.setAttributeValue(i, j, (Double) instd.getValue(i));
             }
             if (instd.getId() != null) {
