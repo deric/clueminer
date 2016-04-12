@@ -107,8 +107,8 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         logger.log(Level.INFO, "has header = {0}", hasHeader);
         logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (AttributeDraft attr : container.getAttrIter()) {
-            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+        for (Object attr : container.getAttrIter()) {
+            logger.log(Level.INFO, "attr: {0} ", attr);
         }
 
         importData(lineReader);
@@ -374,6 +374,10 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
 
     public void setMissing(List<String> missing) {
         this.missing = missing;
+    }
+
+    public void setContainer(Container cont) {
+        this.container = cont;
     }
 
 }

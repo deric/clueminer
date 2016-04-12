@@ -5,11 +5,13 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashSet;
 import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.filesystems.FileUtil;
@@ -91,13 +93,6 @@ public class CsvImporterTest {
     }
 
     /**
-     * Test of getContainer method, of class CsvImporter.
-     */
-    @Test
-    public void testGetContainer() {
-    }
-
-    /**
      * Test of getReport method, of class CsvImporter.
      */
     @Test
@@ -116,13 +111,6 @@ public class CsvImporterTest {
      */
     @Test
     public void testIsMatchingImporter() {
-    }
-
-    /**
-     * Test of cancel method, of class CsvImporter.
-     */
-    @Test
-    public void testCancel() {
     }
 
     /**
@@ -274,7 +262,9 @@ public class CsvImporterTest {
     @Test
     public void testParseType() {
         Container cont = new DraftContainer();
-        cont.createAttribute(0, "test");
+        Attribute attr = cont.createAttribute(0, "test");
+        assertNotNull(attr);
+        subject.setContainer(cont);
         subject.parseType("Double", 0);
     }
 

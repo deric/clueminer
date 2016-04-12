@@ -236,7 +236,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
      */
     @Override
     public Iterable<AttributeDraft> getAttrIter() {
-        return (Iterable<AttributeDraft>) attributeList.values();
+        return (Iterable<AttributeDraft>) attributeList.values().iterator();
     }
 
     /**

@@ -27,7 +27,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.JsonLoader;
-import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
@@ -69,8 +68,8 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
         this.report = new Report();
         LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (AttributeDraft attr : container.getAttrIter()) {
-            LOGGER.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+        for (Object attr : container.getAttrIter()) {
+            LOGGER.log(Level.INFO, "attr: {0}", attr);
         }
 
         importData(container, reader);
