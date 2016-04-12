@@ -55,12 +55,18 @@ public class TimeseriesProcessorTest {
         container = new DraftContainer();
     }
 
+    /**
+     * Read from file
+     *
+     * @throws IOException
+     */
     @Test
     public void testFileRead() throws IOException {
         File tsFile = TF.ap01();
         csv.execute(container, tsFile);
-        //Dataset<? extends Instance> dataset = loader.getDataset();
         assertNotNull(container.getReport());
+        assertEquals(16, container.getAttributeCount());
+        assertEquals(1536, container.getInstanceCount());
     }
 
     //@Test

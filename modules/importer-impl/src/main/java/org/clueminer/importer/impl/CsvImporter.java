@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
+import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -221,11 +222,11 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
      * @return
      */
     protected boolean parseType(String column, int attrIndex) {
-
+        AttributeDraft attr;
         final Matcher matcher = patternType.matcher(column);
         if (matcher.find()) {
             String type = matcher.group(1).toLowerCase();
-            AttributeDraft attr;
+
             Class<?> res;
             switch (type) {
                 case "double":
@@ -255,7 +256,11 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             }
             return true;
         }
-        logger.log(Level.INFO, "column ''{0}'' doesn't look like a type information", column);
+        attr = getAttribute(attrIndex);
+        AttributeRole role = guessAttrType(attr.getName(), attr);
+        System.out.println("role  =" + role);
+        logger.log(Level.INFO, "column ''{0}'' doesn't look like a type information. guessing type to: " + role, column);
+
         return false;
     }
 
@@ -284,17 +289,28 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
             }
 
             lower = attrName.toLowerCase();
-            //sort of "smart" guesses based on attribute's name
-            if (lower.startsWith("meta_")) {
-                attrd.setRole(BasicAttrRole.META);
-                logger.log(Level.INFO, "meta attr {0}", new Object[]{i});
-            } else if (lower.startsWith("id")) {
-                attrd.setRole(BasicAttrRole.ID);
-            } else if (lower.startsWith("!")) {
-                attrd.setRole(BasicAttrRole.CLASS);
-            }
+            guessAttrType(lower, attrd);
             i++;
         }
+    }
+
+    /**
+     * Sort of "smart" guesses based on attribute's name. Used when deterministic
+     * approaches fails.
+     *
+     * @param name
+     * @param attrd
+     */
+    private AttributeRole guessAttrType(String name, AttributeDraft attrd) {
+        if (name.startsWith("meta_") || name.startsWith("name")) {
+            attrd.setRole(BasicAttrRole.META);
+            logger.log(Level.INFO, "meta attr {0}", new Object[]{attrd.getIndex()});
+        } else if (name.startsWith("id")) {
+            attrd.setRole(BasicAttrRole.ID);
+        } else if (name.startsWith("!")) {
+            attrd.setRole(BasicAttrRole.CLASS);
+        }
+        return attrd.getRole();
     }
 
     /**
