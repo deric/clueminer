@@ -49,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = FileImporter.class)
-public class CsvImporter extends AbstractLineImporter implements FileImporter, LongTask {
+public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E> implements FileImporter<E>, LongTask {
 
     private boolean hasHeader = true;
     private boolean skipHeader = false;
@@ -61,7 +61,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     private boolean parsedHeader = false;
     private int prevColCnt = -1;
     private static final Logger logger = Logger.getLogger(CsvImporter.class.getName());
-    private Container<InstanceDraft> container;
+    private Container<E> container;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
@@ -96,7 +96,7 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
     }
 
     @Override
-    public boolean execute(Container container, LineNumberReader lineReader) throws IOException {
+    public boolean execute(Container<E> container, LineNumberReader lineReader) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
             logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
@@ -109,7 +109,8 @@ public class CsvImporter extends AbstractLineImporter implements FileImporter, L
         logger.log(Level.INFO, "has header = {0}", hasHeader);
         logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (Object attr : container.getAttrIter()) {
+        Container<E> c = container;
+        for (Object attr : c.getAttrIter()) {
             logger.log(Level.INFO, "attr: {0} ", attr);
         }
 

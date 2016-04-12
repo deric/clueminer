@@ -45,7 +45,7 @@ import org.openide.util.NbBundle;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractLineImporter extends BaseImporter implements FileImporter, LongTask {
+public abstract class AbstractLineImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
 
     private static final Logger logger = Logger.getLogger(AbstractLineImporter.class.getName());
     protected static final int INITIAL_READ_SIZE = 128;
@@ -101,7 +101,7 @@ public abstract class AbstractLineImporter extends BaseImporter implements FileI
      * {@inheritDoc }
      */
     @Override
-    public boolean execute(Container container, Reader reader) throws IOException {
+    public boolean execute(Container<E> container, Reader reader) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         return execute(container, lineReader, -1);
     }
@@ -110,12 +110,12 @@ public abstract class AbstractLineImporter extends BaseImporter implements FileI
      * {@inheritDoc }
      */
     @Override
-    public boolean execute(Container container, Reader reader, int limit) throws IOException {
+    public boolean execute(Container<E> container, Reader reader, int limit) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(reader);
         return execute(container, lineReader);
     }
 
-    public boolean execute(Container container, File file) throws IOException {
+    public boolean execute(Container<E> container, File file) throws IOException {
         LineNumberReader lineReader = ImportUtils.getTextReader(new BufferedReader(new FileReader(file)));
         if (file != null) {
             container.setFile(FileUtil.toFileObject(file));
@@ -136,7 +136,7 @@ public abstract class AbstractLineImporter extends BaseImporter implements FileI
         return true;
     }
 
-    public abstract boolean execute(Container container, LineNumberReader reader) throws IOException;
+    public abstract boolean execute(Container<E> container, LineNumberReader reader) throws IOException;
 
     protected String[] parseLine(String line) throws IOException {
         List<String> tokensOnThisLine = new ArrayList<>();

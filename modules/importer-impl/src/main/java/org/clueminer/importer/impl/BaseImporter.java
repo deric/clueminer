@@ -19,6 +19,7 @@ package org.clueminer.importer.impl;
 import javax.swing.event.EventListenerList;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.clueminer.longtask.LongTaskErrorHandler;
 import org.clueminer.longtask.LongTaskExecutor;
@@ -33,9 +34,9 @@ import org.openide.util.Exceptions;
  *
  * @author deric
  */
-public abstract class BaseImporter implements FileImporter, LongTask {
+public abstract class BaseImporter<E extends InstanceDraft> implements FileImporter<E>, LongTask {
 
-    protected Container container;
+    protected Container<E> container;
     protected Report report;
     protected ProgressTicket progressTicket;
     protected final LongTaskErrorHandler errorHandler;
@@ -59,7 +60,7 @@ public abstract class BaseImporter implements FileImporter, LongTask {
     }
 
     @Override
-    public Container getContainer() {
+    public Container<E> getContainer() {
         return container;
     }
 

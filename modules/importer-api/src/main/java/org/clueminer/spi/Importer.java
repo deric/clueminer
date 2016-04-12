@@ -3,6 +3,7 @@ package org.clueminer.spi;
 import java.io.IOException;
 import java.io.Reader;
 import org.clueminer.io.importer.api.Container;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
 import org.openide.filesystems.FileObject;
 
@@ -16,7 +17,7 @@ import org.openide.filesystems.FileObject;
  *
  * @see ImportController
  */
-public interface Importer {
+public interface Importer<E extends InstanceDraft> {
 
     /**
      * Should be unique importer ID
@@ -34,7 +35,7 @@ public interface Importer {
      * @return
      * @throws java.io.IOException
      */
-    boolean execute(Container container, Reader reader) throws IOException;
+    boolean execute(Container<E> container, Reader reader) throws IOException;
 
     /**
      * Tries to import data from reader into container. Then user can modify customize
@@ -46,7 +47,7 @@ public interface Importer {
      * @return
      * @throws java.io.IOException
      */
-    boolean execute(Container container, Reader reader, int limit) throws IOException;
+    boolean execute(Container<E> container, Reader reader, int limit) throws IOException;
 
     /**
      * Tries to import data from FileObject into container. Then user can modify customize
@@ -57,7 +58,7 @@ public interface Importer {
      * @return
      * @throws IOException
      */
-    boolean execute(Container container, FileObject file) throws IOException;
+    boolean execute(Container<E> container, FileObject file) throws IOException;
 
     /**
      * Returns the import container. The container is the import "result", all

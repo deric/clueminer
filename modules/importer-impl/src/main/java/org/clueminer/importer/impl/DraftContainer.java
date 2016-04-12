@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -236,7 +237,43 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
      */
     @Override
     public Iterable<AttributeDraft> getAttrIter() {
-        return (Iterable<AttributeDraft>) attributeList.values().iterator();
+        return new Iterable<AttributeDraft>() {
+            @Override
+            public Iterator<AttributeDraft> iterator() {
+                return new AttrIterator(attributeList.values().iterator());
+            }
+        };
+    }
+
+    private static class AttrIterator<AttributeDraft> implements Iterator<AttributeDraft> {
+
+        private AttributeDraft pointer;
+        private final ObjectIterator<AttributeDraft> itr;
+
+        public AttrIterator(ObjectIterator<AttributeDraft> itr) {
+            this.itr = itr;
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (itr.hasNext()) {
+                pointer = itr.next();
+                if (pointer != null) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public AttributeDraft next() {
+            return pointer;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported.");
+        }
     }
 
     /**

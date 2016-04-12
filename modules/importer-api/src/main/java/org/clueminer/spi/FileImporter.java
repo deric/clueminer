@@ -3,6 +3,7 @@ package org.clueminer.spi;
 import java.io.File;
 import java.io.Reader;
 import java.util.Collection;
+import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.types.FileType;
 import org.openide.filesystems.FileObject;
 
@@ -10,7 +11,7 @@ import org.openide.filesystems.FileObject;
  *
  * @author Tomas Barton
  */
-public interface FileImporter extends Importer {
+public interface FileImporter<E extends InstanceDraft> extends Importer<E> {
 
     /**
      * Return true if importer supports given MIME type
