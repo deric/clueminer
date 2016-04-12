@@ -22,8 +22,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -132,7 +130,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     }
 
     @Override
-    public E create(String[] values) {
+    public E create(String[] values) throws ParseException {
         Map<Integer, Attribute> attrs = dataset.getAttributes();
         E row = create(values.length);
         for (int i = 0; i < values.length; i++) {
@@ -142,7 +140,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     }
 
     @Override
-    public E create(String[] values, Object classValue) {
+    public E create(String[] values, Object classValue) throws ParseException {
         E inst = create(values);
         inst.setClassValue(classValue);
         return inst;
@@ -158,7 +156,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
      * @see FileDataRowReader
      */
     @Override
-    public E create(String[] strings, Attribute[] attributes) {
+    public E create(String[] strings, Attribute[] attributes) throws ParseException {
         E row = create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             set(strings[i], attributes[i], row);
@@ -166,28 +164,17 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         return row;
     }
 
-    public static double string2Double(String str, DecimalFormat df) {
+    public static double string2Double(String str, DecimalFormat df) throws ParseException {
         if (str == null) {
             return Double.NaN;
         }
-        try {
-            //default English numbers
-            if (df == null) {
-                return Double.parseDouble(str);
-            } else {
-                Number num = df.parse(str);
-                return num.doubleValue();
-            }
-        } catch (NumberFormatException e) {
-            Logger.getLogger(DoubleArrayFactory.class.getName())
-                    .log(Level.SEVERE, "string2Double(String): ''{0}'' is not a valid number!", str);
-            //TODO allow supressing exceptions by a parameter
-            throw new RuntimeException("AbstractRowFactory.string2Double(String): " + str + " is not a valid number!");
-            //return Double.NaN;
-        } catch (ParseException ex) {
-            Logger.getLogger(DoubleArrayFactory.class.getName())
-                    .log(Level.SEVERE, "string2Double(String): ''{0}'' is not a valid number!", str);
-            throw new RuntimeException("AbstractRowFactory.string2Double(String): " + str + " is not a valid number!");
+
+        //default English numbers
+        if (df == null) {
+            return Double.parseDouble(str);
+        } else {
+            Number num = df.parse(str);
+            return num.doubleValue();
         }
     }
 
@@ -200,7 +187,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
      * @param row
      */
     @Override
-    public void set(Object value, Attribute attr, E row) {
+    public void set(Object value, Attribute attr, E row) throws ParseException {
         if (value == null) {
             if (attr.allowMissing()) {
                 set(attr.getMissingValue(), attr, row);

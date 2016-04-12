@@ -142,10 +142,16 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                 attr = container.getAttribute(j);
                 if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                     if (attr.isNumerical()) {
-                        //realIdx = inputMap.get(j);
-                        //inst.set(realIdx, (Double) instd.getObject(j));
-                        //delegate type conversion to builders
-                        builder.set(instd.getObject(j), attr, (E) inst);
+                        try {
+                            //realIdx = inputMap.get(j);
+                            //inst.set(realIdx, (Double) instd.getObject(j));
+                            //delegate type conversion to builders
+                            builder.set(instd.getObject(j), attr, (E) inst);
+                        } catch (Exception ex) {
+                            throw new RuntimeException("failed to convert "
+                                    + instd.getObject(j) + " to " + attr.getType() + ", inst: " + instd.toString(), ex);
+                            //Exceptions.printStackTrace(ex);
+                        }
                     } else {
                         logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getObject(j)});
                     }

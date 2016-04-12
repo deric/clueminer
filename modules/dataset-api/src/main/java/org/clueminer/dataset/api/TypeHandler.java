@@ -17,6 +17,7 @@
 package org.clueminer.dataset.api;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 
 /**
  * Interface for casting/converting objects into appropriate representation in Java.
@@ -32,5 +33,5 @@ public interface TypeHandler<E extends Instance> {
      * @param attr
      * @param row
      */
-    void handle(Object value, Attribute attr, E row, DecimalFormat df);
+    void handle(Object value, Attribute attr, E row, DecimalFormat df) throws ParseException;
 }

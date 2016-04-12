@@ -16,6 +16,7 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
@@ -83,7 +84,11 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
+                    try {
+                        dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
+                    } catch (ParseException ex) {
+                        throw new RuntimeException("failed to convert " + strings[i] + " to " + attributes[i].getType(), ex);
+                    }
                 }
             } else {
                 dataRow.set(attributes[i].getIndex(), Double.NaN);

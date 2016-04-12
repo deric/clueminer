@@ -13,6 +13,7 @@ public class InstanceDraftImplTest {
 
     private InstanceDraftImpl subject;
     private DraftContainer container;
+    private static double DELTA = 1e-9;
 
     @Before
     public void setUp() {
@@ -71,6 +72,10 @@ public class InstanceDraftImplTest {
      */
     @Test
     public void testSetValue_String_Object() {
+        for (int i = 0; i < 5; i++) {
+            subject.set(i, i + 10);
+            assertEquals(i + 10, subject.get(i), DELTA);
+        }
     }
 
     /**

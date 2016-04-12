@@ -17,6 +17,7 @@
 package org.clueminer.importer.impl;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -142,7 +143,11 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                 //put all problems into report
                 container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
             }
-            h.handle(value, attr, row, decimalFormat);
+            try {
+                h.handle(value, attr, row, decimalFormat);
+            } catch (ParseException ex) {
+                container.getReport().logIssue(new Issue(ex, Issue.Level.SEVERE));
+            }
         }
     }
 

@@ -170,7 +170,7 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public void set(int index, double value) {
-        setObject(index, type);
+        setObject(index, value);
     }
 
     @Override
@@ -265,12 +265,12 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public Number getValue(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return value(index);
     }
 
     @Override
     public double get(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return value(index);
     }
 
     @Override

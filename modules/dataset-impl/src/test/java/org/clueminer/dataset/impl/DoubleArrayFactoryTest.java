@@ -1,5 +1,6 @@
 package org.clueminer.dataset.impl;
 
+import java.text.ParseException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -36,7 +37,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testCreate_doubleArr_String() {
+    public void testCreate_doubleArr_String() throws ParseException {
         Instance inst = subject.create(new String[]{"1.0", "2.0"}, "foo");
         assertEquals(2, inst.size());
         assertEquals(1.0, dataset.instance(0).get(0), DELTA);
@@ -45,7 +46,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testDecimalCharacterSeparator() {
+    public void testDecimalCharacterSeparator() throws ParseException {
         subject = new DoubleArrayFactory(dataset, ',');
         Instance inst = subject.create(new String[]{"1,0", "2,0"}, "foo");
         assertEquals(2, inst.size());
@@ -70,7 +71,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testParseAttrDouble() {
+    public void testParseAttrDouble() throws ParseException {
         Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
         Instance inst = subject.create();
         double value = 123.0;
@@ -80,7 +81,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testParseAttrFloat() {
+    public void testParseAttrFloat() throws ParseException {
         Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
         Instance inst = subject.create();
         float value = 123.0f;
@@ -90,7 +91,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testParseAttrInt() {
+    public void testParseAttrInt() throws ParseException {
         Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
         Instance inst = subject.create();
         int value = 123;
@@ -100,7 +101,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testParseAttrBoolean() {
+    public void testParseAttrBoolean() throws ParseException {
         Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
         Instance inst = subject.create();
         boolean value = true;
@@ -111,7 +112,7 @@ public class DoubleArrayFactoryTest {
     }
 
     @Test
-    public void testParseAttrString() {
+    public void testParseAttrString() throws ParseException {
         Attribute attr = dataset.attributeBuilder().create("z", BasicAttrType.NUMERIC);
         Instance inst = subject.create();
         String value = "423.123";
