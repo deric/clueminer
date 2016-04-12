@@ -1,8 +1,6 @@
 language: java
 sudo: false
 jdk:
-  - oraclejdk7
-  - openjdk7
   - oraclejdk8
 before_install:
   - "sh -e /etc/init.d/xvfb start"
