@@ -10,7 +10,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.explorer.ExplorerTopComponent;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
-import org.clueminer.io.importer.api.ContainerLoader;
+import org.clueminer.io.importer.api.Container;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.ProjectInformationImpl;
@@ -116,7 +116,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
-                ContainerLoader container = importTask.getContainer();
+                Container container = importTask.getContainer();
                 if (container != null) {
                     ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                     Dataset<? extends Instance> dataset = container.getDataset();
