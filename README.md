@@ -11,7 +11,7 @@ Clueminer is a platform for interactive data-mining with special focus on cluste
 Prerequisites:
 
    * git
-   * Java (7 or newer)
+   * Java 8 or newer
    * Maven
 
 
