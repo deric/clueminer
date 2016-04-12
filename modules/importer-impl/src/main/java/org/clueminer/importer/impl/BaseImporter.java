@@ -16,6 +16,12 @@
  */
 package org.clueminer.importer.impl;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
 import javax.swing.event.EventListenerList;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
@@ -27,6 +33,8 @@ import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.AnalysisListener;
 import org.clueminer.spi.FileImporter;
 import org.clueminer.utils.progress.ProgressTicket;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -102,6 +110,30 @@ public abstract class BaseImporter<E extends InstanceDraft> implements FileImpor
 
     public void setCancel(boolean cancel) {
         this.cancel = cancel;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public boolean execute(Container<E> container, Reader reader) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(reader);
+        return execute(container, lineReader, -1);
+    }
+
+    public boolean execute(Container<E> container, File file) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(new BufferedReader(new FileReader(file)));
+        if (file != null) {
+            container.setFile(FileUtil.toFileObject(file));
+        }
+        return execute(container, lineReader);
+    }
+
+    @Override
+    public boolean execute(Container<E> container, FileObject file) throws IOException {
+        LineNumberReader lineReader = ImportUtils.getTextReader(file);
+        container.setFile(file);
+        return execute(container, lineReader);
     }
 
 }

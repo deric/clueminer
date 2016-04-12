@@ -43,12 +43,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = FileImporter.class)
-public class JsonImporter extends BaseImporter implements FileImporter, LongTask {
+public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
 
     private static final String NAME = "JSON";
-    private Container<InstanceDraft> container;
+    private Container<E> container;
     private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
-    private int numInstances;
 
     @Override
     public String getName() {
@@ -56,8 +55,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
     }
 
     @Override
-    public boolean execute(Container container, Reader reader) throws IOException {
-        this.numInstances = 0;
+    public boolean execute(Container<E> container, Reader reader, int limit) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
             LOGGER.log(Level.INFO, "importing file {0}", container.getFile().getName());
@@ -72,7 +70,7 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
             LOGGER.log(Level.INFO, "attr: {0}", attr);
         }
 
-        importData(container, reader);
+        importData(container, reader, limit);
         fireAnalysisFinished();
 
         return !cancel;
@@ -108,22 +106,11 @@ public class JsonImporter extends BaseImporter implements FileImporter, LongTask
     }
 
     @Override
-    public boolean execute(Container container, FileObject file) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean execute(Container container, Reader reader, int limit) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void importData(Container loader, Reader reader) throws IOException {
-        numInstances = 0;
+    public void importData(Container loader, Reader reader, int limit) throws IOException {
         //if it's not the first time we are trying to load the file,
         //number of lines will be known
         int numLines = loader.getNumberOfLines();
