@@ -142,7 +142,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                 attr = container.getAttribute(j);
                 if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                     if (attr.isNumerical()) {
-                        realIdx = inputMap.get(j);
+                        //realIdx = inputMap.get(j);
                         //inst.set(realIdx, (Double) instd.getObject(j));
                         //delegate type conversion to builders
                         builder.set(instd.getObject(j), attr, (E) inst);

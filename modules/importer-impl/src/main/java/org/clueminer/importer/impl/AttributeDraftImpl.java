@@ -47,6 +47,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     private AttributeRole role;
     private AttributeType attrType;
     private boolean skipped;
+    private boolean allowMissing = true;
 
     public AttributeDraftImpl() {
 
@@ -262,6 +263,21 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public void setType(AttributeType type) {
         this.attrType = type;
+    }
+
+    @Override
+    public boolean allowMissing() {
+        return allowMissing;
+    }
+
+    @Override
+    public void setAllowMissing(boolean b) {
+        this.allowMissing = b;
+    }
+
+    @Override
+    public Object getMissingValue() {
+        return MISSING_NOMINAL_VALUE;
     }
 
 }

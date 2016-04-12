@@ -44,7 +44,7 @@ public class DefaultProcessor<D extends InstanceDraft, E extends Instance> exten
 
         for (AttributeDraft attrd : inputAttr) {
             //create just input attributes
-            Attribute attr = dataset.attributeBuilder().build(attrd.getName(), getType(attrd.getJavaType()), attrd.getRole());
+            Attribute attr = dataset.attributeBuilder().build(attrd.getName(), attrd.getType(), attrd.getRole());
             attr.setIndex(index);
             dataset.setAttribute(index, attr);
             LOGGER.log(Level.INFO, "setting attr {0} at pos {1}", new Object[]{attr.getName(), attr.getIndex()});
