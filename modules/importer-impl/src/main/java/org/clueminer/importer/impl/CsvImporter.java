@@ -110,8 +110,8 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
         Container<E> c = container;
-        for (Object attr : c.getAttrIter()) {
-            logger.log(Level.INFO, "attr: {0} ", attr);
+        for (AttributeDraft attr : c.getAttrIter()) {
+            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
 
         importData(lineReader);

@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = FileImporter.class)
-public class ArffImporter extends AbstractLineImporter implements FileImporter, LongTask {
+public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<E> implements FileImporter<E>, LongTask {
 
     public static final String NAME = "ARFF";
     private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());
@@ -111,7 +111,7 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
      * @throws IOException
      */
     @Override
-    public boolean execute(Container container, LineNumberReader reader) throws IOException {
+    public boolean execute(Container<E> container, LineNumberReader reader) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
             logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
@@ -122,8 +122,8 @@ public class ArffImporter extends AbstractLineImporter implements FileImporter, 
         this.report = new Report();
         logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (Object attr : container.getAttrIter()) {
-            logger.log(Level.INFO, "attr: {0}", attr);
+        for (AttributeDraft attr : container.getAttrIter()) {
+            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
         }
         parseHeader(container, reader);
         importData(container, reader);
