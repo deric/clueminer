@@ -201,7 +201,13 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
      */
     @Override
     public void set(Object value, Attribute attr, E row) {
-        if (attr.isNominal()) {
+        if (value == null) {
+            if (attr.allowMissing()) {
+                set(attr.getMissingValue(), attr, row);
+            } else {
+                throw new RuntimeException("missing value not allowed for " + attr.getName());
+            }
+        } else if (attr.isNominal()) {
             row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
         } else {
 
@@ -223,6 +229,5 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     public void setMissing(HashSet<String> missing) {
         this.missing = missing;
     }
-
 
 }

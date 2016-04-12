@@ -1,9 +1,14 @@
 package org.clueminer.dataset.row;
 
+import java.text.DecimalFormat;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.impl.AbstractRowFactory;
+import static org.clueminer.dataset.impl.AbstractRowFactory.string2Double;
 
 /**
  *
@@ -12,6 +17,49 @@ import org.clueminer.dataset.impl.AbstractRowFactory;
 public class TimeRowFactory<E extends TimeRow> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     private int capacity = 50;
+
+    static {
+        dispatch.put(Double.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Double) value);
+            }
+        });
+        dispatch.put(Float.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Float) value);
+            }
+        });
+        dispatch.put(Integer.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Integer) value);
+            }
+        });
+        dispatch.put(Boolean.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
+            }
+        });
+        dispatch.put(String.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                switch (at) {
+                    case NUMERICAL:
+                    case NUMERIC:
+                    case REAL:
+                        row.set(attr.getIndex(), string2Double(value.toString(), df));
+                        break;
+                    default:
+                        throw new RuntimeException("conversion to " + at + " is not supported for '" + value + "'");
+                }
+
+            }
+        });
+    }
 
     public TimeRowFactory(Dataset<E> dataset) {
         super(dataset);
@@ -91,11 +139,5 @@ public class TimeRowFactory<E extends TimeRow> extends AbstractRowFactory<E> imp
         TimeRow inst = create(values);
         inst.setClassValue(classValue);
         return (E) inst;
-    }
-
-    @Override
-    public void set(Object value, Attribute attr, E row) {
-        //row.set(attr.getIndex(), value);
-        row.set(attr.getIndex(), string2Double(value.toString(), this.decimalFormat));
     }
 }

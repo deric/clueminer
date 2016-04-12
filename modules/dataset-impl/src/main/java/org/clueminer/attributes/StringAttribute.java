@@ -103,4 +103,12 @@ public class StringAttribute extends AbstractAttribute {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Object getMissingValue() {
+        if (allowMissing()) {
+            return MISSING_NOMINAL_VALUE;
+        }
+        throw new RuntimeException("missing values are not allowed for attribute " + getName());
+    }
+
 }

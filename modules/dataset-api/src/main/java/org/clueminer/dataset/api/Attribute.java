@@ -246,6 +246,25 @@ public interface Attribute extends Serializable, DataVector {
     Attribute duplicate();
 
     /**
+     *
+     * @return whether missing values are allowed for this attribute
+     */
+    boolean allowMissing();
+
+    /**
+     * Enable/disable missing values
+     *
+     * @param b
+     */
+    void setAllowMissing(boolean b);
+
+    /**
+     *
+     * @return object representing missing value
+     */
+    Object getMissingValue();
+
+    /**
      * Returns a human readable string that describes this attribute.
      */
     @Override

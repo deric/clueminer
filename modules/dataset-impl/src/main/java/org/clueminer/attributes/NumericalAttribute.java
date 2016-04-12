@@ -109,6 +109,14 @@ public class NumericalAttribute extends AbstractAttribute {
         return role == BasicAttrRole.META;
     }
 
+    @Override
+    public Object getMissingValue() {
+        if (allowMissing()) {
+            return Double.NaN;
+        }
+        throw new RuntimeException("missing values are not allowed for attribute " + getName());
+    }
+
     class NumericalAttributeIterator implements Iterator<Double> {
 
         private int i = 0;

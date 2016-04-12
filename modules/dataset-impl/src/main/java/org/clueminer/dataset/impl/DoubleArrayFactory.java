@@ -75,7 +75,6 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
 
             }
         });
-
     }
 
     public DoubleArrayFactory(Dataset<E> dataset) {

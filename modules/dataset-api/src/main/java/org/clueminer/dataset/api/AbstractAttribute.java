@@ -44,6 +44,7 @@ public abstract class AbstractAttribute implements Attribute {
     protected AttributeRole role;
 
     private int attrIndex;
+    protected boolean allowMissing = true;
 
     /**
      * Creates a simple attribute which is not part of a series and does not
@@ -179,6 +180,16 @@ public abstract class AbstractAttribute implements Attribute {
         for (Statistics stats : statisticsProviders.values()) {
             stats.reset();
         }
+    }
+
+    @Override
+    public boolean allowMissing() {
+        return allowMissing;
+    }
+
+    @Override
+    public void setAllowMissing(boolean b) {
+        this.allowMissing = b;
     }
 
     /**

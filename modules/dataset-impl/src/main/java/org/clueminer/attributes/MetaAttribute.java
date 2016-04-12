@@ -79,4 +79,12 @@ public class MetaAttribute extends AbstractAttribute {
         return role == BasicAttrRole.META;
     }
 
+    @Override
+    public Object getMissingValue() {
+        if (allowMissing()) {
+            return MISSING_NOMINAL_VALUE;
+        }
+        throw new RuntimeException("missing values are not allowed for attribute " + getName());
+    }
+
 }
