@@ -25,10 +25,7 @@ import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.NominalMapping;
 import org.clueminer.dataset.api.Statistics;
-import org.clueminer.importer.parser.DoubleParser;
 import org.clueminer.io.importer.api.AttributeDraft;
-import org.clueminer.io.importer.api.AttributeParser;
-import org.clueminer.io.importer.api.AttributeParserFactory;
 
 /**
  *
@@ -149,19 +146,6 @@ public class AttributeDraftImpl implements AttributeDraft {
     @Override
     public void setSkipped(boolean b) {
         this.skipped = b;
-    }
-
-    @Override
-    public AttributeParser getParser() {
-        AttributeParserFactory factory = AttributeParserFactory.getInstance();
-        String typeName = type.toString();
-        String parserName = typeName.substring(typeName.lastIndexOf('.') + 1) + "Parser";
-        if (factory.hasProvider(parserName)) {
-            return factory.getProvider(parserName);
-        }
-        /*  Logger.getLogger(AttributeDraftImpl.class.getName()).log(Level.SEVERE,                "attribute type {0} is not supproted yet. parser: ''{1}'' was not found",
-         new Object[]{typeName, parserName});*/
-        return new DoubleParser();
     }
 
     @Override

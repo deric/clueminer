@@ -17,7 +17,6 @@
 package org.clueminer.dataset.impl;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
@@ -27,6 +26,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
 import static org.clueminer.dataset.impl.AbstractRowFactory.dispatch;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.exception.ParserError;
 
 /**
  *
@@ -62,7 +62,7 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
         });
         dispatch.put(String.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) throws ParseException {
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) throws ParserError {
                 BasicAttrType at = (BasicAttrType) attr.getType();
                 switch (at) {
                     case NUMERICAL:

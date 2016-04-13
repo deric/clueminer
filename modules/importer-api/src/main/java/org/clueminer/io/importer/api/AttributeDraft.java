@@ -49,6 +49,4 @@ public interface AttributeDraft extends Attribute {
 
     void setSkipped(boolean b);
 
-    AttributeParser getParser();
-
 }

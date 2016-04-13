@@ -3,7 +3,7 @@ package org.clueminer.importer.parser;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import org.clueminer.io.importer.api.AttributeParser;
-import org.clueminer.io.importer.api.ParsingError;
+import org.clueminer.exception.ParsingError;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;

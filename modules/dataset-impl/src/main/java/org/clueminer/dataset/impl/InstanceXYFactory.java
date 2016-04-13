@@ -18,7 +18,6 @@ package org.clueminer.dataset.impl;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.Attribute;
@@ -29,6 +28,7 @@ import static org.clueminer.dataset.impl.AbstractRowFactory.string2Double;
 import org.clueminer.dataset.row.Tools;
 import org.clueminer.dataset.row.XYInstance;
 import org.clueminer.exception.EscapeException;
+import org.clueminer.exception.ParserError;
 
 /**
  *
@@ -71,7 +71,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
     }
 
     @Override
-    public E create(String[] strings, Attribute[] attributes) {
+    public E create(String[] strings, Attribute[] attributes) throws ParserError {
         XYInstance dataRow = (XYInstance) create(strings.length);
         for (int i = 0; i < strings.length; i++) {
             if (strings[i] != null) {
@@ -86,11 +86,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                         Logger.getLogger(DoubleArrayFactory.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 } else {
-                    try {
-                        dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
-                    } catch (ParseException ex) {
-                        throw new RuntimeException("failed to convert " + strings[i] + " to " + attributes[i].getType(), ex);
-                    }
+                    dataRow.set(attributes[i].getIndex(), string2Double(strings[i], this.decimalFormat));
                 }
             } else {
                 dataRow.set(attributes[i].getIndex(), Double.NaN);
@@ -100,7 +96,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
     }
 
     @Override
-    public void set(Object value, Attribute attr, E row) throws ParseException {
+    public void set(Object value, Attribute attr, E row) throws ParserError {
         //TODO: use dispatcher from parent class?
         if (value instanceof JsonArray) {
             JsonArray ary = (JsonArray) value;
@@ -118,13 +114,13 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                             //only 2D data are supported
                             inst.put(a.get(0).getAsDouble(), a.get(1).getAsDouble());
                         } else {
-                            throw new ParseException("don't know how to process " + a, row.getIndex());
+                            throw new ParserError("don't know how to process " + a);
                         }
                     }
                 }
             }
         } else {
-            throw new ParseException("don't know how to process " + value, row.getIndex());
+            throw new ParserError("don't know how to process " + value);
         }
     }
 

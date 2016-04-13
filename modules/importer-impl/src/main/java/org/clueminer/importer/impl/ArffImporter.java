@@ -266,7 +266,8 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
                 if (role == BasicAttrRole.ID) {
                     draft.setId(value);
                 } else if (role == BasicAttrRole.INPUT) {
-                    draft.setObject(i, parseValue(attr, value, i, num, draft));
+                    draft.set(i, parseValue(attr, value, i, num, draft));
+
                 } else {
                     draft.setObject(i, value);
                 }

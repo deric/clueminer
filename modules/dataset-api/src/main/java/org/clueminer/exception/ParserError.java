@@ -36,6 +36,10 @@ public class ParserError extends Exception {
         super(t);
     }
 
+    public ParserError(String message, Throwable t) {
+        super(message, t);
+    }
+
     public ParserError(String message, File file, int lineNum) {
         super(message);
         this.lineNum = lineNum;

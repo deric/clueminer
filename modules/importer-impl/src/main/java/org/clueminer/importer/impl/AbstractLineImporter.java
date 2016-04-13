@@ -28,11 +28,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.importer.ImportController;
-import org.clueminer.importer.Issue;
-import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
-import org.clueminer.io.importer.api.ParsingError;
 import org.clueminer.longtask.spi.LongTask;
 import org.clueminer.spi.FileImporter;
 import org.openide.filesystems.FileObject;
@@ -268,41 +265,6 @@ public abstract class AbstractLineImporter<E extends InstanceDraft> extends Base
 
     public void setIgnoreLeadingWhiteSpace(boolean ignoreLeadingWhiteSpace) {
         this.ignoreLeadingWhiteSpace = ignoreLeadingWhiteSpace;
-    }
-
-    /**
-     * Parse given input values as specified type
-     *
-     * @param attr
-     * @param value
-     * @param i
-     * @param num
-     * @param draft
-     * @return
-     */
-    protected Object parseValue(AttributeDraft attr, String value, int i, int num, InstanceDraft draft) {
-        Object castedVal = null;
-
-        //check for missing values
-        if (replaceMissingValues && missing.size() > 0) {
-            if (value == null) {
-                return Double.NaN;
-            }
-            for (String missingValue : missing) {
-                if (missingValue.equals(value)) {
-                    //TODO: should be returned by specific parser
-                    return Double.NaN;
-                }
-            }
-        }
-
-        try {
-            castedVal = attr.getParser().parse(value);
-        } catch (ParsingError ex) {
-            report.logIssue(new Issue(NbBundle.getMessage(CsvImporter.class,
-                    "CsvImporter_invalidType", num, i + 1, ex.getMessage()), Issue.Level.WARNING));
-        }
-        return castedVal;
     }
 
     public boolean isReplaceMissingValues() {

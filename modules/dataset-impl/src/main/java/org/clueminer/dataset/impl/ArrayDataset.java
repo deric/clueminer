@@ -60,6 +60,12 @@ public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> im
      */
     private int n = 0;
 
+    /**
+     * Create fixed size dataset
+     *
+     * @param instancesCapacity
+     * @param attributesCnt
+     */
     public ArrayDataset(int instancesCapacity, int attributesCnt) {
         data = new Instance[instancesCapacity];
         attributes = new Attribute[attributesCnt];

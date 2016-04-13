@@ -16,6 +16,8 @@
  */
 package org.clueminer.io.importer.api;
 
+import org.clueminer.exception.ParserError;
+
 /**
  *
  * @author Tomas Barton
@@ -35,9 +37,9 @@ public interface AttributeParser {
      *
      * @param value
      * @return
-     * @throws org.clueminer.io.importer.api.ParsingError
+     * @throws org.clueminer.exception.ParserError
      */
-    Object parse(String value) throws ParsingError;
+    Object parse(String value) throws ParserError;
 
     /**
      * Default value is used when parsing fails

@@ -1,7 +1,7 @@
 package org.clueminer.dataset.api;
 
-import java.text.ParseException;
 import java.util.HashSet;
+import org.clueminer.exception.ParserError;
 
 /**
  * Builder allows creating new instances without knowing which underlying
@@ -75,7 +75,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @param values
      * @return newly created instance
      */
-    E create(String[] values) throws ParseException;
+    E create(String[] values) throws ParserError;
 
     /**
      * Store value as <code>row</code>'s <code>attr</code> value.
@@ -86,7 +86,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @throws java.text.ParseException in case that value can't be converted to
      * the attribute's type
      */
-    void set(Object value, Attribute attr, E row) throws ParseException;
+    void set(Object value, Attribute attr, E row) throws ParserError;
 
     /**
      * Build an instance from given values
@@ -123,7 +123,7 @@ public interface InstanceBuilder<E extends Instance> {
      */
     E build(double[] values, String classValue);
 
-    E create(String[] strings, Attribute[] attributes) throws ParseException;
+    E create(String[] strings, Attribute[] attributes) throws ParserError;
 
     /**
      * Convert values from strings
@@ -132,7 +132,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @param classValue
      * @return
      */
-    E create(String[] values, Object classValue) throws ParseException;
+    E create(String[] values, Object classValue) throws ParserError;
 
     /**
      * List of strings which are considered as missing values

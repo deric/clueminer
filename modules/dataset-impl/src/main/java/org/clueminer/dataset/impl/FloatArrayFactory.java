@@ -20,12 +20,16 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.TypeHandler;
+import static org.clueminer.dataset.impl.AbstractRowFactory.dispatch;
 import org.clueminer.dataset.row.FloatArrayDataRow;
+import org.clueminer.exception.ParserError;
 
 /**
  *
@@ -33,6 +37,49 @@ import org.clueminer.dataset.row.FloatArrayDataRow;
  * @param <E>
  */
 public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
+
+    static {
+        dispatch.put(Double.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (float) value);
+            }
+        });
+        dispatch.put(Float.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (float) value);
+            }
+        });
+        dispatch.put(Integer.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (Integer) value);
+            }
+        });
+        dispatch.put(Boolean.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+                row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
+            }
+        });
+        dispatch.put(String.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) throws ParseException, ParserError {
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                switch (at) {
+                    case NUMERICAL:
+                    case NUMERIC:
+                    case REAL:
+                        row.set(attr.getIndex(), string2Float(value.toString(), df));
+                        break;
+                    default:
+                        throw new ParseException("conversion to " + at + " is not supported for '" + value + "'", row.getIndex());
+                }
+
+            }
+        });
+    }
 
     public FloatArrayFactory(Dataset<E> dataset) {
         super(dataset);
@@ -125,7 +172,7 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
         return dataRow;
     }
 
-    private static float string2Float(String str, DecimalFormat df) {
+    private static float string2Float(String str, DecimalFormat df) throws ParseException, ParserError {
         if (str == null) {
             return Float.NaN;
         }
@@ -138,10 +185,7 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
             }
         } catch (NumberFormatException e) {
             Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "string2Float(String): ''{0}'' is not a valid number!", str);
-            return Float.NaN;
-        } catch (ParseException ex) {
-            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "string2Float(String): ''{0}'' is not a valid number!", str);
-            return Float.NaN;
+            throw new ParserError(e.getMessage(), e);
         }
     }
 
