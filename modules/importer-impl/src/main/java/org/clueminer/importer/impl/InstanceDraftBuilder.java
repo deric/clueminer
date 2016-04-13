@@ -136,18 +136,27 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
      */
     @Override
     public void set(Object value, Attribute attr, E row) {
-        if (attr.isNominal()) {
+        if (value == null) {
+            if (attr.allowMissing()) {
+                set(attr.getMissingValue(), attr, row);
+            } else {
+                throw new RuntimeException("missing value not allowed for " + attr.getName());
+            }
+        } else if (attr.isNominal()) {
             row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
         } else {
             TypeHandler h = dispatch.get(value.getClass());
             if (h == null) {
                 //put all problems into report
-                container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
-            }
-            try {
-                h.handle(value, attr, row, decimalFormat);
-            } catch (ParserError | ParseException ex) {
-                container.getReport().logIssue(new Issue(ex, Issue.Level.SEVERE));
+                container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.WARNING));
+                //convert to String
+                set(value.toString(), attr, row);
+            } else {
+                try {
+                    h.handle(value, attr, row, decimalFormat);
+                } catch (ParserError | ParseException ex) {
+                    container.getReport().logIssue(new Issue(ex, Issue.Level.SEVERE));
+                }
             }
         }
     }

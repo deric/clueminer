@@ -49,7 +49,7 @@ import org.clueminer.utils.DatasetLoader;
 public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
 
     @Override
-    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
+    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError {
         JsonElement json;
         try {
             json = new JsonParser().parse(reader);
@@ -71,7 +71,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
             } else {
                 throw new UnsupportedOperationException("not supported yet");
             }
-        } catch (JsonSyntaxException ex) {
+        } catch (JsonSyntaxException | ParseException ex) {
             throw new ParserError(ex);
         }
 
@@ -79,7 +79,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     }
 
     @Override
-    public boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
+    public boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError {
         FileReader reader = new FileReader(file);
         return load(reader, output);
     }

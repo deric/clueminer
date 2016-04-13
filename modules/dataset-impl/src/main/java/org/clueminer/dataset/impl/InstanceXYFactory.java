@@ -20,10 +20,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.MetaStore;
 import static org.clueminer.dataset.impl.AbstractRowFactory.string2Double;
 import org.clueminer.dataset.row.Tools;
 import org.clueminer.dataset.row.XYInstance;
@@ -97,31 +99,37 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
 
     @Override
     public void set(Object value, Attribute attr, E row) throws ParserError {
-        //TODO: use dispatcher from parent class?
-        if (value instanceof JsonArray) {
-            JsonArray ary = (JsonArray) value;
-            if (ary.size() == 2) {
-                JsonElement x = ary.get(0);
-                JsonElement y = ary.get(1);
-                ((XYInstance) row).put(x.getAsDouble(), y.getAsDouble());
-            } else {
-                XYInstance inst = (XYInstance) row;
-                for (JsonElement elem : ary) {
-                    System.out.println("elem: " + elem);
-                    if (elem.isJsonArray()) {
-                        JsonArray a = elem.getAsJsonArray();
-                        if (a.size() == 2) {
-                            //only 2D data are supported
-                            inst.put(a.get(0).getAsDouble(), a.get(1).getAsDouble());
-                        } else {
-                            throw new ParserError("don't know how to process " + a);
+        if (attr.getRole() == BasicAttrRole.INPUT) {
+
+            //TODO: use dispatcher from parent class?
+            if (value instanceof JsonArray) {
+                JsonArray ary = (JsonArray) value;
+                if (ary.size() == 2) {
+                    JsonElement x = ary.get(0);
+                    JsonElement y = ary.get(1);
+                    ((XYInstance) row).put(x.getAsDouble(), y.getAsDouble());
+                } else {
+                    XYInstance inst = (XYInstance) row;
+                    for (JsonElement elem : ary) {
+                        System.out.println("elem: " + elem);
+                        if (elem.isJsonArray()) {
+                            JsonArray a = elem.getAsJsonArray();
+                            if (a.size() == 2) {
+                                //only 2D data are supported
+                                inst.put(a.get(0).getAsDouble(), a.get(1).getAsDouble());
+                            } else {
+                                throw new ParserError("don't know how to process " + a);
+                            }
                         }
                     }
                 }
+            } else {
+                //primitive object
+                throw new ParserError("don't know how to process " + value);
             }
-        } else {
-            //primitive object
-            throw new ParserError("don't know how to process " + value);
+        } else if (attr.getRole() == BasicAttrRole.META) {
+            MetaStore meta = dataset.getMetaStore();
+            meta.set(attr, row.getIndex(), value);
         }
     }
 

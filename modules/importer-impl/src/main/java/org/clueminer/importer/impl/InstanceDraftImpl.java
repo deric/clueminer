@@ -40,6 +40,7 @@ public class InstanceDraftImpl implements InstanceDraft {
     private Object[] values;
     private final Container container;
     private int last = -1;
+    private int index;
 
     public InstanceDraftImpl(Container parent) {
         this.values = new Object[0];
@@ -139,12 +140,12 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public int getIndex() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return index;
     }
 
     @Override
     public void setIndex(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.index = i;
     }
 
     @Override

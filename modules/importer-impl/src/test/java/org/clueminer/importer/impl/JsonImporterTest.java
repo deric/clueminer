@@ -41,7 +41,7 @@ public class JsonImporterTest {
         for (AttributeDraft attr : loader.getAttrIter()) {
             System.out.println("attr: " + attr);
         }
-        assertEquals(13, loader.attributeCount());
+        assertEquals(14, loader.attributeCount());
         //    assertEquals(5, loader.size());
     }
 

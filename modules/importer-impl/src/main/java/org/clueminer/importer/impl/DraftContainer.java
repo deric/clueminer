@@ -527,7 +527,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public Attribute getAttribute(String attributeName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return attributeMap.get(attributeName);
     }
 
     @Override
