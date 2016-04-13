@@ -54,15 +54,17 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     protected Matrix matrix;
     protected InstanceBuilder<E> builder;
     protected DataType dataType = DataType.DISCRETE;
-    protected MetaStore metaStore;
+    protected final MetaStore metaStore;
 
     public AbstractDataset() {
         //do nothing
+        metaStore = new MetaStoreImpl();
     }
 
     public AbstractDataset(int capacity) {
         super(capacity);
         this.capacity = capacity;
+        metaStore = new MetaStoreImpl();
     }
 
     @Override

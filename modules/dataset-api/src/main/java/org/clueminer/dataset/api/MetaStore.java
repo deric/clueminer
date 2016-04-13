@@ -17,9 +17,18 @@
 package org.clueminer.dataset.api;
 
 /**
+ * Storage of meta-attribute values associated with a dataset (connected via
+ * corresponding index)
  *
  * @author deric
  */
 public interface MetaStore {
 
+    void set(Attribute attr, int index, Object value);
+
+    Object get(Attribute attr, int index);
+
+    double getDouble(Attribute attr, int index);
+
+    String getString(Attribute attr, int index);
 }

@@ -55,14 +55,16 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
     protected Matrix matrix;
     protected InstanceBuilder<E> builder;
     protected DataType dataType = DataType.DISCRETE;
-    protected MetaStore metaStore;
+    protected final MetaStore metaStore;
 
     public BaseDataset() {
         //do nothing
+        metaStore = new MetaStoreImpl();
     }
 
     public BaseDataset(int capacity) {
         this.capacity = capacity;
+        metaStore = new MetaStoreImpl();
     }
 
     @Override
