@@ -46,7 +46,7 @@ import org.math.plot.Plot2DPanel;
  *
  * @author Tomas Barton
  */
-public class ArrayDataset<E extends Instance> extends AbstractArrayDataset<E> implements Dataset<E> {
+public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = -5482153886671625555L;
     private Instance[] data;

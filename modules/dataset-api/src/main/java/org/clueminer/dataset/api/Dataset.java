@@ -424,4 +424,11 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
      */
     DataType getDataType();
 
+    /**
+     * Get meta values storage
+     *
+     * @return meta store might contain mixed types of data
+     */
+    MetaStore getMetaStore();
+
 }

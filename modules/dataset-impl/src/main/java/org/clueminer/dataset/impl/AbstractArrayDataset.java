@@ -41,7 +41,7 @@ import org.clueminer.utils.DMatrix;
  * @author Tomas Barton
  * @param <E>
  */
-public abstract class AbstractArrayDataset<E extends Instance> implements Dataset<E> {
+public abstract class AbstractArrayDataset<E extends Instance> extends BaseDataset<E> implements Dataset<E> {
 
     private static final long serialVersionUID = 2328076020347060920L;
     transient protected EventListenerList datasetListener;

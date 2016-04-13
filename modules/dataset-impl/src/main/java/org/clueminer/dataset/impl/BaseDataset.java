@@ -29,6 +29,7 @@ import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.MetaStore;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
 import org.clueminer.math.Matrix;
@@ -54,6 +55,7 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
     protected Matrix matrix;
     protected InstanceBuilder<E> builder;
     protected DataType dataType = DataType.DISCRETE;
+    protected MetaStore metaStore;
 
     public BaseDataset() {
         //do nothing
@@ -251,5 +253,10 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
     @Override
     public DataType getDataType() {
         return this.dataType;
+    }
+
+    @Override
+    public MetaStore getMetaStore() {
+        return metaStore;
     }
 }

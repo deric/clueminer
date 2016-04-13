@@ -120,6 +120,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                 }
             }
         } else {
+            //primitive object
             throw new ParserError("don't know how to process " + value);
         }
     }
