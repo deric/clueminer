@@ -60,6 +60,15 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
     @Override
     public abstract String toString();
 
+    @Override
+    public String getFullName() {
+        StringBuilder sb = new StringBuilder();
+        if (getId() != null) {
+            sb.append(getId()).append(" - ");
+        }
+        return sb.append(getName()).toString();
+    }
+
     /**
      * Returns the value stored at the given {@link Attribute}'s index. Returns
      * Double.NaN if the given attribute is null.

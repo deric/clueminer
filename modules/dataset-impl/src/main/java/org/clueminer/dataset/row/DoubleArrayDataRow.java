@@ -56,15 +56,6 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         // last = size;
     }
 
-    @Override
-    public String getFullName() {
-        StringBuilder sb = new StringBuilder();
-        if (getId() != null) {
-            sb.append(getId()).append(" - ");
-        }
-        return sb.append(getName()).toString();
-    }
-
     /**
      * Add value to row and increment counter of last used value
      *
@@ -206,13 +197,13 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     }
 
     /**
-     * Capacity is the same as size of the data array
+     * Capacity corresponds to currently allocated space for data values.
      *
      * @return
      */
     @Override
     public int getCapacity() {
-        return this.size();
+        return data.length;
     }
 
     /**

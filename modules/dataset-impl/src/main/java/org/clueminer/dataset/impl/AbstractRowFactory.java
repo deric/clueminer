@@ -178,9 +178,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
                 Number num = df.parse(str);
                 return num.doubleValue();
             }
-        } catch (NumberFormatException ex) {
-            throw new ParserError(ex);
-        } catch (ParseException ex) {
+        } catch (NumberFormatException | ParseException ex) {
             throw new ParserError(ex);
         }
     }
