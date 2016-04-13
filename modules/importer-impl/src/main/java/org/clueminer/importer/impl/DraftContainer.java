@@ -141,26 +141,28 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
             }
             i++;
         }
-        if (!hasPrimaryKey()) {
-            draft.setId(String.valueOf(num));
-        }
         addInstance(draft, num);
     }
 
     @Override
-    public void addInstance(E instance, int row) {
-        checkInstanceDraft(instance);
+    public boolean addInstance(E draft, int row) {
+        checkInstanceDraft(draft);
 
-        if (instanceMap.containsKey(instance.getId())) {
+        if (!hasPrimaryKey()) {
+            draft.setId(String.valueOf(row));
+        }
+
+        if (instanceMap.containsKey(draft.getId())) {
             String message = NbBundle.getMessage(DraftContainer.class,
-                    "ImportContainerException_instanceExist", instance.getId(), row);
+                    "ImportContainerException_instanceExist", draft.getId(), row);
             report.logIssue(new Issue(message, Level.WARNING));
-            return;
+            return false;
         }
 
         int index = instanceList.size();
-        instanceList.add(instance);
-        instanceMap.put(instance.getId(), index);
+        instanceList.add(draft);
+        instanceMap.put(draft.getId(), index);
+        return true;
     }
 
     @Override
@@ -476,10 +478,11 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     @Override
     public boolean addAll(Dataset<? extends E> d) {
         Iterator<? extends E> it = d.iterator();
+        boolean succ = true;
         while (it.hasNext()) {
-            add(it.next());
+            succ &= add(it.next());
         }
-        return !it.hasNext();
+        return succ;
     }
 
     @Override
@@ -620,12 +623,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public boolean add(E i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return addInstance(i, instanceList.size());
     }
 
     @Override

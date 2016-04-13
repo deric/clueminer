@@ -16,6 +16,8 @@
  */
 package org.clueminer.dataset.impl;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,7 +77,7 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
             if (strings[i] != null) {
                 strings[i] = strings[i].trim();
             }
-            if ((strings[i] != null) && (strings[i].length() > 0) && (!strings[i].equals("?"))) {
+            if ((strings[i] != null) && (strings[i].length() > 0)) {
                 if (attributes[i].isNominal()) {
                     try {
                         String unescaped = Tools.unescape(strings[i]);
@@ -98,8 +100,18 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
     }
 
     @Override
-    public void set(Object value, Attribute attr, E row) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void set(Object value, Attribute attr, E row) throws ParseException {
+        //TODO: use dispatcher from parent class?
+        if (value instanceof JsonArray) {
+            JsonArray ary = (JsonArray) value;
+            if (ary.size() == 2) {
+                JsonElement x = ary.get(0);
+                JsonElement y = ary.get(1);
+                ((XYInstance) row).put(x.getAsDouble(), y.getAsDouble());
+            } else {
+                throw new ParseException("don't know how to process " + value, row.getIndex());
+            }
+        }
     }
 
 }

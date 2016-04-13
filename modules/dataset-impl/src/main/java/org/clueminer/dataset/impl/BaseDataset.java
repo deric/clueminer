@@ -16,6 +16,7 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -223,6 +224,15 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
             matrix = new DMatrix(this);
         }
         return matrix;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> c) {
+        boolean succ = true;
+        for (E elem : c) {
+            succ &= add(elem);
+        }
+        return succ;
     }
 
     @Override

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -130,9 +131,11 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
             //try parsing json and load into draft dataset
             jsonLoader.load(reader, (Dataset) loader);
         } catch (FileNotFoundException ex) {
-            report.logIssue(new Issue(ex.getMessage(), Issue.Level.CRITICAL));
+            report.logIssue(new Issue(ex.getMessage(), Issue.Level.SEVERE));
         } catch (ParserError ex) {
             report.logIssue(new Issue(ex.getMessage(), Issue.Level.WARNING));
+        } catch (ParseException ex) {
+            report.logIssue(new Issue(ex.getMessage(), Issue.Level.SEVERE));
         }
 
 

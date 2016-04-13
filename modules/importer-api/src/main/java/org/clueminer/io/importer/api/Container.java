@@ -196,8 +196,9 @@ public interface Container<E extends InstanceDraft> {
      *
      * @param instance
      * @param row      number of row (or other hint like PK)
+     * @return true when succeeds
      */
-    void addInstance(E instance, int row);
+    boolean addInstance(E instance, int row);
 
     /**
      * Parse columns into types supported by storage backend.
