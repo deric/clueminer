@@ -4,13 +4,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataRow;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.DataType;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.math.Vector;
 
 /**
+ * Default row storage for numeric values in dataset. This class wraps a single
+ * row of a "spreadsheet".
  *
  * @author Tomas Barton
  */
@@ -43,9 +45,9 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         this.data = new double[size];
         //TODO: we should be able to initialize array with zeros. right now
         //it is causing strange problems when standardizing datata
-       /* if (size > 0) {
-         last = size - 1; //if we're getting index < size we'll get 0.0 (instead of unknown == Double.NaN)
-         }*/
+        /* if (size > 0) {
+         * last = size - 1; //if we're getting index < size we'll get 0.0 (instead of unknown == Double.NaN)
+         * } */
     }
 
     public DoubleArrayDataRow(int size, Object classValue) {

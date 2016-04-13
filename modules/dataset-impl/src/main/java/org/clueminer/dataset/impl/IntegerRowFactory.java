@@ -22,33 +22,31 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
-import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
 import static org.clueminer.dataset.impl.AbstractRowFactory.dispatch;
-import org.clueminer.dataset.row.FloatArrayDataRow;
+import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.exception.ParserError;
 
 /**
  *
- * @author Tomas Barton
- * @param <E>
+ * @author deric
  */
-public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
+public class IntegerRowFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     static {
         dispatch.put(Double.class, new TypeHandler() {
             @Override
             public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
-                row.set(attr.getIndex(), (float) value);
+                row.set(attr.getIndex(), (int) value);
             }
         });
         dispatch.put(Float.class, new TypeHandler() {
             @Override
             public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
-                row.set(attr.getIndex(), (float) value);
+                row.set(attr.getIndex(), (int) value);
             }
         });
         dispatch.put(Integer.class, new TypeHandler() {
@@ -71,7 +69,7 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
                     case NUMERICAL:
                     case NUMERIC:
                     case REAL:
-                        row.set(attr.getIndex(), string2Float(value.toString(), df));
+                        row.set(attr.getIndex(), string2Int(value.toString(), df));
                         break;
                     default:
                         throw new ParseException("conversion to " + at + " is not supported for '" + value + "'", row.getIndex());
@@ -81,83 +79,52 @@ public class FloatArrayFactory<E extends Instance> extends AbstractRowFactory<E>
         });
     }
 
-    public FloatArrayFactory(Dataset<E> dataset) {
+    private static int string2Int(String str, DecimalFormat df) throws ParseException, ParserError {
+        if (str == null) {
+            return 0;
+        }
+        try {
+            if (df == null) {
+                return Integer.parseInt(str);
+            } else {
+                Number num = df.parse(str);
+                return num.intValue();
+            }
+        } catch (NumberFormatException e) {
+            Logger.getLogger(IntegerRowFactory.class.getName()).log(Level.SEVERE, "string2Int(String): ''{0}'' is not a valid number!", str);
+            throw new ParserError(e.getMessage(), e);
+        }
+    }
+
+    public IntegerRowFactory(Dataset<E> dataset) {
         super(dataset);
     }
 
-    /**
-     * @param dataset
-     * @param decimalPointCharacter the letter for decimal points, usually '.'
-     */
-    public FloatArrayFactory(Dataset<E> dataset, char decimalPointCharacter) {
-        super(dataset, decimalPointCharacter);
+    public IntegerRowFactory(Dataset<E> dataset, char decimalChar) {
+        super(dataset, decimalChar);
     }
 
     @Override
-    public E build(double[] values) {
-        FloatArrayDataRow row = new FloatArrayDataRow(values.length);
-        for (int i = 0; i < values.length; i++) {
-            row.set(i, (float) values[i]);
-        }
+    public E createCopyOf(E orig) {
+        IntegerDataRow row = new IntegerDataRow(orig.size());
+        row.setId(orig.getId());
+        row.setIndex(orig.getIndex());
+        row.setClassValue(orig.classValue());
         return (E) row;
     }
 
     @Override
     public E build(int capacity) {
-        return (E) new FloatArrayDataRow(capacity);
+        return (E) new IntegerDataRow(capacity);
     }
 
     @Override
-    public E createCopyOf(E orig) {
-        FloatArrayDataRow row = new FloatArrayDataRow(orig.size());
-        row.setClassValue(orig.classValue());
+    public E build(double[] values) {
+        IntegerDataRow row = new IntegerDataRow(values.length);
+        for (int i = 0; i < values.length; i++) {
+            row.set(i, values[i]);
+        }
         return (E) row;
     }
-
-    /**
-     * Creates a data row from an Object array. The classes of the object must
-     * match the value type of the corresponding {@link Attribute}. If the
-     * corresponding attribute is nominal, <code>data[i]</code> will be cast to
-     * String. If it is numerical, it will be cast to Number.
-     *
-     * @param data
-     * @param attributes
-     * @return
-     * @throws ClassCastException if data class does not match attribute type
-     */
-    public DataRow create(Double[] data, Attribute[] attributes) {
-        DataRow dataRow = (DataRow) create(data.length);
-        for (int i = 0; i < data.length; i++) {
-            if (data[i] != null) {
-                if (attributes[i].isNominal()) {
-                    dataRow.setValue(attributes[i], attributes[i].getMapping().mapString((String.valueOf(data[i])).trim()));
-                } else {
-                    dataRow.setValue(attributes[i], ((Number) data[i]).doubleValue());
-                }
-            } else {
-                dataRow.setValue(attributes[i], Float.NaN);
-            }
-        }
-        dataRow.trim();
-        return dataRow;
-    }
-
-    private static float string2Float(String str, DecimalFormat df) throws ParseException, ParserError {
-        if (str == null) {
-            return Float.NaN;
-        }
-        try {
-            if (df == null) {
-                return Float.parseFloat(str);
-            } else {
-                Number num = df.parse(str);
-                return num.floatValue();
-            }
-        } catch (NumberFormatException e) {
-            Logger.getLogger(FloatArrayFactory.class.getName()).log(Level.SEVERE, "string2Float(String): ''{0}'' is not a valid number!", str);
-            throw new ParserError(e.getMessage(), e);
-        }
-    }
-
 
 }

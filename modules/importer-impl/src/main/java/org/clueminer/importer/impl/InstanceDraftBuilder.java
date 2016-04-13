@@ -17,7 +17,6 @@
 package org.clueminer.importer.impl;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -25,6 +24,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.dataset.impl.AbstractRowFactory;
+import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -145,7 +145,7 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
             }
             try {
                 h.handle(value, attr, row, decimalFormat);
-            } catch (ParseException ex) {
+            } catch (ParserError ex) {
                 container.getReport().logIssue(new Issue(ex, Issue.Level.SEVERE));
             }
         }
