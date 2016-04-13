@@ -21,6 +21,7 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -292,4 +293,11 @@ public interface Container<E extends InstanceDraft> {
     HashSet<String> getMissing();
 
     void setMissing(HashSet<String> missing);
+
+    /**
+     * Builder help to create instances of preferred type
+     *
+     * @return factory for building instances
+     */
+    InstanceBuilder<E> builder();
 }

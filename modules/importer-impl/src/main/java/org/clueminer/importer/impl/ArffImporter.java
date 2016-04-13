@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
+import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
 import org.clueminer.io.ARFFHandler;
@@ -250,11 +251,12 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
         }
     }
 
-    private void addInstance(Container loader, int num, String[] columns) {
-        InstanceDraft draft = new InstanceDraftImpl(loader, loader.getAttributeCount());
+    private void addInstance(Container<E> loader, int num, String[] columns) {
         int i = 0;
         AttributeRole role;
         AttributeDraft attr;
+        InstanceBuilder<E> builder = loader.builder();
+        E draft = builder.build(loader.getAttributeCount());
         for (String value : columns) {
             try {
                 attr = loader.getAttribute(i);
@@ -266,8 +268,8 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
                 if (role == BasicAttrRole.ID) {
                     draft.setId(value);
                 } else if (role == BasicAttrRole.INPUT) {
-                    draft.set(i, parseValue(attr, value, i, num, draft));
-
+                    //draft.set(i, parseValue(attr, value, i, num, draft));
+                    builder.set(value, attr, draft);
                 } else {
                     draft.setObject(i, value);
                 }

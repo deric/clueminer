@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -134,8 +133,6 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
             report.logIssue(new Issue(ex.getMessage(), Issue.Level.SEVERE));
         } catch (ParserError ex) {
             report.logIssue(new Issue(ex.getMessage(), Issue.Level.WARNING));
-        } catch (ParseException ex) {
-            report.logIssue(new Issue(ex.getMessage(), Issue.Level.SEVERE));
         }
 
 
