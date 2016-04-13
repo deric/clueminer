@@ -15,17 +15,16 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.AttributeRole;
-import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.AttributeCollection;
+import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
-import org.clueminer.math.Matrix;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
@@ -36,7 +35,7 @@ import org.openide.util.Exceptions;
  * @author Tomas Bruna
  * @param <E>
  */
-public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
+public class GraphCluster<E extends Instance> extends BaseDataset<E> implements Cluster<E>, Set<E> {
 
     private static final long serialVersionUID = 5504099696730158249L;
 
@@ -338,42 +337,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     @Override
-    public String getId() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setId(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
     public SortedSet<Object> getClasses() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean add(E i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends E> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean addAll(Dataset<? extends E> d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -385,11 +354,6 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     @Override
     public E get(int index) {
         return graphNodes.get(index).getInstance();
-    }
-
-    @Override
-    public boolean hasIndex(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -536,42 +500,12 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     }
 
     @Override
-    public double[][] arrayCopy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setColorGenerator(ColorGenerator cg) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public JComponent getPlotter() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void ensureCapacity(int size) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int getCapacity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addChild(String key, Dataset<E> dataset) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Dataset<E> getChild(String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Matrix asMatrix() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -593,21 +527,6 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     @Override
     public Collection<? extends Number> attrCollection(int index) {
         return new AttributeCollection<>(this, index);
-    }
-
-    @Override
-    public void setBuilder(InstanceBuilder<E> builder) {
-        this.builder = builder;
-    }
-
-    @Override
-    public void setDataType(DataType type) {
-        this.dataType = type;
-    }
-
-    @Override
-    public DataType getDataType() {
-        return dataType;
     }
 
     class InstanceIterator implements Iterator<E> {

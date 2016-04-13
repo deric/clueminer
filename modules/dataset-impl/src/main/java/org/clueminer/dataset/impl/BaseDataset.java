@@ -162,6 +162,16 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
     }
 
     @Override
+    public boolean addAll(Dataset<? extends E> d) {
+        Iterator<? extends E> it = d.iterator();
+        boolean succ = true;
+        while (it.hasNext()) {
+            succ &= add(it.next());
+        }
+        return succ;
+    }
+
+    @Override
     public int getCapacity() {
         return capacity;
     }
