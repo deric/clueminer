@@ -233,6 +233,9 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
     @Override
     public void setDataType(DataType type) {
         this.dataType = type;
+        if (dataType == DataType.XY_CONTINUOUS) {
+            builder = new InstanceXYFactory<E>(this);
+        }
     }
 
     @Override

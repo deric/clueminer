@@ -26,10 +26,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -49,12 +51,11 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     private int numMeta = 0;
 
     @Override
-    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError {
+    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
         JsonElement json;
         try {
             json = new JsonParser().parse(reader);
 
-            InstanceBuilder builder = output.builder();
             int i = 0;
             if (json.isJsonArray()) {
                 JsonArray ja = json.getAsJsonArray();
@@ -65,7 +66,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                     if (i == 0) {
                         createStructure(output, elem);
                     }
-                    parse(i, builder, elem);
+                    parse(i, output, elem);
 
                     i++;
                 }
@@ -80,7 +81,7 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     }
 
     @Override
-    public boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError {
+    public boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
         FileReader reader = new FileReader(file);
         return load(reader, output);
     }
@@ -106,14 +107,15 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                     JsonArray ary = val.getAsJsonArray();
                     numValues = ary.size();
                     JsonArray e = ary.getAsJsonArray();
-                    for (JsonElement j : e) {
-                        if (j.isJsonArray()) {
-                            JsonArray je = j.getAsJsonArray();
-                            if (je.size() == 2) {
-                                //required 2 attributes
-                            }
+                    JsonElement j = e.iterator().next();
+                    if (j.isJsonArray()) {
+                        JsonArray je = j.getAsJsonArray();
+                        if (je.size() == 2) {
+                            //required 2 attributes
+                            output.setDataType(DataType.XY_CONTINUOUS);
                         }
                     }
+
                 } else if (val.isJsonNull()) {
                     //TODO: skip null?
                     builder.create(entry.getKey(), "STRING", "META");
@@ -141,16 +143,19 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
         return "STRING";
     }
 
-    private void parse(int line, InstanceBuilder builder, JsonElement elem) throws ParserError {
-        Instance inst;
+    private void parse(int line, Dataset<E> output, JsonElement elem) throws ParserError, ParseException {
+        E inst;
+        InstanceBuilder<E> builder = output.builder();
         double[] values = new double[numValues];
+        int k;
         if (elem.isJsonObject()) {
             JsonObject obj = elem.getAsJsonObject();
             Set<Entry<String, JsonElement>> set = obj.entrySet();
+            inst = builder.create(numValues);
             for (Entry<String, JsonElement> entry : set) {
                 JsonElement val = entry.getValue();
                 if (val.isJsonPrimitive()) {
-
+                    System.out.println("primitive:" + entry.getKey() + ": " + val);
                 } else if (val.isJsonArray()) {
                     JsonArray ary = val.getAsJsonArray();
                     /* if (ary.size() != numValues) {
@@ -159,11 +164,13 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                     //array of arrays -> probably timeseries
                     if (ary.isJsonArray()) {
                         JsonArray e = ary.getAsJsonArray();
+                        k = 0;
                         for (JsonElement j : e) {
                             if (j.isJsonArray()) {
                                 JsonArray je = j.getAsJsonArray();
                                 if (je.size() == 2) {
                                     System.out.println("data: " + je.toString());
+                                    builder.set(je, output.getAttribute(k++), inst);
                                 } else {
                                     throw new ParserError("parsing error [" + line + "]: expected array with 2 elements, got " + e.size());
                                 }

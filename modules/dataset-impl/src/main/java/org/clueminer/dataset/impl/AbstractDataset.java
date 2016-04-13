@@ -224,6 +224,9 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
     @Override
     public void setDataType(DataType type) {
         this.dataType = type;
+        if (dataType == DataType.XY_CONTINUOUS) {
+            builder = new InstanceXYFactory<E>(this);
+        }
     }
 
     @Override

@@ -202,6 +202,9 @@ public abstract class AbstractArrayDataset<E extends Instance> implements Datase
     @Override
     public void setDataType(DataType type) {
         this.dataType = type;
+        if (dataType == DataType.XY_CONTINUOUS) {
+            builder = new InstanceXYFactory<E>(this);
+        }
     }
 
     @Override
