@@ -155,6 +155,13 @@ public abstract class AbstractAttribute implements Attribute {
     }
 
     @Override
+    public void updateStatistics(Object value) {
+        for (Statistics s : statistics) {
+            s.valueAdded(value);
+        }
+    }
+
+    @Override
     public void setDefault(double value) {
         this.attributeDescription = (AttributeDescription) this.attributeDescription.clone();
         this.attributeDescription.setDefault(value);
