@@ -16,6 +16,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -79,6 +80,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     private int attrCnt = 0;
     protected InstanceBuilder<E> builder;
     private Graph graph;
+    private DataType dataType;
 
     private String name;
 
@@ -152,7 +154,7 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
      * Builds graph from list of nodes and parent graph
      *
      * @param nodes List of nodes
-     * @param g Parent graph
+     * @param g     Parent graph
      * @return Graph representing this cluster
      */
     protected Graph buildGraphFromCluster(ArrayList<Node<E>> nodes, Graph g) {
@@ -596,6 +598,16 @@ public class GraphCluster<E extends Instance> implements Cluster<E>, Set<E> {
     @Override
     public void setBuilder(InstanceBuilder<E> builder) {
         this.builder = builder;
+    }
+
+    @Override
+    public void setDataType(DataType type) {
+        this.dataType = type;
+    }
+
+    @Override
+    public DataType getDataType() {
+        return dataType;
     }
 
     class InstanceIterator implements Iterator<E> {
