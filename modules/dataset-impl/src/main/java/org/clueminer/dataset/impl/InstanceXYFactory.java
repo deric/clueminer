@@ -109,8 +109,22 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                 JsonElement y = ary.get(1);
                 ((XYInstance) row).put(x.getAsDouble(), y.getAsDouble());
             } else {
-                throw new ParseException("don't know how to process " + value, row.getIndex());
+                XYInstance inst = (XYInstance) row;
+                for (JsonElement elem : ary) {
+                    System.out.println("elem: " + elem);
+                    if (elem.isJsonArray()) {
+                        JsonArray a = elem.getAsJsonArray();
+                        if (a.size() == 2) {
+                            //only 2D data are supported
+                            inst.put(a.get(0).getAsDouble(), a.get(1).getAsDouble());
+                        } else {
+                            throw new ParseException("don't know how to process " + a, row.getIndex());
+                        }
+                    }
+                }
             }
+        } else {
+            throw new ParseException("don't know how to process " + value, row.getIndex());
         }
     }
 

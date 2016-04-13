@@ -30,6 +30,7 @@ import java.text.ParseException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
@@ -46,9 +47,6 @@ import org.clueminer.utils.DatasetLoader;
  * @param <E>
  */
 public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
-
-    private int numValues = 0;
-    private int numMeta = 0;
 
     @Override
     public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
@@ -101,11 +99,11 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                 JsonElement val = entry.getValue();
                 if (val.isJsonPrimitive()) {
                     builder.create(entry.getKey(), convertType(val), "META");
-                    numMeta++;
                 } else if (val.isJsonArray()) {
                     //the actual data
+                    builder.create(entry.getKey(), "MD_DATA", "INPUT");
+                    //TODO: only numeric data is expected here
                     JsonArray ary = val.getAsJsonArray();
-                    numValues = ary.size();
                     JsonArray e = ary.getAsJsonArray();
                     JsonElement j = e.iterator().next();
                     if (j.isJsonArray()) {
@@ -119,7 +117,6 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
                 } else if (val.isJsonNull()) {
                     //TODO: skip null?
                     builder.create(entry.getKey(), "STRING", "META");
-                    numMeta++;
                 } else {
                     throw new ParserError("unexpected type: " + entry.getKey());
                 }
@@ -146,50 +143,17 @@ public class JsonLoader<E extends Instance> implements DatasetLoader<E> {
     private void parse(int line, Dataset<E> output, JsonElement elem) throws ParserError, ParseException {
         E inst;
         InstanceBuilder<E> builder = output.builder();
-        double[] values = new double[numValues];
-        int k;
+        Attribute attr;
         if (elem.isJsonObject()) {
             JsonObject obj = elem.getAsJsonObject();
             Set<Entry<String, JsonElement>> set = obj.entrySet();
-            inst = builder.create(numValues);
+            inst = builder.create(output.attributeCount());
+            inst.setIndex(line);
             for (Entry<String, JsonElement> entry : set) {
+                attr = output.getAttribute(entry.getKey());
                 JsonElement val = entry.getValue();
-                if (val.isJsonPrimitive()) {
-                    System.out.println("primitive:" + entry.getKey() + ": " + val);
-                } else if (val.isJsonArray()) {
-                    JsonArray ary = val.getAsJsonArray();
-                    /* if (ary.size() != numValues) {
-                     * throw new RuntimeException("unexpected data row size " + ary.size() + ". expected length: " + numValues);
-                     * } */
-                    //array of arrays -> probably timeseries
-                    if (ary.isJsonArray()) {
-                        JsonArray e = ary.getAsJsonArray();
-                        k = 0;
-                        for (JsonElement j : e) {
-                            if (j.isJsonArray()) {
-                                JsonArray je = j.getAsJsonArray();
-                                if (je.size() == 2) {
-                                    System.out.println("data: " + je.toString());
-                                    builder.set(je, output.getAttribute(k++), inst);
-                                } else {
-                                    throw new ParserError("parsing error [" + line + "]: expected array with 2 elements, got " + e.size());
-                                }
-                            } else {
-                                throw new ParserError("parsing error [" + line + "]: expected array got " + j);
-                            }
-                        }
-                    } else {
-                        //expect array of doubles
-                        int i = 0;
-                        for (JsonElement e : ary) {
-                            values[i++] = e.getAsDouble();
-                        }
-                    }
-                } else if (val.isJsonNull()) {
-
-                } else {
-                    throw new ParserError("unexpected type: " + entry.getKey());
-                }
+                //-> delegate parsing to lower level modules (storage)
+                builder.set(val, attr, inst);
             }
         } else {
             throw new ParserError("unexpected element: " + elem);

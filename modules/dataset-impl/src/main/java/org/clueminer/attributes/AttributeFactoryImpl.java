@@ -86,7 +86,6 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
 
     @Override
     public Attribute build(String name, AttributeType type, AttributeRole role) {
-        Attribute ret;
         switch ((BasicAttrType) type) {
             case NUMERICAL:
             case NUMERIC:
@@ -95,6 +94,8 @@ public class AttributeFactoryImpl<E> implements AttributeBuilder {
                 return new NumericalAttribute(name, role);
             case STRING:
                 return new StringAttribute(name, role);
+            case MD_DATA:
+                return new MdAttribute(name, type, role);
             default:
                 throw new RuntimeException("attribute type " + type + " is not supported");
         }
