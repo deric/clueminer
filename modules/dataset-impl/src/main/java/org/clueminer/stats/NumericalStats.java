@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.stats;
 
 import java.util.Iterator;
@@ -66,7 +82,8 @@ public class NumericalStats implements Statistics {
     }
 
     @Override
-    public void valueAdded(double value) {
+    public void valueAdded(Object val) {
+        double value = (Double) val;
         if (!Double.isNaN(value)) {
             if (value < minimum) {
                 minimum = value;
@@ -93,12 +110,12 @@ public class NumericalStats implements Statistics {
 
             sum += value;
             squaredSum += value * value;
-
         }
     }
 
     @Override
-    public void valueRemoved(double value) {
+    public void valueRemoved(Object val) {
+        double value = (Double) val;
         if (!Double.isNaN(value)) {
             if (minimum == value) {
                 resetMin();

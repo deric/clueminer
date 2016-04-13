@@ -19,7 +19,7 @@ package org.clueminer.dataset.api;
 import java.io.Serializable;
 
 /**
- * Interface for computing online statistics for an attribute.
+ * Interface for computing online (running) statistics for an attribute.
  *
  * @author Tomas Barton
  */
@@ -32,16 +32,16 @@ public interface Statistics extends Serializable, Cloneable {
     /**
      * Update statistics with a new value
      *
-     * @param value
+     * @param value newly arrived value
      */
-    void valueAdded(double value);
+    void valueAdded(Object value);
 
     /**
      * A value was removed from a dataset
      *
      * @param value
      */
-    void valueRemoved(double value);
+    void valueRemoved(Object value);
 
     /**
      * Array of statistics which are provided by the class

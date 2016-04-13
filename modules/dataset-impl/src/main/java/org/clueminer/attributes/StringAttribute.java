@@ -20,6 +20,7 @@ import java.util.Iterator;
 import org.clueminer.dataset.api.AbstractAttribute;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.NominalMapping;
+import org.clueminer.dataset.api.Statistics;
 
 /**
  *
@@ -51,7 +52,9 @@ public class StringAttribute extends AbstractAttribute {
 
     @Override
     public void updateStatistics(Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Statistics s : statistics) {
+            s.valueAdded(value);
+        }
     }
 
     @Override
