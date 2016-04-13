@@ -20,7 +20,9 @@ import java.io.FileReader;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
+import org.clueminer.io.importer.api.Report;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -42,7 +44,17 @@ public class JsonImporterTest {
             System.out.println("attr: " + attr);
         }
         assertEquals(14, loader.attributeCount());
-        //    assertEquals(5, loader.size());
+        assertEquals(6, loader.size());
+        assertNotNull(loader.get(0));
+        assertEquals(14, loader.get(0).size());
+        assertNotNull(loader.getReport());
+        Report report = loader.getReport();
+
+        for (int i = 0; i < 5; i++) {
+            System.out.println(report.getIssues().get(i));
+        }
+        System.out.println("JSON import: " + report.getIssues().size() + " issues");
+
     }
 
 }

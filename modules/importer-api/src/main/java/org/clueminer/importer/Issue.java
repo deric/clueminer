@@ -74,4 +74,10 @@ public final class Issue {
     public Throwable getThrowable() {
         return throwable;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.level.name()).append(":").append(message);
+        return sb.toString();
+    }
 }

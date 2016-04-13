@@ -100,7 +100,6 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
     @Override
     public void set(Object value, Attribute attr, E row) throws ParserError {
         if (attr.getRole() == BasicAttrRole.INPUT) {
-
             //TODO: use dispatcher from parent class?
             if (value instanceof JsonArray) {
                 JsonArray ary = (JsonArray) value;
@@ -111,7 +110,6 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
                 } else {
                     XYInstance inst = (XYInstance) row;
                     for (JsonElement elem : ary) {
-                        System.out.println("elem: " + elem);
                         if (elem.isJsonArray()) {
                             JsonArray a = elem.getAsJsonArray();
                             if (a.size() == 2) {
