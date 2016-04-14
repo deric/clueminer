@@ -29,7 +29,7 @@
         <netbeans.version>RELEASE802</netbeans.version>
         <brandingToken>clueminer</brandingToken>
         <project.organization>clueminer.org</project.organization>
-        <maven.compiler>2.5.1</maven.compiler>
+        <maven.compiler>3.5.1</maven.compiler>
     </properties>
     <parent>
         <groupId>org.sonatype.oss</groupId>
