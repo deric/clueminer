@@ -187,7 +187,7 @@ public class DataSelectPanel extends JPanel {
                 if (row._isNumber) {
                     row.name.setText(row._paramName + "=[" + row._kernelDoubleValues[row.min.getValue() - 1] + "," + row._kernelDoubleValues[row.max.getValue() - 1] + "]");
                 } else {
-                    row.name.setText(row._paramName + "={" + Array.cat(row.list.getSelectedValues()) + "}");
+                    row.name.setText(row._paramName + "={" + row.list.getSelectedValuesList().toString() + "}");
                 }
             } else {
                 row.name.setText(row._paramName);
@@ -809,7 +809,7 @@ public class DataSelectPanel extends JPanel {
         } catch (InterruptedException e) {
         e.printStackTrace();
         }
-        
+
         Object[][] data2 = { { 0, 0, 0, 0, "a0" }, { 1, 1, 1, 1, "a1" }, { 2, 2, 2, 2, "a2" }, { 3, 3, 3, 3, "a3" }, { 4, 3, 3, 3, "a3" },
         { 5, 3, 3, 3, "a4" }, { 5, 4, 3, 3, "a4" } };
         dsp.setData(data2);*/
