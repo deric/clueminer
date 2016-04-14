@@ -31,8 +31,8 @@
         <project.organization>clueminer.org</project.organization>
         <maven.compiler>3.5.1</maven.compiler>
         <clueminer.nbm-maven-plugin.version>3.14</clueminer.nbm-maven-plugin.version>
-        <!--can't be upgraded due to dependencies of other modules -->
-        <clueminer.junit.version>4.10</clueminer.junit.version>
+        <!--can't be easily upgraded due to dependencies of other modules -->
+        <clueminer.junit.version>4.12</clueminer.junit.version>
     </properties>
     <parent>
         <groupId>org.sonatype.oss</groupId>
