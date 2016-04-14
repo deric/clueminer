@@ -398,19 +398,6 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
      * {@inheritDoc}
      */
     @Override
-    public DataType getDataType() {
-        return dataType;
-    }
-
-    @Override
-    public void setDataType(DataType dataType) {
-        this.dataType = dataType;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean hasPrimaryKey() {
         for (AttributeDraft attr : attributeList.values()) {
             if (attr.getRole() == BasicAttrRole.ID) {

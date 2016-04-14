@@ -19,14 +19,12 @@ package org.clueminer.dataset.impl;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.dataset.api.TypeHandler;
 import org.clueminer.exception.ParserError;
 
 /**
@@ -40,8 +38,6 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
     protected final Dataset<E> dataset;
     public static final int DEFAULT_CAPACITY = 5;
     protected DecimalFormat decimalFormat;
-    // Make a map that translates a Class object to a Handler
-    protected static final Map<Class, TypeHandler> dispatch = new HashMap<>();
     /**
      * values considered as missing values
      */
@@ -202,15 +198,19 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         } else if (attr.isNominal()) {
             row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
         } else {
-
-            TypeHandler h = dispatch.get(value.getClass());
-            if (h == null) {
-                // Throw an exception: unknown type
-                throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
-            }
-            h.handle(value, attr, row, this);
+            dispatch(value, attr, row);
         }
     }
+
+    /**
+     * Internal conversion to appropriate object type
+     *
+     * @param value
+     * @param attr
+     * @param row
+     * @throws ParserError
+     */
+    protected abstract void dispatch(Object value, Attribute attr, E row) throws ParserError;
 
     @Override
     public HashSet<String> getMissing() {

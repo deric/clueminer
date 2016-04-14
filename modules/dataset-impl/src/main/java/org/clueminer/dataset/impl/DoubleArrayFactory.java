@@ -16,6 +16,8 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataRow;
@@ -23,7 +25,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.api.TypeHandler;
-import static org.clueminer.dataset.impl.AbstractRowFactory.dispatch;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.exception.ParserError;
 
@@ -33,6 +34,9 @@ import org.clueminer.exception.ParserError;
  * @param <E>
  */
 public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
+
+    // Make a map that translates a Class object to a Handler
+    private static final Map<Class, TypeHandler> dispatch = new HashMap<>();
 
     static {
         dispatch.put(Double.class, new TypeHandler() {
@@ -168,5 +172,15 @@ public class DoubleArrayFactory<E extends Instance> extends AbstractRowFactory<E
         }
         dataRow.trim();
         return dataRow;
+    }
+
+    @Override
+    protected void dispatch(Object value, Attribute attr, E row) throws ParserError {
+        TypeHandler h = dispatch.get(value.getClass());
+        if (h == null) {
+            // Throw an exception: unknown type
+            throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
+        }
+        h.handle(value, attr, row, this);
     }
 }

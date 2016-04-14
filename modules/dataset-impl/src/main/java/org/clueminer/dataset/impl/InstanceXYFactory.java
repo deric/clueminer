@@ -131,4 +131,10 @@ public class InstanceXYFactory<E extends Instance> extends AbstractRowFactory<E>
         }
     }
 
+    @Override
+    protected void dispatch(Object value, Attribute attr, E row) throws ParserError {
+        //needed in case that set is not overriden
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

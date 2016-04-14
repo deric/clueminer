@@ -16,6 +16,8 @@
  */
 package org.clueminer.importer.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -35,6 +37,9 @@ import org.clueminer.io.importer.api.InstanceDraft;
 public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
     private final Container container;
+
+    // Make a map that translates a Class object to a Handler
+    private static final Map<Class, TypeHandler> dispatch = new HashMap<>();
 
     static {
         dispatch.put(Double.class, new TypeHandler() {
@@ -157,6 +162,16 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                 }
             }
         }
+    }
+
+    @Override
+    protected void dispatch(Object value, Attribute attr, E row) throws ParserError {
+        TypeHandler h = dispatch.get(value.getClass());
+        if (h == null) {
+            // Throw an exception: unknown type
+            throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
+        }
+        h.handle(value, attr, row, this);
     }
 
 }
