@@ -149,12 +149,12 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>partitioning-api</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>partitioning-impl</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -177,17 +177,6 @@
                         <publicPackage>org.clueminer.clustering.gui.colors</publicPackage>
                         <publicPackage>org.clueminer.colors</publicPackage>
                     </publicPackages>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <!-- NetBeans 6.9+ requires JDK 6 -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler}</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
                 </configuration>
             </plugin>
 
