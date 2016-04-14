@@ -26,7 +26,7 @@
         </developer>
     </developers>
     <properties>
-        <netbeans.version>RELEASE802</netbeans.version>
+        <netbeans.version>RELEASE81</netbeans.version>
         <brandingToken>clueminer</brandingToken>
         <project.organization>clueminer.org</project.organization>
         <maven.compiler>3.5.1</maven.compiler>
@@ -66,6 +66,14 @@
             <id>gral</id>
             <name>GRAL</name>
             <url>http://mvn.erichseifert.de/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>oss</id>
+            <name>oss nexus</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>

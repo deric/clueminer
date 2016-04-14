@@ -12,29 +12,7 @@
     <artifactId>chart-base</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
-
     <name>chart-base</name>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <repositories>
-        <!--
-        Repository hosting NetBeans modules, especially APIs.
-        Versions are based on IDE releases, e.g.: RELEASE691
-        To create your own repository, use: nbm:populate-repository
-        -->
-        <repository>
-            <id>netbeans</id>
-            <name>NetBeans</name>
-            <url>http://bits.netbeans.org/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -89,7 +67,6 @@
             <version>${netbeans.version}</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -105,7 +82,6 @@
                     </publicPackages>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>
