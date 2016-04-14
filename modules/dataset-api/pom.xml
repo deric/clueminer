@@ -74,15 +74,6 @@
                     </publicPackages>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <!-- to have the jar plugin pickup the nbm generated manifest -->
-                    <useDefaultManifestFile>true</useDefaultManifestFile>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>
