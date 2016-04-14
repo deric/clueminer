@@ -2,7 +2,8 @@ language: java
 sudo: false
 jdk:
   - oraclejdk8
-  - openjdk8
+# not supported yet
+#  - openjdk8
 before_install:
   - "sh -e /etc/init.d/xvfb start"
   - "mvn --version"
