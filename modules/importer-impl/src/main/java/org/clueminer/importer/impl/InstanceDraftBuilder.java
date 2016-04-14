@@ -16,8 +16,6 @@
  */
 package org.clueminer.importer.impl;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -41,35 +39,35 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
     static {
         dispatch.put(Double.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Double) value);
             }
         });
         dispatch.put(Float.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Float) value);
             }
         });
         dispatch.put(Integer.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Integer) value);
             }
         });
         dispatch.put(Boolean.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
             }
         });
         dispatch.put(String.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 BasicAttrType at = (BasicAttrType) attr.getType();
                 String val = value.toString();
                 if (missing.contains(val)) {
-                    row.set(attr.getIndex(), Double.NaN);
+                    row.set(attr.getIndex(), (double) attr.getMissingValue());
                 } else {
                     switch (at) {
                         case NUMERICAL:
@@ -79,8 +77,8 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                                 //row.set(attr.getIndex(), string2Double(value.toString(), df));
                                 ((InstanceDraft) row).setObject(attr.getIndex(), value);
                             } catch (RuntimeException ex) {
-                                ((InstanceDraft) row).setObject(attr.getIndex(), value);
-                                // container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.CRITICAL));
+                                InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
+                                b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
                             }
                             break;
                         case STRING:
@@ -136,11 +134,11 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
      */
     @Override
     public void set(Object value, Attribute attr, E row) {
-        if (value == null) {
+        if (value == null || value.toString().equals("null")) {
             if (attr.allowMissing()) {
                 set(attr.getMissingValue(), attr, row);
             } else {
-                throw new RuntimeException("missing value not allowed for " + attr.getName());
+                container.getReport().logIssue(new Issue("missing value not allowed for " + attr.getName(), Issue.Level.WARNING));
             }
         } else if (attr.isNominal()) {
             row.set(attr.getIndex(), attr.getMapping().mapString((String.valueOf(value).trim())));
@@ -153,8 +151,8 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                 set(value.toString(), attr, row);
             } else {
                 try {
-                    h.handle(value, attr, row, decimalFormat);
-                } catch (ParserError | ParseException ex) {
+                    h.handle(value, attr, row, this);
+                } catch (ParserError ex) {
                     container.getReport().logIssue(new Issue(ex, Issue.Level.SEVERE));
                 }
             }

@@ -37,37 +37,37 @@ public class LongRowFactory<E extends Instance> extends AbstractRowFactory<E> im
     static {
         dispatch.put(Double.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Double) value);
             }
         });
         dispatch.put(Float.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Float) value);
             }
         });
         dispatch.put(Integer.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Integer) value);
             }
         });
         dispatch.put(Boolean.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
             }
         });
         dispatch.put(String.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) throws ParserError {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) throws ParserError {
                 BasicAttrType at = (BasicAttrType) attr.getType();
                 switch (at) {
                     case NUMERICAL:
                     case NUMERIC:
                     case REAL:
-                        row.set(attr.getIndex(), string2Long(value.toString(), df));
+                        row.set(attr.getIndex(), string2Long(value.toString(), builder.getDecimalFormat()));
                         break;
                     default:
                         throw new RuntimeException("conversion to " + at + " is not supported for '" + value + "'");

@@ -208,11 +208,7 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
                 // Throw an exception: unknown type
                 throw new RuntimeException("could not convert " + value.getClass().getName() + " to " + attr.getType());
             }
-            try {
-                h.handle(value, attr, row, decimalFormat);
-            } catch (ParseException ex) {
-                throw new ParserError(ex);
-            }
+            h.handle(value, attr, row, this);
         }
     }
 
@@ -226,4 +222,13 @@ public abstract class AbstractRowFactory<E extends Instance> implements Instance
         this.missing = missing;
     }
 
+    @Override
+    public DecimalFormat getDecimalFormat() {
+        return decimalFormat;
+    }
+
+    @Override
+    public void setDecimalFormat(DecimalFormat decimalFormat) {
+        this.decimalFormat = decimalFormat;
+    }
 }

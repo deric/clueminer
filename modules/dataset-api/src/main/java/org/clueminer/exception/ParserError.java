@@ -25,7 +25,7 @@ import java.io.File;
  */
 public class ParserError extends Exception {
 
-    private int lineNum = 0;
+    private int lineNum = -1;
     private File file = null;
 
     public ParserError(String message) {
@@ -40,10 +40,23 @@ public class ParserError extends Exception {
         super(message, t);
     }
 
+    public ParserError(String message, int lineNum) {
+        super(message);
+        this.lineNum = lineNum;
+    }
+
     public ParserError(String message, File file, int lineNum) {
         super(message);
         this.lineNum = lineNum;
         this.file = file;
+    }
+
+    public String getMessage() {
+        if (lineNum > -1) {
+            return super.getMessage();
+        } else {
+            return "line " + lineNum + ": " + super.getMessage();
+        }
     }
 
     @Override

@@ -39,47 +39,47 @@ public class IntegerRowFactory<E extends Instance> extends AbstractRowFactory<E>
     static {
         dispatch.put(Double.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (int) value);
             }
         });
         dispatch.put(Float.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (int) value);
             }
         });
         dispatch.put(Integer.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (Integer) value);
             }
         });
         dispatch.put(Boolean.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
             }
         });
         dispatch.put(String.class, new TypeHandler() {
             @Override
-            public void handle(Object value, Attribute attr, Instance row, DecimalFormat df) throws ParseException, ParserError {
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) throws ParserError {
                 BasicAttrType at = (BasicAttrType) attr.getType();
                 switch (at) {
                     case NUMERICAL:
                     case NUMERIC:
                     case REAL:
-                        row.set(attr.getIndex(), string2Int(value.toString(), df));
+                        row.set(attr.getIndex(), string2Int(value.toString(), builder.getDecimalFormat()));
                         break;
                     default:
-                        throw new ParseException("conversion to " + at + " is not supported for '" + value + "'", row.getIndex());
+                        throw new ParserError("conversion to " + at + " is not supported for '" + value + "'", row.getIndex());
                 }
 
             }
         });
     }
 
-    private static int string2Int(String str, DecimalFormat df) throws ParseException, ParserError {
+    private static int string2Int(String str, DecimalFormat df) throws ParserError {
         if (str == null) {
             return 0;
         }
@@ -90,7 +90,7 @@ public class IntegerRowFactory<E extends Instance> extends AbstractRowFactory<E>
                 Number num = df.parse(str);
                 return num.intValue();
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | ParseException e) {
             Logger.getLogger(IntegerRowFactory.class.getName()).log(Level.SEVERE, "string2Int(String): ''{0}'' is not a valid number!", str);
             throw new ParserError(e.getMessage(), e);
         }

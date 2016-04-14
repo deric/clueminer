@@ -1,5 +1,6 @@
 package org.clueminer.dataset.api;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import org.clueminer.exception.ParserError;
 
@@ -84,7 +85,7 @@ public interface InstanceBuilder<E extends Instance> {
      * @param row
      * @param attr
      * @throws java.text.ParseException in case that value can't be converted to
-     * the attribute's type
+     *                                  the attribute's type
      */
     void set(Object value, Attribute attr, E row) throws ParserError;
 
@@ -142,4 +143,18 @@ public interface InstanceBuilder<E extends Instance> {
     HashSet<String> getMissing();
 
     void setMissing(HashSet<String> missing);
+
+    /**
+     * Number formatter
+     *
+     * @return
+     */
+    DecimalFormat getDecimalFormat();
+
+    /**
+     * Set formatter for parsing Strings into numbers
+     *
+     * @param decimalFormat
+     */
+    void setDecimalFormat(DecimalFormat decimalFormat);
 }

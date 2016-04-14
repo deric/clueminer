@@ -16,8 +16,6 @@
  */
 package org.clueminer.dataset.api;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import org.clueminer.exception.ParserError;
 
 /**
@@ -33,6 +31,7 @@ public interface TypeHandler<E extends Instance> {
      * @param value
      * @param attr
      * @param row
+     * @param builder
      */
-    void handle(Object value, Attribute attr, E row, DecimalFormat df) throws ParseException, ParserError;
+    void handle(Object value, Attribute attr, E row, InstanceBuilder<E> builder) throws ParserError;
 }
