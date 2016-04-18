@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
-import org.clueminer.io.importer.api.Report;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -68,10 +67,4 @@ public interface Importer<E extends InstanceDraft> {
      */
     Container getContainer();
 
-    /**
-     * Returns the import report, filled with logs and potential issues.
-     *
-     * @return the import report
-     */
-    Report getReport();
 }

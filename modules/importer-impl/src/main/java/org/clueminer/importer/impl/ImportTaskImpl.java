@@ -30,7 +30,6 @@ import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
 import org.clueminer.importer.gui.ReportPanel;
 import org.clueminer.io.importer.api.Container;
-import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.processor.spi.ProcessorUI;
 import org.clueminer.project.api.ProjectController;
@@ -130,13 +129,11 @@ public class ImportTaskImpl implements ImportTask {
 
     private void finishImport(Container container) {
         if (container.verify()) {
-            Report report = container.getReport();
-
             //Report panel
             ReportPanel reportPanel = new ReportPanel();
             //addListener(reportPanel);
             reportPanel.setCurrentFile(fileObject);
-            reportPanel.setData(report, container);
+            reportPanel.setData(container);
             reportPanel.fileImporterChanged(importer);
             DialogDescriptor dd = new DialogDescriptor(reportPanel, NbBundle.getMessage(ReportPanel.class, "ReportPanel.title"));
             if (!DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {

@@ -132,12 +132,15 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         criticalIcon = new javax.swing.ImageIcon(getClass().getResource("/org/clueminer/importer/gui/critical.png"));
     }
 
-    public void setData(Report report, Container container) {
+    public void setData(Container container) {
         this.container = container;
-        //currentReader = container.getLoader().getLineReader();
-        report.pruneReport(ISSUES_LIMIT);
-        fillIssues(report);
-        fillReport(report);
+        if (container.getReport() != null) {
+            Report report = container.getReport();
+            //currentReader = container.getLoader().getLineReader();
+            report.pruneReport(ISSUES_LIMIT);
+            fillIssues(report);
+            fillReport(report);
+        }
 
         fillStats(container);
         fillParameters(container);
@@ -577,7 +580,11 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void analysisFinished(Container container) {
-        setData(container.getReport(), container);
+        if (this.container != null) {
+            setData(container);
+        } else {
+            throw new RuntimeException("missing container");
+        }
     }
 
     @Override
@@ -611,7 +618,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                         }
                         Container cont = controller.importFile(currentFile, currentFile.getInputStream(), importer, true);
                         logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
-                        setData(cont.getReport(), cont);
+                        setData(cont);
                         logger.log(Level.INFO, "finished loading data with {0}", importer.getName());
                     } catch (FileNotFoundException ex) {
                         Exceptions.printStackTrace(ex);

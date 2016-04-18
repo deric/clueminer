@@ -34,7 +34,6 @@ import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.Database;
-import org.clueminer.io.importer.api.Report;
 import org.clueminer.processor.spi.Processor;
 import org.clueminer.project.api.MostRecentFiles;
 import org.clueminer.project.api.Workspace;
@@ -175,15 +174,13 @@ public class ImportControllerImpl implements ImportController {
         LOGGER.log(Level.INFO, "importer contr num attr: {0}", container.getAttributeCount());
         LOGGER.log(Level.INFO, "importer contr num inst: {0}", container.getInstanceCount());
         //Report
-        Report report = new Report();
-        container.setReport(report);
+        // Report report = container.getReport();
+        //container.setReport(report);
 
         try {
             //actual data import - loads data into container
             if (importer.execute(container, reader)) {
-                if (importer.getReport() != null) {
-                    report.append(importer.getReport());
-                }
+
                 return container;
             }
         } catch (RuntimeException ex) {

@@ -73,11 +73,6 @@ public abstract class BaseImporter<E extends InstanceDraft> implements FileImpor
     }
 
     @Override
-    public Report getReport() {
-        return report;
-    }
-
-    @Override
     public void setProgressTicket(ProgressTicket progressTicket) {
         this.progressTicket = progressTicket;
     }
