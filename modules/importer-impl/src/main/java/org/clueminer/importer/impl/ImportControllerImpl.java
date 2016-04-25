@@ -64,6 +64,7 @@ public class ImportControllerImpl implements ImportController {
     private MimeHelper helper;
     private static final Logger LOGGER = Logger.getLogger(ImportControllerImpl.class.getName());
     private final HashMap<String, Container> containers;
+    private static int cnt = 0;
 
     public ImportControllerImpl() {
         this.containers = new HashMap<>();
@@ -91,7 +92,7 @@ public class ImportControllerImpl implements ImportController {
             MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
             mostRecentFiles.addFile(fileObject.getPath());
 
-            return new ImportTaskImpl(importer, fileObject, this);
+            return new ImportTaskImpl(importer, fileObject, this, cnt++);
         } catch (MissingResourceException ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
         }

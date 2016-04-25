@@ -58,15 +58,14 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         this.importerUI = importerUI;
         final Container container = importer.getContainer();
         final ColumnsPreview preview = this;
+        logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 if (container != null) {
                     // we might have to check if reload was completed
-                    logger.log(Level.INFO, "md5: {0}", container.getMD5());
                     if (container != null) {
                         Iterable<AttributeDraft> attrs = container.getAttrIter();
-                        logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
                         if (numAttributes != container.getAttributeCount()) {
                             numAttributes = container.getAttributeCount();
                             preview.removeAll();
@@ -75,7 +74,6 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                             for (AttributeDraft atrd : attrs) {
                                 generateAttribute(atrd.getIndex(), atrd);
                             }
-
                         }
                     } else {
                         NotifyUtil.error("Error", "missing loader", false);

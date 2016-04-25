@@ -56,11 +56,13 @@ public class ImportTaskImpl implements ImportTask {
     private final ImportController controller;
     private final transient EventListenerList importListeners = new EventListenerList();
     private final static Logger logger = Logger.getLogger(ImportTaskImpl.class.getName());
+    private int num;
 
-    public ImportTaskImpl(FileImporter importer, FileObject fileObject, ImportController controller) {
+    public ImportTaskImpl(FileImporter importer, FileObject fileObject, ImportController controller, int num) {
         this.importer = importer;
         this.fileObject = fileObject;
         this.controller = controller;
+        this.num = num;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class ImportTaskImpl implements ImportTask {
                 }
             }
 
-            logger.log(Level.INFO, "file MD5: {0}", convertMD5(digest));
+            logger.log(Level.INFO, "[" + num + "] file MD5: {0} ", convertMD5(digest));
             logger.log(Level.INFO, "showing import dialog...");
             //display import window
             finishImport(container);
@@ -114,6 +116,7 @@ public class ImportTaskImpl implements ImportTask {
                 }
             }
         }
+        logger.log(Level.INFO, "[{0}] importer finished", num);
     }
 
     private String convertMD5(byte[] md5) {
