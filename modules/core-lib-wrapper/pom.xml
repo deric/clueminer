@@ -21,6 +21,7 @@
                         <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
                         <publicPackage>com.google.code.*</publicPackage>
                         <publicPackage>com.google.common.*</publicPackage>
+                        <publicPackage>org.apache.commons.math3</publicPackage>
                         <publicPackage>org.apache.commons.math3.*</publicPackage>
                         <publicPackage>com.google.code.gson</publicPackage>
                         <publicPackage>com.google.gson.stream</publicPackage>
@@ -58,6 +59,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-math3</artifactId>
+            <!-- multiple libraries depend on this version -->
             <version>3.6.1</version>
         </dependency>
     </dependencies>
