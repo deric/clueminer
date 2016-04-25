@@ -204,7 +204,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 comboImporterChanged();
             }
         });
-        comboImporterChanged();
     }
 
     private void initPreview() {
@@ -582,8 +581,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     public void analysisFinished(Container box) {
         if (box != null) {
             setData(box);
-        } else {
-            throw new RuntimeException("missing container");
         }
     }
 
@@ -597,8 +594,6 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             triggerReimport((FileImporter) importer, null);
             logger.severe("container is null!");
             return;
-        } else {
-            triggerReimport((FileImporter) importer, cont);
         }
 
         this.validate();
