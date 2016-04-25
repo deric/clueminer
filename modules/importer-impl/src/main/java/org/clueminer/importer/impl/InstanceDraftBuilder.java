@@ -81,7 +81,6 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                     default:
                         InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
                         b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
-
                 }
             }
         });

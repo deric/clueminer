@@ -149,6 +149,16 @@
             <artifactId>math-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${clueminer.guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${clueminer.gson.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
