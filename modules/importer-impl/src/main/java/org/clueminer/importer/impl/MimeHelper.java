@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -23,6 +25,17 @@ public class MimeHelper {
         mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
     }
 
+    public Collection detectMIME(FileObject file) {
+        return detectMIME(FileUtil.toFile(file));
+    }
+
+    /**
+     * We can't use fileObject directly because fileObject doesn't work with test
+     * fixtures.
+     *
+     * @param file
+     * @return
+     */
     public Collection detectMIME(File file) {
         Collection mimeTypes = null;
         try {

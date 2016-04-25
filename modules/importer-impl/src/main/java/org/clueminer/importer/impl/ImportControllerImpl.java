@@ -77,19 +77,20 @@ public class ImportControllerImpl implements ImportController {
     @Override
     public ImportTask preload(FileObject fileObject) {
         try {
-            final FileImporter importer = getFileImporter(FileUtil.toFile(fileObject));
+            fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+            final FileImporter importer = getFileImporter(fileObject);
             if (importer == null) {
                 NotifyDescriptor.Message msg = new NotifyDescriptor.Message(NbBundle.getMessage(getClass(), "ImportController.error_no_matching_file_importer"), NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(msg);
                 return null;
+            } else {
+                LOGGER.info("detected importer " + importer.getName());
             }
 
             //MRU
             MostRecentFiles mostRecentFiles = Lookup.getDefault().lookup(MostRecentFiles.class);
             mostRecentFiles.addFile(fileObject.getPath());
 
-            //Execute task
-            fileObject = getArchivedFile(fileObject);
             return new ImportTaskImpl(importer, fileObject, this);
         } catch (MissingResourceException ex) {
             Logger.getLogger("").log(Level.WARNING, "", ex);
@@ -117,7 +118,7 @@ public class ImportControllerImpl implements ImportController {
             if (importer == null) {
                 LOGGER.info("no importer found by extension");
                 //try to find importer by MIME type
-                importer = getMatchingImporter(helper.detectMIME(file));
+                importer = getMatchingImporter(helper.detectMIME(fileObject));
             } else {
                 LOGGER.log(Level.INFO, "using importer {0}", importer.getName());
             }
@@ -164,7 +165,7 @@ public class ImportControllerImpl implements ImportController {
         if (containers.containsKey(path)) {
             container = containers.get(path);
         } else {
-            LOGGER.log(Level.INFO, "did not find container for {0}, size = {1}", new Object[]{path, containers.size()});
+            LOGGER.log(Level.INFO, "did not find container for {0}, cached containers = {1}", new Object[]{path, containers.size()});
             container = new DraftContainer();
             containers.put(path, container);
             container.setFile(file);
@@ -208,14 +209,12 @@ public class ImportControllerImpl implements ImportController {
      * @return
      */
     @Override
-    public FileImporter getFileImporter(File file) {
-        FileObject fileObject = FileUtil.toFileObject(file);
-        fileObject = getArchivedFile(fileObject);   //Unzip and return content file
+    public FileImporter getFileImporter(FileObject fileObject) {
         //try to get importer by an extension
         FileImporter fi = getMatchingImporter(fileObject);
         if (fi == null) {
             //try to find importer by MIME type
-            fi = getMatchingImporter(helper.detectMIME(file));
+            fi = getMatchingImporter(helper.detectMIME(fileObject));
         }
         if (fileObject != null && fi != null) {
             if (fileObject.getPath().startsWith(System.getProperty("java.io.tmpdir"))) {
@@ -276,6 +275,10 @@ public class ImportControllerImpl implements ImportController {
         return fileObject.getExt().equalsIgnoreCase("zip")
                 || fileObject.getExt().equalsIgnoreCase("gz")
                 || fileObject.getExt().equalsIgnoreCase("bz2");
+    }
+
+    public boolean isAccepting(FileObject file) {
+        return isAccepting(FileUtil.toFile(file));
     }
 
     @Override

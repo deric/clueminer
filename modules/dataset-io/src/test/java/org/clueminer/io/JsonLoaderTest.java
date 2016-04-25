@@ -17,10 +17,13 @@
 package org.clueminer.io;
 
 import java.io.File;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -30,18 +33,23 @@ import org.junit.Test;
 public class JsonLoaderTest {
 
     private final JsonLoader subject;
-    private static CommonFixture tf;
+    private static final CommonFixture TF = new CommonFixture();
 
     public JsonLoaderTest() {
         subject = new JsonLoader();
-        tf = new CommonFixture();
     }
 
     @Test
     public void testLoad() throws Exception {
-        File file = tf.simpleJson();
+        File file = TF.simpleJson();
         Dataset<? extends Instance> output = new ArrayDataset(15, 4);
         subject.load(file, output);
+        assertEquals(6, output.size());
+        assertEquals(14, output.attributeCount());
+        //check first attribute
+        Attribute attr = output.getAttribute("Fk2Parent2");
+        assertNotNull(attr);
+        assertEquals(0, attr.getIndex());
     }
 
 }

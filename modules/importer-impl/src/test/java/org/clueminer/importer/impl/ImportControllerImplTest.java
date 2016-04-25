@@ -1,16 +1,11 @@
 package org.clueminer.importer.impl;
 
 import java.io.IOException;
-import java.util.Collection;
 import org.clueminer.fixtures.ImageFixture;
 import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.spi.FileImporter;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -22,22 +17,6 @@ public class ImportControllerImplTest {
     private final MLearnFixture fixtures = new MLearnFixture();
 
     public ImportControllerImplTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -73,7 +52,8 @@ public class ImportControllerImplTest {
      */
     @Test
     public void testGetFileImporter_File() throws IOException {
-        FileImporter im = subject.getFileImporter(fixtures.iris());
+        MimeHelper helper = new MimeHelper();
+        FileImporter im = subject.getMatchingImporter(helper.detectMIME(fixtures.iris()));
         //assertNotNull(im);
         System.out.println("importer: " + im);
 //        assertEquals(CsvImporter.class, im.getClass());

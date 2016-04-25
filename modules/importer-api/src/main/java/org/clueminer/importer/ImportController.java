@@ -75,7 +75,7 @@ public interface ImportController {
      */
     Container importFile(FileObject file, InputStream stream, FileImporter importer, boolean reload);
 
-    FileImporter getFileImporter(File file);
+    FileImporter getFileImporter(FileObject file);
 
     FileImporter getFileImporter(String importerName);
 
@@ -100,6 +100,8 @@ public interface ImportController {
      * @return true when MIME type is supported by at least one importer
      */
     boolean isAccepting(File file);
+
+    boolean isAccepting(FileObject file);
 
     ImporterUI getUI(Importer importer);
 

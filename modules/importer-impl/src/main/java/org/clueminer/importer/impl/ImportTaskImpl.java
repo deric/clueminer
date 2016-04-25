@@ -140,7 +140,7 @@ public class ImportTaskImpl implements ImportTask {
                 reportPanel.destroy();
                 return;
             }
-            reportPanel.destroy();
+            //reportPanel.destroy();!!?
 
             if (dd.getValue() == DialogDescriptor.OK_OPTION) {
                 //ok button was pressed
