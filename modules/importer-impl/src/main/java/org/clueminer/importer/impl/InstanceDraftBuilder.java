@@ -16,6 +16,7 @@
  */
 package org.clueminer.importer.impl;
 
+import com.google.gson.JsonPrimitive;
 import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.attributes.BasicAttrType;
@@ -66,6 +67,25 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                 row.set(attr.getIndex(), (boolean) value ? 1.0 : 0.0);
             }
         });
+        dispatch.put(JsonPrimitive.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
+                JsonPrimitive primitive = (JsonPrimitive) value;
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                switch (at) {
+                    case NUMERICAL:
+                    case NUMERIC:
+                    case REAL:
+                        ((InstanceDraft) row).setObject(attr.getIndex(), primitive.getAsDouble());
+                        break;
+                    default:
+                        InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
+                        b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
+
+                }
+            }
+        });
+
         dispatch.put(String.class, new TypeHandler() {
             @Override
             public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
