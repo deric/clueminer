@@ -178,6 +178,11 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_ISSUES, true)) {
                 thread.start();
             }
+            try {
+                thread.join();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 
@@ -223,7 +228,9 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         if (cbImporter.getSelectedItem() != null) {
             FileImporter fi = FileImporterFactory.getInstance().getProvider((String) cbImporter.getSelectedItem());
             if (fi != null) {
-                fileImporterChanged(fi);
+                if (!fileImporter.getName().equals(cbImporter.getSelectedItem().toString())) {
+                    fileImporterChanged(fi);
+                }
             }
         }
     }
@@ -282,6 +289,11 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         }, "Report Panel Issues Report");
         if (NbPreferences.forModule(ReportPanel.class).getBoolean(SHOW_REPORT, true)) {
             thread.start();
+        }
+        try {
+            thread.join();
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
         }
     }
 
