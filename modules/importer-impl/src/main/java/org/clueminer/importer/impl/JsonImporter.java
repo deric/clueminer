@@ -46,7 +46,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
 
     private static final String NAME = "JSON";
-    private Container<E> container;
     private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
 
     @Override

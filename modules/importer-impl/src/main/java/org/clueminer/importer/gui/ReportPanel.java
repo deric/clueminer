@@ -579,9 +579,9 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void analysisFinished(Container container) {
-        if (this.container != null) {
-            setData(container);
+    public void analysisFinished(Container box) {
+        if (box != null) {
+            setData(box);
         } else {
             throw new RuntimeException("missing container");
         }
