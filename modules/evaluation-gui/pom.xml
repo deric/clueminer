@@ -132,10 +132,5 @@
             <artifactId>org-netbeans-api-progress-nb</artifactId>
             <version>${netbeans.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>core-lib-wrapper</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>
