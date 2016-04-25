@@ -7,7 +7,8 @@
         <version>0.1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>fastutil</artifactId>
+    <artifactId>core-lib-wrapper</artifactId>
+    <name>core-lib-wrapper</name>
     <packaging>nbm</packaging>
     <build>
         <plugins>
@@ -17,17 +18,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>it.unimi.dsi.fastutil</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.booleans</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.bytes</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.chars</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.doubles</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.floats</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.ints</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.io</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.longs</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.objects</publicPackage>
-                        <publicPackage>it.unimi.dsi.fastutil.shorts</publicPackage>
+                        <publicPackage>it.unimi.dsi.fastutil.*</publicPackage>
+                        <publicPackage>com.google.code.*</publicPackage>
+                        <publicPackage>com.google.common.*</publicPackage>
+                        <publicPackage>org.apache.commons.math3.*</publicPackage>
+                        <publicPackage>com.google.code.gson</publicPackage>
+                        <publicPackage>com.google.gson.stream</publicPackage>
+                        <publicPackage>com.google.gson</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -44,15 +41,28 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>6.6.1</version>
+            <version>7.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
         </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
 </project>

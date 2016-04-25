@@ -62,9 +62,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${clueminer.guava.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-lib-wrapper</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

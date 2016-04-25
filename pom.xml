@@ -35,6 +35,7 @@
         <clueminer.junit.version>4.12</clueminer.junit.version>
         <clueminer.guava.version>19.0</clueminer.guava.version>
         <clueminer.gson.version>2.6.2</clueminer.gson.version>
+        <clueminer.maven-jar.version>2.6</clueminer.maven-jar.version>
     </properties>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -93,6 +94,8 @@
                     <configuration>
                         <brandingToken>${brandingToken}</brandingToken>
                         <cluster>${brandingToken}</cluster>
+                        <useOSGiDependencies>false</useOSGiDependencies>
+                        <requiresRestart>true</requiresRestart>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -108,7 +111,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>${clueminer.maven-jar.version}</version>
                     <configuration>
                         <!-- to have the jar plugin pickup the nbm generated manifest -->
                         <useDefaultManifestFile>true</useDefaultManifestFile>
@@ -235,8 +238,6 @@
         <module>modules/clustering-struct</module>
         <module>modules/graph-api</module>
         <module>modules/graph-impl</module>
-        <module>modules/fastutil</module>
-        <module>modules/commons</module>
         <module>modules/evaluation-gui</module>
         <module>modules/meta-api</module>
         <module>modules/chameleon</module>
@@ -251,6 +252,7 @@
         <module>modules/scatter</module>
         <module>modules/graph-fast</module>
         <module>modules/metis</module>
+        <module>modules/core-lib-wrapper</module>
     </modules>
     <reporting>
         <plugins>
@@ -278,4 +280,136 @@
             </plugin>
         </plugins>
     </reporting>
+
+
+    <!-- List all dependencies with versions so it can be used in child POMs
+    without explicit versions -->
+    <dependencyManagement>
+        <!-- Dependencies -->
+        <dependencies>
+            <dependency>
+                <groupId>org.netbeans.cluster</groupId>
+                <artifactId>platform</artifactId>
+                <version>${netbeans.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-dialogs</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-filesystems</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util-ui</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-util-lookup</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-windows</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-modules</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-sendopts</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-progress</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-progress-nb</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-nodes</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-awt</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-settings</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-options-api</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-swing-outline</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-explorer</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-api-annotations-common</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-swing-tabcontrol</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-openide-io</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.modules</groupId>
+                <artifactId>org-netbeans-core-output2</artifactId>
+                <version>${netbeans.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.netbeans.api</groupId>
+                <artifactId>org-netbeans-modules-nbjunit</artifactId>
+                <version>${netbeans.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${clueminer.guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${clueminer.gson.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

@@ -69,18 +69,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${clueminer.guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${clueminer.gson.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>commons</artifactId>
+            <artifactId>core-lib-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
