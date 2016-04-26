@@ -368,4 +368,17 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("XY(").append(size()).append(")").append("[");
+        for (int i = 0; i < size(); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(x[i]).append(":").append(y[i]);
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

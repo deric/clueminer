@@ -27,10 +27,10 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.importer.impl.ArffImporter;
 import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
+import org.clueminer.importer.impl.JsonImporter;
 import org.clueminer.io.importer.api.Container;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -40,17 +40,12 @@ import org.junit.Test;
  */
 public class DefaultProcessorTest {
 
-    private ArffImporter arff;
-    private static final CommonFixture fixtures = new CommonFixture();
-
-    @Before
-    public void setUp() {
-        arff = new ArffImporter();
-    }
+    private final ArffImporter arff = new ArffImporter();
+    private static final CommonFixture CF = new CommonFixture();
 
     @Test
     public void testIrisFromFile() throws IOException {
-        File iris = fixtures.irisArff();
+        File iris = CF.irisArff();
         Container container = new DraftContainer();
         arff.execute(container, iris);
         //just parse ARFF into container
@@ -60,7 +55,7 @@ public class DefaultProcessorTest {
 
     @Test
     public void testIris() throws IOException {
-        File iris = fixtures.irisArff();
+        File iris = CF.irisArff();
         Container container = new DraftContainer();
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(iris.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
@@ -86,7 +81,7 @@ public class DefaultProcessorTest {
 
     @Test
     public void testVehicleFromFile() throws IOException {
-        File vehicle = fixtures.vehicleArff();
+        File vehicle = CF.vehicleArff();
         Container container = new DraftContainer();
         arff.execute(container, vehicle);
         //just parse ARFF into container
@@ -96,15 +91,15 @@ public class DefaultProcessorTest {
 
     @Test
     public void testVehicle() throws IOException {
-        File vehicle = fixtures.vehicleArff();
+        File vehicle = CF.vehicleArff();
         Container container = new DraftContainer();
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(vehicle.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
         arff.execute(container, reader);
-        DefaultProcessor subject = new DefaultProcessor();
         assertEquals(19, container.getAttributeCount());
         assertEquals(846, container.getInstanceCount());
+        DefaultProcessor subject = new DefaultProcessor();
         subject.setContainer(container);
         //convert preloaded data to a real dataset
         subject.run();
@@ -119,6 +114,30 @@ public class DefaultProcessorTest {
         //there are 4 classes in the dataset
         assertNotNull(container.getDataset());
         //assertEquals(4, loader.getDataset().getClasses().size());
+    }
+
+    @Test
+    public void testMdData() throws IOException {
+        File json = CF.simpleJson();
+        Container container = new DraftContainer();
+        JsonImporter importer = new JsonImporter();
+        importer.execute(container, json);
+
+        assertEquals(14, container.getAttributeCount());
+        assertEquals(6, container.getInstanceCount());
+
+        DefaultProcessor subject = new DefaultProcessor();
+        subject.setContainer(container);
+        //convert preloaded data to a real dataset
+        subject.run();
+
+        Dataset<? extends Instance> dataset = container.getDataset();
+        assertEquals(1, dataset.attributeCount());
+        assertEquals(6, dataset.size());
+        for (int i = 0; i < dataset.size(); i++) {
+            System.out.println(i + ": " + dataset.get(i).size());
+
+        }
     }
 
 }
