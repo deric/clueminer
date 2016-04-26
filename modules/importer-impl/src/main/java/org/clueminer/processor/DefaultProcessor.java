@@ -33,7 +33,9 @@ public class DefaultProcessor<D extends InstanceDraft, E extends Instance> exten
 
     @Override
     protected Dataset<E> createDataset(ArrayList<AttributeDraft> inputAttr) {
-        return new ArrayDataset(container.getInstanceCount(), inputAttr.size());
+        Dataset<E> data = new ArrayDataset(container.getInstanceCount(), inputAttr.size());
+        data.setDataType(container.getDataType());
+        return data;
     }
 
     @Override

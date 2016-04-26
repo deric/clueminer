@@ -39,8 +39,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Load data into provisional storage with weak typing (for checking parser issues).
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = FileImporter.class)
 public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
@@ -66,11 +68,6 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
         importData(container, reader, limit);
         LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
-        for (Object attr : container.getAttrIter()) {
-            LOGGER.log(Level.INFO, "attr: {0}", attr);
-        }
-
-        LOGGER.info("JSON: finished parsing data");
         fireAnalysisFinished();
 
         return !cancel;

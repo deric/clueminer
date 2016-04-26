@@ -59,7 +59,9 @@ public class TimeseriesProcessor<D extends InstanceDraft, E extends Instance> ex
 
     @Override
     protected Dataset<E> createDataset(ArrayList<AttributeDraft> inputAttr) {
-        return new TimeseriesDataset(container.getInstanceCount());
+        Dataset<E> data = new TimeseriesDataset(container.getInstanceCount());
+        data.setDataType(container.getDataType());
+        return data;
     }
 
     @Override

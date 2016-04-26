@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -96,12 +97,14 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                 JsonArray ary = (JsonArray) value;
                 BasicAttrType at = (BasicAttrType) attr.getType();
                 InstanceDraft draft = (InstanceDraft) row;
+                InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
                 switch (at) {
                     case MD_DATA: //TODO: we're not trying to validate multi-dimensional data here
-                        draft.setObject(attr.getIndex(), ary.toString());
+                        draft.setObject(attr.getIndex(), ary);
+                        //TODO: consider more advanced checks
+                        b.container.setDataType(DataType.XY_CONTINUOUS);
                         break;
                     default:
-                        InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
                         b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
                 }
             }
