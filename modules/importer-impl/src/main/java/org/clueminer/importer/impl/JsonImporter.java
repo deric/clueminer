@@ -63,13 +63,14 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
         container.setDataset(null);
         container.setNumberOfLines(0);
         this.report = new Report();
+        importData(container, reader, limit);
         LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
 
         for (Object attr : container.getAttrIter()) {
             LOGGER.log(Level.INFO, "attr: {0}", attr);
         }
 
-        importData(container, reader, limit);
+        LOGGER.info("JSON: finished parsing data");
         fireAnalysisFinished();
 
         return !cancel;
@@ -153,5 +154,4 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
         reader.close();
         Progress.finish(progressTicket);
     }
-
 }

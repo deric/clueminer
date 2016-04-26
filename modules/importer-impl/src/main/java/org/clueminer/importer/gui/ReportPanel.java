@@ -270,6 +270,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         } else {
             logger.log(Level.SEVERE, "no controller found");
         }
+        //either we can show data right now, or wait until background thread finishes
+        if (fileImporter.hasData()) {
+            dataTableModel.setContainer(fileImporter.getContainer());
+        } else {
+            logger.info("no data available yet");
+        }
         dataTableModel.fireTableDataChanged();
         repaint();
     }

@@ -131,4 +131,12 @@ public abstract class BaseImporter<E extends InstanceDraft> implements FileImpor
         return execute(container, lineReader);
     }
 
+    @Override
+    public boolean hasData() {
+        if (container != null) {
+            return container.getInstanceCount() > 0;
+        }
+        return false;
+    }
+
 }

@@ -41,7 +41,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
 
     private Container<E> container;
     private JTable table;
-    private static final Logger log = Logger.getLogger(DataTableModel.class.getName());
+    private static final Logger LOG = Logger.getLogger(DataTableModel.class.getName());
 
     public DataTableModel() {
 
@@ -81,6 +81,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
     }
 
     public void setContainer(final Container loader) {
+        LOG.info("setting container with " + loader.getInstanceCount() + " rows ");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -88,6 +89,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
                 updateAttributes();
                 updateData();
                 fireTableStructureChanged();
+                table.revalidate();
                 table.repaint();
             }
         });
@@ -118,7 +120,8 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
 
     @Override
     public void analysisFinished(Container container) {
-        //  setContainer(container.getLoader());
+        LOG.info("analysis finished");
+        setContainer(container);
     }
 
     /**
@@ -139,7 +142,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                log.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+                LOG.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
             }
             th.repaint();
         }

@@ -58,29 +58,33 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         this.importerUI = importerUI;
         final Container container = importer.getContainer();
         final ColumnsPreview preview = this;
-        logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                if (container != null) {
-                    // we might have to check if reload was completed
+        if (container != null) {
+            logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
                     if (container != null) {
-                        Iterable<AttributeDraft> attrs = container.getAttrIter();
-                        if (numAttributes != container.getAttributeCount()) {
-                            numAttributes = container.getAttributeCount();
-                            preview.removeAll();
-                            attributes = new AttributeDraft[numAttributes];
-                            attrPanels = new AttributeProp[numAttributes];
-                            for (AttributeDraft atrd : attrs) {
-                                generateAttribute(atrd.getIndex(), atrd);
+                        // we might have to check if reload was completed
+                        if (container != null) {
+                            Iterable<AttributeDraft> attrs = container.getAttrIter();
+                            if (numAttributes != container.getAttributeCount()) {
+                                numAttributes = container.getAttributeCount();
+                                preview.removeAll();
+                                attributes = new AttributeDraft[numAttributes];
+                                attrPanels = new AttributeProp[numAttributes];
+                                for (AttributeDraft atrd : attrs) {
+                                    generateAttribute(atrd.getIndex(), atrd);
+                                }
                             }
+                        } else {
+                            NotifyUtil.error("Error", "missing loader", false);
                         }
-                    } else {
-                        NotifyUtil.error("Error", "missing loader", false);
                     }
                 }
-            }
-        });
+            });
+        } else {
+            NotifyUtil.error("Error", "failed to parse data", false);
+        }
     }
 
     private void generateAttribute(int num, AttributeDraft atrd) {
@@ -106,6 +110,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         logger.log(Level.INFO, "data was loaded");
         attributes = null;
         attrPanels = null;
+        numAttributes = 0;
         //remove all previous attributes
         removeAll();
     }

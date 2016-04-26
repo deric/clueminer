@@ -10,6 +10,7 @@ import org.openide.filesystems.FileObject;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public interface FileImporter<E extends InstanceDraft> extends Importer<E> {
 
@@ -74,5 +75,12 @@ public interface FileImporter<E extends InstanceDraft> extends Importer<E> {
      * @param listener
      */
     void removeListener(AnalysisListener listener);
+
+    /**
+     * Check whether data has already been imported
+     *
+     * @return true when data are available
+     */
+    boolean hasData();
 
 }
