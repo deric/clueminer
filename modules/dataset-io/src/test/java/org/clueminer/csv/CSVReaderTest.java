@@ -35,6 +35,8 @@ public class CSVReaderTest {
 
     /**
      * Setup the test.
+     *
+     * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
@@ -319,7 +321,6 @@ public class CSVReaderTest {
 
     @Test
     public void testEscapedQuote() throws IOException {
-
         StringBuffer sb = new StringBuffer();
 
         sb.append("a,\"123\\\"4567\",c").append("\n");// a,123"4",c
@@ -330,7 +331,6 @@ public class CSVReaderTest {
         assertEquals(3, nextLine.length);
 
         assertEquals("123\"4567", nextLine[1]);
-
     }
 
     @Test
@@ -346,7 +346,6 @@ public class CSVReaderTest {
         assertEquals(3, nextLine.length);
 
         assertEquals("123\\4567", nextLine[1]);
-
     }
 
     /**

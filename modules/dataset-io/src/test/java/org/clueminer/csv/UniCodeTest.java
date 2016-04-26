@@ -1,27 +1,23 @@
 package org.clueminer.csv;
 
-import org.clueminer.csv.CSVWriter;
-import org.clueminer.csv.CSVReader;
-import org.clueminer.csv.CSVParser;
-import org.junit.Test;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class UniCodeTest {
+
     CSVParser csvParser;
     private static final String COMPOUND_STRING = "??,??";
     private static final String COMPOUND_STRING_WITH_QUOTES = "\"??\",\"??\"";
     private static final String FIRST_STRING = "??";
     private static final String SECOND_STRING = "??";
     private static final String[] UNICODE_ARRAY = {FIRST_STRING, SECOND_STRING};
-    private static final String[] MIXED_ARRAY = {"eins, 1", "ichi",FIRST_STRING, SECOND_STRING};
+    private static final String[] MIXED_ARRAY = {"eins, 1", "ichi", FIRST_STRING, SECOND_STRING};
     private static final String[] ASCII_ARRAY = {"foo", "bar"};
     private static final String ASCII_STRING_WITH_QUOTES = "\"foo\",\"bar\"";
 
@@ -44,7 +40,7 @@ public class UniCodeTest {
     }
 
     @Test
-    public void writerTest(){
+    public void writerTest() {
         StringWriter sw = new StringWriter();
         sw.write(FIRST_STRING);
         assertEquals(FIRST_STRING, sw.toString());
@@ -103,7 +99,6 @@ public class UniCodeTest {
         assertEquals(2, items.length);
         assertArrayEquals(ASCII_ARRAY, items);
 
-
         items = lines.get(1);
         assertEquals(2, items.length);
         assertArrayEquals(ASCII_ARRAY, items);
@@ -111,7 +106,7 @@ public class UniCodeTest {
 
     @Test
     public void writeThenReadTwiceUnicode() throws IOException {
-                StringWriter sw = new StringWriter();
+        StringWriter sw = new StringWriter();
         CSVWriter writer = new CSVWriter(sw);
         writer.writeNext(UNICODE_ARRAY);
         writer.writeNext(UNICODE_ARRAY);
@@ -124,15 +119,14 @@ public class UniCodeTest {
         assertEquals(2, items.length);
         assertArrayEquals(UNICODE_ARRAY, items);
 
-
         items = lines.get(1);
         assertEquals(2, items.length);
         assertArrayEquals(UNICODE_ARRAY, items);
     }
 
-        @Test
+    @Test
     public void writeThenReadTwiceMixedUnicode() throws IOException {
-                StringWriter sw = new StringWriter();
+        StringWriter sw = new StringWriter();
         CSVWriter writer = new CSVWriter(sw);
         writer.writeNext(MIXED_ARRAY);
         writer.writeNext(MIXED_ARRAY);
@@ -144,7 +138,6 @@ public class UniCodeTest {
         String[] items = lines.get(0);
         assertEquals(4, items.length);
         assertArrayEquals(MIXED_ARRAY, items);
-
 
         items = lines.get(1);
         assertEquals(4, items.length);

@@ -1,18 +1,15 @@
 package org.clueminer.csv;
+
 /**
  * Created by IntelliJ IDEA.
  * User: Scott Conway
  * Date: Oct 7, 2009
  * Time: 9:56:48 PM
  */
-
-import org.clueminer.csv.CSVParser;
+import java.io.IOException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class CSVParserTest {
 
@@ -32,7 +29,6 @@ public class CSVParserTest {
         assertEquals(" a", nextItem[2]);
         assertEquals(" test.", nextItem[3]);
     }
-
 
     @Test
     public void parseSimpleString() throws IOException {
@@ -264,7 +260,7 @@ public class CSVParserTest {
 
     /**
      * This is an interesting issue where the data does not use quotes but IS using a quote within the field as a
-     * inch symbol.  So we want to keep that quote as part of the field and not as the start or end of a field.
+     * inch symbol. So we want to keep that quote as part of the field and not as the start or end of a field.
      *
      * Test data is as follows.
      *
@@ -352,7 +348,6 @@ public class CSVParserTest {
 
         assertEquals(6, nextLine.length);
 
-
         assertEquals("804503689", nextLine[0]);
         assertEquals("London", nextLine[1]);
         assertEquals("\"London\"shop", nextLine[2]);
@@ -365,7 +360,6 @@ public class CSVParserTest {
     @Test(expected = IOException.class)
     public void anIOExceptionThrownifStringEndsInsideAQuotedString() throws IOException {
         String[] nextLine = csvParser.parseLine("This,is a \"bad line to parse.");
-
 
     }
 
@@ -442,7 +436,7 @@ public class CSVParserTest {
     public void whichCharactersAreEscapable() {
         assertTrue(csvParser.isNextCharacterEscapable(ESCAPE_TEST_STRING, true, 0));
         assertFalse(csvParser.isNextCharacterEscapable(ESCAPE_TEST_STRING, false, 0));
-        // Second character is not escapable because there is a non quote or non slash after it. 
+        // Second character is not escapable because there is a non quote or non slash after it.
         assertFalse(csvParser.isNextCharacterEscapable(ESCAPE_TEST_STRING, true, 1));
         assertFalse(csvParser.isNextCharacterEscapable(ESCAPE_TEST_STRING, false, 1));
         // Fourth character is not escapable because there is a non quote or non slash after it.
@@ -457,7 +451,6 @@ public class CSVParserTest {
         assertFalse(csvParser.isNextCharacterEscapable(ESCAPE_TEST_STRING, false, lastChar));
 
     }
-
 
     @Test
     public void whitespaceBeforeEscape() throws IOException {

@@ -15,14 +15,11 @@ package org.clueminer.csv;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import org.clueminer.csv.CSVWriter;
-import org.junit.Test;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class CSVWriterTest {
 
@@ -330,7 +327,7 @@ public class CSVWriterTest {
     @Test
     public void testNestedQuotes() {
         String[] data = new String[]{"\"\"", "test"};
-        String oracle = new String("\"\"\"\"\"\",\"test\"\n");
+        String oracle = "\"\"\"\"\"\",\"test\"\n";
 
         CSVWriter writer = null;
         File tempFile = null;

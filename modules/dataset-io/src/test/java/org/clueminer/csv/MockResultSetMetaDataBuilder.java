@@ -1,10 +1,9 @@
 package org.clueminer.csv;
 
-import org.mockito.Mockito;
-
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import org.mockito.Mockito;
 
 public class MockResultSetMetaDataBuilder {
 

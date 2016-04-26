@@ -1,30 +1,28 @@
 package org.clueminer.csv;
+
 /**
- Copyright 2005 Bytecode Pty Ltd.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2005 Bytecode Pty Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
-import org.clueminer.csv.ResultSetHelperService;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
-
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-
+import java.util.Calendar;
+import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,7 +47,6 @@ public class ResultSetHelperServiceTest {
         Mockito.when(resultSet.getMetaData()).thenReturn(metaData);
 
         // end expects
-
         ResultSetHelperService service = new ResultSetHelperService();
 
         String[] columnNames = service.getColumnNames(resultSet);
@@ -217,14 +214,14 @@ public class ResultSetHelperServiceTest {
 
     @Test
     public void getDateFromResultSet() throws SQLException, IOException {
-
-        Date date = new Date(109, 11, 15); // 12/15/2009
-        long dateInMilliSeconds = date.getTime();
+        Calendar cal = Calendar.getInstance();
+        cal.set(2009, 11, 15);
+        long dateInMilliSeconds = cal.getTimeInMillis();
         SimpleDateFormat dateFormat = new SimpleDateFormat(ResultSetHelperService.DEFAULT_DATE_FORMAT);
 
         String[] expectedNames = {"Date", "Null"};
         String[] realValues = {Long.toString(dateInMilliSeconds), null};
-        String[] expectedValues = {dateFormat.format(date), ""};
+        String[] expectedValues = {dateFormat.format(cal.getTime()), ""};
         int[] expectedTypes = {Types.DATE, Types.DATE};
 
         ResultSetMetaData metaData = MockResultSetMetaDataBuilder.buildMetaData(expectedNames, expectedTypes);
@@ -239,15 +236,15 @@ public class ResultSetHelperServiceTest {
 
     @Test
     public void getDateFromResultSetUsingCustomFormat() throws SQLException, IOException {
-
+        Calendar cal = Calendar.getInstance();
+        cal.set(2009, 11, 15);
         String customDateFormat = "mm/dd/yy";
-        Date date = new Date(109, 11, 15); // 12/15/2009
-        long dateInMilliSeconds = date.getTime();
+        long dateInMilliSeconds = cal.getTimeInMillis();
         SimpleDateFormat dateFormat = new SimpleDateFormat(customDateFormat);
 
         String[] expectedNames = {"Date", "Null"};
         String[] realValues = {Long.toString(dateInMilliSeconds), null};
-        String[] expectedValues = {dateFormat.format(date), ""};
+        String[] expectedValues = {dateFormat.format(cal.getTime()), ""};
         int[] expectedTypes = {Types.DATE, Types.DATE};
 
         ResultSetMetaData metaData = MockResultSetMetaDataBuilder.buildMetaData(expectedNames, expectedTypes);
@@ -257,18 +254,20 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet, false, customDateFormat, null);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     @Test
     public void getTimeFromResultSet() throws SQLException, IOException {
+        long timestamp = System.currentTimeMillis();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
+        String timeString = new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
 
-        Time time = new Time(12, 0, 0); // noon
-        long dateInMilliSeconds = time.getTime();
+        long dateInMilliSeconds = System.currentTimeMillis();
 
         String[] expectedNames = {"Time", "Null"};
         String[] realValues = {Long.toString(dateInMilliSeconds), null};
-        String[] expectedValues = {time.toString(), ""};
+        String[] expectedValues = {timeString.toString(), ""};
         int[] expectedTypes = {Types.TIME, Types.TIME};
 
         ResultSetMetaData metaData = MockResultSetMetaDataBuilder.buildMetaData(expectedNames, expectedTypes);
@@ -278,18 +277,18 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     @Test
     public void getTimestampFromResultSet() throws SQLException, IOException {
-        Timestamp date = new Timestamp(109, 11, 15, 12, 0, 0, 0); // 12/15/2009 noon
-        long dateInMilliSeconds = date.getTime();
+        long dateInMilliSeconds = System.currentTimeMillis();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(dateInMilliSeconds);
         SimpleDateFormat timeFormat = new SimpleDateFormat(ResultSetHelperService.DEFAULT_TIMESTAMP_FORMAT);
 
         String[] expectedNames = {"Timestamp", "Null"};
         String[] realValues = {Long.toString(dateInMilliSeconds), null};
-        String[] expectedValues = {timeFormat.format(date), ""};
+        String[] expectedValues = {timeFormat.format(cal.getTime()), ""};
         int[] expectedTypes = {Types.TIMESTAMP, Types.TIMESTAMP};
 
         ResultSetMetaData metaData = MockResultSetMetaDataBuilder.buildMetaData(expectedNames, expectedTypes);
@@ -299,19 +298,19 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     @Test
     public void getTimestampFromResultSetWithCustomFormat() throws SQLException, IOException {
-        Timestamp date = new Timestamp(109, 11, 15, 12, 0, 0, 0); // 12/15/2009 noon
-        long dateInMilliSeconds = date.getTime();
+        long dateInMilliSeconds = System.currentTimeMillis();
+        Calendar cal = Calendar.getInstance();
+
         String customFormat = "mm/dd/yy HH:mm:ss";
         SimpleDateFormat timeFormat = new SimpleDateFormat(customFormat);
 
         String[] expectedNames = {"Timestamp", "Null"};
         String[] realValues = {Long.toString(dateInMilliSeconds), null};
-        String[] expectedValues = {timeFormat.format(date), ""};
+        String[] expectedValues = {timeFormat.format(cal.getTime()), ""};
         int[] expectedTypes = {Types.TIMESTAMP, Types.TIMESTAMP};
 
         ResultSetMetaData metaData = MockResultSetMetaDataBuilder.buildMetaData(expectedNames, expectedTypes);
@@ -321,7 +320,6 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet, false, null, customFormat);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     @Test
@@ -359,7 +357,6 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     @Test
@@ -378,7 +375,6 @@ public class ResultSetHelperServiceTest {
 
         String[] columnValues = service.getColumnValues(resultSet);
         assertArrayEquals(expectedValues, columnValues);
-
     }
 
     private String buildClobString(int clobsize) {

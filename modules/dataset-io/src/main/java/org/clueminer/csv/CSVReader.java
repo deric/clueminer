@@ -1,21 +1,20 @@
 package org.clueminer.csv;
 
 /**
- Copyright 2005 Bytecode Pty Ltd.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2005 Bytecode Pty Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -97,9 +96,8 @@ public class CSVReader implements Closeable, Iterable<String[]> {
      * @param quotechar the character to use for quoted elements
      * @param escape    the character to use for escaping a separator or quote
      */
-
     public CSVReader(Reader reader, char separator,
-                     char quotechar, char escape) {
+            char quotechar, char escape) {
         this(reader, separator, quotechar, escape, DEFAULT_SKIP_LINES, CSVParser.DEFAULT_STRICT_QUOTES);
     }
 
@@ -167,10 +165,10 @@ public class CSVReader implements Closeable, Iterable<String[]> {
      * @param csvParser the parser to use to parse input
      */
     public CSVReader(Reader reader, int line, CSVParser csvParser) {
-        this.br =
-                (reader instanceof BufferedReader ?
-                        (BufferedReader) reader :
-                        new BufferedReader(reader));
+        this.br
+                = (reader instanceof BufferedReader
+                   ? (BufferedReader) reader
+                   : new BufferedReader(reader));
         this.skipLines = line;
         this.parser = csvParser;
     }
@@ -188,8 +186,9 @@ public class CSVReader implements Closeable, Iterable<String[]> {
         List<String[]> allElements = new ArrayList<>();
         while (hasNext) {
             String[] nextLineAsTokens = readNext();
-            if (nextLineAsTokens != null)
+            if (nextLineAsTokens != null) {
                 allElements.add(nextLineAsTokens);
+            }
         }
         return allElements;
 

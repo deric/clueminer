@@ -1,18 +1,19 @@
 package org.clueminer.csv;
+
 /**
- Copyright 2005 Bytecode Pty Ltd.
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright 2005 Bytecode Pty Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.util.List;
  * helper class for processing JDBC ResultSet objects
  */
 public class ResultSetHelperService implements ResultSetHelper {
+
     public static final int CLOBBUFFERSIZE = 2048;
 
     // note: we want to maintain compatibility with Java 5 VM's
@@ -40,7 +42,7 @@ public class ResultSetHelperService implements ResultSetHelper {
     static final String DEFAULT_TIMESTAMP_FORMAT = "dd-MMM-yyyy HH:mm:ss";
 
     public String[] getColumnNames(ResultSet rs) throws SQLException {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         ResultSetMetaData metadata = rs.getMetaData();
 
         for (int i = 0; i < metadata.getColumnCount(); i++) {
@@ -169,7 +171,6 @@ public class ResultSetHelperService implements ResultSetHelper {
             default:
                 value = "";
         }
-
 
         if (value == null) {
             value = "";

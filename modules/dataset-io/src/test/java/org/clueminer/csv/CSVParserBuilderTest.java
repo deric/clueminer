@@ -1,11 +1,8 @@
 package org.clueminer.csv;
 
-import org.clueminer.csv.CSVParserBuilder;
-import org.clueminer.csv.CSVParser;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class CSVParserBuilderTest {
 

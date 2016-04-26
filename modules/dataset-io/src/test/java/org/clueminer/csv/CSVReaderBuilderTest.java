@@ -1,14 +1,9 @@
 package org.clueminer.csv;
 
-import org.clueminer.csv.CSVReaderBuilder;
-import org.clueminer.csv.CSVReader;
-import org.clueminer.csv.CSVParser;
+import java.io.Reader;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.Reader;
-
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 public class CSVReaderBuilderTest {

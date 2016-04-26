@@ -1,6 +1,5 @@
 package org.clueminer.csv;
 
-import org.clueminer.csv.CSVWriter;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -12,6 +11,7 @@ import java.io.Writer;
  * To change this template use File | Settings | File Templates.
  */
 public class CSVWriterExceptionThrower extends CSVWriter {
+
     public CSVWriterExceptionThrower(Writer writer) {
         super(writer);
     }
