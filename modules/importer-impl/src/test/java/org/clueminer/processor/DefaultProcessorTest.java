@@ -30,6 +30,7 @@ import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.io.importer.api.Container;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -39,8 +40,13 @@ import org.junit.Test;
  */
 public class DefaultProcessorTest {
 
-    private final ArffImporter arff = new ArffImporter();
+    private ArffImporter arff;
     private static final CommonFixture fixtures = new CommonFixture();
+
+    @Before
+    public void setUp() {
+        arff = new ArffImporter();
+    }
 
     @Test
     public void testIrisFromFile() throws IOException {
@@ -88,17 +94,17 @@ public class DefaultProcessorTest {
         assertEquals(846, container.getInstanceCount());
     }
 
-    //@Test
+    @Test
     public void testVehicle() throws IOException {
         File vehicle = fixtures.vehicleArff();
         Container container = new DraftContainer();
-        arff.execute(container, vehicle);
         BufferedInputStream stream = new BufferedInputStream(new FileInputStream(vehicle.getAbsolutePath()));
         Reader reader = ImportUtils.getTextReader(stream);
         //run import
         arff.execute(container, reader);
         DefaultProcessor subject = new DefaultProcessor();
-
+        assertEquals(19, container.getAttributeCount());
+        assertEquals(846, container.getInstanceCount());
         subject.setContainer(container);
         //convert preloaded data to a real dataset
         subject.run();

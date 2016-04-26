@@ -8,7 +8,6 @@ import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.types.FileType;
-import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -25,16 +24,9 @@ public class ArffImporterTest {
     private ArffImporter subject;
     private static final CommonFixture fixtures = new CommonFixture();
 
-    public ArffImporterTest() {
-    }
-
     @Before
     public void setUp() {
         subject = new ArffImporter();
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
