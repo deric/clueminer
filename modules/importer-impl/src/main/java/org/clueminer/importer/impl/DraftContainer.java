@@ -37,7 +37,6 @@ import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.AttributeRole;
-import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -78,7 +77,6 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
     private Class<?> defaultNumericType = Double.class;
     private String md5 = null;
     private final TreeSet<Object> classes = new TreeSet<>();
-    private DataType dataType;
     private HashSet<String> missing;
 
     public DraftContainer() {
@@ -688,10 +686,12 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
      *
      * @return
      */
+    @Override
     public HashSet<String> getMissing() {
         return missing;
     }
 
+    @Override
     public void setMissing(HashSet<String> missing) {
         this.missing = missing;
         builder().setMissing(missing);

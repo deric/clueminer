@@ -17,7 +17,9 @@
 package org.clueminer.importer.impl;
 
 import java.io.FileReader;
+import java.util.List;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.importer.Issue;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.io.importer.api.Report;
@@ -31,8 +33,8 @@ import org.junit.Test;
  */
 public class JsonImporterTest {
 
-    private JsonImporter subject = new JsonImporter();
-    private static CommonFixture CF = new CommonFixture();
+    private final JsonImporter subject = new JsonImporter();
+    private static final CommonFixture CF = new CommonFixture();
 
     @Test
     public void testImportData() throws Exception {
@@ -49,9 +51,11 @@ public class JsonImporterTest {
         assertEquals(14, loader.get(0).size());
         assertNotNull(loader.getReport());
         Report report = loader.getReport();
-
+        List<Issue> issues = report.getIssues();
         for (int i = 0; i < 5; i++) {
-            System.out.println(report.getIssues().get(i));
+            if (i < issues.size()) {
+                System.out.println(report.getIssues().get(i));
+            }
         }
         System.out.println("JSON import: " + report.getIssues().size() + " issues");
 

@@ -16,6 +16,7 @@
  */
 package org.clueminer.importer.impl;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.clueminer.io.importer.api.InstanceDraft;
 /**
  *
  * @author deric
+ * @param <E>
  */
 public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory<E> implements InstanceBuilder<E> {
 
@@ -72,11 +74,31 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
             public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
                 JsonPrimitive primitive = (JsonPrimitive) value;
                 BasicAttrType at = (BasicAttrType) attr.getType();
+                InstanceDraft draft = (InstanceDraft) row;
                 switch (at) {
                     case NUMERICAL:
                     case NUMERIC:
                     case REAL:
-                        ((InstanceDraft) row).setObject(attr.getIndex(), primitive.getAsDouble());
+                        draft.setObject(attr.getIndex(), primitive.getAsDouble());
+                        break;
+                    case STRING:
+                        draft.setObject(attr.getIndex(), primitive.getAsString());
+                        break;
+                    default:
+                        InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
+                        b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
+                }
+            }
+        });
+        dispatch.put(JsonArray.class, new TypeHandler() {
+            @Override
+            public void handle(Object value, Attribute attr, Instance row, InstanceBuilder builder) {
+                JsonArray ary = (JsonArray) value;
+                BasicAttrType at = (BasicAttrType) attr.getType();
+                InstanceDraft draft = (InstanceDraft) row;
+                switch (at) {
+                    case MD_DATA: //TODO: we're not trying to validate multi-dimensional data here
+                        draft.setObject(attr.getIndex(), ary.toString());
                         break;
                     default:
                         InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
@@ -102,7 +124,8 @@ public class InstanceDraftBuilder<E extends Instance> extends AbstractRowFactory
                                 ((InstanceDraft) row).setObject(attr.getIndex(), value);
                             } catch (RuntimeException ex) {
                                 InstanceDraftBuilder b = (InstanceDraftBuilder) builder;
-                                b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName() + " to " + attr.getType(), Issue.Level.SEVERE));
+                                b.container.getReport().logIssue(new Issue("could not convert " + value.getClass().getName()
+                                        + " to " + attr.getType() + ": " + value, Issue.Level.SEVERE));
                             }
                             break;
                         case STRING:
