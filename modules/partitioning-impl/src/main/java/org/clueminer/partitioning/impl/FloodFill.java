@@ -25,9 +25,8 @@ public class FloodFill {
     public ArrayList<ArrayList<Node>> findSubgraphs(Graph g, int maxPartition) {
         graph = g;
         marked = new boolean[graph.getNodeCount()];
-        Node nodes[] = graph.getNodes().toArray();
 
-        for (Node node : nodes) {
+        for (Node node : graph.getNodes()) {
             marked[graph.getIndex(node)] = false;
         }
 
@@ -36,7 +35,7 @@ public class FloodFill {
         result = new ArrayList<>();
         while (!allMarked) {
             allMarked = true;
-            for (Node node : nodes) {
+            for (Node node : graph.getNodes()) {
                 if (marked[graph.getIndex(node)] == false) {
                     allMarked = false;
                     result.add(new ArrayList<Node>(maxPartition));
