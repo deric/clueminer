@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dendrogram.DendroViewTopComponent;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
@@ -114,16 +115,16 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 System.out.println("opening task finished");
                 ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
                 project.add(importer.getDataset());
-                DendroViewTopComponent<HtsInstance> tc = new DendroViewTopComponent();
+                DendroViewTopComponent<HtsInstance, Cluster<HtsInstance>> tc = new DendroViewTopComponent();
                 HtsPlate<HtsInstance> plate = importer.getDataset();
 
-                /*   Normalization norm = new QuadruplicateNormalization();
-                 HtsPlate<HtsInstance> normalized = (HtsPlate<HtsInstance>) plate.duplicate();
-                norm.normalize(plate, normalized);
-
-                /*                saveDataset(plate, "import", false);
-                 saveDataset(normalized, "norm", true);
-*/
+                /* Normalization norm = new QuadruplicateNormalization();
+                 * HtsPlate<HtsInstance> normalized = (HtsPlate<HtsInstance>) plate.duplicate();
+                 * norm.normalize(plate, normalized);
+                 *
+                 * /* saveDataset(plate, "import", false);
+                 * saveDataset(normalized, "norm", true);
+                 */
                 //tc.setDataset(plate);
                 //tc.setDataset(plate);
                 //tc.setProject(project);
@@ -152,7 +153,6 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                  * FileUtils.LocalFolder()
                  */ + "/" + "david-" + plate.getName() + "-" + ident + ".csv";
 
-
         String separator = ",";
         String eol = "\n";
         double value;
@@ -160,19 +160,19 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
         try {
             System.out.println("writing to " + filename);
             //header
-            /*    writer.append(separator);
-             for (String s : paramNames) {
-             writer.append(s).append(separator);
-             }
-             writer.append(eol);*/
+            /* writer.append(separator);
+             * for (String s : paramNames) {
+             * writer.append(s).append(separator);
+             * }
+             * writer.append(eol); */
             //content
             try (FileWriter writer = new FileWriter(filename)) {
                 //header
-                /*    writer.append(separator);
-                 for (String s : paramNames) {
-                 writer.append(s).append(separator);
-                 }
-                 writer.append(eol);*/
+                /* writer.append(separator);
+                 * for (String s : paramNames) {
+                 * writer.append(s).append(separator);
+                 * }
+                 * writer.append(eol); */
                 //content
                 HtsInstance current;
                 String sampleName;

@@ -8,7 +8,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
@@ -106,7 +105,7 @@ public class ClusteringRunner implements Runnable {
         final DataTransform trans = df.getProvider(datasetTransform);
         final Dataset<? extends Instance> output = trans.createDefaultOutput(data);
 
-        final ProgressHandle ph = ProgressHandleFactory.createHandle("Running preprocessing");
+        final ProgressHandle ph = ProgressHandle.createHandle("Running preprocessing");
 
         final RequestProcessor.Task taskAnalyze = RP.create(new Runnable() {
             @Override

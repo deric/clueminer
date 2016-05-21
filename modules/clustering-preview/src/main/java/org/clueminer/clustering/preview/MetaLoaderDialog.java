@@ -11,7 +11,6 @@ import javax.swing.filechooser.FileFilter;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
@@ -82,7 +81,7 @@ public class MetaLoaderDialog implements ActionListener {
 
             Object retval = NotifyDescriptor.YES_OPTION;
             if (retval.equals(NotifyDescriptor.YES_OPTION)) {
-                final ProgressHandle ph = ProgressHandleFactory.createHandle("Loading meta-data");
+                final ProgressHandle ph = ProgressHandle.createHandle("Loading meta-data");
                 datasets = new Dataset[files.length];
                 final MetaLoaderRunner runner = new MetaLoaderRunner(files, pref, ph, datasets);
                 task = RP.create(runner);

@@ -1,12 +1,12 @@
 package org.clueminer.transform;
 
-import org.clueminer.csv.CSVReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.csv.CSVReader;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -20,12 +20,11 @@ import org.clueminer.io.CsvLoader;
 import org.clueminer.types.TimePoint;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  *
@@ -107,19 +106,9 @@ public class LegendreTransSegmentedTest {
         assertNotNull(subject.getName());
     }
 
-    /**
-     * Test of analyze method, of class LegendreTransSegmented.
-     */
-    @Test
-    public void testAnalyze() {
-    }
-
-    /**
-     * Test of analyzeTimeseries method, of class LegendreTransSegmented.
-     */
     @Test
     public void testAnalyzeTimeseries() {
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Trasforming dataset");
+        ProgressHandle ph = ProgressHandle.createHandle("Trasforming dataset");
         int segments = 3;
         int degree = 7;
         // 7 is the default degree of Legendre
@@ -138,7 +127,7 @@ public class LegendreTransSegmentedTest {
 
     @Test
     public void testAnalyzeTimeseries2() {
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Trasforming dataset");
+        ProgressHandle ph = ProgressHandle.createHandle("Trasforming dataset");
         int segments = 3;
         int degree = 7;
         // 7 is the default degree of Legendre

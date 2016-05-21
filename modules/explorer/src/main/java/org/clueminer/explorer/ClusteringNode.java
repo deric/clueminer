@@ -22,7 +22,6 @@ import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.actions.NewAction;
 import org.openide.actions.PasteAction;
 import org.openide.nodes.AbstractNode;
@@ -98,18 +97,18 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     public PasteType getDropType(Transferable t, final int action, int index) {
         final Node dropNode = NodeTransfer.node(t, DnDConstants.ACTION_COPY_OR_MOVE + NodeTransfer.CLIPBOARD_CUT);
         if (null != dropNode) {
-            /*   final Movie movie = (Movie)dropNode.getLookup().lookup( Movie.class );
-             if( null != movie  && !this.equals( dropNode.getParentNode() )) {
-             return new PasteType() {
-             public Transferable paste() throws IOException {
-             getChildren().add( new Node[] { new MovieNode(movie) } );
-             if( (action & DnDConstants.ACTION_MOVE) != 0 ) {
-             dropNode.getParentNode().getChildren().remove( new Node[] {dropNode} );
-             }
-             return null;
-             }
-             };
-             }*/
+            /* final Movie movie = (Movie)dropNode.getLookup().lookup( Movie.class );
+             * if( null != movie && !this.equals( dropNode.getParentNode() )) {
+             * return new PasteType() {
+             * public Transferable paste() throws IOException {
+             * getChildren().add( new Node[] { new MovieNode(movie) } );
+             * if( (action & DnDConstants.ACTION_MOVE) != 0 ) {
+             * dropNode.getParentNode().getChildren().remove( new Node[] {dropNode} );
+             * }
+             * return null;
+             * }
+             * };
+             * } */
         }
         return null;
     }
@@ -160,7 +159,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
     private void computeClusterProperties(final Sheet sheet, final Clustering<E, C> clustering) {
 
-        final ProgressHandle ph = ProgressHandleFactory.createHandle("Computing properties of " + clustering.getName());
+        final ProgressHandle ph = ProgressHandle.createHandle("Computing properties of " + clustering.getName());
 
         final RequestProcessor.Task taskMetrics = RP.create(new Runnable() {
             @Override

@@ -2,14 +2,9 @@ package org.clueminer.posturomed;
 
 import java.io.IOException;
 import org.clueminer.fixtures.PosturomedFixture;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  *
@@ -27,41 +22,8 @@ public class PosturomedImporterTest {
     public static void setUpClass() throws IOException {
         fixture = new PosturomedFixture();
         importer = new PosturomedImporter(fixture.testData());
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Importing dataset");
+        ProgressHandle ph = ProgressHandle.createHandle("Importing dataset");
         importer.setProgressHandle(ph);
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of cancel method, of class PosturomedImporter.
-     */
-    @Test
-    public void testCancel() {
-    }
-
-    /**
-     * Test of setProgressTicket method, of class PosturomedImporter.
-     */
-    @Test
-    public void testSetProgressTicket() {
-    }
-
-    /**
-     * Test of setProgressHandle method, of class PosturomedImporter.
-     */
-    @Test
-    public void testSetProgressHandle() {
     }
 
     /**

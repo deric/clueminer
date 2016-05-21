@@ -29,7 +29,6 @@ import org.clueminer.eval.AIC;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.gui.BPanel;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
@@ -95,7 +94,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
     void setEvaluatorX(final ClusterEvaluation provider) {
         if (left != null && left.length > 1) {
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + provider.getName());
             RP.post(new Runnable() {
 
                 @Override
@@ -114,7 +113,7 @@ public class SortedClusterings extends BPanel implements TaskListener {
 
     void setEvaluatorY(final ClusterEvaluation provider) {
         if (right != null && right.length > 1) {
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + provider.getName());
             RequestProcessor.Task task = RP.post(new Runnable() {
 
                 @Override

@@ -8,13 +8,11 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.junit.After;
-import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  *
@@ -33,10 +31,6 @@ public class MLearnImporterTest {
     public static void setUpClass() {
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
     }
@@ -48,7 +42,7 @@ public class MLearnImporterTest {
     // @Test
     public void testIris() throws IOException {
         File f = fixture.irisData();
-        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        ProgressHandle ph = ProgressHandle.createHandle("testing");
         subject = new MLearnImporter(f, ph);
         subject.run();
         Dataset<? extends Instance> dataset = subject.getDataset();
@@ -68,7 +62,7 @@ public class MLearnImporterTest {
         MLearnFixture mlFixture = new MLearnFixture();
         File file = mlFixture.irBaClassification();
         System.out.println("file exists? " + file.exists());
-        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        ProgressHandle ph = ProgressHandle.createHandle("testing");
         subject = new MLearnImporter(file, ph);
         subject.loadTimeseries(file);
         assertEquals(253, subject.getDataset().size());
@@ -89,7 +83,7 @@ public class MLearnImporterTest {
         System.out.println("path: " + path);
         File file = new File(path);
         System.out.println("file exists? " + file.exists());
-        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        ProgressHandle ph = ProgressHandle.createHandle("testing");
         subject = new MLearnImporter(file, ph);
         subject.loadMTimeseries(file);
         assertEquals(800, subject.getDataset().size());
@@ -108,19 +102,12 @@ public class MLearnImporterTest {
     @Test
     public void testLoadingDFiles() throws IOException {
         TimeseriesFixture tf = new TimeseriesFixture();
-        ProgressHandle ph = ProgressHandleFactory.createHandle("testing");
+        ProgressHandle ph = ProgressHandle.createHandle("testing");
         File file = tf.ap01();
         subject = new MLearnImporter(file, ph);
         subject.loadDTimeseries(file);
         assertEquals(1536, subject.getDataset().size());
         assertEquals(15, subject.getDataset().attributeCount());
-    }
-
-    /**
-     * Test of cancel method, of class MLearnImporter.
-     */
-    @Test
-    public void testCancel() {
     }
 
     /**

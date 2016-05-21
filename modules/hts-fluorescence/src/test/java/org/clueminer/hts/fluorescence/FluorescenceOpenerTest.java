@@ -8,10 +8,10 @@ import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
@@ -97,13 +97,12 @@ public class FluorescenceOpenerTest {
             System.out.println("openFile");
             FluorescenceOpener opener = new FluorescenceOpener();
             FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
-            ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+            ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
             importer.setProgressHandle(ph);
             importer.run();
             HtsPlate<HtsInstance> plate = importer.getDataset();
 
             //Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
-
             // System.out.println(normalized);
             //    assertEquals(expResult, result);
             //    fail("The test case is a prototype.");
@@ -158,8 +157,8 @@ public class FluorescenceOpenerTest {
         importer.setProgressHandle(ph);
         importer.run();
         HtsPlate<HtsInstance> plate = importer.getDataset();
-  /*      opener.saveDataset(plate, "test", false);
-        Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
-        opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true);*/
+        /* opener.saveDataset(plate, "test", false);
+         * Dataset<FluorescenceInstance> normalized = opener.normalize(plate);
+         * opener.saveDataset((FluorescenceDataset) normalized, "test-norm", true); */
     }
 }

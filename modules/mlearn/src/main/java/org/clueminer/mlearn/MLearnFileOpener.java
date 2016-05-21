@@ -57,7 +57,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
 
     @Override
     public boolean open(FileObject fileObject) {
-        //ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+        //ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
         //importer.setProgressHandle(ph);
         File f = FileUtil.toFile(fileObject);
         try {
@@ -139,12 +139,12 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         pc.openProject(project);
 
                         //old dendrogram component
-                        /*DendrogramTopComponent tc = new DendrogramTopComponent();
-                         tc.setDataset(container.getDataset());
-                         //tc.setProject(project);
-                         tc.setDisplayName(getTitle(filename));
-                         tc.open();
-                         tc.requestActive();*/
+                        /* DendrogramTopComponent tc = new DendrogramTopComponent();
+                         * tc.setDataset(container.getDataset());
+                         * //tc.setProject(project);
+                         * tc.setDisplayName(getTitle(filename));
+                         * tc.open();
+                         * tc.requestActive(); */
                         ExplorerTopComponent explorer = new ExplorerTopComponent();
                         explorer.setDataset(dataset);
                         explorer.setDisplayName(getTitle(filename));

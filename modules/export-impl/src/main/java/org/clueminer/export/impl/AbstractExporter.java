@@ -10,7 +10,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -120,7 +119,7 @@ public abstract class AbstractExporter implements ActionListener {
             }
 
             if (retval.equals(NotifyDescriptor.YES_OPTION)) {
-                final ProgressHandle ph = ProgressHandleFactory.createHandle(getName() + ":" + file.getName());
+                final ProgressHandle ph = ProgressHandle.createHandle(getName() + ":" + file.getName());
                 createTask(file, pref, ph);
             } else {
                 makeExport(pref);

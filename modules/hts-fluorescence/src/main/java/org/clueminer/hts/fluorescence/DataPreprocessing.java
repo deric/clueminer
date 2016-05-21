@@ -5,11 +5,10 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.project.ProjectControllerImpl;
 import org.clueminer.project.api.Workspace;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
@@ -33,9 +32,9 @@ public class DataPreprocessing implements TaskListener {
 
     public void start() {
         //analyze data
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Analyzing dataset");
+        ProgressHandle ph = ProgressHandle.createHandle("Analyzing dataset");
         Timeseries<ContinuousInstance> dataset = (Timeseries<ContinuousInstance>) plate;
-        output = new SampleDataset<Instance>();
+        output = new SampleDataset<>();
         output.setParent((Dataset<Instance>) plate);
 
         final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, transform, ph));

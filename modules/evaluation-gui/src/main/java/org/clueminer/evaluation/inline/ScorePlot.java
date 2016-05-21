@@ -164,7 +164,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             objectives.add(objective1);
             objectives.add(objective2);
             moEval.setObjectives(objectives);
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + moEval.getName());
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + moEval.getName());
             RP.post(new Runnable() {
 
                 @Override
@@ -181,7 +181,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     protected void setEvaluatorX(final ClusterEvaluation provider) {
         if (external != null && external.length > 1 && provider != null) {
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + provider.getName());
             RequestProcessor.Task task = RP.post(new Runnable() {
 
                 @Override

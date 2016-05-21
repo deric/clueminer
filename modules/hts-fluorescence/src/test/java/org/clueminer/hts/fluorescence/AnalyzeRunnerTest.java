@@ -1,20 +1,15 @@
 package org.clueminer.hts.fluorescence;
 
 import java.io.IOException;
-import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plugin.SampleDataset;
+import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.fixtures.FluorescenceFixture;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 
 /**
@@ -28,10 +23,6 @@ public class AnalyzeRunnerTest {
 
     @BeforeClass
     public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -52,7 +43,7 @@ public class AnalyzeRunnerTest {
         try {
             FluorescenceFixture tf = new FluorescenceFixture();
             importer = new FluorescenceImporter(tf.testData());
-            ProgressHandle ph = ProgressHandleFactory.createHandle("Importing dataset");
+            ProgressHandle ph = ProgressHandle.createHandle("Importing dataset");
             importer.setProgressHandle(ph);
 
             importer.run();
@@ -66,9 +57,9 @@ public class AnalyzeRunnerTest {
         //System.out.println("plate "+plate.toString());
         Dataset<Instance> output = new SampleDataset<Instance>();
         output.setParent((Dataset<Instance>) plate);
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Analyzing dataset");
-     //   AnalyzeRunner instance = new AnalyzeRunner((Timeseries<ContinuousInstance>) plate, output, ph);
-     //   instance.run();
+        ProgressHandle ph = ProgressHandle.createHandle("Analyzing dataset");
+        //   AnalyzeRunner instance = new AnalyzeRunner((Timeseries<ContinuousInstance>) plate, output, ph);
+        //   instance.run();
 
     }
 

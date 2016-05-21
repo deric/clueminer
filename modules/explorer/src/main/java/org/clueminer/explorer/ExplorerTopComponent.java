@@ -26,7 +26,6 @@ import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -61,7 +60,7 @@ import org.openide.windows.TopComponent;
         persistenceType = TopComponent.PERSISTENCE_NEVER)
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.explorer.ExplorerTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ExplorerAction",
         preferredID = "ExplorerTopComponent")
@@ -158,13 +157,13 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         //result.addLookupListener(this);
         //resultChanged(new LookupEvent(result));
         //ClustGlobal children = new ClustGlobal(result);
-    /*    comparator = new ClustComparator(new AICScore());
-         ClustSorted children = new ClustSorted(result);
-         children.setComparator(comparator);
-         root = new AbstractNode(children);
-
-         root.setDisplayName("root node");
-         mgr.setRootContext(root);*/
+        /* comparator = new ClustComparator(new AICScore());
+         * ClustSorted children = new ClustSorted(result);
+         * children.setComparator(comparator);
+         * root = new AbstractNode(children);
+         *
+         * root.setDisplayName("root node");
+         * mgr.setRootContext(root); */
     }
 
     @Override
@@ -193,17 +192,17 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     @Override
     public void resultChanged(LookupEvent ev) {
-        /*  Collection<? extends Clustering> allClusterings = result.allInstances();
-         ClusteringNode node;
-         for (Clustering c : allClusterings) {
-         //System.out.println("clustring size" + c.size());
-         //System.out.println(c.toString());
-         //root = new ClusteringNode(c);
-         logger.log(Level.INFO, "created node in top component {0}", c.size());
-         node = new ClusteringNode(c);
-         //
-         }
-         mgr.setRootContext(root);*/
+        /* Collection<? extends Clustering> allClusterings = result.allInstances();
+         * ClusteringNode node;
+         * for (Clustering c : allClusterings) {
+         * //System.out.println("clustring size" + c.size());
+         * //System.out.println(c.toString());
+         * //root = new ClusteringNode(c);
+         * logger.log(Level.INFO, "created node in top component {0}", c.size());
+         * node = new ClusteringNode(c);
+         * //
+         * }
+         * mgr.setRootContext(root); */
     }
 
     public void setDataset(Dataset<E> dataset) {
@@ -241,7 +240,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                     }
                 }
 
-                final ProgressHandle ph = ProgressHandleFactory.createHandle("Evolution", new Cancellable() {
+                final ProgressHandle ph = ProgressHandle.createHandle("Evolution", new Cancellable() {
 
                     @Override
                     public boolean cancel() {
@@ -284,7 +283,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     }
 
     @Override
-    public void runClustering(final ClusteringAlgorithm alg, final Dataset<E> data,final Props props) {
+    public void runClustering(final ClusteringAlgorithm alg, final Dataset<E> data, final Props props) {
         logger.log(Level.INFO, "starting clustering {0}", alg.getName());
         if (data == null) {
             throw new RuntimeException("missing dataset");
