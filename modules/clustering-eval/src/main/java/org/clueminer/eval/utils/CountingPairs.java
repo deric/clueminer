@@ -398,9 +398,9 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
         if (dataset == null) {
             throw new RuntimeException("missing reference dataset");
         }
-        if (dataset.getClasses().size() == 0) {
+        if (dataset.getClasses().isEmpty()) {
             //no labels provided in the dataset
-            return null;
+            throw new RuntimeException("missing labels");
         }
 
         E x, y;
