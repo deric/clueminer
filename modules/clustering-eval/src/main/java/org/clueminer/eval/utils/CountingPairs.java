@@ -60,7 +60,7 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
      * Instances must have included information about class assignment. This
      * table is sometimes called contingency table
      *
-     * Classes are in rows, Clusters are in columns
+     * Classes are in columns, Clusters are in rows
      *
      * @param clustering
      * @return table with counts of items for each pair cluster, class
