@@ -62,7 +62,6 @@ public class DataScalerTest {
         }
         assertNotNull(out.getParent());
         assertEquals(dataset, out.getParent());
-        assertEquals(6, out.getClasses().size());
     }
 
     private void run(Dataset<? extends Instance> dataset, String method, boolean log) {
@@ -75,14 +74,15 @@ public class DataScalerTest {
             assertEquals(dataset.get(i).getName(), out.get(i).getName());
             assertEquals(dataset.get(i).getId(), out.get(i).getId());
             assertEquals(dataset.get(i).getIndex(), out.get(i).getIndex());
+            dataset.changedClass(i, dataset.get(i).classValue(), null);
             assertEquals(dataset.get(i).classValue(), out.get(i).classValue());
-            /*for (int j = 0; j < dataset.attributeCount(); j++) {
-             assertEquals(res.get(i, j), out.get(i, j), delta);
-             }*/
+            /* for (int j = 0; j < dataset.attributeCount(); j++) {
+             * assertEquals(res.get(i, j), out.get(i, j), delta);
+             * } */
         }
         assertNotNull(out.getParent());
         assertEquals(dataset, out.getParent());
-
+        assertEquals(6, out.getClasses().size());
     }
 
     public static Dataset<? extends Instance> kumarData() {
