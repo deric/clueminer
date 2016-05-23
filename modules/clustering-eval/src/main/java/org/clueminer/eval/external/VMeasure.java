@@ -20,10 +20,12 @@ import com.google.common.collect.Table;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * "Rosenberg, Andrew; Hirschberg, Julia; ",V-measure: A conditional entropy-based
@@ -31,10 +33,13 @@ import org.clueminer.utils.Props;
  * on Empirical Methods in Natural Language Processing and Computational Natural
  * Language Learning (EMNLP-CoNLL),,,410-420,2007,
  *
+ * @param <E>
+ * @param <C>
  * @see https://scholar.google.com/citations?view_op=view_citation&hl=en&user=40bq19cAAAAJ&citation_for_view=40bq19cAAAAJ:u5HHmVD_uO8C
  *
  * @author deric
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class VMeasure<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> implements ClusterEvaluation<E, C> {
 
     public final static String NAME = "V-measure";
@@ -49,10 +54,22 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
         return score(clusters, new Props());
     }
 
+    /**
+     * Computes V-measure for given clustering and dataset with class labels.
+     *
+     * When beta is greater than 1.0, completeness is weighted more strongly in the
+     * calculation. If beta is lower than 1.0, homogeneity is weighted more strongly.
+     *
+     * @param clusters
+     * @param params
+     * @return
+     */
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         CountingPairs<E, C> cp = CountingPairs.getInstance();
         Table<String, String, Integer> contTable = cp.contingencyTable(clusters);
+
+        double beta = params.getDouble("v-beta", 1.0);
 
         int n = clusters.instancesCount();
         //H(C)
@@ -62,7 +79,7 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
         double h_k = HK(contTable, n);
         double completeness = h_k == 0.0 ? 1 : (1 - HKC(contTable, n) / h_k);
 
-        return 2 * homogeneity * completeness / (homogeneity + completeness);
+        return (1.0 + beta) * homogeneity * completeness / (beta * homogeneity + completeness);
     }
 
     private double HK(Table<String, String, Integer> contTable, int n) {
