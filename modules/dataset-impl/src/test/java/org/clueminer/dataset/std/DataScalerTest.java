@@ -62,7 +62,7 @@ public class DataScalerTest {
         }
         assertNotNull(out.getParent());
         assertEquals(dataset, out.getParent());
-
+        assertEquals(6, out.getClasses().size());
     }
 
     private void run(Dataset<? extends Instance> dataset, String method, boolean log) {

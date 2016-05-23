@@ -34,6 +34,7 @@ public class StdDataDev<E extends Instance> extends StdDev implements DataStanda
                     opt.get(i).setId(orig.getId());
                     opt.get(i).setName(orig.getName());
                     opt.get(i).setAncestor(orig);
+                    opt.changedClass(i, orig.classValue(), null);
                 }
             }
         }

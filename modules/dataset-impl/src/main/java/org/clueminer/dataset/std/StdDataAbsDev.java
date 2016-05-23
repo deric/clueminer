@@ -33,6 +33,7 @@ public class StdDataAbsDev<E extends Instance> extends StdAbsDev implements Data
                     opt.get(i).setId(orig.getId());
                     opt.get(i).setName(orig.getName());
                     opt.get(i).setAncestor(orig);
+                    opt.changedClass(i, orig.classValue(), null);
                 }
             }
         }

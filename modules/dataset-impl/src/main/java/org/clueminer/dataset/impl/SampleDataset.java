@@ -411,6 +411,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public Dataset<E> duplicate() {
         SampleDataset<E> copy = new SampleDataset<>(this.size());
         copy.setAttributes(attributes);
+        copy.setClasses(this.getClasses());
         return copy;
     }
 
@@ -474,6 +475,14 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     @Override
     public Collection<? extends Number> attrCollection(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    protected void setClasses(SortedSet<Object> klasses) {
+        for (Object o : klasses) {
+            if (!this.classes.contains(o)) {
+                classes.add(o);
+            }
+        }
     }
 
 }

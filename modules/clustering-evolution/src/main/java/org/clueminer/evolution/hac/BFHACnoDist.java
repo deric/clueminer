@@ -36,12 +36,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
         extends BruteForceHacEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
-    private static final String name = "Brute-force HAC (no dist)";
+    private static final String NAME = "Brute-force HAC (no dist)";
     private static final Logger logger = Logger.getLogger(BFHACnoDist.class.getName());
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -50,7 +50,6 @@ public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C ex
         prepare();
         StandardisationFactory sf = StandardisationFactory.getInstance();
         List<String> standartizations = sf.getProviders();
-        DistanceFactory df = DistanceFactory.getInstance();
         LinkageFactory lf = LinkageFactory.getInstance();
         linkage = lf.getAll();
         CutoffStrategyFactory cf = CutoffStrategyFactory.getInstance();

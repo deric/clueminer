@@ -492,6 +492,7 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
             i++;
         }
         copy.setParent(this);
+        copy.setClasses(copy.getClasses());
         return copy;
     }
 
@@ -696,6 +697,14 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
     @Override
     public Collection<? extends Number> attrCollection(int index) {
         return new AttributeCollection<>(this, index);
+    }
+
+    protected void setClasses(SortedSet<Object> klasses) {
+        for (Object o : klasses) {
+            if (!this.classes.contains(o)) {
+                classes.add(o);
+            }
+        }
     }
 
     class ArrayDatasetIterator implements Iterator<Instance> {

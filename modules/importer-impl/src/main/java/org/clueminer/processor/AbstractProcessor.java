@@ -182,7 +182,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
             logger.log(Level.ALL, inst.toString());
             i++;
         }
-        logger.log(Level.INFO, "loaded {0} instances", i);
+        logger.log(Level.INFO, "loaded {0} instances, {1} classes", new Object[]{i, dataset.getClasses().size()});
     }
 
     protected AttributeType getType(Object klass) {

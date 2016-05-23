@@ -32,6 +32,7 @@ public class StdMinMax<E extends Instance> extends StdScale implements DataStand
                     opt.get(i).setId(orig.getId());
                     opt.get(i).setName(orig.getName());
                     opt.get(i).setAncestor(orig);
+                    opt.changedClass(i, orig.classValue(), null);
                 }
             }
         }
