@@ -5,7 +5,6 @@ import org.clueminer.clustering.api.HierarchicalClusterEvaluator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.dendrogram.DendroTreeDataOld;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 
@@ -22,11 +21,11 @@ import org.clueminer.math.matrix.SymmetricMatrix;
  */
 public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
 
-    private static final String name = "Cophenetic Correlation";
+    private static final String NAME = "Cophenetic Correlation";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -51,43 +50,7 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
      * @return
      */
     protected double[][] copheneticMatrix(Matrix proximity, DendroTreeData treeData) {
-        double[][] copheneticMatrix;
-        if (treeData instanceof DendroTreeDataOld) {
-            copheneticMatrix = getCopheneticMatrixOld((DendroTreeDataOld) treeData, proximity.rowsCount(), proximity.columnsCount());
-        } else {
-            copheneticMatrix = getCopheneticMatrix(treeData, proximity.rowsCount(), proximity.columnsCount());
-        }
-        return copheneticMatrix;
-    }
-
-    /**
-     * Creates matrix with distances between points
-     *
-     * @TODO should be triangular
-     *
-     * @param tree
-     * @param m
-     * @param n
-     * @return
-     */
-    public double[][] getCopheneticMatrixOld(DendroTreeDataOld tree, int m, int n) {
-        int i;
-        int idx;
-        int left, right;
-        double height;
-        double[][] cophenetic = new double[m][n];
-        //System.out.println("matrix " + m + " x " + n);
-        //System.out.println("tree level " + tree.distinctHeights());
-
-        for (i = 0; i < tree.treeLevels(); i++) {
-            idx = tree.getOrder(i); //we're going through all tree levels
-            left = tree.getLeft(idx);
-            right = tree.getRight(idx);
-            height = tree.getHeight(idx);
-            //System.out.println("idx= " + idx + ", l=" + left + ", r=" + right + ", h=" + height);
-            countDistance(tree, cophenetic, left, right, height);
-        }
-        return cophenetic;
+        return getCopheneticMatrix(treeData, proximity.rowsCount(), proximity.columnsCount());
     }
 
     /**
@@ -120,37 +83,6 @@ public class CopheneticCorrelation implements HierarchicalClusterEvaluator {
         if (node != null && !node.isLeaf()) {
             stack.push(node);
         }
-    }
-
-    /**
-     * Count distance between two given nodes, if left and right are directly
-     * leaves, saves into matrix Cophenetic their distance, i.e. height of their
-     * parent node
-     *
-     * @param tree
-     * @param cophenetic
-     * @param left
-     * @param right
-     * @param height
-     */
-    private void countDistance(DendroTreeDataOld tree, double[][] cophenetic, int left, int right, double height) {
-        //System.out.println("left= " + left + ", height= " + height + ", right= " + right);
-        if (!tree.isLeaf(left)) {
-            //set same level for its children
-            countDistance(tree, cophenetic, tree.getLeft(left), right, height);
-            countDistance(tree, cophenetic, tree.getRight(left), right, height);
-            return;
-        }
-
-        if (!tree.isLeaf(right)) {
-            //set same level for its children
-            countDistance(tree, cophenetic, left, tree.getLeft(right), height);
-            countDistance(tree, cophenetic, left, tree.getRight(right), height);
-            return;
-        }
-        //symetric matrix
-        cophenetic[left][right] = height;
-        cophenetic[right][left] = height;
     }
 
     /**
