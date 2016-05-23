@@ -76,7 +76,7 @@ public class VMeasureTest extends ExternalTest {
         }
     }
 
-    //@Test
+    @Test
     public void testScore_Clustering_Clustering() {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
@@ -87,11 +87,11 @@ public class VMeasureTest extends ExternalTest {
         assertTrue(score2 < score);
     }
 
-    //@Test
+    @Test
     public void testScore_Clustering_Dataset() {
         measure(FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, 0.579380164285695);
+        double score = measure(irisWrong, 0.6496820278112178);
         double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
 
         assertTrue(score2 < score);

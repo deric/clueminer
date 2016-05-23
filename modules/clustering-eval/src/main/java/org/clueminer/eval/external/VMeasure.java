@@ -69,6 +69,10 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
         CountingPairs<E, C> cp = CountingPairs.getInstance();
         Table<String, String, Integer> contTable = cp.contingencyTable(clusters);
 
+        return vmeasure(clusters, contTable, params);
+    }
+
+    private double vmeasure(Clustering<E, C> clusters, Table<String, String, Integer> contTable, Props params) {
         double beta = params.getDouble("v-beta", 1.0);
 
         int n = clusters.instancesCount();
@@ -191,7 +195,10 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
 
     @Override
     public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CountingPairs<E, C> cp = CountingPairs.getInstance();
+        Table<String, String, Integer> contTable = cp.contingencyTable(c1, c2);
+
+        return vmeasure(c1, contTable, params);
     }
 
 }
