@@ -11,17 +11,19 @@ import org.openide.util.lookup.ServiceProvider;
  * L. Hubert and P. Arabie. Comparing partitions. Journal of Classification,
  * 2:193–218, 1985.
  *
+ * Similar: {@link RusselRao}
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
 public class RandIndex extends AbstractCountingPairs {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Rand Index";
+    private static final String NAME = "Rand Index";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -36,7 +38,7 @@ public class RandIndex extends AbstractCountingPairs {
      */
     @Override
     public double countScore(PairMatch pm, Props params) {
-        return (pm.tp + pm.tn) / (double) (pm.tp + pm.fp + pm.fn + pm.tn);
+        return (pm.tp + pm.tn) / pm.sum();
     }
 
 }

@@ -39,7 +39,7 @@ public class RusselRao extends AbstractCountingPairs {
     }
 
     /**
-     * Compute Russel-Rao index
+     * Similar to {@link RandIndex}
      *
      * @param pm
      * @return Russel-Rao index
