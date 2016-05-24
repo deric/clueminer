@@ -43,6 +43,7 @@ import org.clueminer.utils.Props;
  */
 public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JPanel implements ClusteringListener<E, C>, ClusterPreviewer<E, C> {
 
+    private static final long serialVersionUID = -8449113355905843012L;
     private final JPanel parent;
     private Plotter[] plots;
     private Clustering<E, C> clust;
@@ -146,7 +147,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                     total += d.size();
                 }
             }
-            logger.log(Level.INFO, "total num of instances: {0}", total);
+            logger.log(Level.FINE, "total num of instances: {0}", total);
         }
     }
 
