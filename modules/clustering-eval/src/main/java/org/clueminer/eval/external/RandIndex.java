@@ -2,6 +2,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,7 +35,7 @@ public class RandIndex extends AbstractCountingPairs {
      * @return
      */
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         return (pm.tp + pm.tn) / (double) (pm.tp + pm.fp + pm.fn + pm.tn);
     }
 

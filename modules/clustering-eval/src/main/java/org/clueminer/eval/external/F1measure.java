@@ -22,16 +22,17 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Accuracy
+ * F-measure or F-score
  *
- * @see http://en.wikipedia.org/wiki/Accuracy_and_precision for definition
+ * @see http://en.wikipedia.org/wiki/F1_score
  * @author Tomas Barton
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class Accuracy extends AbstractCountingPairs {
+public class F1measure extends AbstractCountingPairs {
 
-    private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Accuracy";
+    private static final String name = "F-measure";
+    private static final long serialVersionUID = 5075558180348805172L;
+    private double beta;
 
     @Override
     public String getName() {
@@ -40,7 +41,16 @@ public class Accuracy extends AbstractCountingPairs {
 
     @Override
     public double countScore(PairMatch pm, Props params) {
-        return (pm.tp + pm.tn) / (double) (pm.tp + pm.fn + pm.fp + pm.tn);
+        beta = params.getDouble("beta", 1.0);
+        double squareBeta = Math.pow(beta, 2);
+        return (1 + squareBeta) * pm.tp / ((1.0 + squareBeta) * pm.tp + squareBeta * pm.fn + pm.fp);
     }
 
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
 }

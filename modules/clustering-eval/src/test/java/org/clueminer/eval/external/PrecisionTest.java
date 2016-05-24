@@ -77,7 +77,7 @@ public class PrecisionTest extends ExternalTest {
         Precision precision = (Precision) subject;
         PairMatch pm = CountingPairs.getInstance().matchPairs(FakeClustering.irisMostlyWrong());
         pm.dump();
-        assertEquals(0.9866666666666667, precision.countScore(pm), delta);
+        assertEquals(0.9866666666666667, precision.countScore(pm, null), delta);
     }
 
     /**

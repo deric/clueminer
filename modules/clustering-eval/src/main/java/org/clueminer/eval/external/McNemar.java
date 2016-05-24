@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,7 +41,7 @@ public class McNemar extends AbstractCountingPairs {
     }
 
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         return (pm.tn - pm.fp) / Math.sqrt(pm.tn + pm.fp);
     }
 

@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -37,7 +38,7 @@ public class KulczynskiIndex extends AbstractCountingPairs {
     }
 
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         return 0.5 * ((pm.tp / (double) (pm.tp + pm.fp)) + (pm.tp / (double) (pm.tp + pm.fn)));
     }
 

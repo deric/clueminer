@@ -1,5 +1,6 @@
 package org.clueminer.eval.external;
 
+import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -8,10 +9,10 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class FmeasureTest extends ExternalTest {
+public class F1MeasureTest extends ExternalTest {
 
-    public FmeasureTest() {
-        subject = new Fmeasure();
+    public F1MeasureTest() {
+        subject = new F1measure();
     }
 
     /**

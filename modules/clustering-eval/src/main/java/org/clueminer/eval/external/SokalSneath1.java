@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,7 +37,7 @@ public class SokalSneath1 extends AbstractCountingPairs {
     }
 
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         double den = pm.tp + 2 * (pm.fn + pm.fp);
 
         return pm.tp / den;

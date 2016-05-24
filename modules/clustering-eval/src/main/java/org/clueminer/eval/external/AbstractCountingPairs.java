@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.Cluster;
@@ -18,7 +34,7 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
 
     private static final long serialVersionUID = -8708340302697665494L;
 
-    public abstract double countScore(PairMatch pm);
+    public abstract double countScore(PairMatch pm, Props params);
 
     @Override
     public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
@@ -50,13 +66,13 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
             }
             clusters.lookupAdd(pm);
         }
-        return countScore(pm);
+        return countScore(pm, params);
     }
 
     @Override
     public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
         PairMatch pm = CountingPairs.getInstance().matchPairs(c1, c2);
-        return countScore(pm);
+        return countScore(pm, params);
     }
 
     /**

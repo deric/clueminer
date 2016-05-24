@@ -16,31 +16,37 @@
  */
 package org.clueminer.eval.external;
 
-import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Accuracy
+ * TODO: make sure the implementation is correct
  *
- * @see http://en.wikipedia.org/wiki/Accuracy_and_precision for definition
- * @author Tomas Barton
+ * @author deric
  */
-@ServiceProvider(service = ExternalEvaluator.class)
-public class Accuracy extends AbstractCountingPairs {
+public class F2Measure extends AbstractCountingPairs {
 
-    private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Accuracy";
+    private static final String NAME = "F2-measure";
+    private static final long serialVersionUID = 5075558180348805172L;
+    private double beta;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double countScore(PairMatch pm, Props params) {
-        return (pm.tp + pm.tn) / (double) (pm.tp + pm.fn + pm.fp + pm.tn);
+        beta = params.getDouble("beta", 2.0);
+        double squareBeta = Math.pow(beta, 2);
+        return (1 + squareBeta) * pm.tp / ((1.0 + squareBeta) * pm.tp + squareBeta * pm.fn + pm.fp);
     }
 
+    public double getBeta() {
+        return beta;
+    }
+
+    public void setBeta(double beta) {
+        this.beta = beta;
+    }
 }

@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,7 +39,7 @@ public class Phi extends AbstractCountingPairs {
     }
 
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         double numerator = pm.tp * pm.tn - pm.fn * pm.fp;
         double denom = (pm.tp + pm.fn) * (pm.tp + pm.fp) * (pm.fn + pm.tn) * (pm.fp + pm.tn);
         return numerator / denom;

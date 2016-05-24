@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,7 +46,7 @@ public class RogersTanimoto extends AbstractCountingPairs {
      * @return
      */
     @Override
-    public double countScore(PairMatch pm) {
+    public double countScore(PairMatch pm, Props params) {
         double num = pm.fn + pm.fp;
         double den = pm.tp + 2 * (pm.fn + pm.fp) + pm.tn;
 

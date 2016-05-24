@@ -73,6 +73,35 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     }
 
     /**
+     * Create new clustering for given dataset (used for further reference)
+     *
+     * @param dataset
+     */
+    public ClusterList(Dataset<E> dataset) {
+        int capacity = (int) Math.sqrt(dataset.size());
+
+        data = (C[]) new Cluster[capacity];
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        params = new Props();
+        name2id = new HashMap<>(capacity);
+        lookupAdd(dataset);
+    }
+
+    public ClusterList(Dataset<E> dataset, int capacity) {
+        if (capacity < 1) {
+            //some default capacity, to avoid problems with zero array size
+            capacity = (int) Math.sqrt(dataset.size());
+        }
+        data = (C[]) new Cluster[capacity];
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        params = new Props();
+        name2id = new HashMap<>(capacity);
+        lookupAdd(dataset);
+    }
+
+    /**
      * Some identification of clustering doesn't have to be unique, but short
      *
      * @return
@@ -533,7 +562,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     }
 
     @Override
-    public void lookupAdd(Object instance) {
+    public final void lookupAdd(Object instance) {
         instanceContent.add(instance);
     }
 
