@@ -16,19 +16,22 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * TODO: make sure the implementation is correct
+ * Same as {@link F1Measure} just using beta = 2
  *
  * @author deric
  */
+@ServiceProvider(service = ExternalEvaluator.class)
 public class F2Measure extends AbstractCountingPairs {
 
     private static final String NAME = "F2-measure";
     private static final long serialVersionUID = 5075558180348805172L;
-    private double beta;
+    private double beta = 2.0;
 
     @Override
     public String getName() {
@@ -37,8 +40,8 @@ public class F2Measure extends AbstractCountingPairs {
 
     @Override
     public double countScore(PairMatch pm, Props params) {
-        beta = params.getDouble("beta", 2.0);
-        double squareBeta = Math.pow(beta, 2);
+        double b = params.getDouble("beta", beta);
+        double squareBeta = Math.pow(b, 2);
         return (1 + squareBeta) * pm.tp / ((1.0 + squareBeta) * pm.tp + squareBeta * pm.fn + pm.fp);
     }
 

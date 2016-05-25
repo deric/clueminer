@@ -32,7 +32,7 @@ public class F1measure extends AbstractCountingPairs {
 
     private static final String name = "F-measure";
     private static final long serialVersionUID = 5075558180348805172L;
-    private double beta;
+    private double beta = 1.0;
 
     @Override
     public String getName() {
@@ -41,8 +41,8 @@ public class F1measure extends AbstractCountingPairs {
 
     @Override
     public double countScore(PairMatch pm, Props params) {
-        beta = params.getDouble("beta", 1.0);
-        double squareBeta = Math.pow(beta, 2);
+        double b = params.getDouble("beta", beta);
+        double squareBeta = Math.pow(b, 2);
         return (1 + squareBeta) * pm.tp / ((1.0 + squareBeta) * pm.tp + squareBeta * pm.fn + pm.fp);
     }
 
