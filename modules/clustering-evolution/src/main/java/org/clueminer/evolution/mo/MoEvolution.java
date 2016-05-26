@@ -1,6 +1,7 @@
 package org.clueminer.evolution.mo;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,8 +14,10 @@ import org.clueminer.clustering.api.Executor;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.hac.SimpleIndividual;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
@@ -166,20 +169,34 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         //System.out.println("computing time: " + computingTime);
         logger.log(Level.INFO, "explored solutions: {0}", MoSolution.getSolutionsCount());
         /*
-         int numberOfDimensions = getNumObjectives();
-         Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
-         Front frontB = new ArrayFront(numberOfPoints, numberOfDimensions);
+         * int numberOfDimensions = getNumObjectives();
+         * Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
+         * Front frontB = new ArrayFront(numberOfPoints, numberOfDimensions);
+         *
+         * Hypervolume hypervolume = new Hypervolume();
+         * hypervolume.execute(frontA, frontB); */
+ /*
+         * Individual[] pop = new Individual[moPop.size()];
+         * for (int j = 0; j < moPop.size(); j++) {
+         * MoSolution b = (MoSolution) moPop.get(j);
+         * pop[j] = b.getIndividual();
+         * }
+         *
+         * fireResultUpdate(pop); */
+        fireResult(moPop);
+    }
 
-         Hypervolume hypervolume = new Hypervolume();
-         hypervolume.execute(frontA, frontB);*/
-        /*
-         Individual[] pop = new Individual[moPop.size()];
-         for (int j = 0; j < moPop.size(); j++) {
-         MoSolution b = (MoSolution) moPop.get(j);
-         pop[j] = b.getIndividual();
-         }
-
-         fireResultUpdate(pop);*/
+    private void fireResult(List<Solution> res) {
+        SolTransformer trans = SolTransformer.getInstance();
+        List<OpSolution> solutions = trans.transform(res, new ArrayList<OpSolution>(res.size()));
+        int i = 0;
+        Individual[] ind = new Individual[solutions.size()];
+        for (OpSolution sol : solutions) {
+            ind[i++] = new SimpleIndividual(sol.getClustering());
+        }
+        for (EvolutionListener listener : evoListeners) {
+            listener.resultUpdate(ind);
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Population;
 
 /**
+ * Population consisting of single solution.
  *
  * @author Tomas Barton
  * @param <I>
@@ -40,17 +41,17 @@ public class FakePopulation<I extends Individual> implements Population<I> {
 
     @Override
     public I[] getIndividuals() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setIndividuals(I[] individuals) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public I getIndividual(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
