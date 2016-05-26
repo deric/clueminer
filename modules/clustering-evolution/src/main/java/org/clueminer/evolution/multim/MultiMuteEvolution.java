@@ -17,19 +17,16 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.factory.LinkageFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.attr.TournamentPopulation;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
-import org.clueminer.std.Scaler;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -92,6 +89,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
         return name;
     }
 
+    @Override
     protected void prepare() {
         StandardisationFactory sf = StandardisationFactory.getInstance();
         stds = sf.getProviders();
@@ -237,16 +235,6 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
         fireFinalResult(generations, (I) best, time, bestFitness, avgFitness);
 
         finish();
-    }
-
-    public Matrix standartize(Dataset<? extends Instance> data, String method, boolean logScale) {
-        return Scaler.standartize(data.arrayCopy(), method, logScale);
-    }
-
-    protected void finish() {
-        if (ph != null) {
-            ph.finish();
-        }
     }
 
     /**

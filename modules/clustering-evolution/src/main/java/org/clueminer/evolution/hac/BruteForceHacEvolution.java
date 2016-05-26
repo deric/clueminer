@@ -17,21 +17,16 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.LinkageFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
-import org.clueminer.math.Matrix;
 import org.clueminer.math.StandardisationFactory;
-import org.clueminer.std.Scaler;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.AbstractLookup;
-import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -47,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
         extends BaseEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
-    private static final String name = "Brute-force HAC";
+    private static final String NAME = "Brute-force HAC";
     protected final Executor exec;
     protected int gen;
     private List<Distance> dist;
@@ -59,8 +54,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
     protected final FakePopulation<I> population = new FakePopulation<>();
 
     public BruteForceHacEvolution() {
-        instanceContent = new InstanceContent();
-        lookup = new AbstractLookup(instanceContent);
+        super();
         //TODO allow changing algorithm used
         exec = new ClusteringExecutorCached<>();
         gen = 0;
@@ -68,13 +62,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
 
     @Override
     public String getName() {
-        return name;
-    }
-
-    protected void prepare() {
-        if (dataset == null) {
-            throw new RuntimeException("missing data");
-        }
+        return NAME;
     }
 
     @Override
@@ -156,16 +144,6 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
                     }
                 }
             }
-        }
-    }
-
-    public Matrix standartize(Dataset<? extends Instance> data, String method, boolean logScale) {
-        return Scaler.standartize(data.arrayCopy(), method, logScale);
-    }
-
-    protected void finish() {
-        if (ph != null) {
-            ph.finish();
         }
     }
 

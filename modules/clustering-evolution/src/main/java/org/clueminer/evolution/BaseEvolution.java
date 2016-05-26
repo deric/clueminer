@@ -1,11 +1,30 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.evolution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import org.clueminer.clustering.StdStorage;
+import org.clueminer.clustering.api.AgglParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.ListenerList;
 import org.clueminer.evolution.api.AbstractEvolution;
@@ -15,6 +34,9 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
 import org.clueminer.evolution.api.UpdateFeed;
+import org.clueminer.math.Matrix;
+import org.clueminer.std.Scaler;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -35,6 +57,11 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
      * for storing meta-data
      */
     protected int runId;
+    protected StdStorage stdStore;
+
+    public BaseEvolution() {
+        super();
+    }
 
     /**
      * Hook that should be called when evolution starts
@@ -141,6 +168,27 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
     @Override
     public boolean isValid(I individual) {
         return individual != null;
+    }
+
+    protected void prepare() {
+        if (dataset == null) {
+            throw new RuntimeException("missing data");
+        }
+        stdStore = new StdStorage(dataset);
+    }
+
+    public Matrix standartize(Dataset<E> data, String method, boolean logScale) {
+        return Scaler.standartize(data.arrayCopy(), method, logScale);
+    }
+
+    public Dataset<E> standartize(Props params) {
+        return stdStore.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+    }
+
+    protected void finish() {
+        if (ph != null) {
+            ph.finish();
+        }
     }
 
 }
