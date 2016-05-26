@@ -14,18 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.meta.api;
+package org.clueminer.meta.features;
+
+import org.clueminer.meta.api.DataStats;
 
 /**
  *
  * @author deric
  */
-public enum MetaFlag {
+public class DsBaseTest {
 
-    NONE, //result not matched
-    MATCHED,
-    HASH, //clustering hashCode match
-    FINGERPRINT,
-    REJECTED
+    protected static DataStats stat;
+    protected static final double DELTA = 1e-9;
 
 }

@@ -14,40 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.metasearch;
+package org.clueminer.meta.api;
 
-import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.report.MemInfo;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import org.clueminer.utils.ServiceFactory;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author deric
  */
-public class MetaSearchTest {
+public class DataStatsFactory extends ServiceFactory<DataStats> {
 
-    private MetaSearch subject;
-    private MemInfo mem;
+    private static DataStatsFactory instance;
 
-    @Before
-    public void setUp() {
-        subject = new MetaSearch();
-        //report = new ConsoleReporter();
-        //subject.addEvolutionListener(report);
-        mem = new MemInfo();
+    public static DataStatsFactory getInstance() {
+        if (instance == null) {
+            instance = new DataStatsFactory();
+        }
+        return instance;
     }
 
-    @Test
-    public void testRun() {
-        subject.setDataset(FakeDatasets.irisDataset());
-        subject.setGenerations(1);
-        subject.setPopulationSize(5);
-
-        mem.startClock();
-        //TODO: make sure evolution works
-        subject.run();
-        mem.report();
+    private DataStatsFactory() {
+        providers = new LinkedHashMap<>();
+        Collection<? extends DataStats> list = Lookup.getDefault().lookupAll(DataStats.class);
+        for (DataStats c : list) {
+            providers.put(c.getName(), c);
+        }
+        sort();
     }
-
 }

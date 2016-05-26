@@ -163,6 +163,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.bagging</publicPackage>
                         <publicPackage>org.clueminer.evolution.*</publicPackage>
+                        <publicPackage>org.clueminer.meta.search</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

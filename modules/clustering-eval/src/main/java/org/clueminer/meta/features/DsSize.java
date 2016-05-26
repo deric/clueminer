@@ -14,18 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.meta.api;
+package org.clueminer.meta.features;
+
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.meta.api.DataStats;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Feature commonly used for algorithm selection.
  *
  * @author deric
  */
-public enum MetaFlag {
+@ServiceProvider(service = DataStats.class)
+public class DsSize<E extends Instance> implements DataStats<E> {
 
-    NONE, //result not matched
-    MATCHED,
-    HASH, //clustering hashCode match
-    FINGERPRINT,
-    REJECTED
+    @Override
+    public String getName() {
+        return "log2size";
+    }
+
+    @Override
+    public double evaluate(Dataset<E> dataset) {
+        return Math.log(dataset.size());
+    }
 
 }

@@ -8,6 +8,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 
 /**
@@ -17,8 +18,7 @@ import org.openide.util.lookup.InstanceContent;
  * @param <E>
  * @param <C>
  */
-public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
-        implements EvolutionSO<I, E, C> {
+public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> implements EvolutionSO<I, E, C> {
 
     protected int generations = 10;
     protected ClusterEvaluation<E, C> external;
@@ -31,6 +31,7 @@ public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends
     protected ClusterEvaluation<E, C> evaluator;
     protected int populationSize = 10;
     protected Props defaultProp;
+    protected Props config;
     /**
      * parameter for clustering counting same solutions
      */
@@ -43,6 +44,12 @@ public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends
      * Probability of crossover
      */
     protected double crossoverProbability = 0.3;
+
+    public AbstractEvolution() {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        config = new Props();
+    }
 
     @Override
     public boolean isMaximizedFitness() {
@@ -168,4 +175,15 @@ public abstract class AbstractEvolution<I extends Individual<I, E, C>, E extends
         }
         return this.defaultProp.copy();
     }
+
+    @Override
+    public void setConfig(Props params) {
+        this.config = params;
+    }
+
+    @Override
+    public Props getConfig() {
+        return config;
+    }
+
 }

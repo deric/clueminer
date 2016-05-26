@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.metasearch;
+package org.clueminer.meta.search;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +34,9 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
+import org.clueminer.meta.api.DataStats;
+import org.clueminer.meta.api.DataStatsFactory;
+import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
 /**
@@ -55,6 +58,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     protected int cnt;
 
     public MetaSearch() {
+        super();
         exec = new ClusteringExecutorCached();
     }
 
@@ -85,7 +89,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
             config.put(AgglParams.STD, "z-score");
         }
         Dataset<E> data = standartize(config);
-        HashMap<String, Double> meta = computeMeta(data);
+        HashMap<String, Double> meta = computeMeta(data, config);
         logger.log(Level.INFO, "got {0} meta parameters", meta.size());
 
         cnt = 0;
@@ -93,9 +97,15 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         finish();
     }
 
-    private HashMap<String, Double> computeMeta(Dataset<E> data) {
+    private HashMap<String, Double> computeMeta(Dataset<E> data, Props config) {
+        DataStatsFactory dsf = DataStatsFactory.getInstance();
         HashMap<String, Double> meta = new HashMap<>();
-
+        double v;
+        for (DataStats<E> ds : dsf.getAll()) {
+            v = ds.evaluate(data);
+            meta.put(ds.getName(), v);
+            logger.log(Level.INFO, "meta {0} = {1}", new Object[]{ds.getName(), v});
+        }
         return meta;
     }
 

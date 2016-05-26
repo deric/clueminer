@@ -6,10 +6,12 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;
 
 /**
+ * Common interface for all evolutionary-based algorithms
  *
  * @author Tomas Barton
  * @param <I>
@@ -27,7 +29,26 @@ public interface Evolution<I extends Individual<I, E, C>, E extends Instance, C 
 
     Dataset<E> getDataset();
 
+    /**
+     * Set data used during evolutionary process.
+     *
+     * @param dataset
+     */
     void setDataset(Dataset<E> dataset);
+
+    /**
+     * Set key-value configuration
+     *
+     * @param params
+     */
+    void setConfig(Props params);
+
+    /**
+     * Configuration for the whole process
+     *
+     * @return key-value store that can cast values to requested types
+     */
+    Props getConfig();
 
     /**
      * Number of attributes in current dataset

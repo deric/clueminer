@@ -14,18 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.meta.api;
+package org.clueminer.meta.features;
+
+import org.clueminer.fixtures.clustering.FakeDatasets;
+import static org.junit.Assert.assertEquals;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public enum MetaFlag {
+public class DsAvgDevTest extends DsBaseTest {
 
-    NONE, //result not matched
-    MATCHED,
-    HASH, //clustering hashCode match
-    FINGERPRINT,
-    REJECTED
+    @BeforeClass
+    public static void setUpClass() {
+        stat = new DsAvgDev();
+    }
+
+    @Test
+    public void testEvaluate() {
+        double v = stat.evaluate(FakeDatasets.irisDataset());
+        assertEquals(1.1423228187919459, v, DELTA);
+    }
 
 }

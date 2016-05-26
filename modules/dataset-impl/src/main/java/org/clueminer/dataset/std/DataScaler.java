@@ -9,6 +9,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.std.StdNone;
 
 /**
+ * Normalize input data with given method.
  *
  * @author Tomas Barton
  * @param <E>

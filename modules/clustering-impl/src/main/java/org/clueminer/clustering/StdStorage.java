@@ -19,7 +19,7 @@ import org.clueminer.dataset.std.DataScaler;
 public class StdStorage<E extends Instance> {
 
     private final Dataset<E> dataset;
-    private final Table<String, Boolean, Dataset<? extends Instance>> cache;
+    private final Table<String, Boolean, Dataset<E>> cache;
     private DataScaler ds;
 
     /**
@@ -32,7 +32,7 @@ public class StdStorage<E extends Instance> {
         cache = newTable();
     }
 
-    public Dataset<? extends Instance> get(String method, boolean logscale) {
+    public Dataset<E> get(String method, boolean logscale) {
         if (!isCached(method, logscale)) {
             if (ds == null) {
                 ds = new DataScaler();
@@ -61,14 +61,14 @@ public class StdStorage<E extends Instance> {
         return dataset;
     }
 
-    public static Table<String, Boolean, Dataset<? extends Instance>> newTable() {
+    public Table<String, Boolean, Dataset<E>> newTable() {
         return Tables.newCustomTable(
-                Maps.<String, Map<Boolean, Dataset<? extends Instance>>>newHashMap(),
-                new Supplier<Map<Boolean, Dataset<? extends Instance>>>() {
-                    @Override
-                    public Map<Boolean, Dataset<? extends Instance>> get() {
-                        return Maps.newHashMap();
-                    }
-                });
+                Maps.<String, Map<Boolean, Dataset<E>>>newHashMap(),
+                new Supplier<Map<Boolean, Dataset<E>>>() {
+            @Override
+            public Map<Boolean, Dataset<E>> get() {
+                return Maps.newHashMap();
+            }
+        });
     }
 }

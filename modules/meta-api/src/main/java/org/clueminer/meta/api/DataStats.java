@@ -16,16 +16,30 @@
  */
 package org.clueminer.meta.api;
 
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+
 /**
+ * Compute statistics typically used for meta-search
  *
  * @author deric
+ * @param <E>
  */
-public enum MetaFlag {
+public interface DataStats<E extends Instance> {
 
-    NONE, //result not matched
-    MATCHED,
-    HASH, //clustering hashCode match
-    FINGERPRINT,
-    REJECTED
+    /**
+     * Feature name
+     *
+     * @return unique identifier
+     */
+    String getName();
+
+    /**
+     * Compute a statistic for given data
+     *
+     * @param dataset
+     * @return
+     */
+    double evaluate(Dataset<E> dataset);
 
 }
