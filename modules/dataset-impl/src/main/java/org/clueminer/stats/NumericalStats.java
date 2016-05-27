@@ -16,6 +16,7 @@
  */
 package org.clueminer.stats;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.IStats;
@@ -47,6 +48,9 @@ public class NumericalStats implements Statistics {
     private double absdev = Double.NaN;
     private double mOld, mNew, sOld, sNew;
     private final DataVector data;
+    private double q1 = Double.NaN;
+    private double q3 = Double.NaN;
+    private double median = Double.NaN;
 
     public NumericalStats(DataVector attribute) {
         this.data = attribute;
@@ -64,6 +68,9 @@ public class NumericalStats implements Statistics {
         sum = 0;
         squaredSum = 0;
         valueCounter = 0;
+        q1 = Double.NaN;
+        median = Double.NaN;
+        q3 = Double.NaN;
     }
 
     private void annulateCache() {
@@ -134,7 +141,6 @@ public class NumericalStats implements Statistics {
     public double statistics(IStats name) {
         switch ((AttrNumStats) name) {
             case MAX:
-
                 if (Double.isInfinite(maximum)) {
                     recalculate();
                 }
@@ -144,6 +150,11 @@ public class NumericalStats implements Statistics {
                     recalculate();
                 }
                 return minimum;
+            case RANGE:
+                if (Double.isInfinite(minimum) || Double.isInfinite(maximum)) {
+                    recalculate();
+                }
+                return maximum - minimum;
             case AVG:
                 return avg();
             case VARIANCE:
@@ -161,6 +172,22 @@ public class NumericalStats implements Statistics {
                     absdev = absDev();
                 }
                 return absdev;
+            case Q1:
+                if (Double.isNaN(q1)) {
+                    computeQuartiles();
+                }
+                return q1;
+            case Q2:
+            case MEDIAN:
+                if (Double.isNaN(median)) {
+                    computeQuartiles();
+                }
+                return median;
+            case Q3:
+                if (Double.isNaN(q3)) {
+                    computeQuartiles();
+                }
+                return q3;
         }
         throw new RuntimeException("unknown statistics " + name);
     }
@@ -255,4 +282,54 @@ public class NumericalStats implements Statistics {
     public double get(String key) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    private double[] toArray() {
+        double[] res = new double[data.size()];
+        Iterator<? extends Object> iter = data.values();
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (Double) iter.next();
+        }
+        return res;
+    }
+
+    /**
+     * For computing quartiles and median we need one scan and sorting all data.
+     * There are at least 3 methods for computing quartiles:
+     *
+     * @see https://en.wikipedia.org/wiki/Quartile
+     *
+     */
+    private void computeQuartiles() {
+        double val[] = toArray();
+        Arrays.sort(val);
+        int m; //index of median value
+        int q;
+        //median it the middle value
+        // even numbers in total
+        if (val.length % 2 == 0) {
+            //even numbers
+            m = val.length >>> 1; //equal to division by 2
+            median = (val[m - 1] + val[m]) / 2.0;
+
+        } else {
+            //odd numbers in total
+            m = (val.length - 1) >>> 1; //equal to division by 2
+            median = val[m];
+        }
+
+        // Q1 and Q3
+        if (m % 2 == 0) {
+            q = m >>> 1; //equal to division by 2
+            q1 = (val[q - 1] + val[q]) / 2.0;
+            q = (val.length - m) >>> 1;
+            q3 = (val[q - 1] + val[q]) / 2.0;
+        } else {
+            //odd numbers in total
+            q = (m - 1) >>> 1; //equal to division by 2
+            q1 = val[q];
+            q = val.length - q - 1;
+            q3 = val[q];
+        }
+    }
+
 }

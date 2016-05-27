@@ -22,12 +22,15 @@ import org.clueminer.dataset.api.IStats;
  * A set of common statistics that could be computed by various providers. Some
  * of them could be computed in quite efficient manner.
  *
+ * @see e.g {@link NumericalStats} for an example implementation.
+ *
  * @author deric
  */
 public enum AttrNumStats implements IStats {
 
     MIN,
     MAX,
+    RANGE, // values range: max - min
     AVG,
     /**
      * variance
@@ -43,9 +46,13 @@ public enum AttrNumStats implements IStats {
      * <math>s = \sqrt{\frac{1}{N-1} \sum_{i=1}^N (x_i -
      * \overline{x})^2},</math>
      *
-     * @return sample standard deviation
+     * return sample standard deviation
      */
     STD_DEV, //standard deviation
     ABS_DEV, //mean absolute deviation (with correction -- n-1)
     STD_X, //without correction
+    Q1, //first quartile
+    Q2, //second quartile
+    Q3, //third quartile
+    MEDIAN,
 }
