@@ -46,7 +46,7 @@ public enum StatsNum implements Stats {
      */
     STD_DEV, //standard deviation
     ABS_DEV, //mean absolute deviation (with correction -- n-1)
-    STD_X, //without correction
+    STD_SQ, //without correction
     Q1, //first quartile
     Q2, //second quartile
     Q3, //third quartile

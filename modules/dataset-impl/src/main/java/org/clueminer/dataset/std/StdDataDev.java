@@ -25,7 +25,7 @@ public class StdDataDev<E extends Instance> extends StdDev implements DataStanda
             avg = dataset.getAttribute(j).statistics(StatsNum.AVG);
             //TODO: consider using STD_DEV (Bessel's correction)
             //dev = dataset.getAttribute(j).statistics(StatsNum.STD_DEV);
-            dev = dataset.getAttribute(j).statistics(StatsNum.STD_X);
+            dev = dataset.getAttribute(j).statistics(StatsNum.STD_SQ);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, (dataset.get(i, j) - avg) / dev);
                 if (j == 0) {

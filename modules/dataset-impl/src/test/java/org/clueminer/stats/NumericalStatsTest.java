@@ -16,10 +16,10 @@
  */
 package org.clueminer.stats;
 
-import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.impl.ArrayDataset;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -35,6 +35,7 @@ public class NumericalStatsTest {
     private static Dataset<? extends Instance> ds1;
     private static Dataset<? extends Instance> ds2;
     private static Dataset<? extends Instance> ds3;
+    private static Dataset<? extends Instance> ds4;
     private static final double DELTA = 1e-9;
 
     @BeforeClass
@@ -50,6 +51,7 @@ public class NumericalStatsTest {
         ds2.builder().create(new double[]{41});
 
         ds3 = ds3();
+        ds4 = ds4();
     }
 
     @Before
@@ -88,6 +90,17 @@ public class NumericalStatsTest {
         ds.builder().create(new double[]{2.6});
         ds.builder().create(new double[]{2.9});
         ds.builder().create(new double[]{3});
+        return ds;
+    }
+
+    private static Dataset<? extends Instance> ds4() {
+        //dataset {0, 6, 8, 14}
+        Dataset<? extends Instance> ds = new ArrayDataset<>(4, 1);
+        ds.attributeBuilder().create("x", "NUMERICAL");
+        ds.builder().create(new double[]{0});
+        ds.builder().create(new double[]{6});
+        ds.builder().create(new double[]{8});
+        ds.builder().create(new double[]{14});
         return ds;
     }
 
@@ -157,4 +170,10 @@ public class NumericalStatsTest {
         assertEquals(0.18367346938775508, attr.statistics(StatsNum.QCD), DELTA);
     }
 
+    @Test
+    public void testStdDev() {
+        Attribute attr = ds4.getAttribute(0);
+        assertEquals(5.0, attr.statistics(StatsNum.STD_DEV), DELTA);
+        assertEquals(7.0, attr.statistics(StatsNum.MEAN), DELTA);
+    }
 }

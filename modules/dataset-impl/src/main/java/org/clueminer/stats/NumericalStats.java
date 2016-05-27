@@ -16,12 +16,12 @@
  */
 package org.clueminer.stats;
 
-import org.clueminer.dataset.api.StatsNum;
 import java.util.Arrays;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataVector;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Stats;
+import org.clueminer.dataset.api.StatsNum;
 
 /**
  * Running statistics
@@ -163,8 +163,8 @@ public class NumericalStats implements Statistics {
                 return variance();
             case SUM:
                 return sum;
-            case STD_X:
-                return stdx();
+            case STD_SQ:
+                return stdSq();
             case SQSUM:
                 return squaredSum;
             case STD_DEV:
@@ -210,12 +210,12 @@ public class NumericalStats implements Statistics {
     }
 
     /**
-     * Without -1 -- SQRT(1/N * variance)
+     * An unbiased estimator for the variance is given by applying Bessel's correction
      *
-     * @return
+     * @return unbiased sample variance, denoted s^2
      */
-    private double stdx() {
-        return Math.sqrt(((valueCounter > 1) ? sNew / valueCounter : 0.0));
+    private double stdSq() {
+        return ((valueCounter > 1) ? sNew / (valueCounter - 1) : 0.0);
     }
 
     @Override
@@ -254,7 +254,7 @@ public class NumericalStats implements Statistics {
      * @return variance of an attribute
      */
     private double variance() {
-        return ((valueCounter > 1) ? sNew / (valueCounter - 1) : 0.0);
+        return ((valueCounter > 1) ? sNew / valueCounter : 0.0);
     }
 
     /**
