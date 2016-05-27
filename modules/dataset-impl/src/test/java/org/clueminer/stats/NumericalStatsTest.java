@@ -153,6 +153,7 @@ public class NumericalStatsTest {
         assertEquals(2.0, attr.statistics(AttrNumStats.Q1), DELTA);
         assertEquals(2.4, attr.statistics(AttrNumStats.MEDIAN), DELTA);
         assertEquals(2.9, attr.statistics(AttrNumStats.Q3), DELTA);
+        assertEquals(0.18367346938775508, attr.statistics(AttrNumStats.QCD), DELTA);
     }
 
 }

@@ -156,6 +156,7 @@ public class NumericalStats implements Statistics {
                 }
                 return maximum - minimum;
             case AVG:
+            case MEAN:
                 return avg();
             case VARIANCE:
                 return variance();
@@ -188,6 +189,11 @@ public class NumericalStats implements Statistics {
                     computeQuartiles();
                 }
                 return q3;
+            case QCD:
+                if (Double.isNaN(q3) || Double.isNaN(q1)) {
+                    computeQuartiles();
+                }
+                return (q3 - q1) / (q3 + q1);
         }
         throw new RuntimeException("unknown statistics " + name);
     }

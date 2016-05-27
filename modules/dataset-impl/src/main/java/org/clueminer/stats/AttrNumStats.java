@@ -32,9 +32,7 @@ public enum AttrNumStats implements IStats {
     MAX,
     RANGE, // values range: max - min
     AVG,
-    /**
-     * variance
-     */
+    MEAN, // same as AVG
     VARIANCE,
     SUM,
     SQSUM, //squared sum
@@ -54,5 +52,6 @@ public enum AttrNumStats implements IStats {
     Q1, //first quartile
     Q2, //second quartile
     Q3, //third quartile
+    QCD, //the quartile coefficient of dispersion
     MEDIAN,
 }
