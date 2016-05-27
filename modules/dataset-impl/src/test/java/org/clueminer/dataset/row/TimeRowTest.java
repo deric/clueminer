@@ -9,10 +9,10 @@ import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -317,7 +317,7 @@ public class TimeRowTest {
         subject.put(4.0);
         subject.put(5.0);
 
-        assertEquals(1.5811388300841898, subject.getStdDev(), delta);
+        assertEquals(1.4142135623730951, subject.getStdDev(), delta);
     }
 
 }

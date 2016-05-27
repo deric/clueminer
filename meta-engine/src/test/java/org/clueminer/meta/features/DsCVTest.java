@@ -36,7 +36,7 @@ public class DsCVTest extends DsBaseTest {
     @Test
     public void testEvaluate() {
         double v = stat.evaluate(FakeDatasets.irisDataset());
-        assertEquals(0.31999051830383357, v, DELTA);
+        assertEquals(0.31892209956716233, v, DELTA);
         //assertEquals(0.34744726145944527, v, DELTA);
     }
 

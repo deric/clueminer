@@ -43,12 +43,12 @@ public class DsCV<E extends Instance> implements DataStats<E> {
     public double evaluate(Dataset<E> dataset) {
         double value = 0.0, cv;
         for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
-            //std_dev should be divided by MEAN but in case of normalized data
+            //std_dev should be divided by MEAN but in case of normalized data but
             //it causes double value overflow
             cv = attr.statistics(StatsNum.STD_DEV) / attr.statistics(StatsNum.MEDIAN);
             value += cv;
         }
-        return value / (double) dataset.attributeCount();
+        return value / dataset.attributeCount();
     }
 
 }

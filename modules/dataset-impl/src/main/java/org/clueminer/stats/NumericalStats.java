@@ -169,6 +169,8 @@ public class NumericalStats implements Statistics {
                 return squaredSum;
             case STD_DEV:
                 return Math.sqrt(variance());
+            case STD_COR:
+                return Math.sqrt(stdSq());
             case ABS_DEV:
                 if (Double.isNaN(absdev)) {
                     absdev = absDev();

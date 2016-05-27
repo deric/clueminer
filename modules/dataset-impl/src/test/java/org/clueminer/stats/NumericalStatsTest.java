@@ -174,6 +174,8 @@ public class NumericalStatsTest {
     public void testStdDev() {
         Attribute attr = ds4.getAttribute(0);
         assertEquals(5.0, attr.statistics(StatsNum.STD_DEV), DELTA);
+        assertEquals(33.333333333333336, attr.statistics(StatsNum.STD_SQ), DELTA);
+        assertEquals(5.773502691896258, attr.statistics(StatsNum.STD_COR), DELTA);
         assertEquals(7.0, attr.statistics(StatsNum.MEAN), DELTA);
     }
 }
