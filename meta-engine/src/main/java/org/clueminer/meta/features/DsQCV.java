@@ -20,8 +20,8 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.meta.api.DataStats;
 import org.clueminer.dataset.api.StatsNum;
+import org.clueminer.meta.api.DataStats;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,11 +44,30 @@ public class DsQCV<E extends Instance> implements DataStats<E> {
 
     @Override
     public double evaluate(Dataset<E> dataset) {
-        double value = 0.0;
-        for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
-            value += attr.statistics(StatsNum.QCD);
+        Attribute[] attrs = dataset.attributeByRole(BasicAttrRole.INPUT);
+        double mean, value;
+        double stdDev;
+        double mOld = 0, mNew = 0, sOld = 0, sNew = 0;
+        int i;
+        for (i = 0; i < attrs.length; i++) {
+            value = attrs[i].statistics(StatsNum.QCD);
+
+            if (i == 0) {
+                mOld = value;
+                mNew = value;
+                sOld = 0.0;
+            } else {
+                mNew = mOld + (value - mOld) / i;
+                sNew = sOld + (value - mOld) * (value - mNew);
+
+                // set up for next iteration
+                mOld = mNew;
+                sOld = sNew;
+            }
         }
-        return value / dataset.attributeCount();
+        mean = (i > 0) ? mNew : 0.0;
+        stdDev = (i > 1) ? sNew / i : 0.0;
+        return stdDev / mean;
     }
 
 }

@@ -19,9 +19,9 @@ package org.clueminer.meta.features;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.clueminer.meta.features.DsBaseTest.stat;
-import org.clueminer.dataset.api.StatsNum;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class DsQCVTest extends DsBaseTest {
     @Test
     public void testEvaluate() {
         double v = stat.evaluate(FakeDatasets.irisDataset());
-        assertEquals(0.35792111634070767, v, DELTA);
+        assertEquals(0.1195590621394496, v, DELTA);
     }
 
     /**
