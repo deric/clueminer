@@ -5,7 +5,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,8 +32,8 @@ public class StdMax<E extends Instance> implements DataStandardization<E> {
         Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         //find max|data_{ij}| value
         for (Entry<Integer, Attribute> entry : dataset.getAttributes().entrySet()) {
-            min = Math.abs(entry.getValue().statistics(AttrNumStats.MIN));
-            max = entry.getValue().statistics(AttrNumStats.MAX);
+            min = Math.abs(entry.getValue().statistics(StatsNum.MIN));
+            max = entry.getValue().statistics(StatsNum.MAX);
             if (min > max) {
                 maxVal[entry.getKey()] = min;
             } else {

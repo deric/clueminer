@@ -48,7 +48,7 @@ public interface Statistics extends Serializable, Cloneable {
      *
      * @return
      */
-    IStats[] provides();
+    Stats[] provides();
 
     /**
      * Value of the statistics with given name. The name should be unique within
@@ -57,7 +57,7 @@ public interface Statistics extends Serializable, Cloneable {
      * @param name
      * @return
      */
-    double statistics(IStats name);
+    double statistics(Stats name);
 
     /**
      * Returns the specified information for the whole data source.

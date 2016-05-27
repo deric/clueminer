@@ -21,7 +21,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.clueminer.meta.features.DsBaseTest.stat;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,12 +71,12 @@ public class DsQCVTest extends DsBaseTest {
     public void testStats() {
         Dataset<? extends Instance> d = FakeDatasets.irisDataset();
         Attribute attr = d.getAttribute(0);
-        assertEquals(4.3, attr.statistics(AttrNumStats.MIN), DELTA);
-        assertEquals(5.1, attr.statistics(AttrNumStats.Q1), DELTA);
-        assertEquals(5.8, attr.statistics(AttrNumStats.MEDIAN), DELTA);
-        assertEquals(5.8433333333, attr.statistics(AttrNumStats.AVG), DELTA);
-        assertEquals(6.4, attr.statistics(AttrNumStats.Q3), DELTA);
-        assertEquals(7.9, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(4.3, attr.statistics(StatsNum.MIN), DELTA);
+        assertEquals(5.1, attr.statistics(StatsNum.Q1), DELTA);
+        assertEquals(5.8, attr.statistics(StatsNum.MEDIAN), DELTA);
+        assertEquals(5.8433333333, attr.statistics(StatsNum.AVG), DELTA);
+        assertEquals(6.4, attr.statistics(StatsNum.Q3), DELTA);
+        assertEquals(7.9, attr.statistics(StatsNum.MAX), DELTA);
     }
 
 }

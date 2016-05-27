@@ -91,7 +91,7 @@ public interface Attribute extends Serializable, DataVector {
      * @param name
      * @return
      */
-    double statistics(IStats name);
+    double statistics(Stats name);
 
     /**
      * Invoke reset on all registered statistics

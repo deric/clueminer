@@ -16,11 +16,12 @@
  */
 package org.clueminer.stats;
 
+import org.clueminer.dataset.api.StatsNum;
 import java.util.Arrays;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataVector;
-import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Statistics;
+import org.clueminer.dataset.api.Stats;
 
 /**
  * Running statistics
@@ -138,8 +139,8 @@ public class NumericalStats implements Statistics {
     }
 
     @Override
-    public double statistics(IStats name) {
-        switch ((AttrNumStats) name) {
+    public double statistics(Stats name) {
+        switch ((StatsNum) name) {
             case MAX:
                 if (Double.isInfinite(maximum)) {
                     recalculate();
@@ -218,8 +219,8 @@ public class NumericalStats implements Statistics {
     }
 
     @Override
-    public AttrNumStats[] provides() {
-        return AttrNumStats.values();
+    public StatsNum[] provides() {
+        return StatsNum.values();
     }
 
     private void resetMin() {
@@ -273,7 +274,7 @@ public class NumericalStats implements Statistics {
      * @return mean absolute deviation
      */
     private double absDev() {
-        double mean = statistics(AttrNumStats.AVG);
+        double mean = statistics(StatsNum.AVG);
         Iterator<? extends Object> it = data.values();
         double value;
         double asum = 0.0;

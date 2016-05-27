@@ -32,7 +32,7 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.stats.NumericalStats;
 import org.math.plot.Plot2DPanel;
 
@@ -637,7 +637,7 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
             if (attribute == null) {
                 throw new RuntimeException("got null attribute");
             }
-            curr = attribute.statistics(AttrNumStats.MIN);
+            curr = attribute.statistics(StatsNum.MIN);
             if (curr < min) {
                 min = curr;
             }
@@ -654,7 +654,7 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
             if (attribute == null) {
                 throw new RuntimeException("got null attribute");
             }
-            curr = attribute.statistics(AttrNumStats.MAX);
+            curr = attribute.statistics(StatsNum.MAX);
             if (curr > max) {
                 max = curr;
             }

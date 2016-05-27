@@ -59,7 +59,7 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
      * @param name
      * @return
      */
-    public double statistics(IStats name);
+    public double statistics(Stats name);
 
     /**
      * Triggered when a new value is added to the instance. The type of a value

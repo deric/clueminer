@@ -37,7 +37,7 @@ public abstract class AbstractAttribute implements Attribute {
      */
     protected List<Statistics> statistics = new LinkedList<>();
 
-    protected HashMap<IStats, Statistics> statisticsProviders;
+    protected HashMap<Stats, Statistics> statisticsProviders;
 
     protected Dataset<? extends Instance> dataset;
 
@@ -140,14 +140,14 @@ public abstract class AbstractAttribute implements Attribute {
     @Override
     public void registerStatistics(Statistics statistics) {
         this.statistics.add(statistics);
-        IStats[] stats = statistics.provides();
-        for (IStats stat : stats) {
+        Stats[] stats = statistics.provides();
+        for (Stats stat : stats) {
             statisticsProviders.put(stat, statistics);
         }
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         if (statisticsProviders.containsKey(name)) {
             return statisticsProviders.get(name).statistics(name);
         }

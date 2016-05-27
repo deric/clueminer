@@ -14,7 +14,7 @@ import org.clueminer.dataset.api.AttributeBuilder;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.math.plot.Plot2DPanel;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -426,7 +426,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public double min() {
         double min = Double.POSITIVE_INFINITY, curr;
         for (Attribute attribute : attributes.values()) {
-            curr = attribute.statistics(AttrNumStats.MIN);
+            curr = attribute.statistics(StatsNum.MIN);
             if (curr < min) {
                 min = curr;
             }
@@ -438,7 +438,7 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     public double max() {
         double max = Double.NEGATIVE_INFINITY, curr;
         for (Attribute attribute : attributes.values()) {
-            curr = attribute.statistics(AttrNumStats.MAX);
+            curr = attribute.statistics(StatsNum.MAX);
             if (curr > max) {
                 max = curr;
             }

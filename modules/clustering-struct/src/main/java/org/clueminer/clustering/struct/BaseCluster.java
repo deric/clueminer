@@ -14,7 +14,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 
 /**
  *
@@ -98,7 +98,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
             Instance avg = this.builder().build(attrCount);
             for (int i = 0; i < attrCount; i++) {
                 //use pre-computed average for each attribute
-                value = getAttribute(i).statistics(AttrNumStats.AVG);
+                value = getAttribute(i).statistics(StatsNum.AVG);
                 avg.set(i, value);
             }
             centroid = (E) avg;

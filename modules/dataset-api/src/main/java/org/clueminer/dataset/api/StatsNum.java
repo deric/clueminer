@@ -14,9 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.stats;
-
-import org.clueminer.dataset.api.IStats;
+package org.clueminer.dataset.api;
 
 /**
  * A set of common statistics that could be computed by various providers. Some
@@ -26,7 +24,7 @@ import org.clueminer.dataset.api.IStats;
  *
  * @author deric
  */
-public enum AttrNumStats implements IStats {
+public enum StatsNum implements Stats {
 
     MIN,
     MAX,

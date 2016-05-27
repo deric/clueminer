@@ -6,14 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.math.Interpolator;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
+import org.clueminer.dataset.api.Stats;
 
 /**
  *
@@ -34,7 +34,7 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     /**
      * Mapping of attributes to its providers
      */
-    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
+    protected HashMap<Stats, Statistics> statisticsProviders = new HashMap<Stats, Statistics>();
 
     public FluorescenceInstance(int size) {
         super(size);
@@ -202,14 +202,14 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     @Override
     public void registerStatistics(Statistics statistics) {
         this.statistics.add(statistics);
-        IStats[] stats = statistics.provides();
-        for (IStats stat : stats) {
+        Stats[] stats = statistics.provides();
+        for (Stats stat : stats) {
             statisticsProviders.put(stat, statistics);
         }
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         if (statisticsProviders.containsKey(name)) {
             return statisticsProviders.get(name).statistics(name);
         }
@@ -237,6 +237,6 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
 
     @Override
     public double getStdDev() {
-        return statistics(AttrNumStats.STD_DEV);
+        return statistics(StatsNum.STD_DEV);
     }
 }

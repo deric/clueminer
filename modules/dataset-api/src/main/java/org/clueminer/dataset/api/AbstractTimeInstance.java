@@ -30,7 +30,7 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     /**
      * Mapping of attributes to its providers
      */
-    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
+    protected HashMap<Stats, Statistics> statisticsProviders = new HashMap<Stats, Statistics>();
 
     public AbstractTimeInstance() {
     }
@@ -207,14 +207,14 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
     @Override
     public void registerStatistics(Statistics statistics) {
         this.statistics.add(statistics);
-        IStats[] stats = statistics.provides();
-        for (IStats stat : stats) {
+        Stats[] stats = statistics.provides();
+        for (Stats stat : stats) {
             statisticsProviders.put(stat, statistics);
         }
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         if (statisticsProviders.containsKey(name)) {
             return statisticsProviders.get(name).statistics(name);
         }

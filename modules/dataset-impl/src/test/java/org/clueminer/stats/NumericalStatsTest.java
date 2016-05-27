@@ -16,6 +16,7 @@
  */
 package org.clueminer.stats;
 
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -99,8 +100,8 @@ public class NumericalStatsTest {
         Attribute attr = ds1.getAttribute(0);
         assertEquals(ds1.size(), attr.size());
         assertEquals(11, attr.size());
-        assertEquals(6, attr.statistics(AttrNumStats.MIN), DELTA);
-        assertEquals(49, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(6, attr.statistics(StatsNum.MIN), DELTA);
+        assertEquals(49, attr.statistics(StatsNum.MAX), DELTA);
     }
 
     @Test
@@ -110,28 +111,28 @@ public class NumericalStatsTest {
     @Test
     public void testRecalculate() {
         Attribute attr = ds1.getAttribute(0);
-        assertEquals(6, attr.statistics(AttrNumStats.MIN), DELTA);
-        assertEquals(49, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(6, attr.statistics(StatsNum.MIN), DELTA);
+        assertEquals(49, attr.statistics(StatsNum.MAX), DELTA);
         attr.resetStats();
-        assertEquals(49, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(49, attr.statistics(StatsNum.MAX), DELTA);
     }
 
     @Test
     public void testValueAdded() {
         Attribute attr = ds1.getAttribute(0);
-        assertEquals(49, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(49, attr.statistics(StatsNum.MAX), DELTA);
         ds1.builder().create(new double[]{52});
-        assertEquals(52, attr.statistics(AttrNumStats.MAX), DELTA);
+        assertEquals(52, attr.statistics(StatsNum.MAX), DELTA);
     }
 
     @Test
     public void testQuartiles() {
         Attribute attr = ds1.getAttribute(0);
-        assertEquals(15, attr.statistics(AttrNumStats.Q1), DELTA);
-        assertEquals(43, attr.statistics(AttrNumStats.Q3), DELTA);
+        assertEquals(15, attr.statistics(StatsNum.Q1), DELTA);
+        assertEquals(43, attr.statistics(StatsNum.Q3), DELTA);
         attr = ds2.getAttribute(0);
-        assertEquals(15, attr.statistics(AttrNumStats.Q1), DELTA);
-        assertEquals(40, attr.statistics(AttrNumStats.Q3), DELTA);
+        assertEquals(15, attr.statistics(StatsNum.Q1), DELTA);
+        assertEquals(40, attr.statistics(StatsNum.Q3), DELTA);
     }
 
     /**
@@ -140,20 +141,20 @@ public class NumericalStatsTest {
     @Test
     public void testMedian() {
         Attribute attr = ds1.getAttribute(0);
-        assertEquals(40, attr.statistics(AttrNumStats.MEDIAN), DELTA);
+        assertEquals(40, attr.statistics(StatsNum.MEDIAN), DELTA);
         attr = ds2.getAttribute(0);
         assertEquals(6, attr.size());
-        assertEquals(37.5, attr.statistics(AttrNumStats.MEDIAN), DELTA);
+        assertEquals(37.5, attr.statistics(StatsNum.MEDIAN), DELTA);
     }
 
     @Test
     public void testDS3() {
         Attribute attr = ds3.getAttribute(0);
-        assertEquals(1.2, attr.statistics(AttrNumStats.RANGE), DELTA);
-        assertEquals(2.0, attr.statistics(AttrNumStats.Q1), DELTA);
-        assertEquals(2.4, attr.statistics(AttrNumStats.MEDIAN), DELTA);
-        assertEquals(2.9, attr.statistics(AttrNumStats.Q3), DELTA);
-        assertEquals(0.18367346938775508, attr.statistics(AttrNumStats.QCD), DELTA);
+        assertEquals(1.2, attr.statistics(StatsNum.RANGE), DELTA);
+        assertEquals(2.0, attr.statistics(StatsNum.Q1), DELTA);
+        assertEquals(2.4, attr.statistics(StatsNum.MEDIAN), DELTA);
+        assertEquals(2.9, attr.statistics(StatsNum.Q3), DELTA);
+        assertEquals(0.18367346938775508, attr.statistics(StatsNum.QCD), DELTA);
     }
 
 }

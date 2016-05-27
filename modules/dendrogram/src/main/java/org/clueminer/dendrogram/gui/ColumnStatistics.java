@@ -15,7 +15,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataListener;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 
 /**
  *
@@ -85,13 +85,13 @@ public class ColumnStatistics extends JPanel implements DendrogramDataListener, 
             for (int col = 0; col < dataset.getNumberOfColumns(); col++) {
                 coordX = (col + 1) * elementSize.width - elementSize.width / 2 - height / 2;
                 Attribute a = data.getAttribute(this.columnsOrder[col]);
-                String s = panel.formatNumber(a.statistics(AttrNumStats.MIN));
+                String s = panel.formatNumber(a.statistics(StatsNum.MIN));
                 drawString(col, frc, s, coordX, 1);
-                s = panel.formatNumber(a.statistics(AttrNumStats.MAX));
+                s = panel.formatNumber(a.statistics(StatsNum.MAX));
                 drawString(col, frc, s, coordX, 2);
-                s = panel.formatNumber(a.statistics(AttrNumStats.AVG));
+                s = panel.formatNumber(a.statistics(StatsNum.AVG));
                 drawString(col, frc, s, coordX, 3);
-                s = panel.formatNumber(a.statistics(AttrNumStats.STD_DEV));
+                s = panel.formatNumber(a.statistics(StatsNum.STD_DEV));
                 drawString(col, frc, s, coordX, 4);
             }
 

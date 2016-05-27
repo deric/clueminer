@@ -16,9 +16,10 @@
  */
 package org.clueminer.stats;
 
+import org.clueminer.dataset.api.StatsString;
 import java.util.HashMap;
-import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Statistics;
+import org.clueminer.dataset.api.Stats;
 
 /**
  * Basic text related statistics.
@@ -85,12 +86,12 @@ public class StringStats implements Statistics {
     }
 
     @Override
-    public IStats[] provides() {
-        return AttrStringStats.values();
+    public Stats[] provides() {
+        return StatsString.values();
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

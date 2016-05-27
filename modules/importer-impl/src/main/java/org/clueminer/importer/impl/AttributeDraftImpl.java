@@ -21,11 +21,11 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.NominalMapping;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.io.importer.api.AttributeDraft;
+import org.clueminer.dataset.api.Stats;
 
 /**
  *
@@ -175,7 +175,7 @@ public class AttributeDraftImpl implements AttributeDraft {
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -12,7 +12,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.stats.NumericalStats;
 import org.clueminer.types.TimePoint;
 
@@ -310,12 +310,12 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     @Override
     public double getMax() {
-        return statistics(AttrNumStats.MAX);
+        return statistics(StatsNum.MAX);
     }
 
     @Override
     public double getMin() {
-        return statistics(AttrNumStats.MIN);
+        return statistics(StatsNum.MIN);
     }
 
     @Override
@@ -325,7 +325,7 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     @Override
     public double getStdDev() {
-        return statistics(AttrNumStats.STD_DEV);
+        return statistics(StatsNum.STD_DEV);
     }
 
     @Override

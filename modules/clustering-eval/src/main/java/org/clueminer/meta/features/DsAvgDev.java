@@ -21,7 +21,7 @@ import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.DataStats;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,7 +41,7 @@ public class DsAvgDev<E extends Instance> implements DataStats<E> {
     public double evaluate(Dataset<E> dataset) {
         double value = 0.0;
         for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
-            value += attr.statistics(AttrNumStats.VARIANCE);
+            value += attr.statistics(StatsNum.VARIANCE);
         }
         return value / dataset.attributeCount();
     }

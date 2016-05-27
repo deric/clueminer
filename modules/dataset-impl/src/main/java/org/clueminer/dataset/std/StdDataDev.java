@@ -3,7 +3,7 @@ package org.clueminer.dataset.std;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.std.StdDev;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -22,10 +22,10 @@ public class StdDataDev<E extends Instance> extends StdDev implements DataStanda
         Instance orig;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {
-            avg = dataset.getAttribute(j).statistics(AttrNumStats.AVG);
+            avg = dataset.getAttribute(j).statistics(StatsNum.AVG);
             //TODO: consider using STD_DEV (Bessel's correction)
-            //dev = dataset.getAttribute(j).statistics(AttrNumStats.STD_DEV);
-            dev = dataset.getAttribute(j).statistics(AttrNumStats.STD_X);
+            //dev = dataset.getAttribute(j).statistics(StatsNum.STD_DEV);
+            dev = dataset.getAttribute(j).statistics(StatsNum.STD_X);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, (dataset.get(i, j) - avg) / dev);
                 if (j == 0) {

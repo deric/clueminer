@@ -15,7 +15,7 @@ import org.clueminer.math.impl.DenseVector;
 import org.clueminer.math.impl.Stats;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.utils.Props;
 
 /**
@@ -154,7 +154,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
         //variance for specific attribute - precomputed
         if (dataset != null) {
-            return dataset.getAttribute(d).statistics(AttrNumStats.VARIANCE);
+            return dataset.getAttribute(d).statistics(StatsNum.VARIANCE);
         }
         //compute variance manually
         double mu = attrMean(clusters, d);
@@ -180,7 +180,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     public double attrMean(Clustering<E, C> clusters, int d) {
         Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
         if (dataset != null) {
-            return dataset.getAttribute(d).statistics(AttrNumStats.AVG);
+            return dataset.getAttribute(d).statistics(StatsNum.AVG);
         }
         Iterator<E> iter = clusters.instancesIterator();
         Instance curr;

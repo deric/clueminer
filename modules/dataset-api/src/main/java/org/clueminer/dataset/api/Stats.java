@@ -14,16 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.stats;
-
-import org.clueminer.dataset.api.IStats;
+package org.clueminer.dataset.api;
 
 /**
- * Common statistics computed over text attributes.
+ * Interface for ENUMs implementing statistics functions over different types
+ * of attributes (numerical, categorical attributes etc.)
  *
- * @author deric
+ * @author Tomas Barton
  */
-public enum AttrStringStats implements IStats {
-    HISTOGRAM,
-    AVG_LENGTH,
+public interface Stats {
 }

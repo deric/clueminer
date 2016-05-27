@@ -24,13 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.AbstractInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
+import org.clueminer.dataset.api.Stats;
 
 /**
  * Continuous representation of two variables (e.g. time and speed).
@@ -49,7 +49,7 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     /**
      * Mapping of attributes to its providers
      */
-    protected HashMap<IStats, Statistics> statisticsProviders = new HashMap<IStats, Statistics>();
+    protected HashMap<Stats, Statistics> statisticsProviders = new HashMap<Stats, Statistics>();
     protected int last;
     protected Instance ancestor;
 
@@ -87,14 +87,14 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     @Override
     public void registerStatistics(Statistics statistics) {
         this.statistics.add(statistics);
-        IStats[] stats = statistics.provides();
-        for (IStats stat : stats) {
+        Stats[] stats = statistics.provides();
+        for (Stats stat : stats) {
             statisticsProviders.put(stat, statistics);
         }
     }
 
     @Override
-    public double statistics(IStats name) {
+    public double statistics(Stats name) {
         if (statisticsProviders.containsKey(name)) {
             return statisticsProviders.get(name).statistics(name);
         }

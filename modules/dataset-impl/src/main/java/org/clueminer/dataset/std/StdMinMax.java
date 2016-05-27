@@ -3,7 +3,7 @@ package org.clueminer.dataset.std;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.std.StdScale;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -22,8 +22,8 @@ public class StdMinMax<E extends Instance> extends StdScale implements DataStand
         Instance orig;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {
-            min = dataset.getAttribute(j).statistics(AttrNumStats.MIN);
-            max = dataset.getAttribute(j).statistics(AttrNumStats.MAX);
+            min = dataset.getAttribute(j).statistics(StatsNum.MIN);
+            max = dataset.getAttribute(j).statistics(StatsNum.MAX);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, scaleToRange(dataset.get(i, j), min, max, getTargetMin(), getTargetMax()));
                 if (j == 0) {

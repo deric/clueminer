@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Dump;
 
@@ -114,10 +114,10 @@ public class DistPlot extends JPanel {
         Attribute attr = dataset.getAttribute(attributeIndex);
         Ellipse2D.Double circle;
 
-        double max = attr.statistics(AttrNumStats.MAX);
-        double avg = attr.statistics(AttrNumStats.AVG);
-        double min = attr.statistics(AttrNumStats.MIN);
-        //   double stdDev = attr.statistics(AttrNumStats.STD_DEV);
+        double max = attr.statistics(StatsNum.MAX);
+        double avg = attr.statistics(StatsNum.AVG);
+        double min = attr.statistics(StatsNum.MIN);
+        //   double stdDev = attr.statistics(StatsNum.STD_DEV);
 
         System.out.println("max = " + max);
         System.out.println("min = " + min);

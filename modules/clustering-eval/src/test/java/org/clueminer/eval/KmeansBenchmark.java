@@ -24,7 +24,7 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.gnuplot.PointTypeIterator;
 import org.clueminer.io.ARFFHandler;
 import org.clueminer.io.CsvLoader;
-import org.clueminer.stats.AttrNumStats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.utils.DatasetWriter;
 import org.clueminer.utils.FileUtils;
 import org.clueminer.utils.Props;
@@ -121,11 +121,11 @@ public class KmeansBenchmark {
         int attrCnt = first.attributeCount();
         int labelPos = attrCnt + 1;
         //attributes are numbered from zero, gnuplot columns from 1
-        double max = first.getAttribute(x - 1).statistics(AttrNumStats.MAX);
-        double min = first.getAttribute(x - 1).statistics(AttrNumStats.MIN);
+        double max = first.getAttribute(x - 1).statistics(StatsNum.MAX);
+        double min = first.getAttribute(x - 1).statistics(StatsNum.MIN);
         String xrange = "[" + min + ":" + max + "]";
-        max = first.getAttribute(y - 1).statistics(AttrNumStats.MAX);
-        min = first.getAttribute(y - 1).statistics(AttrNumStats.MIN);
+        max = first.getAttribute(y - 1).statistics(StatsNum.MAX);
+        min = first.getAttribute(y - 1).statistics(StatsNum.MIN);
         String yrange = "[" + min + ":" + max + "]";
 
         String res = "set datafile separator \",\"\n"
