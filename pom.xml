@@ -253,6 +253,7 @@
         <module>modules/graph-fast</module>
         <module>modules/metis</module>
         <module>modules/core-lib-wrapper</module>
+        <module>meta-engine</module>
     </modules>
     <reporting>
         <plugins>
