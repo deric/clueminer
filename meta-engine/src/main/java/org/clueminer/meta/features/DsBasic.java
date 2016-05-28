@@ -16,27 +16,52 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.DataStats;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Feature commonly used for algorithm selection.
+ * Features commonly used for algorithm selection.
  *
  * @author deric
  */
 @ServiceProvider(service = DataStats.class)
-public class DsAttrs<E extends Instance> implements DataStats<E> {
+public class DsBasic<E extends Instance> implements DataStats<E> {
+
+    public static final String LOG_SIZE = "log2size";
+    public static final String LOG_ATTRS = "log2attrs";
 
     @Override
-    public String getName() {
-        return "log2attrs";
+    public String[] provides() {
+        return new String[]{LOG_SIZE, LOG_ATTRS};
     }
 
     @Override
-    public double evaluate(Dataset<E> dataset) {
+    public double evaluate(Dataset<E> dataset, String feature) {
+        switch (feature) {
+            case LOG_SIZE:
+                return logSize(dataset);
+            case LOG_ATTRS:
+                return logAttrs(dataset);
+            default:
+                throw new UnsupportedOperationException("unsupported feature: " + feature);
+        }
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        features.put(LOG_SIZE, logSize(dataset));
+        features.put(LOG_ATTRS, logAttrs(dataset));
+    }
+
+    public double logAttrs(Dataset<E> dataset) {
         return Math.log(dataset.attributeCount());
+    }
+
+    public double logSize(Dataset<E> dataset) {
+        return Math.log(dataset.size());
     }
 
 }

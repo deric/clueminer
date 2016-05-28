@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -32,19 +33,35 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataStats.class)
 public class DsMedianSkewness<E extends Instance> implements DataStats<E> {
 
-    @Override
-    public String getName() {
-        return "MedianSkew";
-    }
+    public static final String MED_SKEW = "med_skew";
 
-    @Override
-    public double evaluate(Dataset<E> dataset) {
+    public double medianSkew(Dataset<E> dataset) {
         double avg = 0.0, value;
         for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
             value = 3 * (attr.statistics(StatsNum.AVG) - attr.statistics(StatsNum.MEDIAN)) / attr.statistics(StatsNum.STD_DEV);
             avg += value;
         }
         return avg / dataset.attributeCount();
+    }
+
+    @Override
+    public String[] provides() {
+        return new String[]{MED_SKEW};
+    }
+
+    @Override
+    public double evaluate(Dataset<E> dataset, String feature) {
+        switch (feature) {
+            case MED_SKEW:
+                return medianSkew(dataset);
+            default:
+                throw new UnsupportedOperationException("unsupported feature: " + feature);
+        }
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        features.put(MED_SKEW, medianSkew(dataset));
     }
 
 }

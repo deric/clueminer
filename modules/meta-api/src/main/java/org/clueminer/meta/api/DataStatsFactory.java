@@ -40,7 +40,9 @@ public class DataStatsFactory extends ServiceFactory<DataStats> {
         providers = new LinkedHashMap<>();
         Collection<? extends DataStats> list = Lookup.getDefault().lookupAll(DataStats.class);
         for (DataStats c : list) {
-            providers.put(c.getName(), c);
+            for (String name : c.provides()) {
+                providers.put(name, c);
+            }
         }
         sort();
     }

@@ -16,12 +16,13 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.meta.api.DataStats;
 import org.clueminer.dataset.api.StatsNum;
+import org.clueminer.meta.api.DataStats;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,18 +33,34 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataStats.class)
 public class DsAvgDev<E extends Instance> implements DataStats<E> {
 
-    @Override
-    public String getName() {
-        return "avgDev";
-    }
+    public static final String AVG_DEV = "avg_dev";
 
-    @Override
-    public double evaluate(Dataset<E> dataset) {
+    public double avgDev(Dataset<E> dataset) {
         double value = 0.0;
         for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
             value += attr.statistics(StatsNum.VARIANCE);
         }
         return value / dataset.attributeCount();
+    }
+
+    @Override
+    public String[] provides() {
+        return new String[]{AVG_DEV};
+    }
+
+    @Override
+    public double evaluate(Dataset<E> dataset, String feature) {
+        switch (feature) {
+            case AVG_DEV:
+                return avgDev(dataset);
+            default:
+                throw new UnsupportedOperationException("unsupported feature: " + feature);
+        }
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        features.put(AVG_DEV, avgDev(dataset));
     }
 
 }

@@ -34,8 +34,8 @@ public class DsAvgDevTest extends DsBaseTest {
 
     @Test
     public void testEvaluate() {
-        double v = stat.evaluate(FakeDatasets.irisDataset());
-        assertEquals(1.134707333333333, v, DELTA);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsAvgDev.AVG_DEV);
+        assertEquals(1.1423228187919459, v, DELTA);
     }
 
 }

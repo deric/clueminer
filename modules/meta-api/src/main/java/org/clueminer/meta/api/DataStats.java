@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.api;
 
+import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -32,7 +33,7 @@ public interface DataStats<E extends Instance> {
      *
      * @return unique identifier
      */
-    String getName();
+    String[] provides();
 
     /**
      * Compute a statistic for given data
@@ -40,6 +41,14 @@ public interface DataStats<E extends Instance> {
      * @param dataset
      * @return
      */
-    double evaluate(Dataset<E> dataset);
+    double evaluate(Dataset<E> dataset, String feature);
+
+    /**
+     * Compute meta features for dataset and store them into features HashMap
+     *
+     * @param dataset
+     * @param features
+     */
+    void computeAll(Dataset<E> dataset, HashMap<String, Double> features);
 
 }

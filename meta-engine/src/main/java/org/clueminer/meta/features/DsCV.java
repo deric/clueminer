@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -34,13 +35,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataStats.class)
 public class DsCV<E extends Instance> implements DataStats<E> {
 
-    @Override
-    public String getName() {
-        return "cv";
-    }
+    public static final String AVG_CV = "avg_cv";
 
-    @Override
-    public double evaluate(Dataset<E> dataset) {
+    public double avgCv(Dataset<E> dataset) {
         double value = 0.0, cv;
         for (Attribute attr : dataset.attributeByRole(BasicAttrRole.INPUT)) {
             //std_dev should be divided by MEAN but in case of normalized data but
@@ -49,6 +46,26 @@ public class DsCV<E extends Instance> implements DataStats<E> {
             value += cv;
         }
         return value / dataset.attributeCount();
+    }
+
+    @Override
+    public String[] provides() {
+        return new String[]{AVG_CV};
+    }
+
+    @Override
+    public double evaluate(Dataset<E> dataset, String feature) {
+        switch (feature) {
+            case AVG_CV:
+                return avgCv(dataset);
+            default:
+                throw new UnsupportedOperationException("unsupported feature: " + feature);
+        }
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        features.put(AVG_CV, avgCv(dataset));
     }
 
 }

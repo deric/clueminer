@@ -30,16 +30,34 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class DsQCVTest extends DsBaseTest {
+public class DsCVQTest extends DsBaseTest {
 
     @BeforeClass
     public static void setUpClass() {
-        stat = new DsQCV();
+        stat = new DsCVQ();
     }
 
     @Test
-    public void testEvaluate() {
-        double v = stat.evaluate(FakeDatasets.irisDataset());
+    public void testCVQ1() {
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ1);
+        assertEquals(0.49893617021276593, v, DELTA);
+    }
+
+    @Test
+    public void testCVQ2() {
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ2);
+        assertEquals(0.405057803468208, v, DELTA);
+    }
+
+    @Test
+    public void testCVQ3() {
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ3);
+        assertEquals(0.401470588235294, v, DELTA);
+    }
+
+    @Test
+    public void testQCD() {
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.QCD);
         assertEquals(0.1195590621394496, v, DELTA);
     }
 

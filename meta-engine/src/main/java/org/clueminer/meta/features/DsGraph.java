@@ -16,27 +16,30 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.DataStats;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Feature commonly used for algorithm selection.
  *
  * @author deric
  */
-@ServiceProvider(service = DataStats.class)
-public class DsSize<E extends Instance> implements DataStats<E> {
+public class DsGraph<E extends Instance> implements DataStats<E> {
 
     @Override
-    public String getName() {
-        return "log2size";
+    public String[] provides() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double evaluate(Dataset<E> dataset) {
-        return Math.log(dataset.size());
+    public double evaluate(Dataset<E> dataset, String feature) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

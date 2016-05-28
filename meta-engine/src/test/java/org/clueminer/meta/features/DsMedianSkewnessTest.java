@@ -35,8 +35,8 @@ public class DsMedianSkewnessTest extends DsBaseTest {
 
     @Test
     public void testEvaluate() {
-        double v = stat.evaluate(FakeDatasets.irisDataset());
-        assertEquals(-0.21902109563439204, v, DELTA);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsMedianSkewness.MED_SKEW);
+        assertEquals(-0.21828980445882087, v, DELTA);
     }
 
 }

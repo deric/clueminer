@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
@@ -30,22 +31,26 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = DataStats.class)
-public class DsCVQ1<E extends Instance> implements DataStats<E> {
+public class DsCVQ<E extends Instance> implements DataStats<E> {
+
+    public static final String CVQ1 = "CVQ1";
+    public static final String CVQ2 = "CVQ2";
+    public static final String CVQ3 = "CVQ3";
+    public static final String QCD = "QCD";
 
     @Override
-    public String getName() {
-        return "cvq1";
+    public String[] provides() {
+        return new String[]{CVQ1};
     }
 
-    @Override
-    public double evaluate(Dataset<E> dataset) {
+    public double compute(Dataset<E> dataset, StatsNum stat) {
         Attribute[] attrs = dataset.attributeByRole(BasicAttrRole.INPUT);
         double mean, value;
         double stdDev;
         double mOld = 0, mNew = 0, sOld = 0, sNew = 0;
         int i;
         for (i = 0; i < attrs.length; i++) {
-            value = attrs[i].statistics(StatsNum.Q1);
+            value = attrs[i].statistics(stat);
 
             if (i == 0) {
                 mOld = value;
@@ -63,6 +68,30 @@ public class DsCVQ1<E extends Instance> implements DataStats<E> {
         mean = (i > 0) ? mNew : 0.0;
         stdDev = (i > 1) ? sNew / i : 0.0;
         return stdDev / mean;
+    }
+
+    @Override
+    public double evaluate(Dataset<E> dataset, String feature) {
+        switch (feature) {
+            case CVQ1:
+                return compute(dataset, StatsNum.Q1);
+            case CVQ2:
+                return compute(dataset, StatsNum.Q2);
+            case CVQ3:
+                return compute(dataset, StatsNum.Q3);
+            case QCD:
+                return compute(dataset, StatsNum.QCD);
+            default:
+                throw new UnsupportedOperationException("unsupported feature: " + feature);
+        }
+    }
+
+    @Override
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+        features.put(CVQ1, compute(dataset, StatsNum.Q1));
+        features.put(CVQ2, compute(dataset, StatsNum.Q2));
+        features.put(CVQ3, compute(dataset, StatsNum.Q3));
+        features.put(QCD, compute(dataset, StatsNum.QCD));
     }
 
 }
