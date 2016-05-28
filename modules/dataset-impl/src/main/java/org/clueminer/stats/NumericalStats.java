@@ -160,17 +160,19 @@ public class NumericalStats implements Statistics {
             case MEAN:
                 return avg();
             case VARIANCE:
-                return variance();
+                return stdUnbiased();
             case SUM:
                 return sum;
-            case STD_SQ:
-                return stdSq();
+            case BVAR:
+                //  biased sample variance
+                return stdBiased();
             case SQSUM:
                 return squaredSum;
             case STD_DEV:
-                return Math.sqrt(variance());
-            case STD_COR:
-                return Math.sqrt(stdSq());
+                // the sample standard deviation
+                return Math.sqrt(stdUnbiased());
+            case STD_BIA:
+                return Math.sqrt(stdBiased());
             case ABS_DEV:
                 if (Double.isNaN(absdev)) {
                     absdev = absDev();
@@ -216,8 +218,18 @@ public class NumericalStats implements Statistics {
      *
      * @return unbiased sample variance, denoted s^2
      */
-    private double stdSq() {
+    private double stdUnbiased() {
         return ((valueCounter > 1) ? sNew / (valueCounter - 1) : 0.0);
+    }
+
+    /**
+     * Pretty fast way how to compute variance, we don't have to recount sums
+     * from beginning each time we add or remove one element
+     *
+     * @return variance of an attribute
+     */
+    private double stdBiased() {
+        return ((valueCounter > 1) ? sNew / valueCounter : 0.0);
     }
 
     @Override
@@ -247,16 +259,6 @@ public class NumericalStats implements Statistics {
                 maximum = value;
             }
         }
-    }
-
-    /**
-     * Pretty fast way how to compute variance, we don't have to recount sums
-     * from beginning each time we add or remove one element
-     *
-     * @return variance of an attribute
-     */
-    private double variance() {
-        return ((valueCounter > 1) ? sNew / valueCounter : 0.0);
     }
 
     /**

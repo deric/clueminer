@@ -5,10 +5,10 @@ import java.io.IOException;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.dataset.api.StatsNum;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
@@ -84,7 +84,7 @@ public class NumericalStatsTest {
     @Test
     public void testVariance() {
         Attribute attr = dataset.getAttribute(0); //sepallength
-        assertEquals(0.686, attr.statistics(StatsNum.VARIANCE), precision);
+        assertEquals(0.6856935, attr.statistics(StatsNum.VARIANCE), precision);
         attr = dataset.getAttribute(1); //sepallwidth
         assertEquals(0.188, attr.statistics(StatsNum.VARIANCE), precision);
         attr = dataset.getAttribute(2); //petallength
@@ -96,7 +96,7 @@ public class NumericalStatsTest {
     @Test
     public void testDeviation() {
         Attribute attr = dataset.getAttribute(0); //sepallength
-        assertEquals(0.828, attr.statistics(StatsNum.STD_DEV), precision);
+        assertEquals(0.8280661, attr.statistics(StatsNum.STD_DEV), precision);
         attr = dataset.getAttribute(1); //sepallwidth
         assertEquals(0.434, attr.statistics(StatsNum.STD_DEV), precision);
         attr = dataset.getAttribute(2); //petallength

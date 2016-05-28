@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Random;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
@@ -317,7 +318,9 @@ public class TimeRowTest {
         subject.put(4.0);
         subject.put(5.0);
 
-        assertEquals(1.4142135623730951, subject.getStdDev(), delta);
+        assertEquals(1.5811388300841898, subject.getStdDev(), delta);
+        //biased (without n-1 correction)
+        assertEquals(1.4142135623730951, subject.statistics(StatsNum.STD_BIA), delta);
     }
 
 }

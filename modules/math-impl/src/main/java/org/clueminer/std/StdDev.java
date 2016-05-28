@@ -52,7 +52,8 @@ public class StdDev extends Standardisation {
             for (i = 0; i < m; i++) {
                 dev[j] += Math.pow(a[i][j] - avg[j], 2);
             }
-            dev[j] = Math.sqrt(dev[j] / m);
+            // Bessel's correction: (n-1) instead of just n (same as sd() in R)
+            dev[j] = Math.sqrt(dev[j] / (m - 1));
         }
     }
 

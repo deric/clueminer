@@ -64,7 +64,7 @@ public class NumericalStatsTest {
         //first dataset
         Dataset<? extends Instance> ds = new ArrayDataset<>(11, 1);
         ds.attributeBuilder().create("x", "NUMERICAL");
-        //6, 7, 15, 36, 39, 40, 41, 42, 43, 47, 49
+        //R: ds1 <- c(6, 7, 15, 36, 39, 40, 41, 42, 43, 47, 49)
         ds.builder().create(new double[]{6});
         ds.builder().create(new double[]{7});
         ds.builder().create(new double[]{15});
@@ -173,9 +173,23 @@ public class NumericalStatsTest {
     @Test
     public void testStdDev() {
         Attribute attr = ds4.getAttribute(0);
-        assertEquals(5.0, attr.statistics(StatsNum.STD_DEV), DELTA);
-        assertEquals(33.333333333333336, attr.statistics(StatsNum.STD_SQ), DELTA);
-        assertEquals(5.773502691896258, attr.statistics(StatsNum.STD_COR), DELTA);
+        assertEquals(5.0, attr.statistics(StatsNum.STD_BIA), DELTA);
+        //sd() in R
+        assertEquals(5.773502691896258, attr.statistics(StatsNum.STD_DEV), DELTA);
         assertEquals(7.0, attr.statistics(StatsNum.MEAN), DELTA);
+        assertEquals(25.0, attr.statistics(StatsNum.BVAR), DELTA);
+        assertEquals(33.333333333333336, attr.statistics(StatsNum.VARIANCE), DELTA);
+
+    }
+
+    @Test
+    public void testRcompatibility() {
+        Attribute attr = ds1.getAttribute(0);
+        //R: mean(ds1)
+        assertEquals(33.18181818181819, attr.statistics(StatsNum.MEAN), DELTA);
+        //R: sd(ds1)
+        assertEquals(15.873362478178223, attr.statistics(StatsNum.STD_DEV), DELTA);
+        //R: var(ds1)
+        assertEquals(251.96363636363625, attr.statistics(StatsNum.VARIANCE), DELTA);
     }
 }
