@@ -13,6 +13,7 @@ import org.clueminer.math.matrix.SymmetricMatrix;
 /**
  *
  * @author Tomas Bruna
+ * {@link KnnInitializator}
  *
  * TODO: create interface for graph builders
  * @param <E>
@@ -79,7 +80,7 @@ public class KNNGraphBuilder<E extends Instance> {
      * Sort neighbors in ascending order by distance to central node
      *
      * @param pos Position of the last element in array with neighbors
-     * @param i Number of central cluster to which neighbors are assigned
+     * @param i   Number of central cluster to which neighbors are assigned
      */
     private void insert(int[][] nearests, int pos, int i) {
         while (pos > 0 && distance.get(i, nearests[i][pos]) < distance.get(i, nearests[i][pos - 1])) {
@@ -107,7 +108,7 @@ public class KNNGraphBuilder<E extends Instance> {
      * Create graph where connected nodes are neighbors
      *
      * @param dataset input dataset
-     * @param g graph where output will be stored
+     * @param g       graph where output will be stored
      * @param k
      * @return neighbor graph
      */

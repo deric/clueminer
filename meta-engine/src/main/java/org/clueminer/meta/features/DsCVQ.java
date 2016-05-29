@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.meta.api.DataStats;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -71,7 +72,7 @@ public class DsCVQ<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public double evaluate(Dataset<E> dataset, String feature) {
+    public double evaluate(Dataset<E> dataset, String feature, Props params) {
         switch (feature) {
             case CVQ1:
                 return compute(dataset, StatsNum.Q1);
@@ -87,7 +88,7 @@ public class DsCVQ<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features, Props params) {
         features.put(CVQ1, compute(dataset, StatsNum.Q1));
         features.put(CVQ2, compute(dataset, StatsNum.Q2));
         features.put(CVQ3, compute(dataset, StatsNum.Q3));

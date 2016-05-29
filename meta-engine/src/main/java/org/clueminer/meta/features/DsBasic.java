@@ -20,6 +20,7 @@ import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.meta.api.DataStats;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +40,7 @@ public class DsBasic<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public double evaluate(Dataset<E> dataset, String feature) {
+    public double evaluate(Dataset<E> dataset, String feature, Props params) {
         switch (feature) {
             case LOG_SIZE:
                 return logSize(dataset);
@@ -51,7 +52,7 @@ public class DsBasic<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features, Props params) {
         features.put(LOG_SIZE, logSize(dataset));
         features.put(LOG_ATTRS, logAttrs(dataset));
     }

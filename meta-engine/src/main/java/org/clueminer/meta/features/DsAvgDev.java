@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.meta.api.DataStats;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,7 +50,7 @@ public class DsAvgDev<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public double evaluate(Dataset<E> dataset, String feature) {
+    public double evaluate(Dataset<E> dataset, String feature, Props params) {
         switch (feature) {
             case AVG_DEV:
                 return avgDev(dataset);
@@ -59,7 +60,7 @@ public class DsAvgDev<E extends Instance> implements DataStats<E> {
     }
 
     @Override
-    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features) {
+    public void computeAll(Dataset<E> dataset, HashMap<String, Double> features, Props params) {
         features.put(AVG_DEV, avgDev(dataset));
     }
 

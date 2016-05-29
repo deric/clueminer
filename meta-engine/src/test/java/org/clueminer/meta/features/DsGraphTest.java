@@ -17,7 +17,7 @@
 package org.clueminer.meta.features;
 
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.utils.Props;
+import static org.clueminer.meta.features.DsBaseTest.stat;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,17 +26,17 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class DsAvgDevTest extends DsBaseTest {
+public class DsGraphTest extends DsBaseTest {
 
     @BeforeClass
     public static void setUpClass() {
-        stat = new DsAvgDev();
+        stat = new DsGraph();
     }
 
     @Test
     public void testEvaluate() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsAvgDev.AVG_DEV, new Props());
-        assertEquals(1.1423228187919459, v, DELTA);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsGraph.EDGES, null);
+        assertEquals(0.31999051830383357, v, DELTA);
     }
 
 }

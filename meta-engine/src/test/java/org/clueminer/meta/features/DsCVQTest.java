@@ -39,25 +39,25 @@ public class DsCVQTest extends DsBaseTest {
 
     @Test
     public void testCVQ1() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ1);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ1, null);
         assertEquals(0.49893617021276593, v, DELTA);
     }
 
     @Test
     public void testCVQ2() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ2);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ2, null);
         assertEquals(0.405057803468208, v, DELTA);
     }
 
     @Test
     public void testCVQ3() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ3);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.CVQ3, null);
         assertEquals(0.401470588235294, v, DELTA);
     }
 
     @Test
     public void testQCD() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.QCD);
+        double v = stat.evaluate(FakeDatasets.irisDataset(), DsCVQ.QCD, null);
         assertEquals(0.1195590621394496, v, DELTA);
     }
 

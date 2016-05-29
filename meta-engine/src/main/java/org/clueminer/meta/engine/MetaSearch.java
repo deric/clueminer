@@ -102,7 +102,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         HashMap<String, Double> meta = new HashMap<>();
         double v;
         for (DataStats<E> ds : dsf.getAll()) {
-            ds.computeAll(data, meta);
+            ds.computeAll(data, meta, config);
         }
         System.out.println("meta features: " + meta.toString());
         return meta;

@@ -19,6 +19,7 @@ package org.clueminer.meta.api;
 import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  * Compute statistics typically used for meta-search
@@ -39,16 +40,19 @@ public interface DataStats<E extends Instance> {
      * Compute a statistic for given data
      *
      * @param dataset
+     * @param feature
+     * @param params  optional configuration including feature specific settings
      * @return
      */
-    double evaluate(Dataset<E> dataset, String feature);
+    double evaluate(Dataset<E> dataset, String feature, Props params);
 
     /**
      * Compute meta features for dataset and store them into features HashMap
      *
      * @param dataset
      * @param features
+     * @param params
      */
-    void computeAll(Dataset<E> dataset, HashMap<String, Double> features);
+    void computeAll(Dataset<E> dataset, HashMap<String, Double> features, Props params);
 
 }
