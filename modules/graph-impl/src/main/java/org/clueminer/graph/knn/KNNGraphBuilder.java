@@ -30,11 +30,11 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Construct Nearest neighbor graph
  *
  * @author Tomas Bruna
- * {@link KnnInitializator}
+ * See {@link KnnInitializator} for alternative implementation.
  *
- * TODO: create interface for graph builders
  * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
@@ -45,11 +45,11 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
      */
     private SymmetricMatrix distance;
 
-    private Dataset<E> input;
-
     private Distance dm;
 
     public static final String NAME = "k-NN-builder";
+
+    private final double EPS = 1e-6;
 
     public KNNGraphBuilder() {
         dm = new EuclideanDistance();
@@ -67,13 +67,12 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
      * @return
      */
     private int[][] findNeighbors(Dataset<E> dataset, int k) {
-        input = dataset;
-        if (k >= input.size()) {
+        if (k >= dataset.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
-        buildDistanceMatrix();
-        int[][] nearests = new int[input.size()][k];
-        for (int i = 0; i < input.size(); i++) {
+        buildDistanceMatrix(dataset);
+        int[][] nearests = new int[dataset.size()][k];
+        for (int i = 0; i < dataset.size(); i++) {
             //put first k neighbours into array and sort them
             int firsts = k;
             int index = 0;
@@ -88,7 +87,7 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
                 index++;
             }
             //neighbour array full, find closer neighbours from the rest of the dataset
-            for (int j = firsts; j < input.size(); j++) {
+            for (int j = firsts; j < dataset.size(); j++) {
                 //skip self as neighbour
                 if (i == j) {
                     continue;
@@ -118,11 +117,20 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
         }
     }
 
-    private void buildDistanceMatrix() {
-        distance = new SymmetricMatrix(input.size(), input.size());
-        for (int i = 0; i < input.size(); i++) {
-            for (int j = i + 1; j < input.size(); j++) {
-                distance.set(i, j, dm.measure(input.instance(i), input.instance(j)));
+    private void insert(int[] nearests, int pos, int i) {
+        while (pos > 0 && distance.get(i, nearests[pos]) < distance.get(i, nearests[pos - 1])) {
+            int temp = nearests[pos];
+            nearests[pos] = nearests[pos - 1];
+            nearests[pos - 1] = temp;
+            pos--;
+        }
+    }
+
+    private void buildDistanceMatrix(Dataset<E> dataset) {
+        distance = new SymmetricMatrix(dataset.size(), dataset.size());
+        for (int i = 0; i < dataset.size(); i++) {
+            for (int j = i + 1; j < dataset.size(); j++) {
+                distance.set(i, j, dm.measure(dataset.instance(i), dataset.instance(j)));
             }
         }
     }
@@ -160,9 +168,51 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         int k = params.getInt("k", 5);
-        int[][] nn = findNeighbors(dataset, k);
+        if (k >= dataset.size()) {
+            throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
+        }
+        buildDistanceMatrix(dataset);
+        GraphFactory f = graph.getFactory();
+        for (int i = 0; i < dataset.size(); i++) {
+            int[] nearests = new int[k];
+            //put first k neighbours into array and sort them
+            int firsts = k;
+            int index = 0;
+            for (int j = 0; j < firsts; j++) {
+                //skip self as neighbour
+                if (i == j) {
+                    firsts++;
+                    continue;
+                }
+                nearests[index] = j;
+                insert(nearests, index, i);
+                index++;
+            }
+            //neighbour array full, find closer neighbours from the rest of the dataset
+            for (int j = firsts; j < dataset.size(); j++) {
+                //skip self as neighbour
+                if (i == j) {
+                    continue;
+                }
+                //if distance to central node is smaller then of the furthest current neighbour, add this node to neighbours
+                if (distance.get(i, j) < distance.get(i, nearests[k - 1])) {
+                    nearests[k - 1] = j;
+                    insert(nearests, k - 1, i);
+                }
+            }
+            Node nodeB, nodeA = graph.getNode(mapping[i]);
+            Instance b, a = nodeA.getInstance();
+            for (int j = 0; j < k; j++) {
+                nodeB = graph.getNode(mapping[nearests[j]]);
+                b = nodeB.getInstance();
+                double dist = dm.measure(a, b);
+                if (dist < EPS) {
+                    dist = EPS;
+                }
+                graph.addEdge(f.newEdge(nodeA, nodeB, 1, 1 / dist, false)); //max val
+            }
 
-        graph.addEdgesFromNeigborArray(nn, k);
+        }
     }
 
 }

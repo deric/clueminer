@@ -56,6 +56,7 @@ public class KnnInitializatorTest {
                 Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
                 gc.createEdges(graph, dataset, mapping, params);
                 assertEquals(dataset.size(), graph.getNodeCount());
+                System.out.println("edges " + graph.getEdgeCount());
             }
 
         }

@@ -30,7 +30,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @TODO: merge interfaces with {@link KNNGraphBuilder}
+ * Construct Nearest neighbor graph
  *
  * @author Hamster
  * @param <E>
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
 
     private Distance dm;
-    private static final String name = "k-NN";
+    private static final String name = "k-NNG";
 
     @Override
     public String getName() {
