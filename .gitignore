@@ -24,3 +24,4 @@ logs/
 /modules/clustering-eval/nbproject/
 /modules/clustering-evolution/nbproject/
 /meta-engine/nbproject/
+/modules/graph-impl/nbproject/

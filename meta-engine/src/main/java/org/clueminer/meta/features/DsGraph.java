@@ -66,8 +66,12 @@ public class DsGraph<E extends Instance> implements DataStats<E> {
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
         String initializer = props.get(GRAPH_CONV, "k-NN");
         GraphConvertor graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
+        System.out.println("using " + graphCon.getName());
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, props);
+
+        System.out.println("nodes: " + graph.getNodeCount());
+        System.out.println("edges: " + graph.getEdgeCount());
 
         features.put(EDGES, Double.NaN);
     }

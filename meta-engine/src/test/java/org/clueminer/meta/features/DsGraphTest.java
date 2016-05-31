@@ -16,8 +16,10 @@
  */
 package org.clueminer.meta.features;
 
+import java.util.HashMap;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.clueminer.meta.features.DsBaseTest.stat;
+import org.clueminer.utils.Props;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -34,7 +36,12 @@ public class DsGraphTest extends DsBaseTest {
 
     @Test
     public void testEvaluate() {
-        double v = stat.evaluate(FakeDatasets.irisDataset(), DsGraph.EDGES, null);
+        //double v = stat.evaluate(FakeDatasets.irisDataset(), DsGraph.EDGES, null);
+        Props params = new Props();
+        params.putInt("k", 5);
+        params.put("graph_conv", "k-NN-builder");
+        HashMap<String, Double> features = new HashMap<>();
+        stat.computeAll(FakeDatasets.irisDataset(), features, params);
         //assertEquals(0.31999051830383357, v, DELTA);
     }
 
