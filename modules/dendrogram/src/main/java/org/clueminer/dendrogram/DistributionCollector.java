@@ -64,7 +64,7 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
     @Override
     public void sample(double value) {
         numSamples++;
-        checkRange(value);
+        validRange(value);
         int pos = countPos(value);
         //due to rounding error we might misplace value by one bin
         if (pos >= bins.length) {
@@ -77,20 +77,37 @@ public class DistributionCollector<E extends Instance> implements Distribution<E
         return (int) Math.floor((value - min) / step);
     }
 
+    /**
+     * In case that point is not in valid range, we'll ignore it.
+     *
+     * @param value
+     * @return
+     */
     @Override
     public int hist(double value) {
-        checkRange(value);
-        int pos = countPos(value);
-        if (pos >= bins.length) {
-            pos = bins.length - 1;
+        if (validRange(value)) {
+            int pos = countPos(value);
+            if (pos >= bins.length) {
+                pos = bins.length - 1;
+            }
+            return bins[pos];
         }
-        return bins[pos];
+        return 0;
     }
 
-    private void checkRange(double value) {
+    /**
+     * True when values is in expected range.
+     *
+     * @param value
+     * @return
+     */
+    private boolean validRange(double value) {
         if (value < min || value > max) {
-            throw new RuntimeException("Value " + value + " is outside of current range [" + min + ", " + max + "]");
+            //throw new RuntimeException("Value " + value + " is outside of current range [" + min + ", " + max + "]");
+            //asynchronous event. data has been changed and we didn't get notification yet
+            return false;
         }
+        return true;
     }
 
     @Override
