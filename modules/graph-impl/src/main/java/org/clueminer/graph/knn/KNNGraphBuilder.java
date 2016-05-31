@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
@@ -6,9 +22,12 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.math.matrix.SymmetricMatrix;
+import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
@@ -18,7 +37,8 @@ import org.clueminer.math.matrix.SymmetricMatrix;
  * TODO: create interface for graph builders
  * @param <E>
  */
-public class KNNGraphBuilder<E extends Instance> {
+@ServiceProvider(service = GraphConvertor.class)
+public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
 
     /**
      * Triangular distance matrix
@@ -29,8 +49,15 @@ public class KNNGraphBuilder<E extends Instance> {
 
     private Distance dm;
 
+    public static final String NAME = "k-NN-builder";
+
     public KNNGraphBuilder() {
         dm = new EuclideanDistance();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     /**
@@ -128,6 +155,14 @@ public class KNNGraphBuilder<E extends Instance> {
 
     public Distance getDistanceMeasure() {
         return this.dm;
+    }
+
+    @Override
+    public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
+        int k = params.getInt("k", 5);
+        int[][] nn = findNeighbors(dataset, k);
+
+        graph.addEdgesFromNeigborArray(nn, k);
     }
 
 }
