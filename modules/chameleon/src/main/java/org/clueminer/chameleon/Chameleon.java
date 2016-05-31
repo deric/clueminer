@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
@@ -19,8 +35,12 @@ import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
+import org.clueminer.graph.api.GraphBuilderFactory;
+import org.clueminer.graph.api.GraphConvertor;
+import org.clueminer.graph.api.GraphConvertorFactory;
+import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.api.Node;
-import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.Merger;
@@ -121,7 +141,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
            + "of the clusters contains just one node.")
     protected int individualMultiplier;
 
-    private final KNNGraphBuilder knn;
+    public static final String GRAPH_CONV = "graph_conv";
+    private GraphConvertor knn;
 
     public static final String GRAPH_STORAGE = "graph_storage";
     @Param(name = Chameleon.GRAPH_STORAGE, description = "Structure for storing graphs")
@@ -142,10 +163,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      * Number of Pareto fronts
      */
     public static final String NUM_FRONTS = "pareto_fronts";
-
-    public Chameleon() {
-        knn = new KNNGraphBuilder();
-    }
 
     @Override
     public String getName() {
@@ -176,7 +193,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 }
             }
         }
-
+        String graphConv = pref.get(GRAPH_CONV, "k-NNG");
+        knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
         int datasetK = determineK(dataset);
@@ -188,18 +206,24 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
         //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
         Graph g = null;
+        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixGraph");
+        GraphStorageFactory gsf = GraphStorageFactory.getInstance();
         try {
-            Class c = Class.forName(graphStorage);
-            g = (Graph) c.newInstance();
+            Graph c = gsf.getProvider(graphStorage);
+            g = (Graph) c.getClass().newInstance();
             g.ensureCapacity(dataset.size());
             g.lookupAdd(dataset);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }
         if (g == null) {
             throw new RuntimeException("failed to initialize graph: " + graphStorage);
         }
-        g = knn.getNeighborGraph(dataset, g, datasetK);
+
+        Long[] mapping = gb.createNodesFromInput(dataset, g);
+        //g = knn.getNeighborGraph(dataset, g, datasetK);
+        knn.createEdges(g, dataset, mapping, pref);
+
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");

@@ -22,14 +22,14 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 
 /**
  *
  * @author deric
  */
-public class GraphFactoryImpl<E extends Instance> implements GraphFactory<E> {
+public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     protected final AtomicLong NODE_IDS = new AtomicLong();
     protected final AtomicLong EDGE_IDS = new AtomicLong();
@@ -37,6 +37,11 @@ public class GraphFactoryImpl<E extends Instance> implements GraphFactory<E> {
 
     public GraphFactoryImpl(FastGraph graph) {
         this.store = graph;
+    }
+
+    @Override
+    public String getName() {
+        return "graph-fast";
     }
 
     @Override

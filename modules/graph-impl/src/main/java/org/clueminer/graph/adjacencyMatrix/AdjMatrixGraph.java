@@ -31,7 +31,6 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 import org.openide.util.Exceptions;
@@ -39,6 +38,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.graph.api.GraphBuilder;
 
 /**
  * Implementation of graph storage using a matrix for adjacency edges.
@@ -526,7 +526,7 @@ public class AdjMatrixGraph<E extends Instance> implements Graph<E> {
         if (k > nodeCounter) {
             return false;
         }
-        GraphFactory f = getFactory();
+        GraphBuilder f = getFactory();
         for (int i = 0; i < nodeCounter; i++) {
             for (int j = 0; j < k; j++) {
                 double distance = dm.measure(nodes[i].getInstance(), nodes[neighbors[i][j]].getInstance());
@@ -540,7 +540,7 @@ public class AdjMatrixGraph<E extends Instance> implements Graph<E> {
     }
 
     @Override
-    public GraphFactory getFactory() {
+    public GraphBuilder getFactory() {
         return AdjMatrixFactory.getInstance();
     }
 

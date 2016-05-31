@@ -52,4 +52,10 @@ public interface GraphConvertor<E extends Instance> {
      * @param dm
      */
     void setDistanceMeasure(Distance dm);
+
+    /**
+     *
+     * @return distance measure used
+     */
+    Distance getDistanceMeasure();
 }

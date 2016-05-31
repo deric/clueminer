@@ -3,9 +3,9 @@ package org.clueminer.graph.impl;
 import java.util.Arrays;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import static org.junit.Assert.assertEquals;
+import org.clueminer.graph.api.GraphBuilder;
 
 /**
  *
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class Commons {
 
-    public static Graph buildSmallGraph(Graph g, GraphFactory factory) {
+    public static Graph buildSmallGraph(Graph g, GraphBuilder factory) {
         g.ensureCapacity(7);
         Node n1 = factory.newNode();
         Node n2 = factory.newNode();

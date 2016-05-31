@@ -21,15 +21,17 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author tomas
  * @param <E>
  */
-public class AdjMatrixFactory<E extends Instance> implements GraphFactory<E> {
+@ServiceProvider(service = GraphBuilder.class)
+public class AdjMatrixFactory<E extends Instance> implements GraphBuilder<E> {
 
     private static AdjMatrixFactory instance;
 
@@ -43,7 +45,12 @@ public class AdjMatrixFactory<E extends Instance> implements GraphFactory<E> {
         return instance;
     }
 
-    protected AdjMatrixFactory() {
+    @Override
+    public String getName() {
+        return "AdjMatrixFactory";
+    }
+
+    public AdjMatrixFactory() {
         nodeIdCounter = edgeIdCounter = 0;
     }
 

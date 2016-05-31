@@ -22,12 +22,12 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.clueminer.graph.api.GraphBuilder;
 
 /**
  *
@@ -238,7 +238,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
     }
 
     @Override
-    public GraphFactory getFactory() {
+    public GraphBuilder getFactory() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

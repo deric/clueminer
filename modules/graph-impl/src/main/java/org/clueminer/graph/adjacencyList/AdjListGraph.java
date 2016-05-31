@@ -18,7 +18,6 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 import org.openide.util.Exceptions;
@@ -26,6 +25,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.graph.api.GraphBuilder;
 
 /**
  *
@@ -359,7 +359,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
     }
 
     @Override
-    public GraphFactory getFactory() {
+    public GraphBuilder getFactory() {
         return AdjListFactory.getInstance();
     }
 
@@ -368,7 +368,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
         if (k > getNodeCount()) {
             return false;
         }
-        GraphFactory f = AdjListFactory.getInstance();
+        GraphBuilder f = AdjListFactory.getInstance();
         //go though all nodes in the graph (dataset)
         Instance curr;
         Node other;

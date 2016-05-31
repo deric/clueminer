@@ -29,8 +29,13 @@ import org.clueminer.dataset.api.Instance;
  * will be automatically assigned to the elements.
  * @param <E>
  */
-public interface GraphFactory<E extends Instance> {
+public interface GraphBuilder<E extends Instance> {
 
+    /**
+     *
+     * @return name of the builder
+     */
+    String getName();
     /**
      * Creates and returns a directed edge between source and target.
      *

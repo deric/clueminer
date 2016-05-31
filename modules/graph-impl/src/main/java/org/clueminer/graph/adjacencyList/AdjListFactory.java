@@ -5,15 +5,17 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphFactory;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author Hamster
  * @param <E>
  */
-public class AdjListFactory<E extends Instance> implements GraphFactory<E> {
+@ServiceProvider(service = GraphBuilder.class)
+public class AdjListFactory<E extends Instance> implements GraphBuilder<E> {
 
     private static AdjListFactory instance;
 
@@ -27,8 +29,12 @@ public class AdjListFactory<E extends Instance> implements GraphFactory<E> {
         return instance;
     }
 
-    private AdjListFactory() {
-        //nobody should be able to call this
+    public AdjListFactory() {
+    }
+
+    @Override
+    public String getName() {
+        return "AdjListFactory";
     }
 
     @Override
@@ -107,4 +113,5 @@ public class AdjListFactory<E extends Instance> implements GraphFactory<E> {
         }
         return mapping;
     }
+
 }

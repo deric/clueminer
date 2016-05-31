@@ -350,7 +350,7 @@ public interface Graph<E extends Instance> {
      *
      * @return graph factory
      */
-    GraphFactory getFactory();
+    GraphBuilder getFactory();
 
     /**
      * Create edges between neighbors according to neighbor array

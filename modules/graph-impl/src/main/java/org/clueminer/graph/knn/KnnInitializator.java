@@ -84,4 +84,9 @@ public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
         this.dm = dm;
     }
 
+    @Override
+    public Distance getDistanceMeasure() {
+        return dm;
+    }
+
 }

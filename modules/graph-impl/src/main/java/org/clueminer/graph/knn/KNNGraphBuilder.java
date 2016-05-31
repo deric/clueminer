@@ -23,11 +23,11 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
-import org.clueminer.graph.api.GraphFactory;
 import org.clueminer.graph.api.Node;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.graph.api.GraphBuilder;
 
 /**
  * Construct Nearest neighbor graph
@@ -149,7 +149,7 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
      */
     public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
         int[][] nearests = findNeighbors(dataset, k);
-        GraphFactory f = g.getFactory();
+        GraphBuilder f = g.getFactory();
         ArrayList<Node> nodes = f.createNodesFromInput(dataset);
         g.addAllNodes(nodes);
         g.addEdgesFromNeigborArray(nearests, k);
@@ -157,10 +157,12 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
         return g;
     }
 
+    @Override
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
 
+    @Override
     public Distance getDistanceMeasure() {
         return this.dm;
     }
@@ -172,7 +174,7 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }
         buildDistanceMatrix(dataset);
-        GraphFactory f = graph.getFactory();
+        GraphBuilder f = graph.getFactory();
         for (int i = 0; i < dataset.size(); i++) {
             int[] nearests = new int[k];
             //put first k neighbours into array and sort them

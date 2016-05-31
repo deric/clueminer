@@ -75,4 +75,9 @@ public class ThresholdInitializator<E extends Instance> implements GraphConverto
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
+
+    @Override
+    public Distance getDistanceMeasure() {
+        return dm;
+    }
 }
