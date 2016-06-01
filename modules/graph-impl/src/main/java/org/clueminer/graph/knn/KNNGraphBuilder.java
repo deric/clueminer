@@ -17,17 +17,18 @@
 package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
-import org.clueminer.graph.api.GraphBuilder;
 
 /**
  * Construct Nearest neighbor graph
@@ -202,6 +203,7 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
                     insert(nearests, k - 1, i);
                 }
             }
+            System.out.println("nearest; " + Arrays.toString(nearests));
             Node nodeB, nodeA = graph.getNode(mapping[i]);
             Instance b, a = nodeA.getInstance();
             for (int j = 0; j < k; j++) {

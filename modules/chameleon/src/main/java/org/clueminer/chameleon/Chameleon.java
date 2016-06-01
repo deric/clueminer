@@ -193,7 +193,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 }
             }
         }
-        String graphConv = pref.get(GRAPH_CONV, "k-NNG");
+        String graphConv = pref.get(GRAPH_CONV, "k-NN-builder");
         knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
@@ -203,10 +203,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         pref.putInt(MAX_PARTITION, maxPartitionSize);
         pref.putInt(K, datasetK);
 
-        graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph");
+        graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
         //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
         Graph g = null;
-        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixGraph");
+        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixFactory");
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
         try {
             Graph c = gsf.getProvider(graphStorage);
