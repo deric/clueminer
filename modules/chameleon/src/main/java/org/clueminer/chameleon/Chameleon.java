@@ -36,7 +36,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
-import org.clueminer.graph.api.GraphBuilderFactory;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.GraphStorageFactory;
@@ -205,9 +204,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         pref.putInt(K, datasetK);
 
         graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
-        //graphStorage = pref.get(GRAPH_STORAGE, "org.clueminer.graph.adjacencyList.AdjListGraph");
         Graph g = null;
-        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixFactory");
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
         try {
             Graph c = gsf.getProvider(graphStorage);
@@ -220,8 +217,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         if (g == null) {
             throw new RuntimeException("failed to initialize graph: " + graphStorage);
         }
-
+        GraphBuilder gb = g.getFactory();
         Long[] mapping = gb.createNodesFromInput(dataset, g);
+
         System.out.println("nodes cnt: " + g.getNodeCount());
         System.out.println("dataset size " + dataset.size());
         System.out.println("mapping size " + mapping.length);
