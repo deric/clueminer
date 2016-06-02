@@ -28,28 +28,35 @@ import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = DataStats.class)
 public class DsGraph<E extends Instance> implements DataStats<E> {
 
-    public static final String EDGES = "edges";
+    public static final String LOG_EDGES = "log_edges";
+    public static final String EDGES_RATIO = "edges_ratio";
 
     public static final String MAX_ITERATIONS = "max_iterations";
     public static final String GRAPH_CONV = "graph_conv";
 
     @Override
     public String[] provides() {
-        return new String[]{EDGES};
+        return new String[]{LOG_EDGES};
     }
 
     @Override
     public double evaluate(Dataset<E> dataset, String feature, Props params) {
+        HashMap<String, Double> features = new HashMap<>();
+        computeAll(dataset, features, params);
         switch (feature) {
-            case EDGES:
-                return 0.0;
+            case LOG_EDGES:
+                return features.get(LOG_EDGES);
+            case EDGES_RATIO:
+                return features.get(EDGES_RATIO);
             default:
                 throw new UnsupportedOperationException("unsupported feature: " + feature);
         }
@@ -64,16 +71,16 @@ public class DsGraph<E extends Instance> implements DataStats<E> {
         int maxIterations = props.getInt(MAX_ITERATIONS, iter);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
-        String initializer = props.get(GRAPH_CONV, "k-NN");
+        String initializer = props.get(GRAPH_CONV, "k-NNG");
         GraphConvertor graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
-        System.out.println("using " + graphCon.getName());
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, props);
 
-        System.out.println("nodes: " + graph.getNodeCount());
-        System.out.println("edges: " + graph.getEdgeCount());
-
-        features.put(EDGES, Double.NaN);
+        features.put(LOG_EDGES, Math.log(graph.getEdgeCount()));
+        /**
+         * when edges share neighbors no extra edge is added
+         */
+        features.put(EDGES_RATIO, graph.getEdgeCount() / (double) graph.getNodeCount());
     }
 
 }

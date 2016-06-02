@@ -39,10 +39,11 @@ public class DsGraphTest extends DsBaseTest {
         //double v = stat.evaluate(FakeDatasets.irisDataset(), DsGraph.EDGES, null);
         Props params = new Props();
         params.putInt("k", 5);
-        params.put("graph_conv", "k-NN-builder");
+        params.put("graph_conv", "k-NNG");
         HashMap<String, Double> features = new HashMap<>();
         stat.computeAll(FakeDatasets.irisDataset(), features, params);
         //assertEquals(0.31999051830383357, v, DELTA);
+        System.out.println("f: " + features.toString());
     }
 
 }

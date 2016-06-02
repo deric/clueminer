@@ -88,6 +88,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         if (!config.containsKey(AgglParams.STD)) {
             config.put(AgglParams.STD, "z-score");
         }
+        config.putInt("k", 5);
         Dataset<E> data = standartize(config);
         HashMap<String, Double> meta = computeMeta(data, config);
         logger.log(Level.INFO, "got {0} meta parameters", meta.size());
