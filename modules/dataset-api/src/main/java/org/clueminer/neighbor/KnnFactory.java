@@ -31,6 +31,8 @@ public class KnnFactory<E extends Instance> extends ServiceFactory<KNNSearch<E>>
 
     private static KnnFactory instance;
 
+    public static final String KNN_SEARCH = "knn-search";
+
     public static KnnFactory getInstance() {
         if (instance == null) {
             instance = new KnnFactory();

@@ -25,6 +25,7 @@ import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.KnnFactory;
+import static org.clueminer.neighbor.KnnFactory.KNN_SEARCH;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -58,7 +59,10 @@ public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         KnnFactory<E> kf = KnnFactory.getInstance();
-        KNNSearch<E> alg = kf.getDefault();
+        if (!params.containsKey(KNN_SEARCH)) {
+            params.put(KNN_SEARCH, "caching k-nn");
+        }
+        KNNSearch<E> alg = kf.getProvider(params.get(KNN_SEARCH));
         if (alg == null) {
             throw new RuntimeException("did not find any provider for k-NN");
         }

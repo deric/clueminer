@@ -47,20 +47,15 @@ public class KnnInitializatorTest {
     private void benchmark(final Dataset<? extends Instance> dataset, final GraphConvertor gc, final Props params) {
         //measure clustering run
         NanoBench.create().measurements(3).measure(
-                dataset.getName() + " - " + gc.getName(),
-                new Runnable() {
-
+                dataset.getName() + " - " + gc.getName(), new Runnable() {
             @Override
             public void run() {
                 Graph graph = new AdjListGraph();
                 Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
                 gc.createEdges(graph, dataset, mapping, params);
                 assertEquals(dataset.size(), graph.getNodeCount());
-                System.out.println("edges " + graph.getEdgeCount());
             }
-
-        }
-        );
+        });
         // Get the Java runtime
         Runtime runtime = Runtime.getRuntime();
         // Run the garbage collector
