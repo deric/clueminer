@@ -22,6 +22,7 @@ import org.clueminer.graph.api.AbsGraphConvertor;
 import org.clueminer.graph.api.DIST2EDGE;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
 import org.clueminer.neighbor.KNNSearch;
@@ -85,6 +86,13 @@ public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> i
                 graph.addEdge(edge);
             }
         }
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params) {
+        GraphBuilder gb = graph.getFactory();
+        Long[] mapping = gb.createNodesFromInput(dataset, graph);
+        createEdges(graph, dataset, mapping, params);
     }
 
 }

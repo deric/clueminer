@@ -48,7 +48,6 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
     private SymmetricMatrix distance;
     public static final String NAME = "k-NN-builder";
 
-
     public KNNGraphBuilder() {
         dm = new EuclideanDistance();
     }
@@ -204,6 +203,13 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
             }
 
         }
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params) {
+        GraphBuilder gb = graph.getFactory();
+        Long[] mapping = gb.createNodesFromInput(dataset, graph);
+        createEdges(graph, dataset, mapping, params);
     }
 
 }

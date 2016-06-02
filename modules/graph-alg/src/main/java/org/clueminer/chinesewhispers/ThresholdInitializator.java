@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
 import org.clueminer.utils.Props;
@@ -79,5 +80,12 @@ public class ThresholdInitializator<E extends Instance> implements GraphConverto
     @Override
     public Distance getDistanceMeasure() {
         return dm;
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params) {
+        GraphBuilder gb = graph.getFactory();
+        Long[] mapping = gb.createNodesFromInput(dataset, graph);
+        createEdges(graph, dataset, mapping, params);
     }
 }

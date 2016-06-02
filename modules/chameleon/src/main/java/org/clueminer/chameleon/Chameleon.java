@@ -35,7 +35,6 @@ import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
-import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.GraphStorageFactory;
@@ -210,11 +209,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         if (g == null) {
             throw new RuntimeException("failed to initialize graph: " + graphStorage);
         }
-        GraphBuilder gb = g.getFactory();
-        Long[] mapping = gb.createNodesFromInput(dataset, g);
 
-        //g = ((KNNGraphBuilder) knn).getNeighborGraph(dataset, g, datasetK);
-        knn.createEdges(g, dataset, mapping, pref);
+        knn.buildGraph(g, dataset, pref);
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");

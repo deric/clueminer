@@ -47,6 +47,16 @@ public interface GraphConvertor<E extends Instance> {
     void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params);
 
     /**
+     * Create node for each Instance in given dataset, connect nodes with edges based
+     * on nearest neighbors (method could be specified in params).
+     *
+     * @param graph
+     * @param dataset
+     * @param params
+     */
+    void buildGraph(Graph graph, Dataset<E> dataset, Props params);
+
+    /**
      * Function for measuring distance between data points
      *
      * @param dm
