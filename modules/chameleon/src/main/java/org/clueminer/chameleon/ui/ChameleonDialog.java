@@ -35,6 +35,7 @@ import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
+import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.MergerFactory;
@@ -59,7 +60,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboBisection.setSelectedItem("Fiduccia-Mattheyses");
         comboCutoffMethod.setSelectedItem("FirstJump");
         comboCutoff.setSelectedItem("SD index");
-        comboGraphStorage.setSelectedItem("Adj Graph Matrix");
+        comboGraphStorage.setSelectedItem(AdjListGraph.NAME);
         comboSimilarity.setSelectedItem(BBK1.name);
         comboMerger.setSelectedItem(PairMerger.name);
         comboMoObjective.setEnabled(false);

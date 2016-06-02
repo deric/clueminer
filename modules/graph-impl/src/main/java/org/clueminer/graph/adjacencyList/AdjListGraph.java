@@ -52,7 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Graph.class)
 public class AdjListGraph<E extends Instance> implements Graph<E> {
 
-    private static final String name = "Adjacency list graph";
+    public static final String NAME = "Adjacency list graph";
 
     private final HashMap<Long, Node> nodes;
     private final HashMap<Long, Edge> edges;
@@ -84,7 +84,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public void print() {
