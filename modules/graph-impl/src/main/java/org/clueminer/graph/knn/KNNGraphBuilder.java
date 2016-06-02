@@ -150,8 +150,10 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
     public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
         int[][] nearests = findNeighbors(dataset, k);
         GraphBuilder f = g.getFactory();
-        ArrayList<Node> nodes = f.createNodesFromInput(dataset);
-        g.addAllNodes(nodes);
+        if (g.getNodeCount() == 0) {
+            ArrayList<Node> nodes = f.createNodesFromInput(dataset);
+            g.addAllNodes(nodes);
+        }
         g.addEdgesFromNeigborArray(nearests, k);
         g.lookupAdd(dataset);
         return g;

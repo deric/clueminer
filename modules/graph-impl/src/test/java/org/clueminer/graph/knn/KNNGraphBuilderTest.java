@@ -26,10 +26,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
-import org.clueminer.graph.api.GraphBuilderFactory;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.Props;
@@ -119,9 +117,18 @@ public class KNNGraphBuilderTest {
 
     @Test
     public void testBuildingGraph() {
-        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixFactory");
+        GraphStorageFactory gbf = GraphStorageFactory.getInstance();
+        //test different graph builders
+        for (Graph gs : gbf.getAll()) {
+            constructGraph(gs);
+        }
+    }
+
+    private void constructGraph(Graph graph) {
+        GraphBuilder gb = graph.getFactory();
+        System.out.println("running " + gb.getName());
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
-        Graph g = GraphStorageFactory.getInstance().newInstance(AdjMatrixGraph.NAME);
+        Graph g = GraphStorageFactory.getInstance().newInstance(graph.getName());
         g.ensureCapacity(dataset.size());
         assertEquals(0, g.getNodeCount());
         Long[] mapping = gb.createNodesFromInput(dataset, g);

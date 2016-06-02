@@ -49,7 +49,6 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.utils.Props;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -204,16 +203,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         pref.putInt(K, datasetK);
 
         graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
-        Graph g = null;
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
-        try {
-            Graph c = gsf.getProvider(graphStorage);
-            g = (Graph) c.getClass().newInstance();
-            g.ensureCapacity(dataset.size());
-            g.lookupAdd(dataset);
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        Graph g = gsf.newInstance(graphStorage);
+        g.ensureCapacity(dataset.size());
+        g.lookupAdd(dataset);
         if (g == null) {
             throw new RuntimeException("failed to initialize graph: " + graphStorage);
         }
