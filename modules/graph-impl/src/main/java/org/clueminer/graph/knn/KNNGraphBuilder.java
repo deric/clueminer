@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.Distance;
+import org.clueminer.graph.api.AbsGraphConvertor;
+import static org.clueminer.graph.api.AbsGraphConvertor.DIST_TO_EDGE;
+import org.clueminer.graph.api.DIST2EDGE;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
@@ -38,18 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
+public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> implements GraphConvertor<E> {
 
     /**
      * Triangular distance matrix
      */
     private SymmetricMatrix distance;
-
-    private Distance dm;
-
     public static final String NAME = "k-NN-builder";
 
-    private final double EPS = 1e-6;
 
     public KNNGraphBuilder() {
         dm = new EuclideanDistance();
@@ -160,16 +158,6 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
     }
 
     @Override
-    public void setDistanceMeasure(Distance dm) {
-        this.dm = dm;
-    }
-
-    @Override
-    public Distance getDistanceMeasure() {
-        return this.dm;
-    }
-
-    @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         int k = params.getInt("k", 5);
         if (k >= dataset.size()) {
@@ -206,14 +194,13 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
             }
             Node<E> nodeB, nodeA = graph.getNode(mapping[i]);
             E b, a = nodeA.getInstance();
+            double dist;
+            DIST2EDGE methd = DIST2EDGE.valueOf(params.get(DIST_TO_EDGE, "INVERSE"));
             for (int j = 0; j < k; j++) {
                 nodeB = graph.getNode(mapping[nearests[j]]);
                 b = nodeB.getInstance();
-                double dist = dm.measure(a, b);
-                if (dist < EPS) {
-                    dist = EPS;
-                }
-                graph.addEdge(f.newEdge(nodeA, nodeB, 1, 1 / dist, false)); //max val
+                dist = dm.measure(a, b);
+                graph.addEdge(f.newEdge(nodeA, nodeB, 1, convertDistance(dist, methd), false)); //max val
             }
 
         }

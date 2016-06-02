@@ -18,7 +18,8 @@ package org.clueminer.graph.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.Distance;
+import org.clueminer.graph.api.AbsGraphConvertor;
+import org.clueminer.graph.api.DIST2EDGE;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
@@ -38,9 +39,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
+public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> implements GraphConvertor<E> {
 
-    private Distance dm;
     private static final String NAME = "k-NNG";
 
     @Override
@@ -60,7 +60,7 @@ public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         KnnFactory<E> kf = KnnFactory.getInstance();
         if (!params.containsKey(KNN_SEARCH)) {
-            params.put(KNN_SEARCH, "KD-tree");
+            params.put(KNN_SEARCH, "caching k-nn");
         }
         KNNSearch<E> alg = kf.getProvider(params.get(KNN_SEARCH));
         if (alg == null) {
@@ -73,25 +73,18 @@ public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
         long nodeId;
         Node<E> target;
         Edge edge;
+        DIST2EDGE methd = DIST2EDGE.valueOf(params.get(DIST_TO_EDGE, "INVERSE"));
+        E inst;
         for (Node<E> node : graph.getNodes()) {
-            nn = alg.knn(node.getInstance(), k, params);
+            inst = node.getInstance();
+            nn = alg.knn(inst, k, params);
             for (Neighbor neighbor : nn) {
                 nodeId = mapping[neighbor.index];
                 target = graph.getNode(nodeId);
-                edge = graph.getFactory().newEdge(node, target);
+                edge = graph.getFactory().newEdge(node, target, 1, convertDistance(neighbor.distance, methd), false);
                 graph.addEdge(edge);
             }
         }
-    }
-
-    @Override
-    public void setDistanceMeasure(Distance dm) {
-        this.dm = dm;
-    }
-
-    @Override
-    public Distance getDistanceMeasure() {
-        return dm;
     }
 
 }
