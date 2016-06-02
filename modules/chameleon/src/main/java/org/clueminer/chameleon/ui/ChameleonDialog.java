@@ -1,6 +1,21 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chameleon.ui;
 
-import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
@@ -20,7 +35,6 @@ import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.MergerFactory;
@@ -913,13 +927,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     }
 
     private Object[] initGraphStorage() {
-        List<Graph> g = GraphStorageFactory.getInstance().getAll();
-        String[] list = new String[g.size()];
-        int i = 0;
-        for (Graph gr : g) {
-            list[i++] = gr.getClass().getCanonicalName();
-        }
-        return list;
+        return GraphStorageFactory.getInstance().getProvidersArray();
     }
 
     private Object[] initSimilarity() {
