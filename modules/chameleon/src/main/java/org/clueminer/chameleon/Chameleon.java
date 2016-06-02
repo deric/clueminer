@@ -192,6 +192,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             }
         }
         String graphConv = pref.get(GRAPH_CONV, "k-NN-builder");
+        //String graphConv = pref.get(GRAPH_CONV, "k-NNG");
         knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
@@ -212,12 +213,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         GraphBuilder gb = g.getFactory();
         Long[] mapping = gb.createNodesFromInput(dataset, g);
 
-        System.out.println("nodes cnt: " + g.getNodeCount());
-        System.out.println("dataset size " + dataset.size());
-        System.out.println("mapping size " + mapping.length);
         //g = ((KNNGraphBuilder) knn).getNeighborGraph(dataset, g, datasetK);
         knn.createEdges(g, dataset, mapping, pref);
-
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");

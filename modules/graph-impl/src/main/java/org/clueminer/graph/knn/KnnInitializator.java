@@ -33,17 +33,18 @@ import org.openide.util.lookup.ServiceProvider;
  * Construct Nearest neighbor graph
  *
  * @author Hamster
+ * @author deric
  * @param <E>
  */
 @ServiceProvider(service = GraphConvertor.class)
 public class KnnInitializator<E extends Instance> implements GraphConvertor<E> {
 
     private Distance dm;
-    private static final String name = "k-NNG";
+    private static final String NAME = "k-NNG";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
