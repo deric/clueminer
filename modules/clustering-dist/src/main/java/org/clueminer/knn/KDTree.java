@@ -26,15 +26,19 @@ import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.sort.HeapSelect;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * KD-tree is an efficient structure for search in low-dimensional space. With
+ * growing dimensions the speedup is not so significant.
  *
  * @author deric
  * @param <E>
  */
+@ServiceProvider(service = KNNSearch.class)
 public class KDTree<E extends Instance> extends AbstractKNN<E> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
 
-    public static final String name = "KD-tree";
+    public static final String NAME = "KD-tree";
 
     /**
      * The root node of KD-Tree.
@@ -83,7 +87,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -349,7 +353,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
     @Override
     public Neighbor[] knn(E q, int k, Props params) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return knn(q, k);
     }
 
     @Override
