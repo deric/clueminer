@@ -137,9 +137,17 @@ public class KNNGraphBuilderTest {
         params.putInt("k", 2);
         assertEquals(0, g.getEdgeCount());
         for (int i = 0; i < mapping.length; i++) {
-            assertNotEquals(null, g.getNode(i));
+            assertNotEquals(null, g.getNode(mapping[i]));
         }
         subject.createEdges(g, dataset, mapping, params);
         assertEquals(22, g.getEdgeCount());
+        assertEquals(dataset.size(), g.getNodeCount());
+
+        Graph g2 = GraphStorageFactory.getInstance().newInstance(graph.getName());
+        g2.ensureCapacity(dataset.size());
+        subject.getNeighborGraph(dataset, g2, params.getInt("k"));
+        assertEquals(g.getEdgeCount(), g2.getEdgeCount());
+        assertEquals(g.getNodeCount(), g2.getNodeCount());
+
     }
 }
