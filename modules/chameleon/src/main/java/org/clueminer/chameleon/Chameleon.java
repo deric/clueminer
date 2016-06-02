@@ -191,8 +191,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 }
             }
         }
-        String graphConv = pref.get(GRAPH_CONV, "k-NN-builder");
-        //String graphConv = pref.get(GRAPH_CONV, "k-NNG");
+
+        String graphConv = pref.get(GRAPH_CONV, "k-NNG");
         knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);

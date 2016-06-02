@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphConvertor.class)
 public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> implements GraphConvertor<E> {
 
-    private static final String NAME = "k-NNG";
+    public static final String NAME = "k-NNG";
 
     @Override
     public String getName() {

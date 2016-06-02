@@ -39,7 +39,7 @@ import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.AbsGraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.GraphStorageFactory;
-import org.clueminer.graph.knn.KNNGraphBuilder;
+import org.clueminer.graph.knn.KnnInitializator;
 import org.clueminer.neighbor.KnnFactory;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.MergerFactory;
@@ -70,8 +70,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboMoObjective.setEnabled(false);
         combo3rdSort.setEnabled(false);
         combo3rdSort.setSelectedItem(BBK1.name);
-        comboGraphConvertor.setSelectedItem(KNNGraphBuilder.NAME);
-        comboKnn.setEnabled(false);
+        comboGraphConvertor.setSelectedItem(KnnInitializator.NAME);
+        comboKnn.setSelectedItem("KD-tree");
     }
 
     /**
