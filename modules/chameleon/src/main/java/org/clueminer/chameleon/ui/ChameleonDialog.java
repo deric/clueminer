@@ -70,6 +70,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         combo3rdSort.setEnabled(false);
         combo3rdSort.setSelectedItem(BBK1.name);
         comboGraphConvertor.setSelectedItem(KNNGraphBuilder.NAME);
+        comboKnn.setEnabled(false);
     }
 
     /**
@@ -456,6 +457,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         org.openide.awt.Mnemonics.setLocalizedText(lbGraphConv, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbGraphConv.text")); // NOI18N
 
         comboGraphConvertor.setModel(new DefaultComboBoxModel(initGraphConvertor()));
+        comboGraphConvertor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboGraphConvertorActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel16, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel16.text")); // NOI18N
 
@@ -777,6 +783,14 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private void radioNoiseDBSCANActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioNoiseDBSCANActionPerformed
         tfNoiseThreshold.setEnabled(false);
     }//GEN-LAST:event_radioNoiseDBSCANActionPerformed
+
+    private void comboGraphConvertorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboGraphConvertorActionPerformed
+        if (comboGraphConvertor.getSelectedItem().equals("k-NNG")) {
+            comboKnn.setEnabled(true);
+        } else {
+            comboKnn.setEnabled(false);
+        }
+    }//GEN-LAST:event_comboGraphConvertorActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
