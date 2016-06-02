@@ -113,7 +113,7 @@ public class AdjMatrixFactory<E extends Instance> implements GraphBuilder<E> {
     public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
         Long[] mapping = new Long[input.size()];
         Node curr;
-        for (Instance inst : input) {
+        for (E inst : input) {
             curr = newNode(inst);
             graph.addNode(curr);
             mapping[inst.getIndex()] = curr.getId();

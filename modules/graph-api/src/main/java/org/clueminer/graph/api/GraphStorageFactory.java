@@ -19,6 +19,7 @@ package org.clueminer.graph.api;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import org.clueminer.utils.ServiceFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -43,5 +44,15 @@ public class GraphStorageFactory extends ServiceFactory<Graph> {
             providers.put(g.getName(), g);
         }
         sort();
+    }
+
+    public Graph newInstance(String provider) {
+        try {
+            Graph c = getProvider(provider);
+            return (Graph) c.getClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        throw new RuntimeException("failed to instantiate " + provider);
     }
 }

@@ -41,6 +41,7 @@ import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.knn.KNNGraphBuilder;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.BisectionFactory;
 import org.clueminer.partitioning.api.Merger;
@@ -221,8 +222,11 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         }
 
         Long[] mapping = gb.createNodesFromInput(dataset, g);
-        //g = knn.getNeighborGraph(dataset, g, datasetK);
-        knn.createEdges(g, dataset, mapping, pref);
+        System.out.println("nodes cnt: " + g.getNodeCount());
+        System.out.println("dataset size " + dataset.size());
+        System.out.println("mapping size " + mapping.length);
+        g = ((KNNGraphBuilder) knn).getNeighborGraph(dataset, g, datasetK);
+        //knn.createEdges(g, dataset, mapping, pref);
 
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");

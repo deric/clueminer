@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.graph.knn;
 
 import java.io.IOException;
@@ -9,8 +25,16 @@ import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
+import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
+import org.clueminer.graph.api.GraphBuilderFactory;
+import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.io.FileHandler;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -18,6 +42,12 @@ import org.junit.Test;
  * @author Tomas Bruna
  */
 public class KNNGraphBuilderTest {
+
+    private final KNNGraphBuilder subject;
+
+    public KNNGraphBuilderTest() {
+        subject = new KNNGraphBuilder();
+    }
 
     @Test
     public void irisDataTest() throws IOException {
@@ -31,8 +61,7 @@ public class KNNGraphBuilderTest {
         FileHandler.loadDataset(tf.irisData(), data, 4, ",");
 
         int k = 5;
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        int[][] a = knn.getNeighborArray(data, k);
+        int[][] a = subject.getNeighborArray(data, k);
         for (int i = 0; i < data.size(); i++) {
             for (int j = 0; j < k; j++) {
                 if (j > 0) {
@@ -59,8 +88,8 @@ public class KNNGraphBuilderTest {
     public void simpleDataTest() {
         Dataset<? extends Instance> dataset = simpleData();
         Distance dm = new EuclideanDistance();
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        int[][] a = knn.getNeighborArray(dataset, 4);
+        subject.setDistanceMeasure(dm);
+        int[][] a = subject.getNeighborArray(dataset, 4);
 
         assertEquals(3, a[0][0]);
         assertEquals(2, a[0][1]);
@@ -86,5 +115,24 @@ public class KNNGraphBuilderTest {
         assertEquals(1, a[4][1]);
         assertEquals(3, a[4][2]);
         assertEquals(0, a[4][3]);
+    }
+
+    @Test
+    public void testBuildingGraph() {
+        GraphBuilder gb = GraphBuilderFactory.getInstance().getProvider("AdjMatrixFactory");
+        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        Graph g = GraphStorageFactory.getInstance().newInstance(AdjMatrixGraph.NAME);
+        g.ensureCapacity(dataset.size());
+        assertEquals(0, g.getNodeCount());
+        Long[] mapping = gb.createNodesFromInput(dataset, g);
+        assertEquals(dataset.size(), mapping.length);
+        Props params = new Props();
+        params.putInt("k", 2);
+        assertEquals(0, g.getEdgeCount());
+        for (int i = 0; i < mapping.length; i++) {
+            assertNotEquals(null, g.getNode(i));
+        }
+        subject.createEdges(g, dataset, mapping, params);
+        assertEquals(22, g.getEdgeCount());
     }
 }

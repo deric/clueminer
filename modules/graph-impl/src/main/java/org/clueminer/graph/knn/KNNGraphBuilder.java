@@ -17,7 +17,6 @@
 package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -203,11 +202,11 @@ public class KNNGraphBuilder<E extends Instance> implements GraphConvertor<E> {
                     insert(nearests, k - 1, i);
                 }
             }
-            System.out.println("nearest; " + Arrays.toString(nearests));
-            Node nodeB, nodeA = graph.getNode(mapping[i]);
-            Instance b, a = nodeA.getInstance();
+            //System.out.println("nearest; " + Arrays.toString(nearests));
+            Node<E> nodeB, nodeA = graph.getNode(mapping[i]);
+            E b, a = nodeA.getInstance();
             for (int j = 0; j < k; j++) {
-                nodeB = graph.getNode(mapping[nearests[j]]);
+                nodeB = graph.getNode(nearests[j]);
                 b = nodeB.getInstance();
                 double dist = dm.measure(a, b);
                 if (dist < EPS) {
