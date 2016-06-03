@@ -136,26 +136,6 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
         return findNeighbors(dataset, k);
     }
 
-    /**
-     * Create graph where connected nodes are neighbors
-     *
-     * @param dataset input dataset
-     * @param g       graph where output will be stored
-     * @param k
-     * @return neighbor graph
-     */
-    public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
-        int[][] nearests = findNeighbors(dataset, k);
-        GraphBuilder f = g.getFactory();
-        if (g.getNodeCount() == 0) {
-            ArrayList<Node> nodes = f.createNodesFromInput(dataset);
-            g.addAllNodes(nodes);
-        }
-        g.addEdgesFromNeigborArray(nearests, k);
-        g.lookupAdd(dataset);
-        return g;
-    }
-
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         int k = params.getInt("k", 5);
@@ -205,11 +185,39 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
         }
     }
 
+    /**
+     * {@inheritDoc }
+     *
+     * @param graph
+     * @param dataset
+     * @param params
+     */
     @Override
     public void buildGraph(Graph graph, Dataset<E> dataset, Props params) {
         GraphBuilder gb = graph.getFactory();
         Long[] mapping = gb.createNodesFromInput(dataset, graph);
         createEdges(graph, dataset, mapping, params);
+        graph.lookupAdd(dataset);
+    }
+
+    /**
+     * Create graph where connected nodes are neighbors
+     *
+     * @param dataset input dataset
+     * @param g       graph where output will be stored
+     * @param k
+     * @return neighbor graph
+     */
+    public Graph getNeighborGraph(Dataset<E> dataset, Graph g, int k) {
+        int[][] nearests = findNeighbors(dataset, k);
+        GraphBuilder f = g.getFactory();
+        if (g.getNodeCount() == 0) {
+            ArrayList<Node> nodes = f.createNodesFromInput(dataset);
+            g.addAllNodes(nodes);
+        }
+        g.addEdgesFromNeigborArray(nearests, k);
+        g.lookupAdd(dataset);
+        return g;
     }
 
 }
