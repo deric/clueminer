@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.algorithm;
 
 import com.google.common.primitives.Ints;
@@ -7,11 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.AssigmentsImpl;
-import org.clueminer.clustering.HardAssignment;
 import org.clueminer.clustering.api.AlgParams;
-import org.clueminer.clustering.api.Assignment;
-import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringType;
@@ -49,7 +61,6 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private Matrix proximity;
     private Matrix inputData;
     private int[] mapping;
-    private Assignments assignments;
     private int numClusters = -1;
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
@@ -131,36 +142,6 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     @Override
     public void setMapping(int[] assignments) {
         getTreeData().setMapping(assignments);
-    }
-
-    public Assignments getAssignments() {
-        if (assignments == null) {
-            assignments = toAssignments(getMapping(), getInputData(), getNumClusters());
-        }
-        return assignments;
-    }
-
-    /**
-     * Converts an array containing each row's clustering assignment into an
-     * array of {@link HardAssignment} instances.
-     *
-     * @param rowAssignments
-     * @param matrix
-     * @param numClusters
-     * @return
-     */
-    public static Assignments toAssignments(int[] rowAssignments, Matrix matrix, int numClusters) {
-        if (numClusters == -1) {
-            for (int assignment : rowAssignments) {
-                numClusters = Math.max(numClusters, assignment + 1);
-            }
-        }
-
-        Assignment[] assignments = new Assignment[rowAssignments.length];
-        for (int i = 0; i < rowAssignments.length; ++i) {
-            assignments[i] = new HardAssignment(rowAssignments[i]);
-        }
-        return new AssigmentsImpl(numClusters, assignments, matrix);
     }
 
     @Override
@@ -531,10 +512,10 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     @Override
     public int[] getMapping() {
         /* if (mapping == null && merges != null) {
-         updateMapping();
-         }
-
-         return mapping;*/
+         * updateMapping();
+         * }
+         *
+         * return mapping; */
         if (treeData != null) {
             return treeData.getMapping();
         }
