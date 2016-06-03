@@ -17,13 +17,15 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.benchmark.ConsoleDump;
 import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.dataset.benchmark.GnuplotWriter;
 import org.clueminer.dataset.benchmark.ResultsCollector;
 import org.clueminer.eval.BIC;
+import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.JaccardIndex;
+import org.clueminer.eval.external.NMIsum;
+import org.clueminer.evolution.utils.ConsoleDump;
 import org.clueminer.utils.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -48,11 +50,11 @@ public class AttrEvolutionTest {
         table = Tables.newCustomTable(
                 Maps.<String, Map<String, Double>>newHashMap(),
                 new Supplier<Map<String, Double>>() {
-                    @Override
-                    public Map<String, Double> get() {
-                        return Maps.newHashMap();
-                    }
-                });
+            @Override
+            public Map<String, Double> get() {
+                return Maps.newHashMap();
+            }
+        });
 
         String home = System.getProperty("user.home") + File.separatorChar
                 + NbBundle.getMessage(
@@ -87,36 +89,20 @@ public class AttrEvolutionTest {
         rc.writeToCsv(csvOutput);
     }
 
-    /**
-     * Test of attributesCount method, of class AttrEvolution.
-     */
     @Test
-    public void testAttributesCount() {
-    }
-
-    /**
-     * Test of getDataset method, of class AttrEvolution.
-     */
-    @Test
-    public void testGetDataset() {
-    }
-
-    /**
-     * Test of run method, of class AttrEvolution.
-     */
-    //  @Test
     public void testRun() {
         test = new AttrEvolution(irisDataset, 50);
         test.setAlgorithm(new KMeans());
         test.setEvaluator(new BIC());
-        ExternalEvaluator ext = new JaccardIndex();
+        test.setEvaluator(new RatkowskyLance());
+        ExternalEvaluator ext = new NMIsum();
         test.setExternal(ext);
         //collect data from evolution
         GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris-evolution");
         gw.setPlotDumpMod(1);
         test.addEvolutionListener(gw);
-        //test.addEvolutionListener(new ConsoleDump(ext));
-        //test.setEvaluator(new JaccardIndex());
+//        test.addEvolutionListener(new ConsoleDump());
+
         test.run();
     }
 
@@ -129,7 +115,7 @@ public class AttrEvolutionTest {
         test.setEvaluator(ext);
         test.setExternal(ext);
         //collect data from evolution
-        test.addEvolutionListener(new ConsoleDump());
+        test.addEvolutionListener(new ConsoleDump(10));
         test.addEvolutionListener(new GnuplotWriter(test, benchmarkFolder, "iris-evolution-informed"));
         //test.setEvaluator(new JaccardIndex());
         test.run();
@@ -163,7 +149,7 @@ public class AttrEvolutionTest {
                 GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, name + "/" + name + "-" + safeName(eval.getName()));
                 gw.setPlotDumpMod(50);
                 //collect data from evolution
-                //test.addEvolutionListener(new ConsoleDump());
+                test.addEvolutionListener(new ConsoleDump(true));
                 test.addEvolutionListener(gw);
                 test.addEvolutionListener(rc);
                 test.run();
@@ -197,34 +183,6 @@ public class AttrEvolutionTest {
 
     private String safeName(String name) {
         return name.toLowerCase().replace(" ", "_");
-    }
-
-    /**
-     * Test of getMutationProbability method, of class AttrEvolution.
-     */
-    @Test
-    public void testGetMutationProbability() {
-    }
-
-    /**
-     * Test of setMutationProbability method, of class AttrEvolution.
-     */
-    @Test
-    public void testSetMutationProbability() {
-    }
-
-    /**
-     * Test of getCrossoverProbability method, of class AttrEvolution.
-     */
-    @Test
-    public void testGetCrossoverProbability() {
-    }
-
-    /**
-     * Test of setCrossoverProbability method, of class AttrEvolution.
-     */
-    @Test
-    public void testSetCrossoverProbability() {
     }
 
 }

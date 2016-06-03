@@ -19,6 +19,7 @@
                     <publicPackages>
                         <publicPackage>org.clueminer.evolution.api</publicPackage>
                         <publicPackage>org.clueminer.evolution.gui</publicPackage>
+                        <publicPackage>org.clueminer.evolution.utils</publicPackage>
                         <publicPackage>org.clueminer.oo.api</publicPackage>
                     </publicPackages>
                 </configuration>

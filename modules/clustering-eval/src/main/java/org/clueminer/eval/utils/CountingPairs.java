@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.utils;
 
 import com.google.common.base.Supplier;
@@ -23,6 +39,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * Count common assignments between two clusterings.
  *
  * @author Tomas Barton
  * @param <E>
@@ -48,11 +65,11 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
         return Tables.newCustomTable(
                 Maps.<String, Map<String, Integer>>newHashMap(),
                 new Supplier<Map<String, Integer>>() {
-                    @Override
-                    public Map<String, Integer> get() {
-                        return Maps.newHashMap();
-                    }
-                });
+            @Override
+            public Map<String, Integer> get() {
+                return Maps.newHashMap();
+            }
+        });
     }
 
     /**
@@ -228,7 +245,7 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
      * @param realClass
      * @param clusterName
      * @return table containing positive/negative assignments (usually used in
-     * supervised learning)
+     *         supervised learning)
      */
     public static Map<String, Integer> countAssignments(Table<String, String, Integer> table, String realClass, String clusterName) {
         int tp, fp = 0, fn = 0, tn = 0;
@@ -373,12 +390,10 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
                     } else {
                         pm.fn++;
                     }
+                } else if (cx2.getClusterId() == cy2.getClusterId()) {
+                    pm.fp++;
                 } else {
-                    if (cx2.getClusterId() == cy2.getClusterId()) {
-                        pm.fp++;
-                    } else {
-                        pm.tn++;
-                    }
+                    pm.tn++;
                 }
             }
         }
@@ -432,12 +447,10 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
                     } else {
                         pm.fp++;
                     }
+                } else if (cx2.getClusterId() == cy2.getClusterId()) {
+                    pm.fn++;
                 } else {
-                    if (cx2.getClusterId() == cy2.getClusterId()) {
-                        pm.fn++;
-                    } else {
-                        pm.tn++;
-                    }
+                    pm.tn++;
                 }
             }
         }

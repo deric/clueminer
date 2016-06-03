@@ -93,6 +93,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         HashMap<String, Double> meta = computeMeta(data, config);
         logger.log(Level.INFO, "got {0} meta parameters", meta.size());
 
+        landmark(dataset, meta);
         cnt = 0;
 
         finish();
@@ -107,6 +108,10 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         }
         System.out.println("meta features: " + meta.toString());
         return meta;
+    }
+
+    private void landmark(Dataset<E> dataset, HashMap<String, Double> meta) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
