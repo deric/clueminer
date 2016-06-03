@@ -50,7 +50,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
 
     /**
      *
-     * @param max number of fronts kept
+     * @param max        number of fronts kept
      * @param blacklist
      * @param objectives
      * @param pref
@@ -224,42 +224,45 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
         }
 
         flagDominate = comparator.compare(pair, front.peek());
-        if (flagDominate == -1) {
-            //item dominates whole front
-            Heap<P> ff = new Heap<>(itemCmp);
-            ff.add(pair);
-            //item dominates all known fronts
-
-            if (fronts[maxFront - 1] != null) {
-                //move last front to "do it later" list
-                Iterator<P> iter = fronts[maxFront - 1].iterator();
-                while (iter.hasNext()) {
-                    buffer.add(iter.next());
+        switch (flagDominate) {
+            case -1:
+                //item dominates whole front
+                Heap<P> ff = new Heap<>(itemCmp);
+                ff.add(pair);
+                //item dominates all known fronts
+                if (fronts[maxFront - 1] != null) {
+                    //move last front to "do it later" list
+                    Iterator<P> iter = fronts[maxFront - 1].iterator();
+                    while (iter.hasNext()) {
+                        buffer.add(iter.next());
+                    }
+                    //free memory
+                    fronts[maxFront - 1] = null;
+                }   //shift all fronts one down
+                Heap<P>[] tmp = new Heap[maxFront];
+                if (curr > 0) {
+                    //copy first fronts up to curr
+                    System.arraycopy(fronts, 0, tmp, 0, curr);
+                }   //insert new front
+                tmp[curr] = ff;
+                //copy rest of fronts except last one
+                System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
+                fronts = tmp;
+                break;
+            case 1:
+                if (curr < maxFront) {
+                    add(pair, ++curr, buffer);
+                } else {
+                    //last resort - save the item for later
+                    buffer.add(pair);
                 }
-                //free memory
-                fronts[maxFront - 1] = null;
-            }
-            //shift all fronts one down
-            Heap<P>[] tmp = new Heap[maxFront];
-            if (curr > 0) {
-                //copy first fronts up to curr
-                System.arraycopy(fronts, 0, tmp, 0, curr);
-            }
-            //insert new front
-            tmp[curr] = ff;
-            //copy rest of fronts except last one
-            System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
-            fronts = tmp;
-        } else if (flagDominate == 1) {
-            if (curr < maxFront) {
-                add(pair, ++curr, buffer);
-            } else {
-                //last resort - save the item for later
-                buffer.add(pair);
-            }
-        } else if (flagDominate == 0) {
-            //we can't decide which one dominates, item belongs to this front
-            front.add(pair);
+                break;
+            case 0:
+                //we can't decide which one dominates, item belongs to this front
+                front.add(pair);
+                break;
+            default:
+                break;
         }
     }
 

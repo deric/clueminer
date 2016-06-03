@@ -156,24 +156,30 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             if (iter.hasNext()) {
                 item = iter.next();
                 flagDominate = comparator.compare(mem.getValue(), item.getValue());
-                if (flagDominate == -1) {
-                    //item dominates whole front
-                    mem.addIDominate(item, this);
-                    while (iter.hasNext()) {
-                        item = iter.next();
+                switch (flagDominate) {
+                    case -1:
+                        //item dominates whole front
                         mem.addIDominate(item, this);
-                        toUpdate.add(item);
-                    }
-                } else if (flagDominate == 1) {
-                    item.addIDominate(mem);
-                    while (iter.hasNext()) {
-                        item = iter.next();
-                        item.addIDominate(mem, this);
+                        while (iter.hasNext()) {
+                            item = iter.next();
+                            mem.addIDominate(item, this);
+                            toUpdate.add(item);
+                        }
+                        break;
+                    case 1:
+                        item.addIDominate(mem);
+                        while (iter.hasNext()) {
+                            item = iter.next();
+                            item.addIDominate(mem, this);
+                            toUpdate.add(mem);
+                        }
+                        break;
+                    case 0:
+                        //we can't decide which one dominates, item belongs to this front
                         toUpdate.add(mem);
-                    }
-                } else if (flagDominate == 0) {
-                    //we can't decide which one dominates, item belongs to this front
-                    toUpdate.add(mem);
+                        break;
+                    default:
+                        break;
                 }
             }
             //go to next front
@@ -293,7 +299,12 @@ public class NsgaQueue<E extends Instance, C extends Cluster<E>, P extends MoPai
             Set<FndsMember<P>> curr = getFront(j);
             sb.append("front ").append(j).append(" size: ").append(curr.size()).append("\n");
             for (FndsMember<P> item : curr) {
-                sb.append("  ").append(item.getFront()).append(" - ").append(item.getValue()).append(", I dominate: ").append(item.getIDominateCnt()).append(" dominate me: ").append(item.getDominatesMeCnt()).append(" fa = ").append(item.frontAssign()).append("\n");
+                sb.append("  ")
+                        .append(item.getFront()).append(" - ")
+                        .append(item.getValue()).append(", I dominate: ")
+                        .append(item.getIDominateCnt()).append(" dominate me: ")
+                        .append(item.getDominatesMeCnt()).append(" fa = ")
+                        .append(item.frontAssign()).append("\n");
             }
 
         }
