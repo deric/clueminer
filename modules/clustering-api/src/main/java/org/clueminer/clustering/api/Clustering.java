@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
@@ -186,7 +202,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * Create new cluster with given ID and initial capacity
      *
      * @param clusterIndex index starts from 0 unlike cluster ID (from 1)
-     * @param capacity cluster capacity
+     * @param capacity     cluster capacity
      * @return newly created cluster
      */
     C createCluster(int clusterIndex, int capacity);
@@ -205,7 +221,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * Set name of cluster at given index
      *
      * @param clusterIndex target cluster
-     * @param name new name
+     * @param name         new name
      */
     void setClusterName(int clusterIndex, String name);
 
@@ -214,7 +230,7 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * result
      *
      * @return lookup instance for accessing related objects (Dataset,
-     * hierarchical clustering etc.)
+     *         hierarchical clustering etc.)
      */
     Lookup getLookup();
 

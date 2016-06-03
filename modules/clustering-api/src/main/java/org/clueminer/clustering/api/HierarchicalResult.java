@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.api;
 
 import java.io.Serializable;
@@ -102,7 +118,7 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
     /**
      *
      * @return return current number of clusters (computed according to current
-     * cutoff)
+     *         cutoff)
      */
     int getNumClusters();
 
@@ -185,7 +201,7 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
      *
      * @param idx position in input matrix/dataset
      * @return row/column index in original dataset that maps from passed
-     * row/column index.
+     *         row/column index.
      */
     int getMappedIndex(int idx);
 
@@ -300,7 +316,7 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
      * Find tree node located below given coordinates (in tree units)
      *
      * @param node
-     * @param x tree height (for horizontal trees)
+     * @param x    tree height (for horizontal trees)
      * @param y
      * @return
      */
