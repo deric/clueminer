@@ -1,14 +1,25 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.utils;
 
-import org.clueminer.eval.utils.ValueComparableMap;
 import com.google.common.collect.Ordering;
 import java.util.TreeMap;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -16,31 +27,12 @@ import static org.junit.Assert.*;
  */
 public class ValueComparableMapTest {
 
-    public ValueComparableMapTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of put method, of class ValueComparableMap.
      */
     @Test
     public void testPut() {
-        TreeMap<String, Integer> map = new ValueComparableMap<String, Integer>(Ordering.natural());
+        TreeMap<String, Integer> map = new ValueComparableMap<>(Ordering.natural());
         map.put("a", 5);
         map.put("b", 1);
         map.put("c", 3);
@@ -48,7 +40,7 @@ public class ValueComparableMapTest {
         assertEquals("a", map.lastKey());
         map.put("d", 0);
         assertEquals("d", map.firstKey());
-        //ensure it's still a map (by overwriting a key, but with a new value) 
+        //ensure it's still a map (by overwriting a key, but with a new value)
         map.put("d", 2);
         assertEquals("b", map.firstKey());
         //Ensure multiple values do not clobber keys
@@ -56,7 +48,7 @@ public class ValueComparableMapTest {
         assertEquals(5, map.size());
         assertEquals(2, (int) map.get("e"));
         assertEquals(2, (int) map.get("d"));
-        System.out.println("map :" +map);
+        System.out.println("map :" + map);
 
     }
 }
