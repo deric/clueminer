@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -120,19 +120,19 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
         Props params = new Props();
         Clustering<E, C> clustering;
         //for cophenetic correlation we need proximity matrix
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
-        params.put(AgglParams.ALG, exec.getAlgorithm().getName());
-        params.putBoolean(AgglParams.LOG, logscale);
-        params.put(AgglParams.STD, std);
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        params.put(AgglParams.LINKAGE, link.getName());
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.ALG, exec.getAlgorithm().getName());
+        params.putBoolean(AlgParams.LOG, logscale);
+        params.put(AlgParams.STD, std);
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        params.put(AlgParams.LINKAGE, link.getName());
 
         for (CutoffStrategy cut : cutoff) {
-            params.put(AgglParams.CUTOFF_STRATEGY, cut.getName());
+            params.put(AlgParams.CUTOFF_STRATEGY, cut.getName());
             for (Distance dm : dist) {
-                params.put(AgglParams.DIST, dm.getName());
+                params.put(AlgParams.DIST, dm.getName());
                 for (InternalEvaluator ie : evaluators) {
-                    params.put(AgglParams.CUTOFF_SCORE, ie.getName());
+                    params.put(AlgParams.CUTOFF_SCORE, ie.getName());
                     clustering = exec.clusterRows(dataset, params);
                     //make sure the clustering is valid
                     if (clustering.instancesCount() == dataset.size()) {

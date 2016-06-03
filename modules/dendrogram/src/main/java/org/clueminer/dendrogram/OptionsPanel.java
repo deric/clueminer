@@ -4,7 +4,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -63,7 +63,7 @@ public class OptionsPanel extends javax.swing.JPanel {
         add(dataBox);
 
         linkageBox = new JComboBox(LinkageFactory.getInstance().getProvidersArray());
-        linkageBox.setSelectedItem(AgglParams.DEFAULT_LINKAGE);
+        linkageBox.setSelectedItem(AlgParams.DEFAULT_LINKAGE);
         linkageBox.addActionListener(new ActionListener() {
 
             @Override

@@ -3,7 +3,7 @@ package org.clueminer.dgram.vis;
 import java.awt.Image;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HC;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -50,7 +50,7 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
              AgglomerativeClustering algorithm = new HC();
 
              Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-             params.put(AgglParams.CLUSTERING_TYPE, false);
+             params.put(AlgParams.CLUSTERING_TYPE, false);
              HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
              mapping.setColsResult(colsResult);
              mapping.setDataset(dataset);
@@ -78,9 +78,9 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
         Props params = clustering.getParams();
         AgglomerativeClustering algorithm = new HC();
 
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
+        params.putBoolean(AlgParams.CLUSTERING_TYPE, true);
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
+        params.putBoolean(AlgParams.CLUSTERING_TYPE, false);
         HierarchicalResult colsResult = algorithm.hierarchy(dataset, params);
 
         DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);

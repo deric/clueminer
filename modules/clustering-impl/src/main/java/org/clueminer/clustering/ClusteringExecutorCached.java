@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -68,9 +68,9 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     @Override
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
-        logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
-        Dataset<E> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false)});
+        Dataset<E> norm = store.get(params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         logger.log(Level.FINER, "clustering {0}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult rowsResult = aggl.hierarchy(norm, params);
@@ -82,8 +82,8 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     @Override
     public HierarchicalResult hclustColumns(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
-        Dataset<? extends Instance> norm = store.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
+        Dataset<? extends Instance> norm = store.get(params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult columnsResult = aggl.hierarchy(norm, params);
         //treeOrder.optimize(columnsResult, true);

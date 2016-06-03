@@ -1,6 +1,6 @@
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -48,8 +48,8 @@ public class NaiveCutoffTest {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         HC alg = new HC();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         result.getTreeData().print();

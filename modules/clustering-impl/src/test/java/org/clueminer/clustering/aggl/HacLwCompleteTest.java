@@ -3,7 +3,7 @@ package org.clueminer.clustering.aggl;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -30,9 +30,9 @@ public class HacLwCompleteTest {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -63,7 +63,7 @@ public class HacLwCompleteTest {
     public void testNonCompleteLinkage() {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
         subject.hierarchy(dataset, pref);
     }
 

@@ -2,7 +2,7 @@ package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -50,8 +50,8 @@ public class HacLwMsPar<E extends Instance, C extends Cluster<E>> extends HCLWMS
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
-        pref.put(AgglParams.ALG, getName());
-        AgglParams params = new AgglParams(pref);
+        pref.put(AlgParams.ALG, getName());
+        AlgParams params = new AlgParams(pref);
         Matrix similarityMatrix;
         distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
@@ -76,7 +76,7 @@ public class HacLwMsPar<E extends Instance, C extends Cluster<E>> extends HCLWMS
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true)) {
             result.setProximityMatrix(similarityMatrix);
         }
 

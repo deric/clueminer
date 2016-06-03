@@ -5,7 +5,7 @@ import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.HCLWMS;
 import org.clueminer.clustering.aggl.HacLwComplete;
 import org.clueminer.clustering.aggl.linkage.AverageLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -74,8 +74,8 @@ public class CopheneticCorrelationTest {
     public void testSingleLinkage() {
         AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.put(AgglParams.LINKAGE, SingleLinkage.name);
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.LINKAGE, SingleLinkage.name);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = subject.score(rowsResult);
@@ -91,8 +91,8 @@ public class CopheneticCorrelationTest {
     public void testCompleteLinkage() {
         AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = subject.score(rowsResult);
@@ -109,8 +109,8 @@ public class CopheneticCorrelationTest {
     public void testAverageLinkage() {
         AgglomerativeClustering algorithm = new HC();
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.put(AgglParams.LINKAGE, AverageLinkage.name);
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.LINKAGE, AverageLinkage.name);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, params);
         //CPCC with single linkage
         double cpcc = subject.score(rowsResult);
@@ -141,9 +141,9 @@ public class CopheneticCorrelationTest {
 
     private void testSingleLink(AgglomerativeClustering algorithm) {
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.put(AgglParams.LINKAGE, SingleLinkage.name);
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
-        //params.put(AgglParams.LINKAGE, "Complete Linkage");
+        params.put(AlgParams.LINKAGE, SingleLinkage.name);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
+        //params.put(AlgParams.LINKAGE, "Complete Linkage");
         rowsResult = algorithm.hierarchy(dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();
@@ -175,8 +175,8 @@ public class CopheneticCorrelationTest {
 
     private void testCompleteLink(AgglomerativeClustering algorithm) {
         algorithm.setDistanceFunction(new EuclideanDistance());
-        params.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, params);
         double precision = 0.01;
         Matrix proximity = rowsResult.getProximityMatrix();

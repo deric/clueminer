@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
@@ -59,7 +59,7 @@ public class DendroView extends JFrame {
         Executor exec = new ClusteringExecutorCached();
 
         Props prop = new Props();
-        prop.put(AgglParams.LINKAGE, SingleLinkage.name);
+        prop.put(AlgParams.LINKAGE, SingleLinkage.name);
         MemInfo mem = new MemInfo();
         Clustering clust = exec.clusterRows(data, prop);
         mem.report();

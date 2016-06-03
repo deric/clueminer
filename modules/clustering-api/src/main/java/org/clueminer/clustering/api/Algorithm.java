@@ -42,19 +42,19 @@ public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implem
 
     // don't mutate distance by default - most of evaluation metrics are not
     // adjusted for this
-    //@Param(name = AgglParams.DIST,
+    //@Param(name = AlgParams.DIST,
     //       factory = "org.clueminer.distance.api.DistanceFactory",
     //       type = org.clueminer.clustering.params.ParamType.STRING)
     protected Distance distanceFunction;
 
     //standartization method that is used as part of preprocessing
-    @Param(name = AgglParams.STD,
+    @Param(name = AlgParams.STD,
            factory = "org.clueminer.dataset.api.DataStandardizationFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected DataStandardization std;
 
     //apply logarithm to all values
-    @Param(name = AgglParams.LOG,
+    @Param(name = AlgParams.LOG,
            type = org.clueminer.clustering.params.ParamType.BOOLEAN)
     protected boolean logScale;
 

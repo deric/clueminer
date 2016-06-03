@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -199,7 +199,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     public void addClustering(int datasetId, Clustering<E, C> clustering, int runId) {
         int partitionId = fetchPartitioning(datasetId, clustering);
         Props p = clustering.getParams();
-        int algId = fetchAlgorithm(p.get(AgglParams.ALG, "UNKNOWN"));
+        int algId = fetchAlgorithm(p.get(AlgParams.ALG, "UNKNOWN"));
         int templateId = fetchTemplate(algId, p.toString());
 
         try (Handle h = db().open()) {

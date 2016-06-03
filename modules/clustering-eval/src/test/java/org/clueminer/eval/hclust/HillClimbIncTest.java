@@ -4,7 +4,7 @@ import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.CentroidLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -38,8 +38,8 @@ public class HillClimbIncTest {
     @Test
     public void testFindCutoff() {
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         result.getTreeData().print();
@@ -57,12 +57,12 @@ public class HillClimbIncTest {
         Dataset<Instance> data = (Dataset<Instance>) FakeDatasets.irisDataset();
         Executor<Instance, Cluster<Instance>> exec = new ClusteringExecutorCached<>();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, CentroidLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, CentroidLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         pref.put(Algorithm.LOG, true);
         //TODO: this combination of parameters does not return valid clustering
-        pref.put(AgglParams.STD, "Maximum");
-        pref.put(AgglParams.CUTOFF_SCORE, "KsqDetW");
+        pref.put(AlgParams.STD, "Maximum");
+        pref.put(AlgParams.CUTOFF_SCORE, "KsqDetW");
         Clustering<Instance, Cluster<Instance>> clust = exec.clusterRows(data, pref);
         //assertEquals(36, clust.size());
         //wtf?

@@ -1,7 +1,7 @@
 package org.clueminer.clustering.aggl;
 
 import org.clueminer.cluster.FakeClustering;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
@@ -29,9 +29,9 @@ public class HacLwMsPar2Test {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println(subject.getName() + " finished");
         System.out.println("school - single");

@@ -17,7 +17,7 @@
 package org.clueminer.evolution.eval;
 
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.external.Precision;
@@ -55,7 +55,7 @@ public class EvalEvolutionTest {
         //subject.setAlgorithm(new ));
         subject.setEvaluator(new CalinskiHarabasz());
         Props params = new Props();
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         subject.setDefaultProps(params);
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);

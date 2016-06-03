@@ -21,7 +21,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -80,17 +80,17 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
     }
 
     private void init() {
-        genom.put(AgglParams.ALG, algorithm.getName());
-        genom.putBoolean(AgglParams.LOG, logscale(rand));
-        genom.put(AgglParams.STD, std(rand));
-        genom.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        genom.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
-        genom.put(AgglParams.CUTOFF_SCORE, evaluator().getName());
+        genom.put(AlgParams.ALG, algorithm.getName());
+        genom.putBoolean(AlgParams.LOG, logscale(rand));
+        genom.put(AlgParams.STD, std(rand));
+        genom.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        genom.put(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
+        genom.put(AlgParams.CUTOFF_SCORE, evaluator().getName());
         do {
-            genom.put(AgglParams.LINKAGE, linkage(rand));
+            genom.put(AlgParams.LINKAGE, linkage(rand));
         } while (!isValid());
 
-        //genom.put(AgglParams.DIST, distance(rand));
+        //genom.put(AlgParams.DIST, distance(rand));
         //first we might want to mutate etc, then count fitness
         //countFitness();
     }
@@ -137,7 +137,7 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
             while (!isValid()) {
-                genom.put(AgglParams.LINKAGE, linkage(rand));
+                genom.put(AlgParams.LINKAGE, linkage(rand));
             }
         }
         clustering = updateCustering();
@@ -208,17 +208,17 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
     @Override
     public void mutate() {
         if (performMutation()) {
-            genom.putBoolean(AgglParams.LOG, logscale(rand));
+            genom.putBoolean(AlgParams.LOG, logscale(rand));
         }
         if (performMutation()) {
-            genom.put(AgglParams.STD, std(rand));
+            genom.put(AlgParams.STD, std(rand));
         }
         if (performMutation()) {
-            genom.put(AgglParams.LINKAGE, linkage(rand));
+            genom.put(AlgParams.LINKAGE, linkage(rand));
         }
         //mutating distance is complicated
         /* if (performMutation()) {
-         * genom.put(AgglParams.DIST, distance(rand));
+         * genom.put(AlgParams.DIST, distance(rand));
          * } */
     }
 
@@ -261,7 +261,7 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
         boolean ret = true;
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
-            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE, CompleteLinkage.name));
+            ret = ret && aggl.isLinkageSupported(genom.get(AlgParams.LINKAGE, CompleteLinkage.name));
         }
         if (clustering != null) {
             if (clustering.size() < 2) {

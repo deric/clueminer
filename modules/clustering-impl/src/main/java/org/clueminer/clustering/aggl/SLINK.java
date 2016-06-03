@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Algorithm;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -40,7 +40,7 @@ public class SLINK<E extends Instance, C extends Cluster<E>> extends Algorithm<E
     }
 
     public PointerHierarchy run(Dataset<? extends Instance> dataset, Props pref) {
-        AgglParams params = new AgglParams(pref);
+        AlgParams params = new AlgParams(pref);
         int[] processed = new int[dataset.size()];
         //storage for distances
         double[] m = new double[dataset.size()];

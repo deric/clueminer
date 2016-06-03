@@ -22,7 +22,7 @@ import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -174,7 +174,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
 
     @Override
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
-        AgglParams params = new AgglParams(pref);
+        AlgParams params = new AlgParams(pref);
         if (params.clusterColumns()) {
             // throw new RuntimeException("Chameleon cannot cluster attributes");
             System.out.println("Chameleon cannot cluster attributes");

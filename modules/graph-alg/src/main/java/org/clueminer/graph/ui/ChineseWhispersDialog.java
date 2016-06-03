@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.chinesewhispers.ChineseWhispers;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.gui.ClusteringDialog;
@@ -68,7 +68,7 @@ public class ChineseWhispersDialog extends JPanel implements ClusteringDialog {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         if (sliderIter.getValue() > 0) {
             params.putInt(ChineseWhispers.MAX_ITERATIONS, sliderIter.getValue());
         }

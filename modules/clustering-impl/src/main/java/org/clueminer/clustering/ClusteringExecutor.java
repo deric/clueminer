@@ -3,7 +3,7 @@ package org.clueminer.clustering;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HC;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -43,11 +43,11 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
-        logger.log(Level.INFO, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false)});
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        logger.log(Level.INFO, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false)});
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
         //TODO: not very efficient
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
+        params.putBoolean(AlgParams.CLUSTERING_TYPE, true);
         logger.log(Level.INFO, "clustering {0}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult rowsResult = aggl.hierarchy(inData, params);
@@ -64,8 +64,8 @@ public class ClusteringExecutor<E extends Instance, C extends Cluster<E>> extend
         if (dataset == null || dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
-        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, false);
+        Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
+        params.putBoolean(AlgParams.CLUSTERING_TYPE, false);
         Dataset<? extends Instance> inData = new ArrayDataset<>(input.getArray());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult columnsResult = aggl.hierarchy(inData, params);

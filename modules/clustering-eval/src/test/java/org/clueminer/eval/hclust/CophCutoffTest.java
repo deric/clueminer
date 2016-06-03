@@ -2,7 +2,7 @@ package org.clueminer.eval.hclust;
 
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -26,9 +26,9 @@ public class CophCutoffTest {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         HCLW alg = new HCLW();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = alg.hierarchy(dataset, pref);
 
         //result.getTreeData().print();

@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.factory.ConsensusFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -369,7 +369,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         params.put(KMeans.DISTANCE, (String) comboDistance.getSelectedItem());
         params.putInt(KMeansBagging.BAGGING, Integer.valueOf(tfBagging.getText()));
         params.put(KMeansBagging.INIT_METHOD, comboMethod.getSelectedItem());
-        params.put(AgglParams.LINKAGE, comboLinkage.getSelectedItem());
+        params.put(AlgParams.LINKAGE, comboLinkage.getSelectedItem());
         if (comboConsensus.getSelectedItem().equals(COMUSA.name)) {
             params.putDouble(COMUSA.RELAX, sliderRelax.getValue() / 10.0);
         }

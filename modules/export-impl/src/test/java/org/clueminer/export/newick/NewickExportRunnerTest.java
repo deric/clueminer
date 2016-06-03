@@ -3,7 +3,7 @@ package org.clueminer.export.newick;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -28,8 +28,8 @@ public class NewickExportRunnerTest {
     public void testDoExport() {
         Dataset<? extends Instance> dataset = FakeDatasets.simpleData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
         result.getTreeData().print();
@@ -43,8 +43,8 @@ public class NewickExportRunnerTest {
     public void testExportKumar() {
         Dataset<? extends Instance> dataset = FakeDatasets.kumarData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
         HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);
@@ -60,8 +60,8 @@ public class NewickExportRunnerTest {
     public void testDoExportWithNames() {
         Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         subject.setLabel("name");
         HCLW alg = new HCLW();
         HierarchicalResult result = alg.hierarchy(dataset, pref);

@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.AssigmentsImpl;
 import org.clueminer.clustering.HardAssignment;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Assignments;
 import org.clueminer.clustering.api.Cluster;
@@ -88,7 +88,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     }
 
     private void init() {
-        resultType = ClusteringType.parse(props.getObject(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING));
+        resultType = ClusteringType.parse(props.getObject(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING));
         cutoffStrategy = CutoffStrategyFactory.getInstance().getDefault();
         if (cutoffStrategy != null) {
             InternalEvaluatorFactory<E, Cluster<E>> ief = InternalEvaluatorFactory.getInstance();

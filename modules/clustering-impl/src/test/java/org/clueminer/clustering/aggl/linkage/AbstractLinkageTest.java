@@ -3,7 +3,7 @@ package org.clueminer.clustering.aggl.linkage;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.AbstractLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -23,16 +23,16 @@ public class AbstractLinkageTest {
 
     protected HierarchicalResult naiveLinkage(Dataset<? extends Instance> dataset) {
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, subject.getName());
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, subject.getName());
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = hac.hierarchy(dataset, pref);
         return result;
     }
 
     protected HierarchicalResult lanceWilliamsLinkage(Dataset<? extends Instance> dataset) {
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, subject.getName());
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, subject.getName());
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = haclw.hierarchy(dataset, pref);
         return result;
     }

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Executor;
@@ -119,7 +119,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
     public void run() {
         MoProblem problem = new MoProblem(this);
         Props def = new Props();
-        def.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        def.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         problem.setDefaultProps(def);
         Algorithm moAlg;
         CrossoverOperator crossover;

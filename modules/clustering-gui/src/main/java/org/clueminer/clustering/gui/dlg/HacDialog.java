@@ -3,7 +3,7 @@ package org.clueminer.clustering.gui.dlg;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.clustering.aggl.HC;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -171,17 +171,17 @@ public class HacDialog extends JPanel implements ClusteringDialog {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
-        params.put(AgglParams.LINKAGE, (String) comboLinkage.getSelectedItem());
-        params.put(AgglParams.STD, (String) comboStandardisation.getSelectedItem());
-        params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
-        params.put(AgglParams.CUTOFF_STRATEGY, (String) comboCutMethod.getSelectedItem());
+        params.put(AlgParams.DIST, (String) comboDistance.getSelectedItem());
+        params.put(AlgParams.LINKAGE, (String) comboLinkage.getSelectedItem());
+        params.put(AlgParams.STD, (String) comboStandardisation.getSelectedItem());
+        params.put(AlgParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
+        params.put(AlgParams.CUTOFF_STRATEGY, (String) comboCutMethod.getSelectedItem());
         if (chkBoxLogScale.isSelected()) {
-            params.putBoolean(AgglParams.LOG, true);
+            params.putBoolean(AlgParams.LOG, true);
         }
         if (chckColumns.isSelected()) {
             //cluster both rows and columns
-            params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.BOTH);
+            params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.BOTH);
         }
 
         return params;

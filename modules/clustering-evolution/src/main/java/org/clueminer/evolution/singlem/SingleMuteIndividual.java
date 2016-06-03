@@ -3,7 +3,7 @@ package org.clueminer.evolution.singlem;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.multim.MultiMuteIndividual;
@@ -90,7 +90,7 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
                 throw new UnsupportedOperationException("unsupported type: " + p.getType());
         }
 
-        genom.put(AgglParams.LINKAGE, linkage(rand));
+        genom.put(AlgParams.LINKAGE, linkage(rand));
     }
 
     @Override

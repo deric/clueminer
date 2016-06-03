@@ -1,7 +1,7 @@
 package org.clueminer.clustering.aggl;
 
 import java.util.HashMap;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -53,8 +53,8 @@ public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HCL
 
     @Override
     protected void checkParams(Props props) {
-        if (!props.get(AgglParams.LINKAGE).equals("Complete")) {
-            throw new RuntimeException(getName() + " algorithm does not support linkage: " + props.get(AgglParams.LINKAGE));
+        if (!props.get(AlgParams.LINKAGE).equals("Complete")) {
+            throw new RuntimeException(getName() + " algorithm does not support linkage: " + props.get(AlgParams.LINKAGE));
         }
     }
 

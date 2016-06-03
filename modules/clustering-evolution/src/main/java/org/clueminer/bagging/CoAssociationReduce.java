@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.Algorithm;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Consensus;
@@ -81,12 +81,12 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         //coassoc.printLower(2, 3);
         HC hac = new HCLW();
         //largest values should be merged first
-        //props.put(AgglParams.SMALLEST_FIRST, false);
-        props.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        //props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
-        props.put(AgglParams.CUTOFF_STRATEGY, "hill-climb cutoff");
-        //props.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        //props.put(AgglParams.LINKAGE, MedianLinkage.name);
+        //props.put(AlgParams.SMALLEST_FIRST, false);
+        props.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        //props.put(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
+        props.put(AlgParams.CUTOFF_STRATEGY, "hill-climb cutoff");
+        //props.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        //props.put(AlgParams.LINKAGE, MedianLinkage.name);
         hac.setColorGenerator(cg);
         Dataset<E> dataset = clusts[0].getLookup().lookup(Dataset.class);
 
@@ -114,14 +114,14 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
 
     protected CutoffStrategy getCutoffStrategy(Props params) {
         CutoffStrategy strategy;
-        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
+        String cutoffAlg = params.get(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
 
         if (cutoffAlg.equals("-- naive --")) {
             strategy = CutoffStrategyFactory.getInstance().getDefault();
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
-        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
+        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "AIC");
         InternalEvaluator<E, C> eval = (InternalEvaluator<E, C>) InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
         strategy.setEvaluator(eval);
 

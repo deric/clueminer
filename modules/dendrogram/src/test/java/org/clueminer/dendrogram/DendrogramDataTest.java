@@ -2,7 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.io.IOException;
 import org.clueminer.clustering.aggl.HC;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -53,7 +53,7 @@ public class DendrogramDataTest {
 
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, pref);
 
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         HierarchicalResult colResuls = algorithm.hierarchy(dataset, pref);
 
         dendroData = new DendroMatrixData(dataset, dataset.asMatrix(), rowsResult, colResuls);

@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -44,7 +44,7 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         AgglomerativeClustering algorithm = new HCLW();
         HierarchicalResult rowsResult = algorithm.hierarchy(dataset, params);
 
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
         HierarchicalResult columnsResult = algorithm.hierarchy(dataset, params);
 
         DendroMatrixData dendroData = new DendroMatrixData(dataset, input, rowsResult, columnsResult);

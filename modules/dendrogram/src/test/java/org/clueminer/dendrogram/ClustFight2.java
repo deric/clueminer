@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.dataset.api.Dataset;
@@ -39,7 +39,7 @@ public class ClustFight2 extends JFrame {
             @Override
             public void run() {
                 Props props = new Props();
-                props.put(AgglParams.LINKAGE, SingleLinkage.name);
+                props.put(AlgParams.LINKAGE, SingleLinkage.name);
 
                 panel1.setProperties(props);
                 panel2.setProperties(props);

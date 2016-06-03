@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.mo.MoEvolution;
 import org.clueminer.evolution.mo.MoSolution;
@@ -55,8 +55,8 @@ public class KmEvolution extends MoEvolution {
     public void run() {
         setAlgorithm(new KMeans());
         HashSet<String> skipParams = new HashSet<>();
-        skipParams.add(AgglParams.LOG);
-        skipParams.add(AgglParams.STD);
+        skipParams.add(AlgParams.LOG);
+        skipParams.add(AlgParams.STD);
         if (defaultProp != null && defaultProp.getBoolean(KMeansBagging.FIXED_K, false)) {
             skipParams.add("k");
         }

@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -226,7 +226,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             public void run() {
                 goldenStd = goldenStandard(clusters);
                 if (goldenStd != null) {
-                    goldenStd.getParams().put(AgglParams.ALG, GROUND_TRUTH);
+                    goldenStd.getParams().put(AlgParams.ALG, GROUND_TRUTH);
                     internal = clusters.toArray(new Clustering[clusters.size() + 1]);
                     internal[clusters.size()] = goldenStd;
                     external = clusters.toArray(new Clustering[clusters.size() + 1]);
@@ -417,7 +417,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             //last one is min rect. height
             yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
             p = clust.getParams();
-            if (p != null && p.get(AgglParams.ALG, "foo bar alg").equals(GROUND_TRUTH)) {
+            if (p != null && p.get(AlgParams.ALG, "foo bar alg").equals(GROUND_TRUTH)) {
                 g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
                 g.setColor(Color.YELLOW);
             } else {

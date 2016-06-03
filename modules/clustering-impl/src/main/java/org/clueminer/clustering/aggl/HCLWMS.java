@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -60,7 +60,7 @@ public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> i
      * @return
      */
     @Override
-    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AlgParams params, int n) {
         //binary tree, however we store at most n nodes (then rewrite references)
         DendroNode[] nodes = new DendroNode[n];
         //each instance will form a cluster

@@ -4,7 +4,7 @@ import java.io.IOException;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -39,9 +39,9 @@ public class HCTest {
     public void testColumnClustering() throws IOException {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -62,9 +62,9 @@ public class HCTest {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         Matrix similarityMatrix = result.getProximityMatrix();
         assertNotNull(similarityMatrix);
@@ -88,8 +88,8 @@ public class HCTest {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - single");
         DendroTreeData tree = result.getTreeData();
@@ -108,8 +108,8 @@ public class HCTest {
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, CompleteLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, CompleteLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("school - complete");
         DendroTreeData tree = result.getTreeData();
@@ -128,10 +128,10 @@ public class HCTest {
         Dataset<? extends Instance> dataset = FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         //inverse ordering
-        pref.put(AgglParams.SMALLEST_FIRST, false);
+        pref.put(AlgParams.SMALLEST_FIRST, false);
         HierarchicalResult result = subject.hierarchy(dataset, pref);
         System.out.println("kumar - inverse");
         DendroTreeData tree = result.getTreeData();

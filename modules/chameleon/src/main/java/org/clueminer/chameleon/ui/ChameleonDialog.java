@@ -26,7 +26,7 @@ import org.clueminer.chameleon.mo.PairMergerMOH;
 import org.clueminer.chameleon.mo.PairMergerMS;
 import org.clueminer.chameleon.mo.PairMergerMSH;
 import org.clueminer.chameleon.similarity.BBK1;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
@@ -900,10 +900,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.put(AgglParams.DIST, (String) comboDistance.getSelectedItem());
-        params.put(AgglParams.CUTOFF_STRATEGY, (String) comboCutoffMethod.getSelectedItem());
-        params.put(AgglParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        params.put(AlgParams.DIST, (String) comboDistance.getSelectedItem());
+        params.put(AlgParams.CUTOFF_STRATEGY, (String) comboCutoffMethod.getSelectedItem());
+        params.put(AlgParams.CUTOFF_SCORE, (String) comboCutoff.getSelectedItem());
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
 
         if (!chkBoxAutoK.isSelected()) {
             params.putInt(Chameleon.K, sliderK.getValue());

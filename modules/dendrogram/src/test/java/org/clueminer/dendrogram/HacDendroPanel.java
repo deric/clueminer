@@ -2,7 +2,7 @@ package org.clueminer.dendrogram;
 
 import java.util.Map;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -49,7 +49,7 @@ public class HacDendroPanel extends DendroPanel {
         Props params = getProperties();
         if (params == null) {
             params = new Props();
-            params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+            params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         }
         return execute(params.copy());
     }
@@ -67,7 +67,7 @@ public class HacDendroPanel extends DendroPanel {
 
         exec.setAlgorithm(algorithm);
         DendrogramMapping dendroData;
-        if (params.getObject(AgglParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
+        if (params.getObject(AlgParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
             HierarchicalResult res = exec.hclustRows(getDataset(), params);
             dendroData = new DendrogramData(getDataset(), res);
         } else {
@@ -101,14 +101,14 @@ public class HacDendroPanel extends DendroPanel {
     @Override
     public void linkageChanged(String linkage) {
         Props params = getProperties().copy();
-        params.put(AgglParams.LINKAGE, linkage);
+        params.put(AlgParams.LINKAGE, linkage);
         execute(params);
     }
 
     @Override
     public void cutoffChanged(String cutoff) {
         Props params = getProperties().copy();
-        params.put(AgglParams.CUTOFF_STRATEGY, cutoff);
+        params.put(AlgParams.CUTOFF_STRATEGY, cutoff);
         execute(params);
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -85,8 +85,8 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
             ph.start(workunits);
         }
 
-        if (!config.containsKey(AgglParams.STD)) {
-            config.put(AgglParams.STD, "z-score");
+        if (!config.containsKey(AlgParams.STD)) {
+            config.put(AlgParams.STD, "z-score");
         }
         config.putInt("k", 5);
         Dataset<E> data = standartize(config);

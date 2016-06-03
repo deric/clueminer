@@ -1,6 +1,6 @@
 package org.clueminer.clustering;
 
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -33,14 +33,14 @@ public abstract class AbstractExecutor<E extends Instance, C extends Cluster<E>>
 
     protected CutoffStrategy<E, C> getCutoffStrategy(Props params) {
         CutoffStrategy<E, C> strategy;
-        String cutoffAlg = params.get(AgglParams.CUTOFF_STRATEGY, "hill-climb inc");
+        String cutoffAlg = params.get(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
 
         if (cutoffAlg.equals("-- naive --")) {
             strategy = CutoffStrategyFactory.getInstance().getDefault();
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
-        String evalAlg = params.get(AgglParams.CUTOFF_SCORE, "AIC");
+        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "AIC");
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         InternalEvaluator<E, C> eval = ief.getProvider(evalAlg);
         strategy.setEvaluator(eval);

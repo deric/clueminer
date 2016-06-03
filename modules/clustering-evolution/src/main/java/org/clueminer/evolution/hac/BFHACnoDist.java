@@ -3,7 +3,7 @@ package org.clueminer.evolution.hac;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -97,19 +97,19 @@ public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C ex
         Props params = new Props();
         Clustering<E, C> clustering;
         //for cophenetic correlation we need proximity matrix
-        params.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
-        params.put(AgglParams.ALG, exec.getAlgorithm().getName());
-        params.putBoolean(AgglParams.LOG, logscale);
-        params.put(AgglParams.STD, std);
-        params.putBoolean(AgglParams.CLUSTERING_TYPE, true);
-        params.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        params.put(AgglParams.LINKAGE, link.getName());
-        params.put(AgglParams.DIST, DistanceFactory.getInstance().getProvider("Euclidean").getName());
+        params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
+        params.put(AlgParams.ALG, exec.getAlgorithm().getName());
+        params.putBoolean(AlgParams.LOG, logscale);
+        params.put(AlgParams.STD, std);
+        params.putBoolean(AlgParams.CLUSTERING_TYPE, true);
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        params.put(AlgParams.LINKAGE, link.getName());
+        params.put(AlgParams.DIST, DistanceFactory.getInstance().getProvider("Euclidean").getName());
 
         for (CutoffStrategy cut : cutoff) {
-            params.put(AgglParams.CUTOFF_STRATEGY, cut.getName());
+            params.put(AlgParams.CUTOFF_STRATEGY, cut.getName());
             for (InternalEvaluator ie : evaluators) {
-                params.put(AgglParams.CUTOFF_SCORE, ie.getName());
+                params.put(AlgParams.CUTOFF_SCORE, ie.getName());
                 clustering = exec.clusterRows(dataset, params);
                 //make sure the clustering is valid
                 if (clustering.instancesCount() == dataset.size()) {

@@ -23,11 +23,13 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.utils.Props;
 
 /**
+ * Collection of string constants for common algorithm parameters naming.
+ * Constants are used as keys in key-value parameter's storage {@link Props}
  *
  * @author Tomas Barton
  * @param <E>
  */
-public class AgglParams<E extends Instance> {
+public class AlgParams<E extends Instance> {
 
     /**
      * Linkage method, see classes implementing
@@ -88,7 +90,7 @@ public class AgglParams<E extends Instance> {
 
     private Distance distance;
 
-    public AgglParams(Props props) {
+    public AlgParams(Props props) {
         this.pref = props;
         init();
     }

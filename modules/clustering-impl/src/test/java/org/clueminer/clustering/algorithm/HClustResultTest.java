@@ -4,7 +4,7 @@ import java.util.HashSet;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -40,8 +40,8 @@ public class HClustResultTest {
         //prepare clustering
         //@TODO: this is too complex, there must be a one-line method for doing this
         Props pref = new Props();
-        pref.put(AgglParams.LINKAGE, SingleLinkage.name);
-        pref.put(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, true);
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         rowsResult = algorithm.hierarchy(dataset, pref);
     }
 

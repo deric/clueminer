@@ -18,7 +18,7 @@ package org.clueminer.evolution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import org.clueminer.clustering.StdStorage;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -182,7 +182,7 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
     }
 
     public Dataset<E> standartize(Props params) {
-        return stdStore.get(params.get(AgglParams.STD, Scaler.NONE), params.getBoolean(AgglParams.LOG, false));
+        return stdStore.get(params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
     }
 
     protected void finish() {

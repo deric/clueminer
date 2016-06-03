@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Algorithm;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -61,17 +61,17 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     private final static String name = "HC";
     private static final Logger logger = Logger.getLogger(HC.class.getName());
 
-    @Param(name = AgglParams.LINKAGE,
+    @Param(name = AlgParams.LINKAGE,
            factory = "org.clueminer.clustering.api.factory.LinkageFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected ClusterLinkage linkage;
 
-    @Param(name = AgglParams.CUTOFF_STRATEGY,
+    @Param(name = AlgParams.CUTOFF_STRATEGY,
            factory = "org.clueminer.clustering.api.factory.CutoffStrategyFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected CutoffStrategy cutoffStrategy;
 
-    @Param(name = AgglParams.CUTOFF_SCORE,
+    @Param(name = AlgParams.CUTOFF_SCORE,
            factory = "org.clueminer.clustering.api.factory.InternalEvaluatorFactory",
            type = org.clueminer.clustering.params.ParamType.STRING)
     protected InternalEvaluator cutoffScore;
@@ -94,9 +94,9 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
-        pref.put(AgglParams.ALG, getName());
+        pref.put(AlgParams.ALG, getName());
         checkParams(pref);
-        AgglParams params = new AgglParams(pref);
+        AlgParams params = new AlgParams(pref);
         distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = dataset.size();
@@ -108,7 +108,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     }
 
     private HierarchicalResult hClust(Dataset<E> dataset, Matrix input, int n,
-            Props pref, AgglParams params, HierarchicalResult result) {
+            Props pref, AlgParams params, HierarchicalResult result) {
         logger.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
@@ -122,7 +122,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
-        if (pref.getBoolean(PropType.PERFORMANCE, AgglParams.KEEP_PROXIMITY, false)) {
+        if (pref.getBoolean(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, false)) {
             result.setProximityMatrix(similarityMatrix);
         }
 
@@ -142,7 +142,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     protected AbstractQueue<Element> initQueue(int items, Props pref) {
         AbstractQueue<Element> pq;
         //by default most similar items have smallest distance
-        boolean smallestFirst = pref.getBoolean(AgglParams.SMALLEST_FIRST, true);
+        boolean smallestFirst = pref.getBoolean(AlgParams.SMALLEST_FIRST, true);
         if (smallestFirst) {
             pq = new PriorityQueue<>(items);
         } else {
@@ -162,9 +162,9 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     public HierarchicalResult hierarchy(Matrix input, Dataset<E> dataset, Props pref) {
         int n;
         HierarchicalResult result = new HClustResult(dataset, pref);
-        pref.put(AgglParams.ALG, getName());
+        pref.put(AlgParams.ALG, getName());
         checkParams(pref);
-        AgglParams params = new AgglParams(pref);
+        AlgParams params = new AlgParams(pref);
         distanceFunction = params.getDistanceMeasure();
         if (params.clusterRows()) {
             n = input.rowsCount();
@@ -196,7 +196,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
      * @param n number of items to cluster
      * @return
      */
-    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AgglParams params, int n) {
+    protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AlgParams params, int n) {
         //binary tree, we know how many nodes we have
         DendroNode[] nodes = new DendroNode[(2 * n - 1)];
         //each instance will form a cluster
@@ -338,7 +338,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
      * @return
      */
     protected Map<Integer, Set<Integer>> initialAssignment(int n, Dataset<? extends Instance> dataset,
-            AgglParams params, DendroNode[] nodes) {
+            AlgParams params, DendroNode[] nodes) {
         Map<Integer, Set<Integer>> clusterAssignment = new HashMap<>(n);
         for (int i = 0; i < n; i++) {
             //cluster contain all its members (in final step, its size is equal to n)

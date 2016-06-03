@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -84,7 +84,7 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
         graphCon.createEdges(graph, dataset, mapping, pref);
 
         HierarchicalResult result = new HClustResult(dataset, pref);
-        pref.put(AgglParams.ALG, getName());
+        pref.put(AlgParams.ALG, getName());
         int n = dataset.size();
         int items = triangleSize(n);
         pq = new PriorityQueue<>(items);

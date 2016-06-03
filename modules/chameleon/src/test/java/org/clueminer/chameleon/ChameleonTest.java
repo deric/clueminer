@@ -2,7 +2,7 @@ package org.clueminer.chameleon;
 
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -33,7 +33,7 @@ public class ChameleonTest {
     @Test
     public void testGlass() {
         final Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         final Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
         pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
@@ -69,7 +69,7 @@ public class ChameleonTest {
     @Test
     public void testIrisStandard() {
         Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
         pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
@@ -86,7 +86,7 @@ public class ChameleonTest {
     @Test
     public void testIrisImproved() {
         Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
         pref.put(Chameleon.SIM_MEASURE, BBK1.name);
@@ -100,7 +100,7 @@ public class ChameleonTest {
     @Test
     public void testSchool() {
         Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         HierarchicalResult result = ch.hierarchy(FakeDatasets.schoolData(), pref);
         DendroTreeData tree = result.getTreeData();
@@ -112,7 +112,7 @@ public class ChameleonTest {
     @Test
     public void testSchoolClosenessPriority() {
         Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 4);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.schoolData(), pref);
@@ -125,7 +125,7 @@ public class ChameleonTest {
     @Test
     public void testSchoolKernighan() {
         Props pref = new Props();
-        pref.put(AgglParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.put(Chameleon.BISECTION, "Kernighan-Lin");
         HierarchicalResult result = ch.hierarchy(FakeDatasets.schoolData(), pref);

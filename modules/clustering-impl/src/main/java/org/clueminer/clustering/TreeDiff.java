@@ -16,7 +16,7 @@
  */
 package org.clueminer.clustering;
 
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 
@@ -45,9 +45,9 @@ public class TreeDiff {
         try {
             same &= sameSubTree(rootA, rootB);
         } catch (TreeException e) {
-            System.out.println("first - " + result.getParams().get(AgglParams.ALG));
+            System.out.println("first - " + result.getParams().get(AlgParams.ALG));
             result.getTreeData().print();
-            System.out.println("second - " + other.getParams().get(AgglParams.ALG));
+            System.out.println("second - " + other.getParams().get(AlgParams.ALG));
             other.getTreeData().print();
             System.out.println("=============");
             System.out.println("problems:");

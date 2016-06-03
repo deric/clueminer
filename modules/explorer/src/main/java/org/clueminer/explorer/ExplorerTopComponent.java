@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -296,7 +296,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                         new Object[]{data.getName(), data.size(), data.attributeCount()});
                 exec.setAlgorithm(alg);
                 Clustering<E, C> clustering;
-                ClusteringType ct = ClusteringType.parse(props.get(AgglParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
+                ClusteringType ct = ClusteringType.parse(props.get(AlgParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
                 if (ct == ClusteringType.BOTH) {
                     DendrogramMapping mapping = exec.clusterAll(data, props);
                     clustering = mapping.getRowsClustering();

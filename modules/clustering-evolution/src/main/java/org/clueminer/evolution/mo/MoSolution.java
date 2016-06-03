@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AgglParams;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -330,7 +330,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
         boolean ret = true;
         if (algorithm instanceof AgglomerativeClustering) {
             AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
-            ret = ret && aggl.isLinkageSupported(genom.get(AgglParams.LINKAGE));
+            ret = ret && aggl.isLinkageSupported(genom.get(AlgParams.LINKAGE));
         }
         return ret;
     }
