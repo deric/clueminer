@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import org.openide.util.Exceptions;
@@ -45,7 +46,6 @@ import org.openide.util.Exceptions;
  */
 public class Props implements Map<String, Object> {
 
-    private static final long serialVersionUID = 2211405016738281988L;
     private Table<PropType, String, Object> store;
 
     public Props() {
@@ -505,5 +505,25 @@ public class Props implements Map<String, Object> {
         }
 
         return p;
+    }
+
+    @Override
+    public int hashCode() {
+        return store.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Props other = (Props) obj;
+        return Objects.equals(this.store, other.store);
     }
 }
