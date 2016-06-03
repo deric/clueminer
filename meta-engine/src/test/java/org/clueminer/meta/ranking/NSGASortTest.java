@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.evaluation.inline;
+package org.clueminer.meta.ranking;
 
+import org.clueminer.eval.sort.NSGASort;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;

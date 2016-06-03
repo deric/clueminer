@@ -29,6 +29,7 @@ import org.clueminer.sort.Heap;
 import org.clueminer.utils.Props;
 
 /**
+ * Front queue with fronts being stored in a hash.
  *
  * @author deric
  */
@@ -47,7 +48,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
 
     /**
      *
-     * @param max number of fronts kept
+     * @param max        number of fronts kept
      * @param blacklist
      * @param objectives
      * @param pref

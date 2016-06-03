@@ -55,6 +55,7 @@ import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
+import org.clueminer.eval.sort.NSGASort;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -99,7 +100,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private int labelOffset = 13;
     public Clustering<E, C> goldenStd;
     private int rectWidth = 10;
-    private static final Logger logger = Logger.getLogger(ScorePlot.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
     private boolean crossAtMedian = true;
     private static final String GROUND_TRUTH = "ground-truth";
@@ -294,7 +295,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
                 for (Instance inst : dataset) {
                     if (inst.classValue() == null) {
-                        logger.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
+                        LOGGER.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
                     } else {
                         if (map.containsKey(inst.classValue())) {
                             assign = map.get(inst.classValue());
