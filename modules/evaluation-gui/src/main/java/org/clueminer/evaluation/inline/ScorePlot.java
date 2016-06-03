@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,14 +52,13 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.NMIsqrt;
+import org.clueminer.eval.sort.NSGASort;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
-import org.clueminer.eval.sort.NSGASort;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
@@ -141,7 +140,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     protected void setEvaluatorY(final ClusterEvaluation provider) {
         objective1 = provider;
         if (internal != null && internal.length > 1) {
-            final ProgressHandle ph = ProgressHandleFactory.createHandle("computing " + provider.getName());
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + provider.getName());
             RP.post(new Runnable() {
 
                 @Override

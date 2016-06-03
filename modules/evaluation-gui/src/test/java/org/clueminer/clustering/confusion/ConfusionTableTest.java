@@ -1,12 +1,24 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.confusion;
 
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.utils.Dump;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -19,30 +31,6 @@ public class ConfusionTableTest {
 
     public ConfusionTableTest() {
         subject = new ConfusionTable();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testSetClusterings() {
-    }
-
-    @Test
-    public void testSetClusterings_Clustering_Clustering() {
     }
 
     @Test
@@ -58,58 +46,6 @@ public class ConfusionTableTest {
             //sum in rows should be 50
             assertEquals(50, sum);
         }
-    }
-
-    @Test
-    public void testCountMutual_Clustering_Clustering() {
-    }
-
-    @Test
-    public void testCountMutual_Clustering_Dataset() {
-    }
-
-    @Test
-    public void testUpdateSize() {
-    }
-
-    @Test
-    public void testCreateBufferedGraphics() {
-    }
-
-    @Test
-    public void testHasData() {
-    }
-
-    @Test
-    public void testRender() {
-    }
-
-    @Test
-    public void testRedraw() {
-    }
-
-    @Test
-    public void testRecalculate() {
-    }
-
-    @Test
-    public void testPaintComponent() {
-    }
-
-    @Test
-    public void testResetCache() {
-    }
-
-    @Test
-    public void testIsDisplayClustSizes() {
-    }
-
-    @Test
-    public void testSetDisplayClustSizes() {
-    }
-
-    @Test
-    public void testCheckMax() {
     }
 
 }

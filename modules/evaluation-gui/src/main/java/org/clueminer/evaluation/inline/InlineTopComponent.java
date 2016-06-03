@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ import org.openide.awt.ActionReference;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
-import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
+import org.openide.windows.TopComponent;
 
 /**
  * Top component which displays something.
@@ -44,7 +44,7 @@ import org.openide.util.Utilities;
 )
 @TopComponent.Registration(mode = "bottomSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.evaluation.inline.InlineTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_InlineAction",
         preferredID = "InlineTopComponent"
