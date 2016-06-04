@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.aggl;
 
 import java.io.PrintWriter;
@@ -13,11 +29,9 @@ import org.clueminer.clustering.aggl.linkage.CompleteLinkageInv;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Hierarchical clustering - updating distances using Lance-Williams update
@@ -31,7 +45,6 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  * @param <C>
  */
-@ServiceProvider(service = ClusteringAlgorithm.class)
 public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HC-LW";
@@ -86,16 +99,16 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param r cluster R is created after merging A and B
-     * @param q another existing cluster
-     * @param a a cluster that is being merged
-     * @param b a cluster that is being merged
-     * @param sim similarity matrix
+     * @param r       cluster R is created after merging A and B
+     * @param q       another existing cluster
+     * @param a       a cluster that is being merged
+     * @param b       a cluster that is being merged
+     * @param sim     similarity matrix
      * @param linkage cluster linkage method
      * @param cache
-     * @param ma size of cluster A
-     * @param mb size of cluster B
-     * @param mq size of cluster Q
+     * @param ma      size of cluster A
+     * @param mb      size of cluster B
+     * @param mq      size of cluster Q
      * @return
      */
     public double updateProximity(int r, int q, int a, int b, Matrix sim,

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
@@ -5,8 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -148,10 +164,10 @@ public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> i
      * |p(a,q) - p(b,q)|
      *
      *
-     * @param q existing cluster
-     * @param a a cluster that is being merged
-     * @param b a cluster that is being merged
-     * @param sim similarity matrix
+     * @param q       existing cluster
+     * @param a       a cluster that is being merged
+     * @param b       a cluster that is being merged
+     * @param sim     similarity matrix
      * @param linkage cluster linkage method
      * @param ma
      * @param mb

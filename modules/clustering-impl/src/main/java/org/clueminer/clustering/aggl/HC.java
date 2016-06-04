@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.aggl;
 
 import java.util.AbstractQueue;
@@ -10,13 +26,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.Algorithm;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -31,7 +46,6 @@ import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
@@ -46,6 +60,8 @@ import org.openide.util.lookup.ServiceProvider;
  * </li>
  * time complexity - omega n^2 * ( log n)
  *
+ * Naive implementation, for real clustering use {@link HCLWMS}.
+ *
  * Note: In order to avoid concurrency issues, the algorithm shouldn't keep
  * state
  *
@@ -55,7 +71,6 @@ import org.openide.util.lookup.ServiceProvider;
  * http://nlp.stanford.edu/IR-book/html/htmledition/time-complexity-of-hac-1.html
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusteringAlgorithm.class)
 public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String name = "HC";
@@ -189,11 +204,11 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     /**
      * Find most closest items and merges them into one cluster (subtree)
      *
-     * @param pq queue with sorted distances (lowest distance pops out first)
+     * @param pq               queue with sorted distances (lowest distance pops out first)
      * @param similarityMatrix
      * @param dataset
      * @param params
-     * @param n number of items to cluster
+     * @param n                number of items to cluster
      * @return
      */
     protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AlgParams params, int n) {
@@ -271,17 +286,17 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     /**
      *
-     * @param mergedId id of newly created cluster
-     * @param mergedCluster id of all items in merged cluster
+     * @param mergedId         id of newly created cluster
+     * @param mergedCluster    id of all items in merged cluster
      * @param similarityMatrix matrix of distances
      * @param assignments
      * @param pq
      * @param linkage
      * @param cache
-     * @param leftId left cluster ID
-     * @param rightId right cluster ID
-     * @param ma size of left cluster
-     * @param mb size of right cluster
+     * @param leftId           left cluster ID
+     * @param rightId          right cluster ID
+     * @param ma               size of left cluster
+     * @param mb               size of right cluster
      * @param centroids
      * @param dataset
      */
@@ -331,7 +346,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     /**
      * Each data point forms an individual cluster
      *
-     * @param n the number of data points
+     * @param n       the number of data points
      * @param dataset
      * @param params
      * @param nodes
