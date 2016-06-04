@@ -21,11 +21,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
@@ -114,9 +115,21 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
         return stdStore;
     }
 
+    private void updateAlgorithm(Props params) {
+        if (params.containsKey(AlgParams.ALG)) {
+            String alg = params.get(AlgParams.ALG);
+            if (algorithm != null && algorithm.getName().equals(alg)) {
+                return;
+            }
+            ClusteringFactory cf = ClusteringFactory.getInstance();
+            this.algorithm = cf.getProvider(alg);
+        }
+    }
+
     @Override
     public Clustering<E, C> clusterRows(Dataset<E> dataset, Props params) {
         Clustering clustering;
+        updateAlgorithm(params);
         if (algorithm instanceof AgglomerativeClustering) {
             HierarchicalResult rowsResult = hclustRows(dataset, params);
 
@@ -149,6 +162,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
      */
     @Override
     public DendrogramMapping clusterAll(Dataset<E> dataset, Props params) {
+        updateAlgorithm(params);
         HierarchicalResult rowsResult = hclustRows(dataset, params);
         findCutoff(rowsResult, params);
         HierarchicalResult columnsResult = hclustColumns(dataset, params);
