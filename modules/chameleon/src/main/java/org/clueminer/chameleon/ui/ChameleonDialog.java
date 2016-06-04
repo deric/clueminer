@@ -966,6 +966,9 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         params.put(Chameleon.GRAPH_STORAGE, (String) comboGraphStorage.getSelectedItem());
         params.put(Chameleon.GRAPH_CONV, comboGraphConvertor.getSelectedItem());
         params.put(AbsGraphConvertor.DIST_TO_EDGE, comboEdge.getSelectedItem());
+        if (params.get(Chameleon.GRAPH_CONV).equals(KnnInitializator.NAME)) {
+            params.put(KnnFactory.KNN_SEARCH, comboKnn.getSelectedItem());
+        }
         return params;
     }
 
