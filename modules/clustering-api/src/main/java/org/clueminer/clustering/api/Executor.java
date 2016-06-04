@@ -52,18 +52,20 @@ public interface Executor<E extends Instance, C extends Cluster<E>> {
     HierarchicalResult hclustColumns(Dataset<E> dataset, Props params);
 
     /**
+     * Execute "flat" clustering on given dataset.
      *
      * @param dataset
      * @param params
-     * @return
+     * @return data instances assigned to clusters
      */
     Clustering<E, C> clusterRows(Dataset<E> dataset, Props params);
 
     /**
+     * Cluster both rows and columns.
      *
      * @param dataset
      * @param params
-     * @return
+     * @return heatmap friendly structure
      */
     DendrogramMapping clusterAll(Dataset<E> dataset, Props params);
 
