@@ -71,7 +71,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         combo3rdSort.setEnabled(false);
         combo3rdSort.setSelectedItem(BBK1.name);
         comboGraphConvertor.setSelectedItem(KnnInitializator.NAME);
-        comboKnn.setSelectedItem("KD-tree");
+        comboKnn.setSelectedItem("caching k-nn");
     }
 
     /**

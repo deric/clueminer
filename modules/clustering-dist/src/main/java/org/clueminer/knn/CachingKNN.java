@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = KNNSearch.class)
 public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
-    private static final String name = "caching k-nn";
+    public static final String NAME = "caching k-nn";
 
     private Dataset<T> dataset;
 
@@ -57,7 +57,7 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -130,14 +130,17 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
         return dataset;
     }
 
+    @Override
     public boolean isIdenticalExcluded() {
         return identicalExcluded;
     }
 
+    @Override
     public void setIdenticalExcluded(boolean identicalExcluded) {
         this.identicalExcluded = identicalExcluded;
     }
 
+    @Override
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
     }
