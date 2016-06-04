@@ -123,6 +123,8 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
 
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
         //TODO
+        ClusteringExecutorCached executor = new ClusteringExecutorCached();
+
         ClusteringFactory cf = ClusteringFactory.getInstance();
         for (ClusteringAlgorithm alg : cf.getAll()) {
             System.out.println("c: " + alg.getName());
