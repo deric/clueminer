@@ -30,6 +30,8 @@ import org.clueminer.eval.utils.HashEvaluationTable;
  * Compares two clusterings using multiple objectives
  *
  * @author deric
+ * @param <E> instance type
+ * @param <C> cluster type
  */
 public class DominanceComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>> {
 
@@ -48,7 +50,7 @@ public class DominanceComparator<E extends Instance, C extends Cluster<E>> imple
      * @return
      */
     @Override
-    public int compare(Clustering c1, Clustering c2) {
+    public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
         boolean solution1Dominates = false;
         boolean solution2Dominates = false;
 
@@ -63,23 +65,21 @@ public class DominanceComparator<E extends Instance, C extends Cluster<E>> imple
             if (Math.abs(diff) <= epsilon) {
                 //same with epsilon tolerance
                 flag = 0;
-            } else {
-                if (objective.isMaximized()) {
-                    //maximize objective
-                    if (diff > 0.0) {
-                        //solution 1 dominates
-                        flag = -1;
-                    } else {
-                        flag = 1;
-                    }
+            } else if (objective.isMaximized()) {
+                //maximize objective
+                if (diff > 0.0) {
+                    //solution 1 dominates
+                    flag = -1;
                 } else {
-                    //minimize objective
-                    if (diff > 0.0) {
-                        //solution 1 dominates
-                        flag = 1;
-                    } else {
-                        flag = -1;
-                    }
+                    flag = 1;
+                }
+            } else //minimize objective
+            {
+                if (diff > 0.0) {
+                    //solution 1 dominates
+                    flag = 1;
+                } else {
+                    flag = -1;
                 }
             }
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Instance;
@@ -31,8 +47,8 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
-     * @param params a HashMap with parameter settings (many criterion does
-     * not take parameters)
+     * @param params   a HashMap with parameter settings (many criterion does
+     *                 not take parameters)
      * @return criterion value obtained on this particular clustering
      */
     double score(Clustering<E, C> clusters, Props params);
@@ -43,7 +59,7 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      *
      * @param clusters
      * @param proximity matrix of distances between all points
-     * @param params optional parameters evaluation metric
+     * @param params    optional parameters evaluation metric
      * @return
      */
     double score(Clustering<E, C> clusters, Matrix proximity, Props params);
@@ -56,7 +72,7 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * @param score1 - the first score
      * @param score2 - the second score
      * @return true if the first score is better than the second, false in all
-     * other cases
+     *         other cases
      */
     boolean isBetter(double score1, double score2);
 

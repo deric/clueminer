@@ -17,13 +17,17 @@
 package org.clueminer.meta.engine;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -31,11 +35,14 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.eval.AIC;
+import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
+import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
@@ -92,8 +99,12 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         Dataset<E> data = standartize(config);
         HashMap<String, Double> meta = computeMeta(data, config);
         logger.log(Level.INFO, "got {0} meta parameters", meta.size());
+        List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
+        objectives.add(new AIC<>());
+        objectives.add(new RatkowskyLance<>());
+        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives);
 
-        landmark(dataset, meta);
+        landmark(dataset, queue);
         cnt = 0;
 
         finish();
@@ -110,8 +121,12 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         return meta;
     }
 
-    private void landmark(Dataset<E> dataset, HashMap<String, Double> meta) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
+        //TODO
+        ClusteringFactory cf = ClusteringFactory.getInstance();
+        for (ClusteringAlgorithm alg : cf.getAll()) {
+            System.out.println("c: " + alg.getName());
+        }
     }
 
 }

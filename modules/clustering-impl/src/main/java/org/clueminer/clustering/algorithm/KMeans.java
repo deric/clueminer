@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.algorithm;
 
 import java.util.Random;
@@ -35,11 +51,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
+    public static final String NAME = "k-means";
     public static final String K = "k";
 
     public static final String ITERATIONS = "iterations";
 
     public static final String SEED = "seed";
+
     /**
      * The number of iterations the algorithm should make. If this value is
      * Integer.INFINITY, then the algorithm runs until the centroids no longer
@@ -71,7 +89,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
 
     @Override
     public String getName() {
-        return "k-means";
+        return NAME;
     }
 
     @Override
@@ -87,7 +105,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
     /**
      * Execute the KMeans clustering algorithm on the data set that is provided.
      *
-     * @param data data set to cluster
+     * @param data   data set to cluster
      * @param params set of algorithm parameters
      */
     @Override
