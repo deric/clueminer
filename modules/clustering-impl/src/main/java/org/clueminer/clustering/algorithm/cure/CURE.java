@@ -108,7 +108,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     private int clusterCnt;
     protected DendroNode[] nodes;
 
-    static final Logger logger = Logger.getLogger(CURE.class.getName());
+    static final Logger LOGGER = Logger.getLogger(CURE.class.getName());
 
     public CURE() {
 
@@ -146,7 +146,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
             clusterPartition(dataset, clustering, outliers, props);
         }
 
-        logger.log(Level.INFO, "left {0} outliers", outliers.size());
+        LOGGER.log(Level.INFO, "left {0} outliers", outliers.size());
 
         if (!outliers.isEmpty()) {
             outliers.setName(Algorithm.OUTLIER_LABEL);
@@ -163,7 +163,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
     private void sampleData(Dataset<E> dataset, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         int sampleSize = calculateSampleSize();
-        logger.log(Level.INFO, "using sample size {0}", sampleSize);
+        LOGGER.log(Level.INFO, "using sample size {0}", sampleSize);
         random = ClusterHelper.initSeed(props);
         Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
         Dataset<E> partition;
@@ -177,7 +177,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
                 partition.add(iter.next());
                 pointIndex++;
             }
-            logger.log(Level.INFO, "partition {0} size = {1}", new Object[]{i, partition.size()});
+            LOGGER.log(Level.INFO, "partition {0} size = {1}", new Object[]{i, partition.size()});
             clusterPartition(partition, clustering, outliers, props);
         }
 
@@ -261,7 +261,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      *                 cluster
      */
     private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CureCluster<E> outliers) {
-        logger.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
+        LOGGER.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
         C cluster;
         while (clusterSet.hasClusters()) {
             cluster = clusterSet.remove();

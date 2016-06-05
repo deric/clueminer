@@ -210,7 +210,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private void startClustering() {
         C u, v, w;
         while (heap.size() > k) {
-            CURE.logger.log(Level.FINEST, "heap size = {0}", heap.size());
+            CURE.LOGGER.log(Level.FINEST, "heap size = {0}", heap.size());
             try {
                 //extract_min(Q)
                 u = heap.remove();
@@ -220,7 +220,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 }
                 heap.remove(v);
                 w = merge(u, v);
-                CURE.logger.log(Level.FINEST, "merged {0} with {1}", new Object[]{u.getClusterId(), v.getClusterId()});
+                CURE.LOGGER.log(Level.FINEST, "merged {0} with {1}", new Object[]{u.getClusterId(), v.getClusterId()});
 
                 deleteRep(u);
                 deleteRep(v);
@@ -234,7 +234,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 Exceptions.printStackTrace(ex);
             }
         }
-        CURE.logger.log(Level.INFO, "finished, heap size = {0}, k = {1}", new Object[]{heap.size(), k});
+        CURE.LOGGER.log(Level.INFO, "finished, heap size = {0}, k = {1}", new Object[]{heap.size(), k});
     }
 
     private void updateHeap(C u, C v, C w) {

@@ -350,7 +350,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         System.out.println(sb.toString());
     }
 
-    public void printRanking() {
+    public void printRanking(ClusterEvaluation eval) {
         StringBuilder sb = new StringBuilder();
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);
@@ -358,7 +358,9 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             P clustering;
             while (iter.hasNext()) {
                 clustering = iter.next();
-                sb.append("rank ").append(j).append(": ");
+                double score = eval.score(clustering);
+                sb.append("rank ").append(j).append(", ").append(eval.getName())
+                        .append(": ").append(String.format("%.2f", score)).append(", ");
                 sb.append(clustering.getParams().toJson()).append("\n");
             }
         }

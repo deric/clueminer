@@ -29,6 +29,11 @@ public class ConfiguratorFactory extends ServiceFactory<Configurator> {
 
     private static ConfiguratorFactory instance;
 
+    /**
+     * key used for suppling alternative implementation
+     */
+    public static final String CONFIG = "config";
+
     public static ConfiguratorFactory getInstance() {
         if (instance == null) {
             instance = new ConfiguratorFactory();

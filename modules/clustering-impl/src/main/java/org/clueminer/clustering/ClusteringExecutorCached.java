@@ -28,6 +28,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.ClusteringType;
+import org.clueminer.clustering.api.Configurator;
+import org.clueminer.clustering.api.ConfiguratorFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -141,6 +143,16 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
             clustering.lookupAdd(mapping);
         } else {
             //non-hierarchical method
+
+            Configurator config;
+            if (params.containsKey(ConfiguratorFactory.CONFIG)) {
+                config = ConfiguratorFactory.getInstance().getProvider(params.get(ConfiguratorFactory.CONFIG));
+            } else {
+                config = algorithm.getConfigurator();
+            }
+            config.configure(dataset, params);
+            logger.log(Level.INFO, "estimated parameters: {0} for {1}", new Object[]{params.toJson(), algorithm.getName()});
+
             clustering = algorithm.cluster(dataset, params);
         }
         return clustering;

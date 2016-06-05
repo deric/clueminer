@@ -29,7 +29,9 @@ import org.clueminer.utils.Props;
 public interface Configurator<E extends Instance> {
 
     /**
-     * Configure params for single "best" possible run
+     * Configure algorithm for single run on given dataset by setting up parameters
+     * in <code>params</code>. Params is a key-value store, that can contain value
+     * of any type.
      *
      * @param dataset
      * @param params

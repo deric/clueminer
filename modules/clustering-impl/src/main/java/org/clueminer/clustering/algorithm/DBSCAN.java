@@ -134,11 +134,17 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
     }
 
     private int[] scan(Dataset<E> dataset, Props props) {
+        if (!props.containsKey(MIN_PTS)) {
+            throw new RuntimeException("missing parameter " + MIN_PTS + ", got: " + props.toJson());
+        }
         minPts = props.getInt(MIN_PTS);
         if (minPts < 1) {
             throw new IllegalArgumentException("Invalid minPts: " + minPts);
         }
 
+        if (!props.containsKey(EPS)) {
+            throw new RuntimeException("missing parameter " + EPS + ", got: " + props.toJson());
+        }
         radius = props.getDouble(EPS);
         if (radius <= 0.0) {
             throw new IllegalArgumentException("Invalid radius: " + radius);

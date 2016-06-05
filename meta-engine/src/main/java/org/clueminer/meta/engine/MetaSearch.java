@@ -38,6 +38,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.RatkowskyLance;
+import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.Individual;
@@ -123,20 +124,19 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     }
 
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
-
         ClusteringFactory cf = ClusteringFactory.getInstance();
-        Props config;
+        Props conf;
         Clustering<E, C> c;
         for (ClusteringAlgorithm alg : cf.getAll()) {
-            config = new Props();
-            config.put(AlgParams.ALG, alg.getName());
+            conf = new Props();
+            conf.put(AlgParams.ALG, alg.getName());
             System.out.println("c: " + alg.getName());
-            c = exec.clusterRows(dataset, config);
+            c = exec.clusterRows(dataset, conf);
             System.out.println(c.size() + ": " + c.fingerprint());
             queue.add(c);
         }
         System.out.println(queue.stats());
-        queue.printRanking();
+        queue.printRanking(new NMIsqrt());
     }
 
 }

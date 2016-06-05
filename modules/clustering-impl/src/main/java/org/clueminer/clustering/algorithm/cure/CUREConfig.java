@@ -24,6 +24,7 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
  */
 public class CUREConfig<E extends Instance> implements Configurator<E> {
 
@@ -42,7 +43,10 @@ public class CUREConfig<E extends Instance> implements Configurator<E> {
 
     @Override
     public void configure(Dataset<E> dataset, Props params) {
-        //TODO
+        params.putInt(CURE.K, (int) Math.sqrt(dataset.size()));
+        if (!params.containsKey(CURE.SHRINK_FACTOR)) {
+            params.putDouble(CURE.SHRINK_FACTOR, 0.5);
+        }
     }
 
 }

@@ -65,6 +65,7 @@ public class DBSCANParamEstim<E extends Instance> implements Configurator<E> {
 
     @Override
     public void configure(Dataset<E> dataset, Props params) {
+        params.putInt(DBSCAN.MIN_PTS, k);
         estimate(dataset, params);
     }
 
