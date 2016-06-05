@@ -21,12 +21,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -211,5 +212,10 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return FcConfig.getInstance();
     }
 }

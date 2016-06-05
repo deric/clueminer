@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
@@ -136,5 +137,10 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         result.lookupAdd(dataset);
         result.setParams(props);
         return result;
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return CWConfig.getInstance();
     }
 }

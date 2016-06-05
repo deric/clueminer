@@ -32,6 +32,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -73,7 +74,7 @@ import org.clueminer.utils.Props;
  */
 public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String name = "HC";
+    private final static String NAME = "HC";
     private static final Logger logger = Logger.getLogger(HC.class.getName());
 
     @Param(name = AlgParams.LINKAGE,
@@ -93,7 +94,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -383,6 +384,11 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -1,8 +1,24 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.aggl;
 
 import java.util.HashMap;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.dataset.api.Instance;
@@ -20,11 +36,11 @@ import org.clueminer.utils.Props;
  */
 public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HCLW<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String name = "HAC-LW-Complete";
+    private final static String NAME = "HAC-LW-Complete";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**

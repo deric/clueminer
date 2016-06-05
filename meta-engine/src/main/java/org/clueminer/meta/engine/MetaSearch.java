@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusterLinkage;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
@@ -122,13 +123,20 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     }
 
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
-        //TODO
-        ClusteringExecutorCached executor = new ClusteringExecutorCached();
 
         ClusteringFactory cf = ClusteringFactory.getInstance();
+        Props config;
+        Clustering<E, C> c;
         for (ClusteringAlgorithm alg : cf.getAll()) {
+            config = new Props();
+            config.put(AlgParams.ALG, alg.getName());
             System.out.println("c: " + alg.getName());
+            c = exec.clusterRows(dataset, config);
+            System.out.println(c.size() + ": " + c.fingerprint());
+            queue.add(c);
         }
+        System.out.println(queue.stats());
+        queue.printRanking();
     }
 
 }

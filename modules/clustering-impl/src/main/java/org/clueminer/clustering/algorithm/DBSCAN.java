@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
@@ -47,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
-    public static final String name = "DBSCAN";
+    public static final String NAME = "DBSCAN";
 
     public static final String MIN_PTS = "minPts";
     public static final String EPS = "eps";
@@ -79,7 +80,7 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -196,5 +197,10 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
 
     public void setNns(RNNSearch<E> nns) {
         this.nns = nns;
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return DBSCANParamEstim.getInstance();
     }
 }

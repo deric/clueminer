@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
@@ -361,6 +362,11 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         } else {
             return (m[middle - 1] + m[middle]) / 2.0;
         }
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return APConfig.getInstance();
     }
 
 }

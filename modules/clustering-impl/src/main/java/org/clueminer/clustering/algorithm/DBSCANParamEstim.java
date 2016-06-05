@@ -19,6 +19,7 @@ package org.clueminer.clustering.algorithm;
 import java.util.Arrays;
 import java.util.Collections;
 import org.apache.commons.math3.util.FastMath;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.knn.LinearSearch;
@@ -37,7 +38,7 @@ import org.clueminer.utils.Props;
  * @author deric
  * @param <E>
  */
-public class DBSCANParamEstim<E extends Instance> {
+public class DBSCANParamEstim<E extends Instance> implements Configurator<E> {
 
     /**
      * k-th neighbor used as reference distance for each data point. According
@@ -49,6 +50,23 @@ public class DBSCANParamEstim<E extends Instance> {
     private Double[] kdist;
     private int knee;
     private double eps;
+
+    private static DBSCANParamEstim instance;
+
+    private DBSCANParamEstim() {
+    }
+
+    public static DBSCANParamEstim getInstance() {
+        if (instance == null) {
+            instance = new DBSCANParamEstim();
+        }
+        return instance;
+    }
+
+    @Override
+    public void configure(Dataset<E> dataset, Props params) {
+        estimate(dataset, params);
+    }
 
     public void estimate(Dataset<E> dataset, Props params) {
         //compute k-dist for dataset
@@ -197,4 +215,5 @@ public class DBSCANParamEstim<E extends Instance> {
     public double getMaxEps() {
         return eps + (kdist[0] - eps) / 2.0;
     }
+
 }

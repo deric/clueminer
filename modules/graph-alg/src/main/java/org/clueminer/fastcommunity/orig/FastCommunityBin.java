@@ -23,9 +23,11 @@ import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.fastcommunity.FcConfig;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.knn.KNNGraphBuilder;
@@ -100,7 +102,6 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
             System.out.println("exit: " + p.exitValue());
 
             //TODO parse tree from stdout
-
             dataFile.deleteOnExit();
             graph.deleteOnExit();
             weights.deleteOnExit();
@@ -133,6 +134,11 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
         loader.readStdout(p);
         loader.readStderr(p);
         return f;
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return FcConfig.getInstance();
     }
 
 }

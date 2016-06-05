@@ -22,12 +22,13 @@ import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.config.annotation.Param;
@@ -278,7 +279,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     }
 
     private ArrayList<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
-        DBSCANParamEstim<E> estimation = new DBSCANParamEstim<>();
+        DBSCANParamEstim<E> estimation = DBSCANParamEstim.getInstance();
         estimation.estimate(dataset, pref);
         pref.putInt(DBSCAN.MIN_PTS, 4);
         DBSCAN dbScan = new DBSCAN();
@@ -288,5 +289,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     @Override
     public boolean isLinkageSupported(String linkage) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return ChameleonConfig.getInstance();
     }
 }

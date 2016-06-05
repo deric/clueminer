@@ -26,6 +26,7 @@ import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -101,7 +102,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      */
     public static final String SAMPLING = "sampling";
 
-    public static final String name = "CURE";
+    public static final String NAME = "CURE";
 
     private Random random;
     private int clusterCnt;
@@ -115,7 +116,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -257,7 +258,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      * Eliminates outliers after pre-clustering
      *
      * @param clusters Clusters present
-     * cluster
+     *                 cluster
      */
     private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CureCluster<E> outliers) {
         logger.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
@@ -316,6 +317,11 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      */
     public static int incCurrentRepCount() {
         return ++currentRepAdditionCount;
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return CUREConfig.getInstance();
     }
 
 }

@@ -14,38 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.aggl;
+package org.clueminer.clustering.algorithm;
 
-import java.util.Map;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
+ * @param <E>
  */
-public class PointerHierarchy {
+public class KMeansConfig<E extends Instance> implements Configurator<E> {
 
-    private final Dataset<? extends Instance> dataset;
-    private final Map<Integer, Double> lambda;
-    private final int[] pi;
+    private static KMeansConfig instance;
 
-    public PointerHierarchy(Dataset<? extends Instance> dataset, Map<Integer, Double> lambda, int[] pi) {
-        this.dataset = dataset;
-        this.lambda = lambda;
-        this.pi = pi;
+    private KMeansConfig() {
+
     }
 
-    public Dataset<? extends Instance> getDataset() {
-        return dataset;
+    public static KMeansConfig getInstance() {
+        if (instance == null) {
+            instance = new KMeansConfig();
+        }
+        return instance;
     }
 
-    public Map<Integer, Double> getLambda() {
-        return lambda;
-    }
-
-    public int[] getPi() {
-        return pi;
+    @Override
+    public void configure(Dataset<E> dataset, Props params) {
+        params.putInt(KMeans.K, (int) Math.sqrt(dataset.size() / 2));
     }
 
 }

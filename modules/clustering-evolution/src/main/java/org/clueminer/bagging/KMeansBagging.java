@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.factory.ConsensusFactory;
@@ -170,6 +171,11 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
 
     public void setDefaultProps(Props defaultProps) {
         this.defaultProps = defaultProps;
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return KmbConfig.getInstance();
     }
 
 }

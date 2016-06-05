@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
@@ -195,6 +196,11 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         if (idx < dataset.size()) {
             clust.add(dataset.get(idx));
         }
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        return ClutoConfig.getInstance();
     }
 
 }

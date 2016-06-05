@@ -6,11 +6,12 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.Algorithm;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -209,6 +210,11 @@ public class SLINK<E extends Instance, C extends Cluster<E>> extends Algorithm<E
     @Override
     public boolean isLinkageSupported(String linkage) {
         return linkage.equals("Single");
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

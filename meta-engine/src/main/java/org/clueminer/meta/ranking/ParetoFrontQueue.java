@@ -338,14 +338,31 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
     protected void dumpPairs() {
         P pair;
+        StringBuilder sb = new StringBuilder();
         for (int j = 0; j < pairs.size(); j++) {
             pair = pairs.get(j);
             if (j > 0) {
-                System.out.print(", ");
+                sb.append(", ");
             }
-            System.out.print(j + ": [" + pair.toString() + "]");
+            sb.append(j).append(": [").append(pair.toString()).append("]");
         }
-        System.out.println("");
+        sb.append("\n");
+        System.out.println(sb.toString());
+    }
+
+    public void printRanking() {
+        StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < fronts.length; j++) {
+            Heap<P> curr = getFront(j);
+            Iterator<P> iter = curr.iterator();
+            P clustering;
+            while (iter.hasNext()) {
+                clustering = iter.next();
+                sb.append("rank ").append(j).append(": ");
+                sb.append(clustering.getParams().toJson()).append("\n");
+            }
+        }
+        System.out.println(sb.toString());
     }
 
     /**

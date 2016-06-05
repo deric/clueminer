@@ -39,6 +39,16 @@ public class AbstractClusteringAlgorithmTest {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
+        @Override
+        public Configurator<E> getConfigurator() {
+            return new Configurator<E>() {
+                @Override
+                public void configure(Dataset<E> dataset, Props params) {
+                    //do nothing
+                }
+            };
+        }
+
     }
 
 }

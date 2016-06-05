@@ -71,4 +71,11 @@ public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
     void setProgressHandle(ProgressHandle ph);
 
     Parameter[] getParameters();
+
+    /**
+     * Default configurator for this algorithm.
+     *
+     * @return parameter estimator
+     */
+    Configurator<E> getConfigurator();
 }

@@ -141,8 +141,8 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
 
                         @Override
                         public void run() {
-                            estimator = new DBSCANParamEstim<>();
-                            estimator.estimate(dataset, params);
+                            estimator = DBSCANParamEstim.getInstance();
+                            estimator.configure(dataset, params);
                         }
 
                     });

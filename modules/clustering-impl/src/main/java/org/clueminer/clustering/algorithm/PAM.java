@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
@@ -5,6 +21,7 @@ import org.clueminer.clustering.api.Assignment;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
@@ -18,13 +35,13 @@ import org.clueminer.utils.Props;
  */
 public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBase<E, C> implements ClusteringAlgorithm<E, C> {
 
-    private static final String name = "PAM";
+    private static final String NAME = "PAM";
     protected int repeats = 1;
     protected int iterLimit = 100;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     protected double cluster(Dataset<E> dataset, int[] medioids, Assignment assignments) {
@@ -92,13 +109,19 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
      * @param dataset
      * @return
      */
-    public int guessK(Dataset<? extends Instance> dataset) {
+    public int guessK(Dataset<E> dataset) {
         return (int) Math.sqrt(dataset.size() / 2);
     }
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Configurator<E> getConfigurator() {
+        //we can use same approach as in case of k-means
+        return KMeansConfig.getInstance();
     }
 
 }
