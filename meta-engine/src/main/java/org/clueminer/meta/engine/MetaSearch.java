@@ -37,6 +37,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AIC;
+import org.clueminer.eval.PointBiserial;
 import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
@@ -104,7 +105,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
         objectives.add(new AIC<>());
         objectives.add(new RatkowskyLance<>());
-        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives);
+        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new PointBiserial<E, C>());
 
         landmark(dataset, queue);
         cnt = 0;

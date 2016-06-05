@@ -24,7 +24,9 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
+import org.clueminer.eval.PointBiserial;
 import org.clueminer.eval.RatkowskyLance;
+import org.clueminer.eval.external.VMeasure;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,7 +46,7 @@ public class ParetoFrontQueueTest {
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
         objectives.add(new AIC<>());
         objectives.add(new RatkowskyLance<>());
-        subject = new ParetoFrontQueue(5, new HashSet<Integer>(), objectives);
+        subject = new ParetoFrontQueue(5, new HashSet<Integer>(), objectives, new PointBiserial());
 
         subject.add(FakeClustering.iris());
         subject.add(FakeClustering.irisMostlyWrong());
@@ -64,14 +66,11 @@ public class ParetoFrontQueueTest {
     }
 
     @Test
-    public void testEmptyFronts() {
-    }
-
-    @Test
     public void testSize() {
         System.out.println(subject.stats());
         assertEquals(5, subject.size());
         //System.out.println(subject.toString());
+        subject.printRanking(new VMeasure());
     }
 
     @Test

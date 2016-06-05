@@ -27,6 +27,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.sort.DominanceComparator;
+import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.sort.Heap;
 import org.clueminer.utils.Duple;
 
@@ -38,23 +39,22 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C> comparator;
-
     private int lastFront = 0;
     //maximum number of fronts
     private int maxFront;
     ArrayList<P> pairs;
     final HashSet<Integer> blacklist;
-    private ClustComparator itemCmp;
+    private ClusteringComparator<E, C> frontSorting;
     private int frontsRemoved = 0;
 
-    public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives) {
+    public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
         this.pairs = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = new HashSet<>();
         this.fronts = new Heap[maxFront];
-        this.itemCmp = new ClustComparator();
+        this.frontSorting = new ClusteringComparator(eval3rd);
     }
 
     /**
@@ -64,14 +64,15 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      * @param objectives
      * @param pref
      */
-    public ParetoFrontQueue(int max, HashSet<Integer> blacklist, List<ClusterEvaluation<E, C>> objectives) {
+    public ParetoFrontQueue(int max, HashSet<Integer> blacklist,
+            List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
         this.pairs = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
         this.fronts = new Heap[maxFront];
-        this.itemCmp = new ClustComparator();
+        this.frontSorting = new ClusteringComparator(eval3rd);
     }
 
     /**
@@ -250,7 +251,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         }
 
         //item dominates whole front
-        Heap<P> ff = new Heap<>(itemCmp);
+        Heap<P> ff = (Heap<P>) new Heap<>(frontSorting);
         ff.add(pair);
         //item dominates all known fronts
         if (fronts[maxFront - 1] != null) {
@@ -352,17 +353,22 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
     public void printRanking(ClusterEvaluation eval) {
         StringBuilder sb = new StringBuilder();
+        double rank = 0.0, inc;
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);
             Iterator<P> iter = curr.iterator();
             P clustering;
+            //increment of rank in current front
+            inc = curr.size() == 1 ? 0.0 : 1.0 / curr.size();
             while (iter.hasNext()) {
                 clustering = iter.next();
                 double score = eval.score(clustering);
-                sb.append("rank ").append(j).append(", ").append(eval.getName())
+                sb.append("rank ").append(rank).append(", ").append(eval.getName())
                         .append(": ").append(String.format("%.2f", score)).append(", ");
                 sb.append(clustering.getParams().toJson()).append("\n");
+                rank += inc;
             }
+            rank = j + 1;
         }
         System.out.println(sb.toString());
     }
@@ -440,7 +446,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             lastFront = i;
         }
         if (paretoF[i] == null) {
-            paretoF[i] = new Heap<>(itemCmp);
+            paretoF[i] = (Heap<P>) new Heap<>(frontSorting);
         }
 
         return paretoF[i];

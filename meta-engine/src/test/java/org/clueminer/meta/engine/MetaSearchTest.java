@@ -53,7 +53,7 @@ public class MetaSearchTest {
         mem.report();
     }
 
-    @Test
+    //@Test
     public void testVehicle() {
         subject.setDataset(FakeDatasets.vehicleDataset());
         subject.setGenerations(1);

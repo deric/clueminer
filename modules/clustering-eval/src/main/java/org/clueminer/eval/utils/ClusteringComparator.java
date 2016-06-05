@@ -25,6 +25,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * Compares clustering based on objective given (internal or external one).
  *
  * @author Tomas Barton
  * @param <E>
