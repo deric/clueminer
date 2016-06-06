@@ -45,4 +45,9 @@ public class OptimalTreeOrderFactory extends ServiceFactory<OptimalTreeOrder> {
         }
         sort();
     }
+
+    @Override
+    public OptimalTreeOrder[] getAllArray() {
+        return providers.values().toArray(new OptimalTreeOrder[0]);
+    }
 }

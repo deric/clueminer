@@ -16,6 +16,7 @@
  */
 package org.clueminer.utils;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
  * @author Tomas Barton
  * @param <T> class to be looked up
  */
-public class ServiceFactory<T> {
+public abstract class ServiceFactory<T> {
 
     protected LinkedHashMap<String, T> providers;
     protected T defaultProvider;
@@ -77,6 +78,12 @@ public class ServiceFactory<T> {
         List<T> list = new ArrayList<>(providers.values());
         return list;
     }
+
+    public T[] getAllArray(Class<?> cls) {
+        return providers.values().toArray((T[]) Array.newInstance(cls, providers.size()));
+    }
+
+    public abstract T[] getAllArray();
 
     /**
      * Default provider for given service, if no default specified, return first

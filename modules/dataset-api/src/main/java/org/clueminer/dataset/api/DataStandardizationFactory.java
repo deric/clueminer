@@ -44,4 +44,9 @@ public class DataStandardizationFactory extends ServiceFactory<DataStandardizati
         }
         sort();
     }
+
+    @Override
+    public DataStandardization[] getAllArray() {
+        return providers.values().toArray(new DataStandardization[0]);
+    }
 }

@@ -44,4 +44,9 @@ public class MetaStorageFactory extends ServiceFactory<MetaStorage> {
         }
         sort();
     }
+
+    @Override
+    public MetaStorage[] getAllArray() {
+        return providers.values().toArray(new MetaStorage[0]);
+    }
 }

@@ -45,4 +45,9 @@ public class ClusteringExportFactory extends ServiceFactory<ClusteringExport> {
         }
         sort();
     }
+
+    @Override
+    public ClusteringExport[] getAllArray() {
+        return providers.values().toArray(new ClusteringExport[0]);
+    }
 }

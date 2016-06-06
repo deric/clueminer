@@ -55,4 +55,9 @@ public class GraphStorageFactory extends ServiceFactory<Graph> {
         }
         throw new RuntimeException("failed to instantiate " + provider);
     }
+
+    @Override
+    public Graph[] getAllArray() {
+        return providers.values().toArray(new Graph[0]);
+    }
 }

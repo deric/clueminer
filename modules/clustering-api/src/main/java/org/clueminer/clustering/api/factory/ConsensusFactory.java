@@ -45,4 +45,9 @@ public class ConsensusFactory extends ServiceFactory<Consensus> {
         }
         sort();
     }
+
+    @Override
+    public Consensus[] getAllArray() {
+        return providers.values().toArray(new Consensus[0]);
+    }
 }

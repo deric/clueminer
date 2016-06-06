@@ -44,4 +44,9 @@ public class ProcessorFactory extends ServiceFactory<Processor> {
         }
         sort();
     }
+
+    @Override
+    public Processor[] getAllArray() {
+        return providers.values().toArray(new Processor[0]);
+    }
 }

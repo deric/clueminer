@@ -43,4 +43,9 @@ public class PartitioningFactory extends ServiceFactory<Partitioning> {
             providers.put(c.getName(), c);
         }
     }
+
+    @Override
+    public Partitioning[] getAllArray() {
+        return providers.values().toArray(new Partitioning[0]);
+    }
 }

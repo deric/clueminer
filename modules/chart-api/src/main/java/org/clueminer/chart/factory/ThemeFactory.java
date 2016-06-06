@@ -46,4 +46,9 @@ public class ThemeFactory extends ServiceFactory<Theme> {
         sort();
     }
 
+    @Override
+    public Theme[] getAllArray() {
+        return providers.values().toArray(new Theme[0]);
+    }
+
 }

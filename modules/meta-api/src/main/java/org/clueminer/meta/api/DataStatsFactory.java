@@ -46,4 +46,9 @@ public class DataStatsFactory extends ServiceFactory<DataStats> {
         }
         sort();
     }
+
+    @Override
+    public DataStats[] getAllArray() {
+        return providers.values().toArray(new DataStats[0]);
+    }
 }

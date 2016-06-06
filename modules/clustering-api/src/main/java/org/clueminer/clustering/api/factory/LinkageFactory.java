@@ -46,4 +46,9 @@ public class LinkageFactory<E extends Instance> extends ServiceFactory<ClusterLi
             providers.put(c.getName(), c);
         }
     }
+
+    @Override
+    public ClusterLinkage<E>[] getAllArray() {
+        return providers.values().toArray(new ClusterLinkage[0]);
+    }
 }

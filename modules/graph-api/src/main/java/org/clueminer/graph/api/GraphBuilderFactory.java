@@ -44,4 +44,9 @@ public class GraphBuilderFactory extends ServiceFactory<GraphBuilder> {
         }
         sort();
     }
+
+    @Override
+    public GraphBuilder[] getAllArray() {
+        return providers.values().toArray(new GraphBuilder[0]);
+    }
 }

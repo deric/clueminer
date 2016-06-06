@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.approximation.api;
 
 import java.util.Collection;
@@ -11,7 +27,7 @@ import org.openide.util.Lookup;
  */
 public class DataTransformFactory extends ServiceFactory<DataTransform> {
 
-    private static DataTransformFactory instance;    
+    private static DataTransformFactory instance;
 
     public static DataTransformFactory getInstance() {
         if (instance == null) {
@@ -21,11 +37,16 @@ public class DataTransformFactory extends ServiceFactory<DataTransform> {
     }
 
     private DataTransformFactory() {
-        providers = new LinkedHashMap<String, DataTransform>();
+        providers = new LinkedHashMap<>();
         Collection<? extends DataTransform> list = Lookup.getDefault().lookupAll(DataTransform.class);
         for (DataTransform c : list) {
             providers.put(c.getName(), c);
         }
         sort();
+    }
+
+    @Override
+    public DataTransform[] getAllArray() {
+        return providers.values().toArray(new DataTransform[0]);
     }
 }

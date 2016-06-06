@@ -45,4 +45,9 @@ public class EvolutionUIFactory extends ServiceFactory<EvolutionUI> {
         }
         sort();
     }
+
+    @Override
+    public EvolutionUI[] getAllArray() {
+        return providers.values().toArray(new EvolutionUI[0]);
+    }
 }

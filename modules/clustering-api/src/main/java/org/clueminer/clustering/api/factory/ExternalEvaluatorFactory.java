@@ -45,4 +45,9 @@ public class ExternalEvaluatorFactory extends ServiceFactory<ExternalEvaluator> 
         }
         sort();
     }
+
+    @Override
+    public ExternalEvaluator[] getAllArray() {
+        return providers.values().toArray(new ExternalEvaluator[0]);
+    }
 }

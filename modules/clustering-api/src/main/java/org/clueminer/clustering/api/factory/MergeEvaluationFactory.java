@@ -45,4 +45,9 @@ public class MergeEvaluationFactory extends ServiceFactory<MergeEvaluation> {
         }
         sort();
     }
+
+    @Override
+    public MergeEvaluation[] getAllArray() {
+        return providers.values().toArray(new MergeEvaluation[0]);
+    }
 }

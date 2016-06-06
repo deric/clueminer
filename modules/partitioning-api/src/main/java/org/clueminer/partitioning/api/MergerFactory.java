@@ -43,4 +43,9 @@ public class MergerFactory extends ServiceFactory<Merger> {
             providers.put(c.getName(), c);
         }
     }
+
+    @Override
+    public Merger[] getAllArray() {
+        return providers.values().toArray(new Merger[0]);
+    }
 }

@@ -55,4 +55,9 @@ public class EvaluationFactory extends ServiceFactory<ClusterEvaluation> {
         }
         sort();
     }
+
+    @Override
+    public ClusterEvaluation[] getAllArray() {
+        return providers.values().toArray(new ClusterEvaluation[0]);
+    }
 }

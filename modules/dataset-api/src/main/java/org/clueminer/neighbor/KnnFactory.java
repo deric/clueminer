@@ -48,4 +48,9 @@ public class KnnFactory<E extends Instance> extends ServiceFactory<KNNSearch<E>>
         }
         sort();
     }
+
+    @Override
+    public KNNSearch<E>[] getAllArray() {
+        return providers.values().toArray(new KNNSearch[0]);
+    }
 }

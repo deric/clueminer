@@ -25,6 +25,9 @@ import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
 /**
+ * Instantiates unsupervised clustering evaluators
+ *
+ * @see InternalEvaluator.
  *
  * @author Tomas Barton
  * @param <E>
@@ -48,5 +51,10 @@ public class InternalEvaluatorFactory<E extends Instance, C extends Cluster<E>> 
             providers.put(c.getName(), c);
         }
         sort();
+    }
+
+    @Override
+    public InternalEvaluator<E, C>[] getAllArray() {
+        return providers.values().toArray(new InternalEvaluator[0]);
     }
 }

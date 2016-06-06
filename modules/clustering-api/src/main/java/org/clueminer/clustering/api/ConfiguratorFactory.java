@@ -49,4 +49,9 @@ public class ConfiguratorFactory extends ServiceFactory<Configurator> {
         }
         sort();
     }
+
+    @Override
+    public Configurator[] getAllArray() {
+        return providers.values().toArray(new Configurator[0]);
+    }
 }

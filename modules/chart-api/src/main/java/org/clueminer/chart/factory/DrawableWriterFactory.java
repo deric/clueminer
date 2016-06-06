@@ -42,4 +42,9 @@ public class DrawableWriterFactory extends ServiceFactory<DrawableWriter> {
         sort();
     }
 
+    @Override
+    public DrawableWriter[] getAllArray() {
+        return providers.values().toArray(new DrawableWriter[0]);
+    }
+
 }

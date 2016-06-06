@@ -43,4 +43,9 @@ public class BisectionFactory extends ServiceFactory<Bisection> {
             providers.put(c.getName(), c);
         }
     }
+
+    @Override
+    public Bisection[] getAllArray() {
+        return providers.values().toArray(new Bisection[0]);
+    }
 }

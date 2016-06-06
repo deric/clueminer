@@ -55,4 +55,9 @@ public class PlotterFactory extends ServiceFactory<Plotter> {
         }
         return res;
     }
+
+    @Override
+    public Plotter[] getAllArray() {
+        return providers.values().toArray(new Plotter[0]);
+    }
 }

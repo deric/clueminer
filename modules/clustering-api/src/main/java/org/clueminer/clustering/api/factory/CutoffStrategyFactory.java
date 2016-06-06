@@ -45,4 +45,9 @@ public class CutoffStrategyFactory extends ServiceFactory<CutoffStrategy> {
         }
         sort();
     }
+
+    @Override
+    public CutoffStrategy[] getAllArray() {
+        return providers.values().toArray(new CutoffStrategy[0]);
+    }
 }

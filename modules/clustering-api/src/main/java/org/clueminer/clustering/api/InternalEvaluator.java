@@ -21,7 +21,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 
 /**
- * Internal evaluator should not use information from labels or meta attributes.
+ * Internal evaluator should not use information from labels or meta attributes
+ * for clustering evaluation.
  *
  * @author Tomas Barton
  * @param <E>

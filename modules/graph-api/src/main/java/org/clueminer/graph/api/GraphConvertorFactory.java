@@ -44,4 +44,9 @@ public class GraphConvertorFactory extends ServiceFactory<GraphConvertor> {
         }
         sort();
     }
+
+    @Override
+    public GraphConvertor[] getAllArray() {
+        return providers.values().toArray(new GraphConvertor[0]);
+    }
 }

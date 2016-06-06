@@ -43,4 +43,9 @@ public class ClusteringFactory extends ServiceFactory<ClusteringAlgorithm> {
             providers.put(c.getName(), c);
         }
     }
+
+    @Override
+    public ClusteringAlgorithm[] getAllArray() {
+        return providers.values().toArray(new ClusteringAlgorithm[0]);
+    }
 }

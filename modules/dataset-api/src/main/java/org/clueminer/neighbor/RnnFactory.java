@@ -44,4 +44,9 @@ public class RnnFactory extends ServiceFactory<RNNSearch> {
         }
         sort();
     }
+
+    @Override
+    public RNNSearch[] getAllArray() {
+        return providers.values().toArray(new RNNSearch[0]);
+    }
 }

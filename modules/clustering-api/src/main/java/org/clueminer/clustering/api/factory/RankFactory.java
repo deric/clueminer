@@ -45,4 +45,9 @@ public class RankFactory extends ServiceFactory<Rank> {
         }
         sort();
     }
+
+    @Override
+    public Rank[] getAllArray() {
+        return providers.values().toArray(new Rank[0]);
+    }
 }
