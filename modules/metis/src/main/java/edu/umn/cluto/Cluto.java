@@ -138,6 +138,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
 
     private Clustering<E, C> parseResult(File result, Dataset<E> dataset, Props props) throws FileNotFoundException, IOException {
         Clustering<E, C> clustering = new ClusterList();
+        clustering.lookupAdd(dataset);
         Cluster<E> noise = new BaseCluster<>(5, dataset.attributeCount());
         noise.setAttributes(dataset.getAttributes());
         int i = 0;
@@ -168,7 +169,6 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
             clustering.add((C) noise);
         }
         clustering.setParams(props);
-        clustering.lookupAdd(dataset);
         return clustering;
     }
 
