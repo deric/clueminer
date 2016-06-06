@@ -48,6 +48,7 @@ import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.StopWatch;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -72,6 +73,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     protected List<InternalEvaluator<E, C>> evaluators;
     protected int cnt;
     private ParetoFrontQueue q;
+    private HashMap<String, Double> meta;
 
     public MetaSearch() {
         super();
@@ -99,13 +101,11 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
 
     private HashMap<String, Double> computeMeta(Dataset<E> data, Props config) {
         DataStatsFactory dsf = DataStatsFactory.getInstance();
-        HashMap<String, Double> meta = new HashMap<>();
-        double v;
+        HashMap<String, Double> res = new HashMap<>();
         for (DataStats<E> ds : dsf.getAll()) {
-            ds.computeAll(data, meta, config);
+            ds.computeAll(data, res, config);
         }
-        System.out.println("meta features: " + meta.toString());
-        return meta;
+        return res;
     }
 
     /**
@@ -122,12 +122,20 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
             conf = new Props();
             conf.put(AlgParams.ALG, alg.getName());
             System.out.println("c: " + alg.getName());
-            c = exec.clusterRows(dataset, conf);
+            c = cluster(dataset, conf);
             System.out.println(c.size() + ": " + c.fingerprint());
             queue.add(c);
         }
         System.out.println(queue.stats());
         queue.printRanking(new NMIsqrt());
+    }
+
+    private Clustering<E, C> cluster(Dataset<E> dataset, Props conf) {
+        StopWatch time = new StopWatch(true);
+        Clustering<E, C> c = exec.clusterRows(dataset, conf);
+        time.endMeasure();
+        c.lookupAdd(time);
+        return c;
     }
 
     @Override
@@ -148,7 +156,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         }
         config.putInt("k", 5);
         Dataset<E> data = standartize(config);
-        HashMap<String, Double> meta = computeMeta(data, config);
+        meta = computeMeta(data, config);
         LOGGER.log(Level.INFO, "got {0} meta parameters", meta.size());
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
         objectives.add(new AIC<>());
@@ -160,6 +168,10 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
 
         finish();
         return queue;
+    }
+
+    public HashMap<String, Double> getMeta() {
+        return meta;
     }
 
 }

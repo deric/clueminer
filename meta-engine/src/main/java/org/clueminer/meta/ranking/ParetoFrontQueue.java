@@ -44,7 +44,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     private final DominanceComparator<E, C> comparator;
     private int lastFront = 0;
     //maximum number of fronts
-    private int maxFront;
+    private final int maxFront;
     ArrayList<P> pairs;
     final HashSet<Integer> blacklist;
     private ClusteringComparator<E, C> frontSorting;
@@ -225,7 +225,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      *
      * @param pair
      * @param curr
-     * @param buffer list of items that does not fit to the front
+     * @return
      */
     public boolean insertIntoFront(P pair, int curr) {
         int flagDominate;
@@ -379,7 +379,6 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     /**
      * Remove blacklisted item from all current fronts
      *
-     * @param item
      * @return
      */
     public int filterOut() {
