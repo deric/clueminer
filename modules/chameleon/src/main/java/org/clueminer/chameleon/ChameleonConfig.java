@@ -16,6 +16,10 @@
  */
 package org.clueminer.chameleon;
 
+import static org.clueminer.chameleon.Chameleon.K;
+import static org.clueminer.chameleon.Chameleon.MAX_PARTITION;
+import org.clueminer.clustering.api.AlgParams;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -41,9 +45,41 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
         return instance;
     }
 
+    private void putndef(Props params, String key, Object value) {
+        if (!params.containsKey(key)) {
+            params.put(key, value);
+        }
+    }
+
     @Override
     public void configure(Dataset<E> dataset, Props params) {
+        if (!params.containsKey(MAX_PARTITION)) {
+            params.putInt(MAX_PARTITION, determineMaxPartitionSize(dataset));
+        }
+        if (!params.containsKey(K)) {
+            params.putInt(K, determineK(dataset));
+        }
+        putndef(params, AlgParams.CUTOFF_SCORE, "SD index");
+        putndef(params, AlgParams.CUTOFF_STRATEGY, "FirstJump");
+        putndef(params, AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+    }
 
+    private int determineK(Dataset<E> dataset) {
+        if (dataset.size() < 500) {
+            return (int) (Math.log(dataset.size()) / Math.log(2));
+        } else {
+            return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
+        }
+    }
+
+    private int determineMaxPartitionSize(Dataset<E> dataset) {
+        if (dataset.size() < 500) {
+            return 5;
+        } else if ((dataset.size() < 2000)) {
+            return dataset.size() / 100;
+        } else {
+            return dataset.size() / 200;
+        }
     }
 
 }

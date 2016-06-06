@@ -191,16 +191,15 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
                 }
             }
         }
+        //run heuristic for algorithm configuration
+        ChameleonConfig.getInstance().configure(dataset, pref);
 
         String graphConv = pref.get(GRAPH_CONV, "k-NNG");
         knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
-        int datasetK = determineK(dataset);
-        maxPartitionSize = pref.getInt(MAX_PARTITION, -1);
-        maxPartitionSize = determineMaxPartitionSize(dataset);
-        pref.putInt(MAX_PARTITION, maxPartitionSize);
-        pref.putInt(K, datasetK);
+        maxPartitionSize = pref.getInt(MAX_PARTITION);
+
 
         graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
@@ -252,31 +251,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         return result;
     }
 
-    private int determineK(Dataset<E> dataset) {
-        if (k == -1) {
-            if (dataset.size() < 500) {
-                return (int) (Math.log(dataset.size()) / Math.log(2));
-            } else {
-                return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
-            }
-        } else {
-            return k;
-        }
-    }
-
-    private int determineMaxPartitionSize(Dataset<E> dataset) {
-        if (maxPartitionSize == -1) {
-            if (dataset.size() < 500) {
-                return 5;
-            } else if ((dataset.size() < 2000)) {
-                return dataset.size() / 100;
-            } else {
-                return dataset.size() / 200;
-            }
-        } else {
-            return maxPartitionSize;
-        }
-    }
 
     private ArrayList<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
         DBSCANParamEstim<E> estimation = DBSCANParamEstim.getInstance();
