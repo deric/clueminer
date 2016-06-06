@@ -14,6 +14,13 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
                 <extensions>true</extensions>
+                <configuration>
+                    <publicPackages>
+                        <publicPackage>org.clueminer.meta.engine</publicPackage>
+                        <publicPackage>org.clueminer.meta.features</publicPackage>
+                        <publicPackage>org.clueminer.meta.ranking</publicPackage>
+                    </publicPackages>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -112,6 +119,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-eval</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
         </dependency>
     </dependencies>
 </project>

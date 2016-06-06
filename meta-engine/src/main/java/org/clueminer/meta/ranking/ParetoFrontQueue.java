@@ -34,6 +34,9 @@ import org.clueminer.utils.Duple;
 /**
  *
  * @author deric
+ * @param <E> data row
+ * @param <C> cluster structure
+ * @param <P> clustering result
  */
 public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extends Clustering<E, C>> implements Iterable<P> {
 

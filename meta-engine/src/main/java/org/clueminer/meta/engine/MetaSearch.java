@@ -19,6 +19,7 @@ package org.clueminer.meta.engine;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
@@ -47,17 +48,21 @@ import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
- * Uses meta-features to discover suitable clustering algorithm
+ * Use meta-features to select suitable (optimal) clustering algorithm.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEvolution implements Runnable, Evolution, Lookup.Provider {
+public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEvolution
+        implements Runnable, Evolution, Lookup.Provider, Callable<ParetoFrontQueue> {
 
     private static final String NAME = "Meta search";
-    private static final Logger logger = Logger.getLogger(MetaSearch.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MetaSearch.class.getName());
 
     protected final Executor exec;
     protected int gen;
@@ -66,6 +71,7 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     protected List<CutoffStrategy> cutoff;
     protected List<InternalEvaluator<E, C>> evaluators;
     protected int cnt;
+    private ParetoFrontQueue q;
 
     public MetaSearch() {
         super();
@@ -84,33 +90,11 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
 
     @Override
     public void run() {
-        evolutionStarted(this);
-        prepare();
-        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
-        evaluators = ief.getAll();
-
-        if (ph != null) {
-            int workunits = 5;
-            logger.log(Level.INFO, "search workunits: {0}", workunits);
-            ph.start(workunits);
+        try {
+            q = call();
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
         }
-
-        if (!config.containsKey(AlgParams.STD)) {
-            config.put(AlgParams.STD, "z-score");
-        }
-        config.putInt("k", 5);
-        Dataset<E> data = standartize(config);
-        HashMap<String, Double> meta = computeMeta(data, config);
-        logger.log(Level.INFO, "got {0} meta parameters", meta.size());
-        List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
-        objectives.add(new AIC<>());
-        objectives.add(new RatkowskyLance<>());
-        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new PointBiserial<E, C>());
-
-        landmark(dataset, queue);
-        cnt = 0;
-
-        finish();
     }
 
     private HashMap<String, Double> computeMeta(Dataset<E> data, Props config) {
@@ -124,6 +108,12 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         return meta;
     }
 
+    /**
+     * TODO: only fast algorithms should be included in landmarking phase
+     *
+     * @param dataset
+     * @param queue
+     */
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
         Props conf;
@@ -138,6 +128,38 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         }
         System.out.println(queue.stats());
         queue.printRanking(new NMIsqrt());
+    }
+
+    @Override
+    public ParetoFrontQueue call() throws Exception {
+        evolutionStarted(this);
+        prepare();
+        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+        evaluators = ief.getAll();
+
+        if (ph != null) {
+            int workunits = 5;
+            LOGGER.log(Level.INFO, "search workunits: {0}", workunits);
+            ph.start(workunits);
+        }
+
+        if (!config.containsKey(AlgParams.STD)) {
+            config.put(AlgParams.STD, "z-score");
+        }
+        config.putInt("k", 5);
+        Dataset<E> data = standartize(config);
+        HashMap<String, Double> meta = computeMeta(data, config);
+        LOGGER.log(Level.INFO, "got {0} meta parameters", meta.size());
+        List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
+        objectives.add(new AIC<>());
+        objectives.add(new RatkowskyLance<>());
+        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new PointBiserial<E, C>());
+
+        landmark(dataset, queue);
+        cnt = 0;
+
+        finish();
+        return queue;
     }
 
 }
