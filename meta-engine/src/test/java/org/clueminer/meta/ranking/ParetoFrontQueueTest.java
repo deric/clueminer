@@ -16,9 +16,11 @@
  */
 package org.clueminer.meta.ranking;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -74,6 +76,12 @@ public class ParetoFrontQueueTest<E extends Instance, C extends Cluster<E>, P ex
         assertEquals(5, subject.size());
         //System.out.println(subject.toString());
         subject.printRanking(new VMeasure());
+        System.out.println("raking map:");
+        HashMap<Double, Clustering<E, C>> res = subject.computeRanking();
+        assertEquals(subject.size(), res.size());
+        for (Entry<Double, Clustering<E, C>> entry : res.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue().fingerprint());
+        }
     }
 
     @Test

@@ -19,6 +19,7 @@ package org.clueminer.meta.ranking;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -352,6 +353,29 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         }
         sb.append("\n");
         System.out.println(sb.toString());
+    }
+
+    /**
+     *
+     * @return map of ranks and clusterings
+     */
+    public HashMap<Double, Clustering<E, C>> computeRanking() {
+        HashMap<Double, Clustering<E, C>> res = new HashMap<>();
+        double rank = 0.0, inc;
+        for (int j = 0; j < fronts.length; j++) {
+            Heap<P> curr = getFront(j);
+            Iterator<P> iter = curr.iterator();
+            P clustering;
+            //increment of rank in current front
+            inc = curr.size() == 1 ? 0.0 : 1.0 / curr.size();
+            while (iter.hasNext()) {
+                clustering = iter.next();
+                res.put(rank, clustering);
+                rank += inc;
+            }
+            rank = j + 1;
+        }
+        return res;
     }
 
     public void printRanking(ClusterEvaluation eval) {
