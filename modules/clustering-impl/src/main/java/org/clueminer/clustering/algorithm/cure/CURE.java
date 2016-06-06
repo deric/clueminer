@@ -130,7 +130,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
         currentRepAdditionCount = n;
         blacklist = new HashSet<>();
-        CureCluster<E> outliers = new CureCluster<>();
+        CureCluster<E> outliers = new CureCluster<>(dataset);
         clusterCnt = 0;
         if (colorGenerator != null) {
             colorGenerator.reset();

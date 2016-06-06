@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.struct;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -45,6 +62,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     private final transient AbstractLookup lookup;
     private String name;
     private int id;
+    private static final Logger LOGGER = Logger.getLogger(ClusterList.class.getName());
 
     public ClusterList() {
         //some default capacity, to avoid problems with zero array size
@@ -486,6 +504,8 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         Dataset<E> d = getLookup().lookup(Dataset.class);
         if (d != null) {
             c.setAttributes(d.getAttributes());
+        } else {
+            LOGGER.warning("missing dataset, can't setup attributes");
         }
         put(clusterId, c);
         return c;

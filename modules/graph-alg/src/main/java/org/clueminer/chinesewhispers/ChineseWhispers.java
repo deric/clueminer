@@ -118,10 +118,11 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         }
 
         //graph.print();
-        Clustering result = Clusterings.newList();
-        Cluster cluster;
+        Clustering<E, C> result = (Clustering<E, C>) Clusterings.newList();
+        result.lookupAdd(dataset);
+        Cluster<E> cluster;
         HashMap<Long, Integer> id2clust = new HashMap<>();
-        for (Node node : graph.getNodes()) {
+        for (Node<E> node : graph.getNodes()) {
             long classValue = (long) node.getAttribute(CLS);
             if (!id2clust.containsKey(classValue)) {
                 cluster = result.createCluster();
@@ -134,7 +135,6 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
             }
             cluster.add(node.getInstance());
         }
-        result.lookupAdd(dataset);
         result.setParams(props);
         return result;
     }

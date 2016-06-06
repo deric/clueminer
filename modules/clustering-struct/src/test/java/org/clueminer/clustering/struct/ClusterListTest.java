@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.struct;
 
 import java.io.FileNotFoundException;
@@ -30,7 +46,7 @@ public class ClusterListTest {
 
     private static ClusterList subject;
     private static final CommonFixture tf = new CommonFixture();
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
     private static Dataset<? extends Instance> irisCache;
 
     public ClusterListTest() {
@@ -136,7 +152,7 @@ public class ClusterListTest {
         assertEquals(3, clusters.get(0).size());
         //centroid shoould be average of all cluster's centroids
         assertEquals(false, Double.isNaN(centroid.get(0)));
-        assertEquals(1.0, centroid.get(1), delta);
+        assertEquals(1.0, centroid.get(1), DELTA);
     }
 
     private Clustering<Instance, Cluster<Instance>> createEmptyClusters() {
@@ -317,14 +333,6 @@ public class ClusterListTest {
     }
 
     @Test
-    public void testToArray_0args() {
-    }
-
-    @Test
-    public void testToArray_GenericType() {
-    }
-
-    @Test
     public void testRemove() {
         Clustering<Instance, Cluster<Instance>> c1 = createClusters();
         assertEquals(4, c1.size());
@@ -362,18 +370,6 @@ public class ClusterListTest {
         Cluster c = c1.get("cluster 1");
         assertNotNull(c);
         assertEquals(3, c.size());
-    }
-
-    @Test
-    public void testAddAll() {
-    }
-
-    @Test
-    public void testRemoveAll() {
-    }
-
-    @Test
-    public void testRetainAll() {
     }
 
     @Test
@@ -428,6 +424,7 @@ public class ClusterListTest {
     private Clustering irisWrong() throws IOException {
         Dataset<? extends Instance> irisData = loadIris();
         Clustering irisWrong = new ClusterList(3);
+        irisWrong.lookupAdd(irisCache);
         Cluster a = new BaseCluster(4);
         a.setName("cluster 1");
         a.setAttributes(irisData.getAttributes());
@@ -651,6 +648,6 @@ public class ClusterListTest {
         assertEquals(false, list.hasValidation("foo"));
         list.setValidation("foo", 123.0);
         assertEquals(true, list.hasValidation("foo"));
-        assertEquals(123.0, list.getValidation("foo"), delta);
+        assertEquals(123.0, list.getValidation("foo"), DELTA);
     }
 }

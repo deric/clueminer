@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.struct;
 
 import java.io.FileNotFoundException;
@@ -26,7 +42,7 @@ import org.openide.util.Exceptions;
 public class DendrogramDataTest {
 
     private DendrogramData subject;
-    private static final CommonFixture tf = new CommonFixture();
+    private static final CommonFixture TF = new CommonFixture();
     private final Dataset<? extends Instance> iris;
     //private ClusteringAlgorithm algorithm = new HAC();
 
@@ -39,7 +55,7 @@ public class DendrogramDataTest {
         Dataset<? extends Instance> irisData = new ArrayDataset(150, 4);
         ARFFHandler arff = new ARFFHandler();
         try {
-            arff.load(tf.irisArff(), irisData, 4);
+            arff.load(TF.irisArff(), irisData, 4);
         } catch (ParserError ex) {
             Exceptions.printStackTrace(ex);
         }

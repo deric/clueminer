@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 
@@ -34,6 +35,10 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
 
     public CureCluster(int capacity) {
         super(capacity);
+    }
+
+    public CureCluster(Dataset<E> dataset) {
+        super(dataset);
     }
 
     /**
