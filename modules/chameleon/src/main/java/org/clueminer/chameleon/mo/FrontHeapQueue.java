@@ -194,7 +194,6 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 }
 
             } while (currFront < fronts.length && front != null);
-
             return item;
         }
     }

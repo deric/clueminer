@@ -36,23 +36,26 @@ import org.junit.Test;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
+ * @param <P>
  */
-public class ParetoFrontQueueTest {
+public class ParetoFrontQueueTest<E extends Instance, C extends Cluster<E>, P extends Clustering<E, C>> {
 
-    private static ParetoFrontQueue subject;
+    private ParetoFrontQueue<E, C, P> subject;
 
     @Before
-    public void setUpClass() {
+    public void setUp() {
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
         objectives.add(new AIC<>());
         objectives.add(new RatkowskyLance<>());
-        subject = new ParetoFrontQueue(5, new HashSet<Integer>(), objectives, new PointBiserial());
+        subject = new ParetoFrontQueue<>(5, new HashSet<Integer>(), objectives, new PointBiserial());
 
-        subject.add(FakeClustering.iris());
-        subject.add(FakeClustering.irisMostlyWrong());
-        subject.add(FakeClustering.irisWrong());
-        subject.add(FakeClustering.irisWrong2());
-        subject.add(FakeClustering.irisWrong4());
+        subject.add((P) FakeClustering.iris());
+        subject.add((P) FakeClustering.irisMostlyWrong());
+        subject.add((P) FakeClustering.irisWrong());
+        subject.add((P) FakeClustering.irisWrong2());
+        subject.add((P) FakeClustering.irisWrong4());
     }
 
     @Test
@@ -78,6 +81,13 @@ public class ParetoFrontQueueTest {
         //three non-empty fronts
         //TODO: why 2?
         assertEquals(2, subject.numFronts());
+
+        int i = 0;
+        System.out.println("size: " + subject.size());
+        for (Clustering<E, C> c : subject) {
+            System.out.println((i++) + ": " + c.fingerprint());
+            assertNotNull(c);
+        }
     }
 
 }

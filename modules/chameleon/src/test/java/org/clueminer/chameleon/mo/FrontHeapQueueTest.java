@@ -24,6 +24,7 @@ import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -46,9 +47,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class FrontHeapQueueTest {
+public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> {
 
-    private FrontHeapQueue queue;
+    private FrontHeapQueue<E, C, P> queue;
 
     @Test
     public void testSorting() {
@@ -74,7 +75,7 @@ public class FrontHeapQueueTest {
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
 
-        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueue(5, blacklist, objectives, props);
         queue.addAll(pairs);
@@ -127,7 +128,7 @@ public class FrontHeapQueueTest {
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
-        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueue(5, blacklist, objectives, props);
         System.out.println("pairs size: " + pairs.size());
@@ -173,7 +174,7 @@ public class FrontHeapQueueTest {
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
 
-        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueue(5, blacklist, objectives, props);
         queue.pairs.addAll(pairs);

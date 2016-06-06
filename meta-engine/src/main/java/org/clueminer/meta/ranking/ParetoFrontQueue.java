@@ -47,7 +47,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     private final int maxFront;
     ArrayList<P> pairs;
     final HashSet<Integer> blacklist;
-    private ClusteringComparator<E, C> frontSorting;
+    private final ClusteringComparator<E, C> frontSorting;
     private int frontsRemoved = 0;
 
     public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
@@ -65,7 +65,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      * @param max        number of fronts kept
      * @param blacklist
      * @param objectives
-     * @param pref
+     * @param eval3rd
      */
     public ParetoFrontQueue(int max, HashSet<Integer> blacklist,
             List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
@@ -191,7 +191,6 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
         @Override
         public P next() {
-            index++;
             int currFront = 0;
             int offset = index;
             P item = null;
@@ -202,12 +201,13 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
+                        index++;
                         return front.get(offset);
                     }
                 }
 
             } while (currFront < fronts.length && front != null);
-
+            index++;
             return item;
         }
     }
@@ -367,7 +367,8 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                 clustering = iter.next();
                 double score = eval.score(clustering);
                 sb.append("rank ").append(rank).append(", ").append(eval.getName())
-                        .append(": ").append(String.format("%.2f", score)).append(", ");
+                        .append(": ").append(String.format("%.2f", score)).append(", ")
+                        .append(clustering.fingerprint()).append(", ");
                 sb.append(clustering.getParams().toJson()).append("\n");
                 rank += inc;
             }
