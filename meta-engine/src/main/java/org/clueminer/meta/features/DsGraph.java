@@ -27,6 +27,9 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.meta.api.DataStats;
+import org.clueminer.neighbor.KNNSearch;
+import org.clueminer.neighbor.KnnFactory;
+import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -39,6 +42,7 @@ public class DsGraph<E extends Instance> implements DataStats<E> {
 
     public static final String LOG_EDGES = "log_edges";
     public static final String EDGES_RATIO = "edges_ratio";
+    public static final String AVG_FOURTH_NN = "avg_4th_nn";
 
     public static final String MAX_ITERATIONS = "max_iterations";
     public static final String GRAPH_CONV = "graph_conv";
@@ -67,8 +71,6 @@ public class DsGraph<E extends Instance> implements DataStats<E> {
         Graph graph = new AdjListGraph();
         String dist = props.get("distance", "Euclidean");
         Distance distanceFunction = DistanceFactory.getInstance().getProvider(dist);
-        int iter = (int) (2 * Math.sqrt(dataset.size()));
-        int maxIterations = props.getInt(MAX_ITERATIONS, iter);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
         String initializer = props.get(GRAPH_CONV, "k-NNG");
@@ -81,6 +83,30 @@ public class DsGraph<E extends Instance> implements DataStats<E> {
          * when edges share neighbors no extra edge is added
          */
         features.put(EDGES_RATIO, graph.getEdgeCount() / (double) graph.getNodeCount());
+
+        avg4thDist(dataset, features);
+    }
+
+    /**
+     * Distance to 4th nearest neighbor. Used by DBSCAN to determine values of
+     * its coefficients.
+     *
+     * @param dataset
+     * @param features
+     */
+    private void avg4thDist(Dataset<E> dataset, HashMap<String, Double> features) {
+        KnnFactory<E> kf = KnnFactory.getInstance();
+        KNNSearch<E> alg = kf.getProvider("caching k-nn");
+        if (alg == null) {
+            throw new RuntimeException("did not find any provider for k-NN");
+        }
+        alg.setDataset(dataset);
+        double sum = 0.0;
+        for (int i = 0; i < dataset.size(); i++) {
+            Neighbor[] nn = alg.knn(dataset.get(i), 4);
+            sum += nn[3].distance;
+        }
+        features.put(AVG_FOURTH_NN, sum / dataset.size());
     }
 
 }
