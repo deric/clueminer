@@ -37,8 +37,8 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.eval.AIC;
-import org.clueminer.eval.PointBiserial;
+import org.clueminer.eval.BIC;
+import org.clueminer.eval.PointBiserialNorm;
 import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
@@ -159,9 +159,9 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         meta = computeMeta(data, config);
         LOGGER.log(Level.INFO, "got {0} meta parameters", meta.size());
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
-        objectives.add(new AIC<>());
+        objectives.add(new BIC<>());
         objectives.add(new RatkowskyLance<>());
-        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new PointBiserial<E, C>());
+        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new PointBiserialNorm<E, C>());
 
         landmark(dataset, queue);
         cnt = 0;
