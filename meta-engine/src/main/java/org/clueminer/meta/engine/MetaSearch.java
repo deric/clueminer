@@ -43,7 +43,9 @@ import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
+import org.clueminer.evolution.hac.SimpleIndividual;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
@@ -51,16 +53,19 @@ import org.clueminer.utils.Props;
 import org.clueminer.utils.StopWatch;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Use meta-features to select suitable (optimal) clustering algorithm.
  *
  * @author deric
+ * @param <I>
  * @param <E>
  * @param <C>
  */
-public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEvolution
-        implements Runnable, Evolution, Lookup.Provider, Callable<ParetoFrontQueue> {
+@ServiceProvider(service = Evolution.class)
+public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends BaseEvolution<I, E, C>
+        implements Runnable, Evolution<I, E, C>, Lookup.Provider, Callable<ParetoFrontQueue> {
 
     private static final String NAME = "Meta search";
     private static final Logger LOGGER = Logger.getLogger(MetaSearch.class.getName());
@@ -83,11 +88,6 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public Individual createIndividual() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -125,6 +125,10 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
             c = cluster(dataset, conf);
             System.out.println(c.size() + ": " + c.fingerprint());
             queue.add(c);
+            fireResult(c);
+            if (ph != null) {
+                ph.progress(cnt++);
+            }
         }
         System.out.println(queue.stats());
         queue.printRanking(new NMIsqrt());
@@ -146,7 +150,8 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         evaluators = ief.getAll();
 
         if (ph != null) {
-            int workunits = 5;
+            ClusteringFactory cf = ClusteringFactory.getInstance();
+            int workunits = cf.getAll().size();
             LOGGER.log(Level.INFO, "search workunits: {0}", workunits);
             ph.start(workunits);
         }
@@ -170,8 +175,20 @@ public class MetaSearch<E extends Instance, C extends Cluster<E>> extends BaseEv
         return queue;
     }
 
+    private void fireResult(Clustering<E, C> clustering) {
+        I[] individuals = (I[]) new SimpleIndividual[]{new SimpleIndividual(clustering)};
+        for (EvolutionListener listener : evoListeners) {
+            listener.resultUpdate(individuals);
+        }
+    }
+
     public HashMap<String, Double> getMeta() {
         return meta;
+    }
+
+    @Override
+    public I createIndividual() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
