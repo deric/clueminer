@@ -30,6 +30,7 @@ import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.ARFFHandler;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import org.junit.Before;
@@ -223,7 +224,8 @@ public class BaseClusterTest {
     @Test
     public void testHashCode() {
         int hash = irisClusters.hashCode();
-        assertEquals(true, hash > 0);
+        System.out.println("iris hash: " + hash);
+        assertNotEquals(0, hash);
         assertEquals(false, irisClusters.get(0).hashCode() == irisClusters.get(1).hashCode());
         assertEquals(false, irisClusters.get(0).hashCode() == irisClusters.get(2).hashCode());
         assertEquals(false, irisClusters.get(1).hashCode() == irisClusters.get(2).hashCode());

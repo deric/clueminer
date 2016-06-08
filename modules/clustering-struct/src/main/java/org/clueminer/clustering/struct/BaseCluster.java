@@ -222,7 +222,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
         for (E elem : this) {
             hash += elem.hashCode();
         }
-        return hash;
+        return hash * (size() + 1) >>> 1;
     }
 
     @Override
