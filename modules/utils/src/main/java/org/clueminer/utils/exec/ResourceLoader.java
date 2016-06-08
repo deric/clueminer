@@ -208,7 +208,8 @@ public abstract class ResourceLoader {
     }
 
     public static String safeName(String name) {
-        return name.toLowerCase().replace(" ", "_");
+        String str = name.toLowerCase().replace(" ", "_");
+        return str.replace("/", "-").replace("\\", "-");
     }
 
     public static String readFile(File file) throws FileNotFoundException, IOException {
