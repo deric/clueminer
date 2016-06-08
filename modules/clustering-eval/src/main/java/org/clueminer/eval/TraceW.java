@@ -26,6 +26,9 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * This index has been one of the most popular indices suggested for use in clustering context
+ * (Milligan and Cooper 1985; Edwards and Cavalli-Sforza 1965; Friedman and Rubin 1967;
+ * Orloci 1967; Fukunaga and Koontz 1970).
  *
  * @author deric
  * @param <E>

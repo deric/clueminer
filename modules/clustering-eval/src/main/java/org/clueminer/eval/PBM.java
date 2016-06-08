@@ -26,13 +26,15 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @param <E>
- * @param <C>
+ * Named after its authors Pakhira, Bandyopadhyay and Maulik
+ *
  * @cite Pakhira, Malay K., Sanghamitra Bandyopadhyay, and Ujjwal Maulik.
  * "Validity index for crisp and fuzzy clusters." Pattern recognition 37.3
  * (2004): 487-501.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {

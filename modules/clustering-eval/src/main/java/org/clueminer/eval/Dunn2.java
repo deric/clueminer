@@ -25,7 +25,9 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.utils.Props;
 
 /**
+ * Alternative computation method.
  *
+ * @TODO: verify correctness
  * @author deric
  * @param <E>
  * @param <C>

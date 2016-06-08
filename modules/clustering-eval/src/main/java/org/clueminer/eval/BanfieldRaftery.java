@@ -49,7 +49,7 @@ public class BanfieldRaftery<E extends Instance, C extends Cluster<E>> extends A
         double score = 0.0;
         double tmp;
 
-        for (Cluster clust : clusters) {
+        for (C clust : clusters) {
             tmp = sumOfSquaredError(clust) / clust.size();
             //avoid undefined expressions
             if (tmp > 0) {
