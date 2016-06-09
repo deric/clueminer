@@ -16,18 +16,31 @@
  */
 package org.clueminer.meta.engine;
 
+import java.util.HashMap;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.external.NMIsum;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.report.MemInfo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <I>
+ * @param <E>
+ * @param <C>
  */
-public class MetaSearchTest {
+public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> {
 
-    private MetaSearch subject;
+    private final MetaSearch<I, E, C> subject;
     private MemInfo mem;
 
     public MetaSearchTest() {
@@ -42,20 +55,25 @@ public class MetaSearchTest {
     }
 
     @Test
-    public void testIris() {
-        subject.setDataset(FakeDatasets.irisDataset());
+    public void testIris() throws Exception {
+        subject.setDataset((Dataset<E>) FakeDatasets.irisDataset());
         subject.setGenerations(1);
         subject.setPopulationSize(5);
 
         mem.startClock();
-        //TODO: make sure evolution works
-        subject.run();
+        ParetoFrontQueue<E, C, Clustering<E, C>> q = subject.call();
+        HashMap<Double, Clustering<E, C>> ranking = q.computeRanking();
+        assertNotNull(ranking);
+        //there should be always 0.0 key (best solution)
+        assertTrue(ranking.containsKey(0.0));
+        q.printRanking(new NMIsum());
+
         mem.report();
     }
 
     //@Test
     public void testVehicle() {
-        subject.setDataset(FakeDatasets.vehicleDataset());
+        subject.setDataset((Dataset<E>) FakeDatasets.vehicleDataset());
         subject.setGenerations(1);
         subject.setPopulationSize(5);
 

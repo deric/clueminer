@@ -28,7 +28,8 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * @param <T>
+ * @param <E>
+ * @param <C>
  * @cite Ratkowsky, D. A., and G. N. Lance. "A criterion for determining the
  * number of groups in a classification." Australian Computer Journal 10.3
  * (1978): 115-117.

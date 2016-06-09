@@ -371,7 +371,7 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
 
     @Override
     public boolean isDeterministic() {
-        return false;
+        return true;
     }
 
 }
