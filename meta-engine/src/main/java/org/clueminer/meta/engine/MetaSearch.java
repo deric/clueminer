@@ -79,6 +79,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected int cnt;
     private ParetoFrontQueue q;
     private HashMap<String, Double> meta;
+    private int ndRepeat = 5;
 
     public MetaSearch() {
         super();
@@ -116,22 +117,33 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      */
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
-        Props conf;
-        Clustering<E, C> c;
+
         for (ClusteringAlgorithm alg : cf.getAll()) {
-            conf = new Props();
-            conf.put(AlgParams.ALG, alg.getName());
-            System.out.println("c: " + alg.getName());
-            c = cluster(dataset, conf);
+            execute(dataset, alg, queue);
+        }
+        System.out.println(queue.stats());
+        queue.printRanking(new NMIsqrt());
+    }
+
+    private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, ParetoFrontQueue queue) {
+        Props conf = new Props();
+        conf.put(AlgParams.ALG, alg.getName());
+        int repeat = 1;
+        int i = 0;
+        if (!alg.isDeterministic()) {
+            //repeat non-deterministic algorithms
+            repeat = ndRepeat;
+        }
+        do {
+            Clustering<E, C> c = cluster(dataset, conf);
             System.out.println(c.size() + ": " + c.fingerprint());
             queue.add(c);
             fireResult(c);
             if (ph != null) {
                 ph.progress(cnt++);
             }
-        }
-        System.out.println(queue.stats());
-        queue.printRanking(new NMIsqrt());
+            i++;
+        } while (i < repeat);
     }
 
     private Clustering<E, C> cluster(Dataset<E> dataset, Props conf) {
@@ -150,8 +162,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         evaluators = ief.getAll();
 
         if (ph != null) {
-            ClusteringFactory cf = ClusteringFactory.getInstance();
-            int workunits = cf.getAll().size();
+            int workunits = countClusteringJobs();
             LOGGER.log(Level.INFO, "search workunits: {0}", workunits);
             ph.start(workunits);
         }
@@ -168,11 +179,29 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         objectives.add(new RatkowskyLance<>());
         ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new McClainRao<E, C>());
 
-        landmark(dataset, queue);
         cnt = 0;
+        landmark(dataset, queue);
 
         finish();
         return queue;
+    }
+
+    /**
+     * Count number of clustering runs for single meta-search.
+     *
+     * @return
+     */
+    private int countClusteringJobs() {
+        ClusteringFactory cf = ClusteringFactory.getInstance();
+        int total = 0;
+        for (ClusteringAlgorithm alg : cf.getAll()) {
+            if (alg.isDeterministic()) {
+                total += 1;
+            } else {
+                total += ndRepeat;
+            }
+        }
+        return total;
     }
 
     private void fireResult(Clustering<E, C> clustering) {
@@ -184,6 +213,15 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public HashMap<String, Double> getMeta() {
         return meta;
+    }
+
+    /**
+     * Set how many times should be non-deterministic algorithms repeated.
+     *
+     * @param repeat
+     */
+    public void setNumNdRepeat(int repeat) {
+        this.ndRepeat = repeat;
     }
 
     @Override
