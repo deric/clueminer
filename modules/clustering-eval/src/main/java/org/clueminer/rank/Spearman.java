@@ -23,25 +23,33 @@ import org.clueminer.clustering.api.Rank;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Spearman's rank correlation coefficient
+ *
+ * @see https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient
  *
  * @author deric
  */
 @ServiceProvider(service = Rank.class)
 public class Spearman implements Rank {
 
-    private static final String name = "Spearman";
+    private static final String NAME = "Spearman";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double correlation(Clustering[] ref, Clustering[] curr, HashMap<Integer, Integer> map) {
         int size = curr.length;
         double corr = 0.0;
+        map.clear();
         for (int i = 0; i < size; i++) {
             map.put(ref[i].getId(), i);
+        }
+        if (map.size() != ref.length) {
+            throw new RuntimeException("clustering IDs are not unique! "
+                    + map.keySet().toString());
         }
 
         int diff;

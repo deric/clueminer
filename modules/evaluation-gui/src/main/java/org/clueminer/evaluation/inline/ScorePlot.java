@@ -292,7 +292,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 }
                 int assign;
 
-                for (Instance inst : dataset) {
+                for (E inst : dataset) {
                     if (inst.classValue() == null) {
                         LOGGER.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
                     } else {

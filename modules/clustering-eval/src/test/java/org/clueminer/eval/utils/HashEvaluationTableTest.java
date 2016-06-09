@@ -33,7 +33,7 @@ public class HashEvaluationTableTest {
 
     private HashEvaluationTable subject;
     private static Clustering irisCorrect;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public HashEvaluationTableTest() {
         subject = new HashEvaluationTable(irisCorrect, FakeDatasets.irisDataset());
@@ -47,7 +47,7 @@ public class HashEvaluationTableTest {
     @Test
     public void testGetScore() {
         double score = subject.getScore(new Precision());
-        assertEquals(1.0, score, delta);
+        assertEquals(1.0, score, DELTA);
     }
 
     @Test
