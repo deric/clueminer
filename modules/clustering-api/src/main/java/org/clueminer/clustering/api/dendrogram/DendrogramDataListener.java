@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.api.dendrogram;
 
 import java.util.EventListener;
@@ -8,7 +24,7 @@ import java.util.EventListener;
  */
 public interface DendrogramDataListener extends EventListener {
 
-    public void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset);
+    void datasetChanged(DendrogramDataEvent evt, DendrogramMapping dataset);
 
     /**
      *
@@ -17,7 +33,7 @@ public interface DendrogramDataListener extends EventListener {
      * @param isAdjusting when true user is changing the value with some slider,
      *                    so we should draw the result as fast as possible
      */
-    public void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting);
+    void cellWidthChanged(DendrogramDataEvent evt, int width, boolean isAdjusting);
 
     /**
      *
@@ -26,5 +42,5 @@ public interface DendrogramDataListener extends EventListener {
      * @param isAdjusting when true user is changing the value with some slider,
      *                    so we should draw the result as fast as possible
      */
-    public void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting);
+    void cellHeightChanged(DendrogramDataEvent evt, int height, boolean isAdjusting);
 }

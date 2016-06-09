@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.distance.api;
 
 import java.io.Serializable;
 import org.clueminer.math.Vector;
 
 /**
+ * Measure similarity (proximity) between two objects (data vectors)
  *
  * @author Tomas Barton
  */
@@ -25,8 +42,8 @@ public interface Distance extends Serializable {
      * functions weighting does not make sense, in that case method will throw
      * an exception
      *
-     * @param x first instance
-     * @param y second instance
+     * @param x       first instance
+     * @param y       second instance
      * @param weights multiplication factor (usually between 0 and 1)
      * @return
      */
@@ -45,7 +62,7 @@ public interface Distance extends Serializable {
      * @param x - the first distance, similarity or correlation
      * @param y - the second distance, similarity or correlation
      * @return true if the first distance is better than the second, false in
-     * other cases.
+     *         other cases.
      */
     boolean compare(double x, double y);
 
@@ -60,7 +77,7 @@ public interface Distance extends Serializable {
      *
      *
      * @return minimum possible value of the distance metric, if is possible to
-     * determine it (otherwise Double.NaN)
+     *         determine it (otherwise Double.NaN)
      */
     double getMinValue();
 
@@ -92,7 +109,7 @@ public interface Distance extends Serializable {
      * d(x, z) ≤ d(x, y) + d(y, z) - triangle inequality
      *
      * @return true if this distance metric supports the triangle inequality,
-     * false if it does not.
+     *         false if it does not.
      */
     boolean isSubadditive();
 

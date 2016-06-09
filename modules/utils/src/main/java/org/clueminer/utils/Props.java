@@ -34,10 +34,10 @@ import java.util.Set;
 import org.openide.util.Exceptions;
 
 /**
- * An advance string map. It's an extension of
+ * An advance key-value map. It's an extension of
  * {@code java.util.Map<String, String>}
  * <p>
- * This map should work similar to {@code java.util.Properties} but with many
+ * This map should work similar to {@code java.util.Properties} but with several
  * more advance features. We limit the storage to only key=String and
  * value=String, thus calling this a String Map, or Props. This class also
  * provides many basic types conversion getter methods for convenience.

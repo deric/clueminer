@@ -25,11 +25,11 @@ import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 
 /**
- * General clustering algorithm interface
+ * General clustering algorithm interface.
  *
  * @author Tomas Barton
- * @param <E>
- * @param <C>
+ * @param <E> data row representation
+ * @param <C> cluster structure
  */
 public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
 
@@ -45,8 +45,18 @@ public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
      */
     Clustering<E, C> cluster(Dataset<E> dataset, Props props);
 
+    /**
+     * Function for determining distance between data vectors ({@link Instance})
+     *
+     * @return function measuring proximity of two objects
+     */
     Distance getDistanceFunction();
 
+    /**
+     * Set distance function. Value might be overridden using {@link Props}
+     *
+     * @param dm distance function
+     */
     void setDistanceFunction(Distance dm);
 
     /**
@@ -70,6 +80,12 @@ public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
      */
     void setProgressHandle(ProgressHandle ph);
 
+    /**
+     * Many algorithms provide wide options of configuration. {@link Parameter}
+     * provides information about type eventually possible values of each parameter.
+     *
+     * @return algorithm parameters
+     */
     Parameter[] getParameters();
 
     /**
