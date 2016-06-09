@@ -138,6 +138,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
         //final clustering to be returned
         Clustering<E, C> clustering = new ClusterList<>(k);
+        clustering.lookupAdd(dataset);
         //use part of dataset to create initial clustering
         if (props.getBoolean(SAMPLING, true)) {
             sampleData(dataset, clustering, outliers, props);
@@ -156,7 +157,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
             }
             clustering.add((C) outliers);
         }
-        clustering.lookupAdd(dataset);
         clustering.setParams(props);
         return clustering;
     }
@@ -212,7 +212,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         //int numPartition = n / (numberOfPartitions * reducingFactor * k);
         //logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
-        ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction);
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction, colorGenerator);
 
         eliminateOutliers(clusterSet, clustering, outliers);
     }

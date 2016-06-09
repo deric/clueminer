@@ -19,6 +19,7 @@ package org.clueminer.clustering.algorithm.cure;
 import java.util.logging.Logger;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.colors.RandomColorsGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.log.ClmLog;
@@ -36,10 +37,6 @@ import org.junit.Test;
 public class CURETest {
 
     private CURE subject;
-
-    public CURETest() {
-
-    }
 
     @Before
     public void setUp() {
@@ -67,12 +64,14 @@ public class CURETest {
 
     @Test
     public void testCluster() {
+        subject.setColorGenerator(new RandomColorsGenerator());
         Dataset<? extends Instance> dataset = FakeClustering.schoolData();
         Props params = new Props();
         params.putInt(CURE.K, 2);
         //cluster all data, no subsets
         params.putBoolean(CURE.SAMPLING, false);
         Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+
         assertNotNull(clustering);
         assertEquals(2, clustering.size());
         printClustering(clustering);
@@ -83,6 +82,7 @@ public class CURETest {
             } else {
                 assertEquals(15, c.size());
             }
+            assertNotNull(c.getColor());
         }
     }
 

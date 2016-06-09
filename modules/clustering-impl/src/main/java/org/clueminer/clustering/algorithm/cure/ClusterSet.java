@@ -23,6 +23,7 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -67,14 +68,16 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private Distance dm;
     private Clustering<E, C> clustering;
     private static int clusterCnt;
+    private ColorGenerator cg;
 
-    public ClusterSet(Dataset<E> dataset, int numberOfClusters, Props props, Distance dist) {
+    public ClusterSet(Dataset<E> dataset, int numberOfClusters, Props props, Distance dist, ColorGenerator cg) {
         numberofRepInCluster = props.getInt(CURE.NUM_REPRESENTATIVES, 10);
         shrinkFactor = props.getDouble(CURE.SHRINK_FACTOR, 0.3);
         clusterCnt = 0;
         dm = dist;
         cc = new CureComparator<>();
         k = numberOfClusters;
+        this.cg = cg;
 
         try {
             buildHeapAndTree(dataset);
@@ -89,6 +92,9 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         CureCluster<E> cluster = new CureCluster<>();
         cluster.setClusterId(clusterCnt++);
         cluster.setAttributes(dataset.getAttributes());
+        if (cg != null) {
+            cluster.setColor(cg.next());
+        }
         return (C) cluster;
     }
 
@@ -158,7 +164,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      * Find k-th nearest neighbors
      *
      * @param needle
-     * @param k with 1 retrieves the nearest neighbor
+     * @param k      with 1 retrieves the nearest neighbor
      * @return
      */
     private C nearest(E needle, int k) {
@@ -281,7 +287,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      *
      * @param x
      * @param maxDist distance to another cluster which will be considered as
-     * closest if we don't find closer cluster
+     *                closest if we don't find closer cluster
      * @return null if neighbor can't be found in maxDist (Euclidean distance)
      */
     private CureCluster<E> closestCluster(C x, double maxDist) {
@@ -332,7 +338,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     /**
      * Computes the min distance of a point from the group of points
      *
-     * @param p Point p
+     * @param p       Point p
      * @param cluster Group of points
      * @return double The Minimum Euclidean Distance
      */

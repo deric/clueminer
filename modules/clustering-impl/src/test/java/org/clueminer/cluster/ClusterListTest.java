@@ -90,23 +90,6 @@ public class ClusterListTest {
         assertEquals(true, clusters.hasAt(2));
     }
 
-    /**
-     * Test of getClusterLabel method, of class ClusterList.
-     */
-    @Test
-    public void testGetClusterLabel() {
-    }
-
-    /**
-     * Test of put method, of class ClusterList.
-     */
-    @Test
-    public void testPut_Cluster() {
-    }
-
-    /**
-     * Test of put method, of class ClusterList.
-     */
     @Test
     public void testPut_rand_idx() {
         ClusterList subject = new ClusterList(10);
@@ -155,16 +138,6 @@ public class ClusterListTest {
 
     }
 
-    /**
-     * Test of merge method, of class ClusterList.
-     */
-    @Test
-    public void testMerge() {
-    }
-
-    /**
-     * Test of instancesCount method, of class ClusterList.
-     */
     @Test
     public void testInstancesCount() {
         assertEquals(data.size(), clusters.instancesCount());
