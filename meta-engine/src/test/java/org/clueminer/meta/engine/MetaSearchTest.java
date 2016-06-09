@@ -64,8 +64,8 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         ParetoFrontQueue<E, C, Clustering<E, C>> q = subject.call();
         SortedMap<Double, Clustering<E, C>> ranking = q.computeRanking();
         assertNotNull(ranking);
-        //there should be always 0.0 key (best solution)
-        assertTrue(ranking.containsKey(0.0));
+        //there should be always 1.0 key (best solution)
+        assertTrue(ranking.containsKey(1.0));
         q.printRanking(new NMIsum());
 
         mem.report();

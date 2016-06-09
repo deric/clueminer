@@ -362,7 +362,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      */
     public SortedMap<Double, Clustering<E, C>> computeRanking() {
         SortedMap<Double, Clustering<E, C>> res = new TreeMap<>();
-        double rank = 0.0, inc;
+        double rank = 1.0, inc;
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);
             Iterator<P> iter = curr.iterator();
@@ -374,14 +374,14 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                 res.put(rank, clustering);
                 rank += inc;
             }
-            rank = j + 1;
+            rank = j + 2;
         }
         return res;
     }
 
     public void printRanking(ClusterEvaluation eval) {
         StringBuilder sb = new StringBuilder();
-        double rank = 0.0, inc;
+        double rank = 1.0, inc;
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);
             Iterator<P> iter = curr.iterator();
@@ -397,7 +397,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                 sb.append(clustering.getParams().toJson()).append("\n");
                 rank += inc;
             }
-            rank = j + 1;
+            rank = j + 2;
         }
         System.out.println(sb.toString());
     }
