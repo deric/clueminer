@@ -199,8 +199,7 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
      * Return instance at given index - only for rows
      *
      * @param index
-     * @deprecated in future only {@link DataVector} will be supported
-     * @return
+     * @return data row
      */
     E getInstance(int index);
 
