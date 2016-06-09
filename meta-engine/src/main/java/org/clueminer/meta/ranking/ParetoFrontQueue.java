@@ -19,10 +19,11 @@ package org.clueminer.meta.ranking;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -359,8 +360,8 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      *
      * @return map of ranks and clusterings
      */
-    public HashMap<Double, Clustering<E, C>> computeRanking() {
-        HashMap<Double, Clustering<E, C>> res = new HashMap<>();
+    public SortedMap<Double, Clustering<E, C>> computeRanking() {
+        SortedMap<Double, Clustering<E, C>> res = new TreeMap<>();
         double rank = 0.0, inc;
         for (int j = 0; j < fronts.length; j++) {
             Heap<P> curr = getFront(j);

@@ -16,7 +16,7 @@
  */
 package org.clueminer.meta.engine;
 
-import java.util.HashMap;
+import java.util.SortedMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -62,7 +62,7 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
 
         mem.startClock();
         ParetoFrontQueue<E, C, Clustering<E, C>> q = subject.call();
-        HashMap<Double, Clustering<E, C>> ranking = q.computeRanking();
+        SortedMap<Double, Clustering<E, C>> ranking = q.computeRanking();
         assertNotNull(ranking);
         //there should be always 0.0 key (best solution)
         assertTrue(ranking.containsKey(0.0));
