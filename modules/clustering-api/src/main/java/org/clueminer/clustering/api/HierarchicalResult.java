@@ -174,23 +174,6 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
 
     /**
      *
-     * @param idx
-     *
-     * @return height of dendrogram tree at given node index
-     * @deprecated
-     */
-    double treeHeightAt(int idx);
-
-    /**
-     *
-     * @param idx
-     * @return
-     * @deprecated
-     */
-    int treeOrder(int idx);
-
-    /**
-     *
      * @return maximum height of dendrogram tree
      */
     double getMaxTreeHeight();

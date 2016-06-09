@@ -455,16 +455,6 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         return 0;
     }
 
-    @Override
-    public double treeHeightAt(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public int treeOrder(int idx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * TODO: this is hardly correct
      *

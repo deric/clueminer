@@ -1,8 +1,24 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -14,51 +30,18 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = CutoffStrategy.class)
 public class NaiveCutoff implements CutoffStrategy {
 
-    public static final String name = "naive cutoff";
+    public static final String NAME = "naive cutoff";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double findCutoff(HierarchicalResult hclust, Props params) {
-        double res;
-        /**
-         * TODO remove this in next version
-         */
-        try {
-            res = findCutoffOld(hclust);
-        } catch (Exception e) {
-            res = findCutoffNg(hclust);
-        }
-        return res;
+        return findCutoffNg(hclust);
     }
 
-    /**
-     *
-     * @param hclust
-     * @return
-     * @deprecated
-     */
-    public double findCutoffOld(HierarchicalResult hclust) {
-        double lower = 0.0, upper, dist;
-        double max = Double.MIN_VALUE;
-        double max_l = 0.0;
-        int idx;
-        for (int i = 0; i < hclust.treeLevels(); i++) {
-            idx = hclust.treeOrder(i);
-            upper = hclust.treeHeightAt(idx);
-            dist = upper - lower;
-            if (dist > max) {
-                max = dist;
-                max_l = lower; //lower part of the branch
-            }
-            //upper becomes lower, moving to next level
-            lower = upper;
-        }
-        return (max / 2 + max_l);
-    }
 
     /**
      * Search for the highest distance between tree levels (might determine a
