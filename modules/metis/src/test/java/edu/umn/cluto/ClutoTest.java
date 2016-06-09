@@ -16,43 +16,56 @@
  */
 package edu.umn.cluto;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.SystemInfo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class ClutoTest {
+public class ClutoTest<E extends Instance, C extends Cluster<E>> {
 
-    private final Cluto subject;
+    private Cluto subject;
 
-    public ClutoTest() {
-        subject = new Cluto();
+    @Before
+    public void setUpClass() {
+        subject = new Cluto<>();
     }
 
     @Test
     public void testCluster() {
-        Dataset<? extends Instance> dataset = FakeDatasets.schoolData();
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.schoolData();
+        subject.setColorGenerator(new ColorBrewer());
         Props params = new Props();
         params.put("k", 3);
         assertEquals(17, dataset.size());
         if (subject.getBinary().exists() && SystemInfo.isLinux()) {
-            Clustering clustering = subject.cluster(dataset, params);
+            Clustering<E, C> clustering = subject.cluster(dataset, params);
             assertEquals(2, clustering.size());
             assertEquals(dataset.size(), clustering.instancesCount());
+            for (C c : clustering) {
+                assertNotNull(c.getColor());
+                assertTrue(c.size() > 0);
+            }
         }
     }
 
     @Test
     public void testGlass() {
-        Dataset<? extends Instance> dataset = FakeDatasets.glassDataset();
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.glassDataset();
         Props params = new Props();
         params.put("k", 9);
         assertEquals(214, dataset.size());
