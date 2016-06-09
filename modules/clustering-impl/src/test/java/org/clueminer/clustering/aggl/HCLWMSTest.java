@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.aggl;
 
 import org.clueminer.attributes.BasicAttrType;
@@ -15,11 +31,9 @@ import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
 
 /**
  *
@@ -28,17 +42,9 @@ import static org.junit.Assert.assertNotNull;
 public class HCLWMSTest {
 
     private final HCLWMS subject = new HCLWMS();
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public HCLWMSTest() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     private Dataset<? extends Instance> simpleData() {
@@ -106,7 +112,7 @@ public class HCLWMSTest {
         tree.print();
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.215870331449522, root.getHeight(), delta);
+        assertEquals(0.215870331449522, root.getHeight(), DELTA);
     }
 
     @Test
@@ -126,7 +132,7 @@ public class HCLWMSTest {
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
         //assertEquals(47.18370587395614, root.getHeight(), delta);
-        assertEquals(32.54273498033004, root.getHeight(), delta);
+        assertEquals(32.54273498033004, root.getHeight(), DELTA);
     }
 
     @Test
@@ -160,7 +166,7 @@ public class HCLWMSTest {
 
         assertEquals(dataset.size(), tree.numLeaves());
         DendroNode root = tree.getRoot();
-        assertEquals(0.38600518131237566, root.getHeight(), delta);
+        assertEquals(0.38600518131237566, root.getHeight(), DELTA);
     }
 
 }

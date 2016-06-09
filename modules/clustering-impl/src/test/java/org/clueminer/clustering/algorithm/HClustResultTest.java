@@ -1,11 +1,27 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.algorithm;
 
 import java.util.HashSet;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -27,7 +43,7 @@ public class HClustResultTest {
     private static AgglomerativeClustering algorithm;
     private static Dataset<? extends Instance> dataset;
     private static HierarchicalResult rowsResult;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public HClustResultTest() {
     }
@@ -56,65 +72,6 @@ public class HClustResultTest {
 
     }
 
-    /**
-     * Test of getIntAssignments method, of class HClustResult.
-     */
-    @Test
-    public void testGetIntAssignments() {
-    }
-
-    /**
-     * Test of setMapping method, of class HClustResult.
-     */
-    @Test
-    public void testSetIntAssignments() {
-    }
-
-    /**
-     * Test of getAssignments method, of class HClustResult.
-     */
-    @Test
-    public void testGetAssignments() {
-    }
-
-    /**
-     * Test of toAssignments method, of class HClustResult.
-     */
-    @Test
-    public void testToAssignments() {
-    }
-
-    /**
-     * Test of getNumClusters method, of class HClustResult.
-     */
-    @Test
-    public void testGetNumClusters() {
-    }
-
-    /**
-     * Test of setNumClusters method, of class HClustResult.
-     */
-    @Test
-    public void testSetNumClusters() {
-    }
-
-    /**
-     * Test of getClustering method, of class HClustResult.
-     */
-    @Test
-    public void testGetClustering_0args() {
-    }
-
-    /**
-     * Test of getClustering method, of class HClustResult.
-     */
-    @Test
-    public void testGetClustering_Dataset() {
-    }
-
-    /**
-     * Test of getClusters method, of class HClustResult.
-     */
     @Test
     public void testGetClusters() {
         Clustering c, prev = rowsResult.getClustering();
@@ -130,7 +87,7 @@ public class HClustResultTest {
     @Test
     public void testUpdateCutoff() {
         double height = rowsResult.getMaxTreeHeight();
-        assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), delta);
+        assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), DELTA);
         double inc = 0.1;
         double cut = height;
         Clustering c, prev = null;
@@ -151,97 +108,9 @@ public class HClustResultTest {
         Dump.array(clusters, "clusters");
     }
 
-    /**
-     * Test of getCutoff method, of class HClustResult.
-     */
-    @Test
-    public void testGetCutoff() {
-    }
-
-    /**
-     * Test of cutTreeByLevel method, of class HClustResult.
-     */
     @Test
     public void testCutTreeByLevel() {
         rowsResult.findCutoff();
-
-    }
-
-    /**
-     * Test of findCutoff method, of class HClustResult.
-     */
-    @Test
-    public void testFindCutoff_0args() {
-    }
-
-    /**
-     * Test of findCutoff method, of class HClustResult.
-     */
-    @Test
-    public void testFindCutoff_CutoffStrategy() {
-    }
-
-    /**
-     * Test of getScores method, of class HClustResult.
-     */
-    @Test
-    public void testGetScores() {
-    }
-
-    /**
-     * Test of getScore method, of class HClustResult.
-     */
-    @Test
-    public void testGetScore() {
-    }
-
-    /**
-     * Test of setScores method, of class HClustResult.
-     */
-    @Test
-    public void testSetScores() {
-    }
-
-    /**
-     * Test of isScoreCached method, of class HClustResult.
-     */
-    @Test
-    public void testIsScoreCached() {
-    }
-
-    /**
-     * Test of getDataset method, of class HClustResult.
-     */
-    @Test
-    public void testGetDataset() {
-    }
-
-    /**
-     * Test of distinctHeights method, of class HClustResult.
-     */
-    @Test
-    public void testTreeLevels() {
-    }
-
-    /**
-     * Test of treeHeightAt method, of class HClustResult.
-     */
-    @Test
-    public void testTreeHeightAt() {
-    }
-
-    /**
-     * Test of treeOrder method, of class HClustResult.
-     */
-    @Test
-    public void testTreeOrder() {
-    }
-
-    /**
-     * Test of getMaxTreeHeight method, of class HClustResult.
-     */
-    @Test
-    public void testGetMaxTreeHeight() {
     }
 
     /**
@@ -281,24 +150,4 @@ public class HClustResultTest {
         //@TODO implement tests
     }
 
-    /**
-     * Test of getMerges method, of class HClustResult.
-     */
-    @Test
-    public void testGetMerges() {
-    }
-
-    /**
-     * Test of setMerges method, of class HClustResult.
-     */
-    @Test
-    public void testSetMerges() {
-    }
-
-    /**
-     * Test of getVector method, of class HClustResult.
-     */
-    @Test
-    public void testGetInstance() {
-    }
 }

@@ -1,10 +1,26 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.clustering.order;
 
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
@@ -26,7 +42,7 @@ public class MOLOTest {
     private static AgglomerativeClustering algorithm;
     private static Dataset<? extends Instance> dataset;
     private static HierarchicalResult rowsResult;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
     private static MOLO subject;
 
     @BeforeClass
@@ -52,7 +68,7 @@ public class MOLOTest {
     //@Test
     public void testOptimize_HierarchicalResult() {
         double height = rowsResult.getMaxTreeHeight();
-        assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), delta);
+        assertEquals(height, rowsResult.getTreeData().getRoot().getHeight(), DELTA);
         double inc = 0.1;
         double cut = height;
         Clustering c, prev = null;
@@ -79,16 +95,9 @@ public class MOLOTest {
     }
 
     @Test
-    public void testSortSmallest() {
-    }
-
-    @Test
     public void testSortSmallestReverse() {
         //subject.optimize(rowsResult, true);
     }
 
-    @Test
-    public void testInOrderScore() {
-    }
 
 }
