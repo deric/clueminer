@@ -209,4 +209,9 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
     public Configurator<E> getConfigurator() {
         return DBSCANParamEstim.getInstance();
     }
+
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
 }

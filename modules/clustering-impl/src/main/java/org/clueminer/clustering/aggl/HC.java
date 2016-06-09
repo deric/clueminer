@@ -389,7 +389,12 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     @Override
     public Configurator<E> getConfigurator() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return HCConfig.getInstance();
+    }
+
+    @Override
+    public boolean isDeterministic() {
+        return true;
     }
 
 }

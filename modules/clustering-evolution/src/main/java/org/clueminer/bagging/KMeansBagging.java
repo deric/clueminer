@@ -178,4 +178,10 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
         return KmbConfig.getInstance();
     }
 
+    @Override
+    public boolean isDeterministic() {
+        //TODO: stable when number of repetition is high enough
+        return true;
+    }
+
 }

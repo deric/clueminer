@@ -203,4 +203,14 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         return ClutoConfig.getInstance();
     }
 
+    /**
+     * Not entirely deterministic, but stable enough.
+     *
+     * @return
+     */
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
+
 }

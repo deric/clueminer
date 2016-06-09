@@ -44,7 +44,6 @@ import org.openide.util.lookup.ServiceProvider;
  * Mathematical Statistics and Probability", Berkeley, University of California
  * Press, 1:281-297
  *
- *
  * @author Thomas Abeel
  * @author Tomas Barton
  *
@@ -248,6 +247,16 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
     @Override
     public Configurator<E> getConfigurator() {
         return KMeansConfig.getInstance();
+    }
+
+    /**
+     * By default initial centers are randomized.
+     *
+     * @return
+     */
+    @Override
+    public boolean isDeterministic() {
+        return false;
     }
 
 }

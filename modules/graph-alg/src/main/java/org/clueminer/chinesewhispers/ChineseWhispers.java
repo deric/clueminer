@@ -37,6 +37,15 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Chinese Whispers is a clustering method used in network science named after
+ * a famous whispering game. Clustering methods are basically used to identify
+ * communities of nodes or links in a given network. This algorithm was designed
+ * by Chris Biemann and Sven Teresinak in 2005. The name comes from the fact
+ * that the process can be modeled as a separation of communities where
+ * the nodes send the same type of information to each other.
+ *
+ * @cite Chris Biemann,"Chinese Whispers- an Efficient Graph Clustering
+ * Algorithm and its Applications to Natural Language Processing Problems" 2006
  *
  * @author Hamster
  * @param <E>
@@ -142,5 +151,10 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
     @Override
     public Configurator<E> getConfigurator() {
         return CWConfig.getInstance();
+    }
+
+    @Override
+    public boolean isDeterministic() {
+        return false;
     }
 }

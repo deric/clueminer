@@ -31,7 +31,8 @@ import org.clueminer.utils.Props;
  * clustering
  *
  * @author Tomas Barton
- * @param <T>
+ * @param <E>
+ * @param <C>
  */
 public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBase<E, C> implements ClusteringAlgorithm<E, C> {
 
@@ -122,6 +123,11 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
     public Configurator<E> getConfigurator() {
         //we can use same approach as in case of k-means
         return KMeansConfig.getInstance();
+    }
+
+    @Override
+    public boolean isDeterministic() {
+        return true;
     }
 
 }

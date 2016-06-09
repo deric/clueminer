@@ -94,4 +94,11 @@ public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
      * @return parameter estimator
      */
     Configurator<E> getConfigurator();
+
+    /**
+     * Randomized algorithms (e.g. Lloyd's k-means) should return false.
+     *
+     * @return true when each run leads to same solution
+     */
+    boolean isDeterministic();
 }

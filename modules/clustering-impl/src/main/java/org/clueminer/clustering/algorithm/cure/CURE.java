@@ -324,4 +324,13 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
         return CUREConfig.getInstance();
     }
 
+    /**
+     * @TODO: depends on sub-sampling
+     * @return
+     */
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
+
 }

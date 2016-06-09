@@ -369,4 +369,9 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         return APConfig.getInstance();
     }
 
+    @Override
+    public boolean isDeterministic() {
+        return false;
+    }
+
 }

@@ -141,4 +141,9 @@ public class FastCommunityBin<E extends Instance, C extends Cluster<E>> extends 
         return FcConfig.getInstance();
     }
 
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
+
 }

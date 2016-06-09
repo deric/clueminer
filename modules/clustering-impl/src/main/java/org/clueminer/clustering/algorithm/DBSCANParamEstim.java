@@ -112,7 +112,7 @@ public class DBSCANParamEstim<E extends Instance> implements Configurator<E> {
             }
             //System.out.println(i + " => " + kx + ", max = " + max);
         }
-        System.out.println("max = " + max + ", at " + maxIdx);
+        //System.out.println("max = " + max + ", at " + maxIdx);
         return maxIdx;
     }
 

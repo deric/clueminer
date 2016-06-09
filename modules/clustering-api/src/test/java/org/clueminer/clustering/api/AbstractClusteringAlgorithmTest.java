@@ -49,6 +49,11 @@ public class AbstractClusteringAlgorithmTest {
             };
         }
 
+        @Override
+        public boolean isDeterministic() {
+            return true;
+        }
+
     }
 
 }

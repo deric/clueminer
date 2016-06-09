@@ -218,4 +218,9 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
     public Configurator<E> getConfigurator() {
         return FcConfig.getInstance();
     }
+
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
 }

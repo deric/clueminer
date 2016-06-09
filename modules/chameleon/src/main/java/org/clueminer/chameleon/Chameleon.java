@@ -269,4 +269,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     public Configurator<E> getConfigurator() {
         return ChameleonConfig.getInstance();
     }
+
+    @Override
+    public boolean isDeterministic() {
+        return true;
+    }
 }
