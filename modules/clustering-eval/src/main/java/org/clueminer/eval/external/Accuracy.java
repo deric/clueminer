@@ -31,11 +31,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class Accuracy extends AbstractCountingPairs {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Accuracy";
+    private static final String NAME = "Accuracy";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

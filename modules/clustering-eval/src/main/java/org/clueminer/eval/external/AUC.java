@@ -30,11 +30,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class AUC extends AbstractCountingPairs {
 
     private static final long serialVersionUID = -7408696944404937976L;
-    private static final String name = "AUC";
+    private static final String NAME = "AUC";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
