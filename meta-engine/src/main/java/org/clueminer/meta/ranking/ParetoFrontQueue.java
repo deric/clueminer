@@ -34,6 +34,8 @@ import org.clueminer.sort.Heap;
 import org.clueminer.utils.Duple;
 
 /**
+ * Multi-level queue that maintains several (<code>maxFront</code>) fronts,
+ * which are sorted according to at least two objectives.
  *
  * @author deric
  * @param <E> data row
@@ -47,14 +49,15 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     private int lastFront = 0;
     //maximum number of fronts
     private final int maxFront;
-    ArrayList<P> pairs;
+    //items that doesn't fit to any front
+    ArrayList<P> excluded;
     final HashSet<Integer> blacklist;
     private final ClusteringComparator<E, C> frontSorting;
     private int frontsRemoved = 0;
 
     public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
-        this.pairs = new ArrayList<>();
+        this.excluded = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = new HashSet<>();
@@ -72,7 +75,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     public ParetoFrontQueue(int max, HashSet<Integer> blacklist,
             List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
-        this.pairs = new ArrayList<>();
+        this.excluded = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
@@ -86,7 +89,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
      * @return first item or null
      */
     public P poll() {
-        if (isEmpty() && pairs.isEmpty()) {
+        if (isEmpty() && excluded.isEmpty()) {
             return null;
         }
         P item;
@@ -123,7 +126,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             }
             front = fronts[curr++];
         }
-        return pairs.size() > 0;
+        return excluded.size() > 0;
     }
 
     /**
@@ -168,7 +171,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                 }
             }
         }
-        return size + pairs.size();
+        return size + excluded.size();
     }
 
     @Override
@@ -218,7 +221,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         //try to insert into first front
         if (!insertIntoFront(pair, 0)) {
             //if item doesn't fit into pareto front, save it for later
-            pairs.add(pair);
+            excluded.add(pair);
         }
     }
 
@@ -263,7 +266,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             //move last front to "do it later" list
             Iterator<P> iter = fronts[maxFront - 1].iterator();
             while (iter.hasNext()) {
-                pairs.add(iter.next());
+                excluded.add(iter.next());
             }
             //free memory
             fronts[maxFront - 1] = null;
@@ -290,7 +293,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     }
 
     void rebuildQueue() {
-        if (pairs.isEmpty() || blacklist.isEmpty()) {
+        if (excluded.isEmpty() || blacklist.isEmpty()) {
             return;
         }
         Iterator<P> iter;
@@ -300,26 +303,26 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                 iter = front.iterator();
                 while (iter.hasNext()) {
                     elem = iter.next();
-                    pairs.add(elem);
+                    excluded.add(elem);
                 }
                 front.clear();
             }
         }
 
         P clustering;
-        int originalSize = (pairs.size() - 1);
+        int originalSize = (excluded.size() - 1);
         int size;
         for (int i = originalSize; i >= 0; i--) {
             //index of last item
-            size = pairs.size() - 1;
-            clustering = pairs.get(i);
+            size = excluded.size() - 1;
+            clustering = excluded.get(i);
 
             if (blacklist.contains(clustering.getParams().hashCode())) {
                 //remove the item
-                removePair(pairs, clustering, i, size);
+                removePair(excluded, clustering, i, size);
             } else if (insertIntoFront(clustering, 0)) {
                 //item is in the front, we can remove it
-                removePair(pairs, clustering, i, size);
+                removePair(excluded, clustering, i, size);
             }
             //dumpPairs();
         }
@@ -345,8 +348,8 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     protected void dumpPairs() {
         P pair;
         StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < pairs.size(); j++) {
-            pair = pairs.get(j);
+        for (int j = 0; j < excluded.size(); j++) {
+            pair = excluded.get(j);
             if (j > 0) {
                 sb.append(", ");
             }
@@ -399,6 +402,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             }
             rank = j + 2;
         }
+        sb.append("excluded: ").append(excluded.size());
         System.out.println(sb.toString());
     }
 
