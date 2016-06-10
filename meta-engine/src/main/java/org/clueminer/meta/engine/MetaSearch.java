@@ -136,11 +136,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
         do {
             Clustering<E, C> c = cluster(dataset, conf);
-            System.out.println(c.size() + ": " + c.fingerprint());
+            c.setId(cnt++);
             queue.add(c);
             fireResult(c);
             if (ph != null) {
-                ph.progress(cnt++);
+                ph.progress(cnt);
             }
             i++;
         } while (i < repeat);

@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.engine;
 
+import java.util.HashSet;
 import java.util.SortedMap;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -26,6 +27,7 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.report.MemInfo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -67,6 +69,13 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         //there should be always 1.0 key (best solution)
         assertTrue(ranking.containsKey(1.0));
         q.printRanking(new NMIsum());
+        HashSet<Integer> ids = new HashSet<>(q.size());
+        for (Clustering<E, C> c : ranking.values()) {
+            //for computing ranking correlations we need unique id's
+            ids.add(c.getId());
+        }
+        //make sure each clustering has unique ID
+        assertEquals(q.size(), ids.size());
 
         mem.report();
     }
