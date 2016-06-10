@@ -130,4 +130,8 @@ public class DominanceComparator<E extends Instance, C extends Cluster<E>> imple
         }
         return result;
     }
+
+    public List<ClusterEvaluation> getObjectives() {
+        return objectives;
+    }
 }

@@ -535,4 +535,12 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         sb.append("]");
         return sb.toString();
     }
+
+    public List<ClusterEvaluation> getObjectives() {
+        return comparator.getObjectives();
+    }
+
+    public ClusterEvaluation getSortingObjectives() {
+        return frontSorting.getEvaluator();
+    }
 }
