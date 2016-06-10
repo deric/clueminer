@@ -48,7 +48,8 @@ public class Spearman implements Rank {
             map.put(ref[i].getId(), i);
         }
         if (map.size() != ref.length) {
-            throw new RuntimeException("clustering IDs are not unique! "
+            throw new RuntimeException("clustering IDs are not unique! Map contains " + map.size()
+                    + " elements, while reference solutions " + ref.length
                     + map.keySet().toString());
         }
 
