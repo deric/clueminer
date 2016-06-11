@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.processor.ui;
 
 import javax.swing.JPanel;
@@ -16,12 +32,14 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
 
     private static final long serialVersionUID = -1117775885334856126L;
     private CsvImporter importer;
+    private boolean initialized = false;
 
     /**
      * Creates new form CsvImporterUI
      */
     public CsvImporterUI() {
         initComponents();
+        initialized = true;
     }
 
     @Override
@@ -170,18 +188,24 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
                 break;
         }
         importer.setSeparator(separator);
-        fireImporterChanged();
+        if (initialized) {
+            fireImporterChanged();
+        }
     }//GEN-LAST:event_comboSeparatorActionPerformed
 
     private void chckHeaderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckHeaderActionPerformed
         importer.setHasHeader(chckHeader.isSelected());
-        fireImporterChanged();
+        if (initialized) {
+            fireImporterChanged();
+        }
     }//GEN-LAST:event_chckHeaderActionPerformed
 
     private void chckQuotationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckQuotationActionPerformed
         if (importer.isIgnoreQuotations() != chckQuotation.isSelected()) {
             importer.setIgnoreQuotations(chckQuotation.isSelected());
-            fireImporterChanged();
+            if (initialized) {
+                fireImporterChanged();
+            }
         }
 
     }//GEN-LAST:event_chckQuotationActionPerformed
@@ -189,14 +213,18 @@ public class CsvImporterUI extends AbstractImporterUI implements ImporterUI {
     private void chckStrictQuotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckStrictQuotesActionPerformed
         if (importer.isStrictQuotes() != chckStrictQuotes.isSelected()) {
             importer.setStrictQuotes(chckStrictQuotes.isSelected());
-            fireImporterChanged();
+            if (initialized) {
+                fireImporterChanged();
+            }
         }
     }//GEN-LAST:event_chckStrictQuotesActionPerformed
 
     private void chckMissingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckMissingActionPerformed
-        if(importer.isReplaceMissingValues() != chckMissing.isSelected()){
+        if (importer.isReplaceMissingValues() != chckMissing.isSelected()) {
             importer.setReplaceMissingValues(chckMissing.isSelected());
-            fireImporterChanged();
+            if (initialized) {
+                fireImporterChanged();
+            }
         }
     }//GEN-LAST:event_chckMissingActionPerformed
 
