@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.importer.impl;
 
 import java.io.IOException;
@@ -7,14 +23,15 @@ import java.util.HashSet;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
+import org.clueminer.io.importer.api.Report;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -24,7 +41,8 @@ import org.openide.util.Exceptions;
 public class CsvImporterTest {
 
     private CsvImporter subject;
-    private static final CommonFixture fixtures = new CommonFixture();
+    private static final CommonFixture FIX = new CommonFixture();
+    private static final MLearnFixture ML = new MLearnFixture();
 
     @Before
     public void setUp() {
@@ -32,92 +50,51 @@ public class CsvImporterTest {
         //subject.setLoader(new DraftContainer());
     }
 
-    /**
-     * Test of getName method, of class CsvImporter.
-     */
     @Test
     public void testGetName() {
         assertEquals("CSV", subject.getName());
     }
 
-    /**
-     * Test of getSeparator method, of class CsvImporter.
-     */
     @Test
     public void testGetSeparator() {
         //default separator should be comma
         assertEquals(',', subject.getSeparator());
     }
 
-    /**
-     * Test of setSeparator method, of class CsvImporter.
-     */
     @Test
     public void testSetSeparator() {
         subject.setSeparator(';');
         assertEquals(';', subject.getSeparator());
     }
 
-    /**
-     * Test of setReader method, of class CsvImporter.
-     */
     @Test
-    public void testSetReader() {
-    }
-
-    /**
-     * Test of getFile method, of class CsvImporter.
-     */
-    @Test
-    public void testGetFile() {
-    }
-
-    /**
-     * Test of isAccepting method, of class CsvImporter.
-     */
-    @Test
-    public void testIsAccepting() {
-    }
-
-    /**
-     * Test of execute method, of class CsvImporter.
-     *
-     * @throws java.io.IOException
-     */
-    //   @Test
     public void testExecute() throws IOException {
         Container container = new DraftContainer();
 
-        subject.execute(container, FileUtil.toFileObject(fixtures.irisData()));
-        assertEquals(150, container.getNumberOfLines());
+        subject.execute(container, FIX.irisData());
+        assertEquals(151, container.getNumberOfLines());
+
     }
 
-    /**
-     * Test of getReport method, of class CsvImporter.
-     */
     @Test
-    public void testGetReport() {
-    }
+    public void testDataImport() throws IOException {
+        Container container = new DraftContainer();
 
-    /**
-     * Test of getFileTypes method, of class CsvImporter.
-     */
-    @Test
-    public void testGetFileTypes() {
-    }
+        subject.execute(container, ML.correlations());
+        assertEquals(28, container.getNumberOfLines());
+        assertEquals(40, container.getAttributeCount());
 
-    /**
-     * Test of isMatchingImporter method, of class CsvImporter.
-     */
-    @Test
-    public void testIsMatchingImporter() {
-    }
+        Attribute attr = container.getAttribute(0);
+        assertEquals(BasicAttrRole.META, attr.getRole());
 
-    /**
-     * Test of setProgressTicket method, of class CsvImporter.
-     */
-    @Test
-    public void testSetProgressTicket() {
+        attr = container.getAttribute(1);
+        assertEquals(BasicAttrRole.INPUT, attr.getRole());
+
+        Report r = container.getReport();
+        System.out.println("issues: " + r.getText());
+
+        System.out.println("data: " + container.getName());
+
     }
 
     @Test

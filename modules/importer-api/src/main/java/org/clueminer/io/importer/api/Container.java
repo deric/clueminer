@@ -35,6 +35,7 @@ import org.openide.filesystems.FileObject;
  * container.
  *
  * @author Tomas Barton
+ * @param <E> data row type
  */
 public interface Container<E extends InstanceDraft> {
 

@@ -81,7 +81,9 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
     }
 
     public void setContainer(final Container loader) {
-        LOG.info("setting container with " + loader.getInstanceCount() + " rows ");
+        if (loader != null) {
+            LOG.log(Level.INFO, "setting container with {0} rows ", loader.getInstanceCount());
+        }
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

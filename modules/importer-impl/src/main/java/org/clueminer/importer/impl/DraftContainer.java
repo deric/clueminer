@@ -61,6 +61,8 @@ import org.openide.util.NbBundle;
 @org.openide.util.lookup.ServiceProvider(service = Container.class)
 public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> implements Dataset<E>, Container<E> {
 
+    private static final long serialVersionUID = 3619082183757626797L;
+
     private String source;
     private FileObject file;
     protected static final int NULL_INDEX = -1;
