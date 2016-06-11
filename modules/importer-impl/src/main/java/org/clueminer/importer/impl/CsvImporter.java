@@ -63,7 +63,6 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
     private boolean parsedHeader = false;
     private int prevColCnt = -1;
     private static final Logger LOGGER = Logger.getLogger(CsvImporter.class.getName());
-    private Container<E> container;
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
