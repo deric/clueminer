@@ -79,11 +79,13 @@ public class ColumnsPreview extends JPanel implements ImportListener {
                         } else {
                             NotifyUtil.error("Error", "missing loader", false);
                         }
+                    } else {
+                        NotifyUtil.error("Error", "Missing loader", false);
                     }
                 }
             });
         } else {
-            NotifyUtil.error("Error", "failed to parse data", false);
+            NotifyUtil.error("Error", "Importer " + importer.getName() + " failed to parse data", false);
         }
     }
 

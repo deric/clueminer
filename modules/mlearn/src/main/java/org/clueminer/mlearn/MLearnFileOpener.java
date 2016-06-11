@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.explorer.ExplorerTopComponent;
+import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
 import org.clueminer.io.importer.api.Container;
@@ -107,7 +108,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
     @Override
     public void importerChanged(Importer importer, ImporterUI importerUI) {
         //not used
-        logger.info("importer changed " + importer.getName());
+        logger.log(Level.INFO, "importer changed {0}", importer.getName());
     }
 
     @Override
@@ -154,6 +155,8 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         //     DataPreprocessing preprocess = new DataPreprocessing(plate, tc);
                         //     preprocess.start();
                     }
+                } else {
+                    NotifyUtil.error("Error", "missing loader", false);
                 }
             }
         });

@@ -16,7 +16,6 @@
  */
 package org.clueminer.importer;
 
-import java.util.concurrent.Callable;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.spi.ImportListener;
 
@@ -25,7 +24,14 @@ import org.clueminer.spi.ImportListener;
  *
  * @author Tomas Barton
  */
-public interface ImportTask extends Callable<Container> {
+public interface ImportTask extends Runnable {
+
+    /**
+     * Wrapper around loaded data
+     *
+     * @return
+     */
+    Container getContainer();
 
     /**
      * Adds import listener

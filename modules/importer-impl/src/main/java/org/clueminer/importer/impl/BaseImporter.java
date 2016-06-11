@@ -41,6 +41,7 @@ import org.openide.util.Exceptions;
  * Common code for all importers.
  *
  * @author deric
+ * @param <E>
  */
 public abstract class BaseImporter<E extends InstanceDraft> implements FileImporter<E>, LongTask {
 

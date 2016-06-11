@@ -22,10 +22,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -270,14 +272,14 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         } else {
             logger.log(Level.SEVERE, "no controller found");
         }
-        //either we can show data right now, or wait until background thread finishes
-        if (fileImporter.hasData()) {
-            dataTableModel.setContainer(fileImporter.getContainer());
-        } else {
-            logger.info("no data available yet");
-        }
+
+        dataTableModel.setContainer(container);
+
         dataTableModel.fireTableDataChanged();
         repaint();
+        columnsPreview.validate();
+        columnsPreview.revalidate();
+        columnsPreview.repaint();
     }
 
     private void fillReport(final Report report) {
@@ -609,38 +611,37 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
         //import is executed asynchronously, we might not have container immediately
         if (cont == null) {
-            triggerReimport((FileImporter) importer, null);
             logger.severe("container is null!");
+            if (cont == null) {
+                logger.severe("reimport");
+                Callable<Container> c = new Callable<Container>() {
+                    @Override
+                    public Container call() throws Exception {
+                        FileImporter fi = (FileImporter) importer;
+                        Container cont = controller.importFile(currentFile, currentFile.getInputStream(), fi, true);
+                        logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
+                        setData(cont);
+                        logger.log(Level.INFO, "finished loading data with {0}", importer.getName());
+
+                        return cont;
+                    }
+
+                }; //triggerReimport((FileImporter) importer, null);
+                Future<Container> fc = RP.submit(c);
+                try {
+                    cont = fc.get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+                logger.log(Level.INFO, "container instances {0}", cont.getInstanceCount());
+                this.container = cont;
+            }
             return;
         }
 
         this.validate();
         this.revalidate();
         this.repaint();
-    }
-
-    private void triggerReimport(final FileImporter importer, final Container loader) {
-        if (currentFile != null) {
-            RP.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        logger.log(Level.INFO, "importer changed, caused by {0}", importerUI);
-                        if (loader != null) {
-                            loader.reset();
-                        }
-                        Container cont = controller.importFile(currentFile, currentFile.getInputStream(), importer, true);
-                        logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
-                        setData(cont);
-                        logger.log(Level.INFO, "finished loading data with {0}", importer.getName());
-                    } catch (FileNotFoundException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            });
-        } else {
-            logger.log(Level.INFO, "ff: current file is null");
-        }
     }
 
     @Override

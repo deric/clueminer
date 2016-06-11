@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.mlearn;
 
 import java.io.File;
@@ -143,7 +159,7 @@ public class MLearnImporter implements LongTask, Runnable {
         char separator = ',';
 
         CsvLoader loader = new CsvLoader();
-        ArrayList<Integer> skip = new ArrayList<Integer>();
+        ArrayList<Integer> skip = new ArrayList<>();
         //skip.add(0); //first one is ID
         //loader.addNameAttr(0);
         for (int i = 1; i < 7; i++) {
@@ -160,7 +176,7 @@ public class MLearnImporter implements LongTask, Runnable {
         //loader.setClassIndex(0);
         loader.setHasHeader(true);
         String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
-        dataset = new ArrayDataset<Instance>(1000, firstLine.length - skip.size());
+        dataset = new ArrayDataset<>(1000, firstLine.length - skip.size());
 
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
@@ -182,7 +198,7 @@ public class MLearnImporter implements LongTask, Runnable {
         skip.add(namePos);
         loader.setSkipIndex(skip);
         loader.setSkipHeader(true);
-        dataset = new TimeseriesDataset<ContinuousInstance>(1536);
+        dataset = new TimeseriesDataset<>(1536);
 
         int i = 0;
         int index;
@@ -220,7 +236,7 @@ public class MLearnImporter implements LongTask, Runnable {
         loader.setSeparator(separator);
         loader.setHasHeader(true);
         String[] firstLine = CsvLoader.firstLine(file, String.valueOf(separator));
-        dataset = new ArrayDataset<Instance>(1000, firstLine.length - skip.size());
+        dataset = new ArrayDataset<>(1000, firstLine.length - skip.size());
 
         Dataset<Instance> d = (Dataset<Instance>) dataset;
         loader.setDataset(d);
@@ -243,42 +259,42 @@ public class MLearnImporter implements LongTask, Runnable {
         }
         ph.finish();
 
-        /*     BufferedReader br = null;
-         if (ph == null) {
-         throw new RuntimeException("Progress handle not set");
-         }
-         try {
-         br = new BufferedReader(new FileReader(file));
-         try {
-         ph.start(0);
-         //it would be nice to know number of lines, but we don't unless
-         int numLines = 100;
-         //we would read the whole file
-         String ext = MLearnImporter.getFileExtension(file.getName());
-         if ("arff".equals(ext)) {
-         // @TODO run ARFF analyzer
-         } else {
-         //txt, csv, ...
-         Detector detector = new TxtDetect();
-         DatasetProperties props = detector.detect(br);
-
-         }
-
-         //
-         dataset = new SampleDataset<Instance>(100);
-         FileHandler.loadDataset(file, dataset, ",");
-
-         } catch (IOException ex) {
-         Exceptions.printStackTrace(ex);
-         } finally {
-         br.close();
-         ph.finish();
-         }
-         } catch (FileNotFoundException ex) {
-         Exceptions.printStackTrace(ex);
-         } catch (IOException ex) {
-         Exceptions.printStackTrace(ex);
-         }*/
+        /* BufferedReader br = null;
+         * if (ph == null) {
+         * throw new RuntimeException("Progress handle not set");
+         * }
+         * try {
+         * br = new BufferedReader(new FileReader(file));
+         * try {
+         * ph.start(0);
+         * //it would be nice to know number of lines, but we don't unless
+         * int numLines = 100;
+         * //we would read the whole file
+         * String ext = MLearnImporter.getFileExtension(file.getName());
+         * if ("arff".equals(ext)) {
+         * // @TODO run ARFF analyzer
+         * } else {
+         * //txt, csv, ...
+         * Detector detector = new TxtDetect();
+         * DatasetProperties props = detector.detect(br);
+         *
+         * }
+         *
+         * //
+         * dataset = new SampleDataset<Instance>(100);
+         * FileHandler.loadDataset(file, dataset, ",");
+         *
+         * } catch (IOException ex) {
+         * Exceptions.printStackTrace(ex);
+         * } finally {
+         * br.close();
+         * ph.finish();
+         * }
+         * } catch (FileNotFoundException ex) {
+         * Exceptions.printStackTrace(ex);
+         * } catch (IOException ex) {
+         * Exceptions.printStackTrace(ex);
+         * } */
     }
 
     public File getFile() {

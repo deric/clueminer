@@ -82,6 +82,7 @@ public class CsvImporterTest {
 
         subject.execute(container, ML.correlations());
         assertEquals(28, container.getNumberOfLines());
+        assertEquals(27, container.getInstanceCount());
         assertEquals(40, container.getAttributeCount());
 
         Attribute attr = container.getAttribute(0);
@@ -92,9 +93,9 @@ public class CsvImporterTest {
 
         Report r = container.getReport();
         System.out.println("issues: " + r.getText());
-
-        System.out.println("data: " + container.getName());
-
+        InstanceDraft draft = container.getInstance(0);
+        assertEquals("3-spiral", draft.getObject(0));
+        System.out.println("[0, 0]: " + draft.getObject(0));
     }
 
     @Test

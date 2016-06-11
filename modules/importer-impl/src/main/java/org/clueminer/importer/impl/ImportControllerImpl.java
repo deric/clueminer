@@ -182,7 +182,6 @@ public class ImportControllerImpl implements ImportController {
         try {
             //actual data import - loads data into container
             if (importer.execute(container, reader)) {
-
                 return container;
             }
         } catch (RuntimeException ex) {
@@ -190,7 +189,7 @@ public class ImportControllerImpl implements ImportController {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        return null;
+        return container;
     }
 
     @Override

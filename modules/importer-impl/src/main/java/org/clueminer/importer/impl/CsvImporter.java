@@ -117,6 +117,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         }
 
         importData(lineReader);
+        container.closeLoader();
         fireAnalysisFinished();
 
         return !cancel;
@@ -155,10 +156,6 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         boolean reading = true;
 
         LOGGER.log(Level.INFO, "reader ready? {0}", reader.ready());
-        //attribute's have been already parsed
-        if (container.getAttributeCount() > 0) {
-            this.parsedHeader = true;
-        }
         while (reader.ready() && reading) {
             String line = reader.readLine();
             count = reader.getLineNumber();
@@ -279,12 +276,14 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         AttributeDraft attrd;
         for (String attrName : columns) {
             if (container.hasAttributeAtIndex(i)) {
+                attrd = container.getAttribute(i);
                 if (!container.getAttribute(i).getName().equals(attrName) && container.hasAttribute(attrName)) {
                     //this should be unique. TODO: really?
+                    LOGGER.info("creating attr: " + attrName);
                     attrd = container.createAttribute(i, attrName + "_" + i);
                 } else {
                     //get or update attribute name
-                    attrd = container.createAttribute(i, attrName);
+                    attrd = container.getAttribute(i);
                 }
             } else {
                 //create new attribute
