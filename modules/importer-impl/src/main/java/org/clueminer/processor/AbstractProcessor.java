@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.processor;
 
 import java.util.ArrayList;
@@ -26,6 +42,7 @@ import org.openide.util.Lookup;
  *
  * @author Tomas Barton
  * @param <D>
+ * @param <E>
  */
 public abstract class AbstractProcessor<D extends InstanceDraft, E extends Instance> implements Processor<D> {
 
@@ -133,7 +150,6 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
             /**
              * attribute count in container might differ some attributes
              * (class/label/id) are treated specially
-             *
              */
             int realIdx;
             for (int j = 0; j < container.getAttributeCount(); j++) {
@@ -143,10 +159,10 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                 if (attr.getRole().equals(BasicAttrRole.INPUT)) {
                     if (attr.isNumerical()) {
                         try {
-                            //realIdx = inputMap.get(j);
-                            //inst.set(realIdx, (Double) instd.getObject(j));
+                            //attribute's indexes might be shifted if data contains meta-attributes
+                            realIdx = inputMap.get(j);
                             //delegate type conversion to builders
-                            builder.set(instd.getObject(j), attr, (E) inst);
+                            builder.set(instd.getObject(j), dataset.getAttribute(realIdx), (E) inst);
                         } catch (Exception ex) {
                             throw new RuntimeException("failed to convert "
                                     + instd.getObject(j) + " to " + attr.getType() + ", inst: " + instd.toString(), ex);
@@ -166,9 +182,9 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                 }
 
                 /* } catch (RuntimeException e) {
-                    logger.log(Level.SEVERE, "failed to set value [{0}, {1}] =  {2}, due to {3}", new Object[]{i, j, instd.getObject(j), e.toString()});
-                    Exceptions.printStackTrace(e);
-                }*/
+                 * logger.log(Level.SEVERE, "failed to set value [{0}, {1}] = {2}, due to {3}", new Object[]{i, j, instd.getObject(j), e.toString()});
+                 * Exceptions.printStackTrace(e);
+                 * } */
                 //dataset.setAttributeValue(i, j, (Double) instd.getValue(i));
             }
             if (instd.getId() != null) {

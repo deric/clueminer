@@ -24,7 +24,9 @@ import java.io.Reader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.importer.impl.ArffImporter;
+import org.clueminer.importer.impl.CsvImporter;
 import org.clueminer.importer.impl.DraftContainer;
 import org.clueminer.importer.impl.ImportUtils;
 import org.clueminer.importer.impl.JsonImporter;
@@ -42,6 +44,7 @@ public class DefaultProcessorTest {
 
     private final ArffImporter arff = new ArffImporter();
     private static final CommonFixture CF = new CommonFixture();
+    private static final MLearnFixture MF = new MLearnFixture();
 
     @Test
     public void testIrisFromFile() throws IOException {
@@ -136,7 +139,30 @@ public class DefaultProcessorTest {
         assertEquals(6, dataset.size());
         for (int i = 0; i < dataset.size(); i++) {
             System.out.println(i + ": " + dataset.get(i).size());
+        }
+    }
 
+    @Test
+    public void testCsvData() throws IOException {
+        File csv = MF.correlations();
+        Container container = new DraftContainer();
+        CsvImporter importer = new CsvImporter();
+        importer.execute(container, csv);
+
+        assertEquals(40, container.getAttributeCount());
+        assertEquals(27, container.getInstanceCount());
+
+        DefaultProcessor subject = new DefaultProcessor();
+        subject.setContainer(container);
+        //convert preloaded data to a real dataset
+        subject.run();
+
+        Dataset<? extends Instance> dataset = container.getDataset();
+        assertEquals(39, dataset.attributeCount());
+        assertEquals(27, dataset.size());
+        for (int i = 0; i < dataset.size(); i++) {
+            assertEquals(39, dataset.get(i).size());
+            System.out.println(i + ": " + dataset.get(i).size());
         }
     }
 
