@@ -62,8 +62,11 @@ public class ParserError extends Exception {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Parsing Error: ").append(file.getName())
-                .append(", line ").append(lineNum).append(getMessage());
+        sb.append("Parsing Error: ");
+        if (file != null) {
+            sb.append(file.getName()).append(", ");
+        }
+        sb.append("line ").append(lineNum).append(getMessage());
         return sb.toString();
     }
 
