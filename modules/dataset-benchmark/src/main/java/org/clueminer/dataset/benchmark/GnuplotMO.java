@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 package org.clueminer.dataset.benchmark;
 
-import org.clueminer.csv.CSVWriter;
 import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +31,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
+import org.clueminer.csv.CSVWriter;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.gnuplot.GnuplotHelper;
