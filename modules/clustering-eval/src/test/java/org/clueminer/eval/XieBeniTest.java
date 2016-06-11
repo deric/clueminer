@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class XieBeniTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong4());
 
@@ -50,7 +51,7 @@ public class XieBeniTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.0776720010784792
         assertEquals(0.0776720010784792, score, delta);

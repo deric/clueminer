@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class DetRatioTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong4());
 
@@ -48,7 +49,7 @@ public class DetRatioTest {
      *
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 964.208175287163
         assertEquals(964.208175287163, score, delta);

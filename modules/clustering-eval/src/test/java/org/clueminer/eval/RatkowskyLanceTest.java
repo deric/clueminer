@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.RandomColorsGenerator;
@@ -102,7 +103,7 @@ public class RatkowskyLanceTest {
      * {@link org.clueminer.fixtures.clustering.FakeDatasets.irisDataset()}
      */
     @Test
-    public void sameStatsAsPrecomputed() {
+    public void sameStatsAsPrecomputed() throws ScoreException {
         Dataset<? extends Instance> irisData = irisDataset();
         Clustering iris = iris(irisData);
         double scorePrecomp = subject.score(iris);
@@ -113,7 +114,7 @@ public class RatkowskyLanceTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong4());
 
@@ -129,7 +130,7 @@ public class RatkowskyLanceTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.491870539886729
         //TODO: verify the implementation

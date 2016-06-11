@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,7 +48,7 @@ public class TauTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         // R clusterCrit resutl
         //assertEquals(-0.610833639021322, score, delta);

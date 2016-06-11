@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -19,7 +36,7 @@ public class F1MeasureTest extends ExternalTest {
      * Test of score method, of class F-measure.
      */
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         double score;
         //each cluster should have this scores:
         //Cabernet = 0.7200
@@ -32,12 +49,12 @@ public class F1MeasureTest extends ExternalTest {
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("f-measure (mw) = " + score);
         assertEquals(true, score < 0.5);
@@ -51,7 +68,7 @@ public class F1MeasureTest extends ExternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         measure(ext100p2, ext100p3, 0.411693066358566);
     }
 }

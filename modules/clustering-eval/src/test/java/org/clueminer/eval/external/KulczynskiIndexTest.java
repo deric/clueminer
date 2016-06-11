@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,12 +45,12 @@ public class KulczynskiIndexTest extends ExternalTest {
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(Double.NaN, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         assertEquals(0.6577628635346756, score, delta);
     }
@@ -62,7 +63,7 @@ public class KulczynskiIndexTest extends ExternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         measure(ext100p2, ext100p3, 0.428073406219482);
     }
 }

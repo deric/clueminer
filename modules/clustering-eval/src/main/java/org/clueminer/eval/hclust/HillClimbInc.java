@@ -16,9 +16,12 @@
  */
 package org.clueminer.eval.hclust;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -32,6 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
 
     private static final String NAME = "hill-climb inc";
+    private static final Logger LOGGER = Logger.getLogger(HillClimbInc.class.getName());
 
     @Override
     public String getName() {
@@ -57,7 +61,12 @@ public class HillClimbInc extends HillClimbCutoff implements CutoffStrategy {
             if (hclust.isScoreCached(evalName, clustNum)) {
                 score = hclust.getScore(evalName, clustNum);
             } else {
-                score = evaluator.score(clust, params);
+                try {
+                    score = evaluator.score(clust, params);
+                } catch (ScoreException ex) {
+                    LOGGER.log(Level.WARNING, "failed to computer score{0}", ex.getMessage());
+                    score = Double.NaN;
+                }
             }
             if (cutoff < 0) {
                 //System.out.println("negative cutoff " + cutoff + " stopping cutoff");

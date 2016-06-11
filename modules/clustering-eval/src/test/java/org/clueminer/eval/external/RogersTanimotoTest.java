@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -45,12 +46,12 @@ public class RogersTanimotoTest extends ExternalTest {
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(0.5, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         assertEquals(0.39996778350515466, score, delta);
     }
@@ -63,7 +64,7 @@ public class RogersTanimotoTest extends ExternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         /**
          * @TODO according to clusterCrit tests it should be 0.282577193178018,
          * however the definition doesn't seem to be correct

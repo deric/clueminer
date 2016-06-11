@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +40,7 @@ public class DeviationTest {
     }
 
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong5());
 

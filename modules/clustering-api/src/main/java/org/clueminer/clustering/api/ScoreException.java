@@ -14,34 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.eval.external;
-
-import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.utils.PairMatch;
-import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
+package org.clueminer.clustering.api;
 
 /**
+ * Thrown in case of computation errors
  *
  * @author deric
  */
-@ServiceProvider(service = ExternalEvaluator.class)
-public class SokalSneath2 extends AbstractCountingPairs {
+public class ScoreException extends Exception {
 
-    private static final long serialVersionUID = 7647620533572167035L;
-    private static final String NAME = "Sokal-Sneath-2";
+    private static final long serialVersionUID = -3183977411962831959L;
 
-    @Override
-    public String getName() {
-        return NAME;
+    public ScoreException(String message) {
+        super(message);
     }
 
-    @Override
-    public double countScore(PairMatch pm, Props params) {
-        double num = pm.tp + pm.tn;
-        double den = num + (pm.fn + pm.fp) / 2.0;
-
-        return num / den;
+    public ScoreException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

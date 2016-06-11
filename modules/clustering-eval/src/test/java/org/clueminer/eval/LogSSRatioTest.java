@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class LogSSRatioTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
@@ -42,9 +43,6 @@ public class LogSSRatioTest {
         assertEquals(false, subject.isBetter(s1, s3));
     }
 
-    /**
-     * Test of isBetter method, of class CalinskiHarabasz.
-     */
     @Test
     public void testCompareScore() {
         assertEquals(true, subject.isBetter(2, 20));
@@ -58,7 +56,7 @@ public class LogSSRatioTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         assertEquals(3.40114842491597, score, delta);
     }

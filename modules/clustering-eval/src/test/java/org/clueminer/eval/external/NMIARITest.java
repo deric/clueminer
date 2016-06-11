@@ -19,6 +19,7 @@ package org.clueminer.eval.external;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -42,7 +43,7 @@ public class NMIARITest extends ExternalTest {
      * Test of score method, of class NMI.
      */
     @Test
-    public void testScore_Clustering_Clustering() {
+    public void testScore_Clustering_Clustering() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
 
@@ -56,7 +57,7 @@ public class NMIARITest extends ExternalTest {
      * Test of score method, of class NMI.
      */
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         measure(FakeClustering.iris(), 1.0);
 
         double score = measure(irisWrong, 0.5496416196123189);

@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,12 +45,12 @@ public class PhiTest extends ExternalTest {
     }
 
     //  @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(1.5880312862546976E-4, subject.score(oneClassPerCluster()), delta);
     }
 
 //    @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         assertEquals(0.0, score, delta);
     }
@@ -62,7 +63,7 @@ public class PhiTest extends ExternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         measure(ext100p2, ext100p3, 3.93253019506888e-09);
     }
 }

@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class ScottSymonsTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
@@ -58,7 +59,7 @@ public class ScottSymonsTest {
      * operations. First few decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = -1627.96174403586
         assertEquals(-1627.961692875162, score, delta);

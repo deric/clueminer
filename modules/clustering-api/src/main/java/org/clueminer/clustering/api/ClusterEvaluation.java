@@ -40,8 +40,9 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      *
      * @param clusters - clustering to be evaluated
      * @return criterion value obtained on this particular clustering
+     * @throws org.clueminer.clustering.api.ScoreException
      */
-    double score(Clustering<E, C> clusters);
+    double score(Clustering<E, C> clusters) throws ScoreException;
 
     /**
      * Returns score for given clustering.
@@ -50,8 +51,9 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * @param params   a HashMap with parameter settings (many criterion does
      *                 not take parameters)
      * @return criterion value obtained on this particular clustering
+     * @throws org.clueminer.clustering.api.ScoreException
      */
-    double score(Clustering<E, C> clusters, Props params);
+    double score(Clustering<E, C> clusters, Props params) throws ScoreException;
 
     /**
      * Having proximity matrix can significantly improve efficiency of computing
@@ -61,8 +63,9 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * @param proximity matrix of distances between all points
      * @param params    optional parameters evaluation metric
      * @return
+     * @throws org.clueminer.clustering.api.ScoreException
      */
-    double score(Clustering<E, C> clusters, Matrix proximity, Props params);
+    double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException;
 
     /**
      * Compares the two scores according to the criterion in the implementation.

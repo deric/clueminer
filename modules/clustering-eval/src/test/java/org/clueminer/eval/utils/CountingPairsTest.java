@@ -25,6 +25,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
@@ -182,7 +183,7 @@ public class CountingPairsTest extends ExternalTest {
     }
 
     @Test
-    public void testMatchPairs_Clustering() {
+    public void testMatchPairs_Clustering() throws ScoreException {
         Clustering<Instance, Cluster<Instance>> clust = pcaData();
 
         assertEquals(10, clust.instancesCount());
@@ -202,7 +203,7 @@ public class CountingPairsTest extends ExternalTest {
      * 3 clusters
      */
     @Test
-    public void testMatchPairsExtPartitioning() {
+    public void testMatchPairsExtPartitioning() throws ScoreException {
         Clustering c1 = FakeClustering.ext100p2();
         assertEquals(100, c1.instancesCount());
         Clustering c2 = FakeClustering.ext100p3();

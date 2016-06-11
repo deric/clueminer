@@ -34,6 +34,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.InvalidClustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -405,17 +406,18 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
      *
      * @param clust
      * @return
+     * @throws org.clueminer.clustering.api.ScoreException
      */
-    public PairMatch matchPairs(Clustering<E, C> clust) {
+    public PairMatch matchPairs(Clustering<E, C> clust) throws ScoreException {
         PairMatch pm = new PairMatch();
 
         Dataset<E> dataset = clust.getLookup().lookup(Dataset.class);
         if (dataset == null) {
-            throw new RuntimeException("missing reference dataset");
+            throw new ScoreException("missing reference dataset");
         }
         if (dataset.getClasses().isEmpty()) {
             //no labels provided in the dataset
-            throw new RuntimeException("missing labels");
+            throw new ScoreException("missing labels for dataset " + dataset.getName());
         }
 
         E x, y;

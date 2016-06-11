@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -71,7 +72,7 @@ public class F2MeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from V-measure paper (Figure 2a)
      */
     //@Test
-    public void testSolutionA() {
+    public void testSolutionA() throws ScoreException {
         Clustering a = new ClusterList(pmData);
 
         assertEquals(15, pmData.size());
@@ -109,7 +110,7 @@ public class F2MeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from V-measure paper (Figure 2b)
      */
     //@Test
-    public void testSolutionB() {
+    public void testSolutionB() throws ScoreException {
         Clustering a = new ClusterList(pmData);
 
         assertEquals(15, pmData.size());
@@ -147,7 +148,7 @@ public class F2MeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from V-measure paper (Figure 2c)
      */
     //@Test
-    public void testSolutionC() {
+    public void testSolutionC() throws ScoreException {
         Clustering a = new ClusterList(pmData);
 
         assertEquals(21, pmData2.size());
@@ -197,7 +198,7 @@ public class F2MeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from V-measure paper (Figure 2d)
      */
     //@Test
-    public void testSolutionD() {
+    public void testSolutionD() throws ScoreException {
         Clustering a = new ClusterList(pmData);
 
         assertEquals(21, pmData2.size());

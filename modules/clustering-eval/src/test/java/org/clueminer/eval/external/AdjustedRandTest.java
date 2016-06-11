@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.PairMatch;
@@ -35,7 +52,7 @@ public class AdjustedRandTest extends ExternalTest {
      * Test of score method, of class AdjustedRand.
      */
     @Test
-    public void testScore_Clustering_Clustering() {
+    public void testScore_Clustering_Clustering() throws ScoreException {
         double score;
 
         score = measure(FakeClustering.wineClustering(), FakeClustering.wineCorrect(), 0.21052631578947367);
@@ -83,7 +100,7 @@ public class AdjustedRandTest extends ExternalTest {
     }
 
     @Test
-    public void testScoreDataset() {
+    public void testScoreDataset() throws ScoreException {
         measure(FakeClustering.irisWrong4(), 0.873083475298126);
     }
 
@@ -139,7 +156,7 @@ public class AdjustedRandTest extends ExternalTest {
     }
 
     @Test
-    public void testAri() {
+    public void testAri() throws ScoreException {
         AdjustedRand ari = (AdjustedRand) subject;
         double score = ari.score(FakeClustering.iris());
         assertEquals(1.0, score, delta);
@@ -169,7 +186,7 @@ public class AdjustedRandTest extends ExternalTest {
      *
      */
     @Test
-    public void testPcaData() {
+    public void testPcaData() throws ScoreException {
         Clustering<Instance, Cluster<Instance>> clust = pcaData();
         double score = subject.score(clust);
         assertEquals(0.3125734430082256, score, delta);

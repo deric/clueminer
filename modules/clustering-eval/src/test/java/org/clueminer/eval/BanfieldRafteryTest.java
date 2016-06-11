@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class BanfieldRafteryTest extends InternalTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
@@ -48,7 +49,7 @@ public class BanfieldRafteryTest extends InternalTest {
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
     }
 
@@ -60,7 +61,7 @@ public class BanfieldRafteryTest extends InternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = -534.545225046529
         assertEquals(-534.545225046529, score, delta);

@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +40,7 @@ public class DaviesBouldinTest {
     }
 
     @Test
-    public void testScore() {
+    public void testScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong5());
 
@@ -52,18 +53,6 @@ public class DaviesBouldinTest {
         assertEquals(true, subject.isBetter(0.1, 0.9));
     }
 
-    @Test
-    public void testIsMaximized() {
-    }
-
-    @Test
-    public void testGetMin() {
-    }
-
-    @Test
-    public void testGetMax() {
-    }
-
     /**
      * Check against definition (and tests in R package clusterCrit)
      * https://cran.r-project.org/web/packages/clusterCrit/index.html
@@ -72,7 +61,7 @@ public class DaviesBouldinTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //TODO: according to clusterCrit it should be 0.212623030978125
         ///

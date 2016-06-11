@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -77,7 +78,7 @@ public class VMeasureTest extends ExternalTest {
     }
 
     @Test
-    public void testScore_Clustering_Clustering() {
+    public void testScore_Clustering_Clustering() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
 
@@ -88,7 +89,7 @@ public class VMeasureTest extends ExternalTest {
     }
 
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         measure(FakeClustering.iris(), 1.0);
 
         double score = measure(irisWrong, 0.6496820278112178);
@@ -106,7 +107,7 @@ public class VMeasureTest extends ExternalTest {
     }
 
     @Test
-    public void testScore() {
+    public void testScore() throws ScoreException {
         Clustering c = new ClusterList(2);
         Dataset<? extends Instance> d = new ArrayDataset(8, 2);
         d.builder().create(new double[]{0, 0}, "0");
@@ -129,7 +130,7 @@ public class VMeasureTest extends ExternalTest {
     }
 
     @Test
-    public void testCorrectSolution() {
+    public void testCorrectSolution() throws ScoreException {
         Clustering correct = new ClusterList(3);
 
         assertEquals(15, pmData.size());
@@ -149,7 +150,7 @@ public class VMeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from original paper (Figure 2a)
      */
     @Test
-    public void testSolutionA() {
+    public void testSolutionA() throws ScoreException {
         Clustering a = new ClusterList(3);
 
         assertEquals(15, pmData.size());
@@ -187,7 +188,7 @@ public class VMeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from original paper (Figure 2b)
      */
     @Test
-    public void testSolutionB() {
+    public void testSolutionB() throws ScoreException {
         Clustering a = new ClusterList(6);
 
         assertEquals(15, pmData.size());
@@ -225,7 +226,7 @@ public class VMeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from original paper (Figure 2c)
      */
     @Test
-    public void testSolutionC() {
+    public void testSolutionC() throws ScoreException {
         Clustering a = new ClusterList(3);
 
         assertEquals(21, pmData2.size());
@@ -275,7 +276,7 @@ public class VMeasureTest extends ExternalTest {
      * Based on examples of the Problem of Matching from original paper (Figure 2d)
      */
     @Test
-    public void testSolutionD() {
+    public void testSolutionD() throws ScoreException {
         Clustering a = new ClusterList(3);
 
         assertEquals(21, pmData2.size());

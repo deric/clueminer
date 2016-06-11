@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.StatsNum;
@@ -35,6 +36,7 @@ import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.utils.Props;
 
 /**
+ * Contains common methods for clustering quality evaluation.
  *
  * @author Tomas Barton
  * @param <E>
@@ -63,12 +65,12 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     @Override
-    public double score(Clustering clusters) {
+    public double score(Clustering clusters) throws ScoreException {
         return score(clusters, new Props());
     }
 
     @Override
-    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException {
         return score(clusters, params);
     }
 
@@ -190,7 +192,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
      * Mean attribute value
      *
      * @param clusters
-     * @param d attribute index
+     * @param d        attribute index
      * @return
      */
     public double attrMean(Clustering<E, C> clusters, int d) {

@@ -1,6 +1,23 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -17,28 +34,19 @@ public class CalinskiHarabaszTest {
     private static CalinskiHarabasz subject;
     private static final double delta = 1e-9;
 
-    public CalinskiHarabaszTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() {
         clusters = FakeClustering.iris();
         subject = new CalinskiHarabasz(new EuclideanDistance());
     }
 
-    /**
-     * Test of getName method, of class CalinskiHarabasz.
-     */
     @Test
     public void testGetName() {
         assertEquals("Calinski-Harabasz", subject.getName());
     }
 
-    /**
-     * Test of score method, of class CalinskiHarabasz.
-     */
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         long start = System.currentTimeMillis();
         double score = subject.score(clusters);
         System.out.println("Calinski-Harabasz = " + score);
@@ -51,7 +59,7 @@ public class CalinskiHarabaszTest {
      * TODO: fix index computation
      */
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
@@ -75,7 +83,7 @@ public class CalinskiHarabaszTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = 3959.80613603063
         assertEquals(3959.80613603063, score, delta);

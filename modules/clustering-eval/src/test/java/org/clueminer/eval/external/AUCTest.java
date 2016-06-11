@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
@@ -33,20 +34,20 @@ public class AUCTest extends ExternalTest {
     }
 
     @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         System.out.println("AUC (mw) = " + score);
         assertEquals(true, score <= 0.5);
     }
 
     @Test
-    public void testIrisCorrect() {
+    public void testIrisCorrect() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), 1.0);
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         AUC auc = (AUC) subject;
         PairMatch pm = CountingPairs.getInstance().matchPairs(oneClassPerCluster());
         pm.dump();

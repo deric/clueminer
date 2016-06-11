@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import org.clueminer.clustering.api.ScoreException;
 import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +40,7 @@ public class CzekanowskiDiceTest extends ExternalTest {
     }
 
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), 1.0);
         measure(FakeClustering.irisWrong2(), 0.6648648648648648);
@@ -52,12 +53,12 @@ public class CzekanowskiDiceTest extends ExternalTest {
     }
 
     @Test
-    public void testOneClassPerCluster() {
+    public void testOneClassPerCluster() throws ScoreException {
         assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
     }
 
     @Test
-    public void testMostlyWrong() {
+    public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
         assertEquals(0.49329977552547444, score, delta);
     }
@@ -70,7 +71,7 @@ public class CzekanowskiDiceTest extends ExternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         measure(ext100p2, ext100p3, 0.411693066358566);
     }
 }

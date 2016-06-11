@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval;
 
 import java.io.FileNotFoundException;
@@ -8,6 +24,7 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -63,7 +80,7 @@ public class DunnIndexTest {
      * @throws org.clueminer.exception.ParserError
      */
     @Test
-    public void testScore() throws IOException, FileNotFoundException, ParserError {
+    public void testScore() throws IOException, FileNotFoundException, ParserError, ScoreException {
         ClusteringAlgorithm km = new KMeans();
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> iris = new ArrayDataset(150, 4);
@@ -118,7 +135,7 @@ public class DunnIndexTest {
      * Test of isBetter method, of class DunnIndex.
      */
     @Test
-    public void testCompareScore() {
+    public void testCompareScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
@@ -134,7 +151,7 @@ public class DunnIndexTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         assertEquals(0.835485600869118, score, delta);
     }

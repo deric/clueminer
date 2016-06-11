@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -46,11 +47,8 @@ public class NMImaxTest extends ExternalTest {
         subject = new NMImax();
     }
 
-    /**
-     * Test of score method, of class NMI.
-     */
     @Test
-    public void testScore_Clustering_Clustering() {
+    public void testScore_Clustering_Clustering() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
 
@@ -60,11 +58,8 @@ public class NMImaxTest extends ExternalTest {
         assertTrue(score2 < score);
     }
 
-    /**
-     * Test of score method, of class NMI.
-     */
     @Test
-    public void testScore_Clustering_Dataset() {
+    public void testScore_Clustering_Dataset() throws ScoreException {
         measure(FakeClustering.iris(), 1.0);
 
         double score = measure(irisWrong, 0.579380164285695);
@@ -73,9 +68,6 @@ public class NMImaxTest extends ExternalTest {
         assertTrue(score2 < score);
     }
 
-    /**
-     * Test of isBetter method, of class NMI.
-     */
     @Test
     public void testCompareScore() {
         //one is better than zero
@@ -88,7 +80,7 @@ public class NMImaxTest extends ExternalTest {
      * TODO: make sure this test is correct
      */
     @Ignore
-    public void testScore() {
+    public void testScore() throws ScoreException {
         Clustering c = new ClusterList(2);
         Dataset<? extends Instance> d = new ArrayDataset(8, 2);
         d.builder().create(new double[]{0, 0}, "0");

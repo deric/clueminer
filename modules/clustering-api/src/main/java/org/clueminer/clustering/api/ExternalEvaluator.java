@@ -44,7 +44,7 @@ public interface ExternalEvaluator<E extends Instance, C extends Cluster<E>> ext
      * @return criterion value obtained on this particular clustering
      */
     @Override
-    double score(Clustering<E, C> clusters, Props params);
+    double score(Clustering<E, C> clusters, Props params) throws ScoreException;
 
     /**
      * We want to compare two clusterings to evaluate how similar they are
@@ -54,6 +54,6 @@ public interface ExternalEvaluator<E extends Instance, C extends Cluster<E>> ext
      * @param params
      * @return
      */
-    double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params);
+    double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) throws ScoreException;
 
 }

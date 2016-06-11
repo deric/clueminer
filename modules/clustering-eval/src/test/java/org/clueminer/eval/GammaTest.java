@@ -18,6 +18,7 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -69,7 +70,7 @@ public class GammaTest {
     }
 
     @Test
-    public void testSchoolScore() {
+    public void testSchoolScore() throws ScoreException {
         Dataset<? extends Instance> data = FakeDatasets.schoolData();
         int k = 3;
         Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(k);
@@ -95,7 +96,7 @@ public class GammaTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         // clusterCrit result
         //assertEquals(-0.99999988079071, score, delta);

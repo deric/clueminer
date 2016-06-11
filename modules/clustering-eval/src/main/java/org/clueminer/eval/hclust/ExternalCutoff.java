@@ -19,6 +19,7 @@ package org.clueminer.eval.hclust;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -45,7 +46,12 @@ public class ExternalCutoff implements CutoffStrategy {
         double cutoff = 0;
         for (int i = 0; i <= hclust.treeLevels(); i++) {
             double height = hclust.cutTreeByLevel(i);
-            double score = evaluator.score(hclust.getClustering());
+            double score;
+            try {
+                score = evaluator.score(hclust.getClustering());
+            } catch (ScoreException ex) {
+                score = Double.NEGATIVE_INFINITY;
+            }
             if (score > bestScore) {
                 bestScore = score;
                 cutoff = height;

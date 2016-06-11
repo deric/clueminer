@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -41,7 +42,7 @@ public class SDindexTest {
     }
 
     @Test
-    public void testScore() {
+    public void testScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong5());
         //TODO: on java 1.8.0_31 this score is: 3.706709966847651
@@ -52,7 +53,7 @@ public class SDindexTest {
     }
 
     @Test
-    public void testCompareScore() {
+    public void testCompareScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong2());
         //should recognize better clustering

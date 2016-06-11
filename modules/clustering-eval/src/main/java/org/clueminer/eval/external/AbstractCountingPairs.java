@@ -18,6 +18,7 @@ package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.PairMatch;
@@ -37,12 +38,12 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
     public abstract double countScore(PairMatch pm, Props params);
 
     @Override
-    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException {
         return score(clusters, params);
     }
 
     @Override
-    public double score(Clustering<E, C> clusters) {
+    public double score(Clustering<E, C> clusters) throws ScoreException {
         return score(clusters, new Props());
     }
 
@@ -55,7 +56,7 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
      * @return
      */
     @Override
-    public double score(Clustering<E, C> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) throws ScoreException {
         PairMatch pm = clusters.getLookup().lookup(PairMatch.class);
         //we don't expect mapping to original to change, so we can store the result
         if (pm == null) {

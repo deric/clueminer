@@ -22,12 +22,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
@@ -43,10 +46,10 @@ import org.clueminer.utils.Props;
 public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> implements EvaluationTable<E, C> {
 
     private Clustering<E, C> clustering;
-    private Dataset<E> dataset;
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
     private HashMap<String, Double> scores;
+    private static final Logger LOGGER = Logger.getLogger(HashEvaluationTable.class.getName());
 
     public HashEvaluationTable(Clustering<E, C> clustering, Dataset<E> dataset) {
         initEvaluators();
@@ -56,7 +59,6 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     @Override
     public final void setData(Clustering<E, C> clustering, Dataset<E> dataset) {
         this.clustering = (Clustering<E, C>) clustering;
-        this.dataset = dataset;
         reset();
     }
 
@@ -86,7 +88,14 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
         if (scores.containsKey(key)) {
             return scores.get(key);
         } else {
-            double score = evaluator.score(clustering, params);
+            double score;
+            try {
+                score = evaluator.score(clustering, params);
+            } catch (ScoreException ex) {
+                LOGGER.log(Level.WARNING, "failed to compute score {0}: {1}",
+                        new Object[]{evaluator.getName(), ex.getMessage()});
+                score = Double.NaN;
+            }
             scores.put(key, score);
             return score;
         }

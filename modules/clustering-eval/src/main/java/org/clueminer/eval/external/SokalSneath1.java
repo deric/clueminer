@@ -29,11 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class SokalSneath1 extends AbstractCountingPairs {
 
     private static final long serialVersionUID = 4647620533572167034L;
-    private static final String name = "Sokal-Sneath #1";
+    private static final String NAME = "Sokal-Sneath-1";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

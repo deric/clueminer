@@ -20,6 +20,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -52,7 +53,7 @@ public class HybridCentroidSimilarity<E extends Instance, C extends Cluster<E>> 
     }
 
     @Override
-    public double score(Clustering<E, C> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) throws ScoreException {
         ClusterEvaluation<E, C> ceTop = new SumOfCentroidSimilarities();// I_2
         double sum = ceTop.score(clusters, params);
         ClusterEvaluation<E, C> ce = new TraceScatterMatrix();// E_1

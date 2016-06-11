@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -40,7 +41,7 @@ public class CompactnessTest {
     }
 
     @Test
-    public void testIris() {
+    public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         assertEquals(0.9574211390878558, scoreBetter, delta);
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
@@ -53,19 +54,7 @@ public class CompactnessTest {
     }
 
     @Test
-    public void testScore() {
-    }
-
-    @Test
-    public void testIsBetter() {
-    }
-
-    @Test
-    public void testIsMaximized() {
-    }
-
-    @Test
-    public void testCompareScore() {
+    public void testCompareScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 

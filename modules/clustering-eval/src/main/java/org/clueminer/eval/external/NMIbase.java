@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.eval.external;
 
 import com.google.common.collect.Sets;
@@ -8,6 +24,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.math.Matrix;
@@ -20,13 +37,14 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public abstract class NMIbase<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> implements ClusterEvaluation<E, C> {
+public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
+        extends AbstractExternalEval<E, C> implements ClusterEvaluation<E, C> {
 
     private static final long serialVersionUID = -480979241137671097L;
 
     /**
      *
-     * @param count total number of elements N (in whole dataset)
+     * @param count    total number of elements N (in whole dataset)
      * @param elements
      * @return
      */
@@ -52,9 +70,9 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>> extends 
      * @return
      */
     @Override
-    public double score(Clustering<E, C> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) throws ScoreException {
         double nmi = 0.0;
-        if (clusters.size() == 0) {
+        if (clusters.isEmpty()) {
             return nmi;
         }
 
@@ -108,19 +126,19 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>> extends 
     }
 
     protected double calculate(Clustering<E, C> clusters, Props params,
-            double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
+            double mutualInformation, double c1entropy, double classEntropy, int klassesSize) throws ScoreException {
         return countNMI(mutualInformation, c1entropy, classEntropy);
     }
 
-    public abstract double countNMI(double mi, double ent1, double ent2);
+    public abstract double countNMI(double mi, double ent1, double ent2) throws ScoreException;
 
     @Override
-    public double score(Clustering clusters, Matrix proximity, Props params) {
+    public double score(Clustering clusters, Matrix proximity, Props params) throws ScoreException {
         return score(clusters, params);
     }
 
     @Override
-    public double score(Clustering clusters) {
+    public double score(Clustering clusters) throws ScoreException {
         return score(clusters, new Props());
     }
 

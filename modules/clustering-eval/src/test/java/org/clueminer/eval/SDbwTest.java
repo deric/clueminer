@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,7 +42,7 @@ public class SDbwTest extends InternalTest {
     }
 
     @Test
-    public void testScore() {
+    public void testScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
@@ -50,7 +51,7 @@ public class SDbwTest extends InternalTest {
     }
 
     @Test
-    public void testCompareScore() {
+    public void testCompareScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisWrong2());
         //should recognize better clustering
@@ -58,7 +59,7 @@ public class SDbwTest extends InternalTest {
     }
 
     @Test
-    public void testNotNaN() {
+    public void testNotNaN() throws ScoreException {
         assertNotSame(Double.NaN, subject.score(oneClassPerCluster()));
         assertNotSame(Double.NaN, subject.score(FakeClustering.irisWrong5()));
     }
@@ -76,7 +77,7 @@ public class SDbwTest extends InternalTest {
      * operations. First 7 decimal digits seems to match.
      */
     @Test
-    public void testClusterCrit() {
+    public void testClusterCrit() throws ScoreException {
         double dis = subject.score(FakeClustering.int100p4());
         //clusterCrit = 0.0323239791483279
         //tiny difference due to variance computing

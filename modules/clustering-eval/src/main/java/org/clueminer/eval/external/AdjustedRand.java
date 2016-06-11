@@ -23,6 +23,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
@@ -44,11 +45,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class AdjustedRand<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {
 
     private static final long serialVersionUID = -7408696944704938976L;
-    private static final String name = "Adjusted_Rand";
+    private static final String NAME = "Adjusted_Rand";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public double countScore(int[][] contingency) {
@@ -213,18 +214,18 @@ public class AdjustedRand<E extends Instance, C extends Cluster<E>> extends Abst
     }
 
     @Override
-    public double score(Clustering<E, C> clusters, Props params) {
+    public double score(Clustering<E, C> clusters, Props params) throws ScoreException {
         PairMatch pm = CountingPairs.getInstance().matchPairs(clusters);
         return score(pm);
     }
 
     @Override
-    public double score(Clustering clusters) {
+    public double score(Clustering clusters) throws ScoreException {
         return score(clusters, new Props());
     }
 
     @Override
-    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException {
         return score(clusters, params);
     }
 

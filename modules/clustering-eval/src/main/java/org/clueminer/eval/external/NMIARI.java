@@ -23,6 +23,7 @@ import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.Matching;
@@ -72,7 +73,7 @@ public class NMIARI<E extends Instance, C extends Cluster<E>> extends NMIbase<E,
 
     @Override
     protected double calculate(Clustering<E, C> clusters, Props params,
-            double mutualInformation, double c1entropy, double classEntropy, int klassesSize) {
+            double mutualInformation, double c1entropy, double classEntropy, int klassesSize) throws ScoreException {
 
         PairMatch pm = CountingPairs.getInstance().matchPairs(clusters);
         if (pm == null) {
