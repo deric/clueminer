@@ -36,7 +36,6 @@ import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
-import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
@@ -115,7 +114,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
         //TODO: compute number of numeric/string attributes
         E draft = builder().build(columns.length);
         int i = 0;
-        AttributeRole role;
+        BasicAttrRole role;
         AttributeDraft attr;
         for (Object value : columns) {
             try {
@@ -126,14 +125,17 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
                     //create no-name attribute
                     attr = attributeBuilder.create(i, "attr_" + i);
                 }
-                role = attr.getRole();
-                if (role == BasicAttrRole.ID) {
-                    draft.setId(value.toString());
-                } else if (role == BasicAttrRole.INPUT) {
-                    //draft.setObject(i, parseValue(attr, value, i, num, draft));
-                    builder().set(value, attr, draft);
-                } else {
-                    draft.setObject(i, value);
+                role = (BasicAttrRole) attr.getRole();
+                switch (role) {
+                    case ID:
+                        draft.setId(value.toString());
+                        break;
+                    case INPUT:
+                        //draft.setObject(i, parseValue(attr, value, i, num, draft));
+                        builder().set(value, attr, draft);
+                        break;
+                    default:
+                        draft.setObject(i, value);
                 }
             } catch (Exception e) {
                 report.logIssue(new Issue("Invalid type (line " + num + "): " + e.toString(), Issue.Level.WARNING));
@@ -630,7 +632,7 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
 
     @Override
     public boolean isEmpty() {
-        return instanceList.size() == 0;
+        return instanceList.isEmpty();
     }
 
     @Override
