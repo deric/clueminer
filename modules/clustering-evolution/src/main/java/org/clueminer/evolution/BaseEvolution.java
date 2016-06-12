@@ -17,11 +17,14 @@
 package org.clueminer.evolution;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.StdStorage;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
@@ -53,6 +56,8 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
 
     protected final transient ListenerList<EvolutionListener> evoListeners = new ListenerList<>();
     protected final transient ListenerList<UpdateFeed> metaListeners = new ListenerList<>();
+
+    private static final Logger LOGGER = Logger.getLogger(BaseEvolution.class.getName());
     /**
      * for storing meta-data
      */
@@ -138,7 +143,12 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
 
     protected double externalValidation(I best) {
         if (external != null) {
-            return external.score(best.getClustering());
+            try {
+                return external.score(best.getClustering());
+            } catch (ScoreException ex) {
+                LOGGER.log(Level.WARNING, "failed to computer {0}: {1}",
+                        new Object[]{external.getName(), ex.getMessage()});
+            }
         }
         return Double.NaN;
     }

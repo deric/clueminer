@@ -24,9 +24,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.sort.DominanceComparator;
 import org.clueminer.eval.utils.ClusteringComparator;
@@ -54,6 +57,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     final HashSet<Integer> blacklist;
     private final ClusteringComparator<E, C> frontSorting;
     private int frontsRemoved = 0;
+    private static final Logger LOGGER = Logger.getLogger(ParetoFrontQueue.class.getName());
 
     public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
@@ -393,7 +397,13 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             inc = curr.size() == 1 ? 0.0 : 1.0 / curr.size();
             while (iter.hasNext()) {
                 clustering = iter.next();
-                double score = eval.score(clustering);
+                double score;
+                try {
+                    score = eval.score(clustering);
+                } catch (ScoreException ex) {
+                    score = Double.NaN;
+                    LOGGER.log(Level.WARNING, "failed to compute score {0}: {1}", new Object[]{eval.getName(), ex.getMessage()});
+                }
                 sb.append("rank ").append(rank).append(", ").append(eval.getName())
                         .append(": ").append(String.format("%.2f", score)).append(", ")
                         .append(clustering.fingerprint()).append(", ");

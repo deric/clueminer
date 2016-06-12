@@ -34,7 +34,7 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class CURETest {
+public class CURETest<E extends Instance, C extends CureCluster<E>> {
 
     private CURE subject;
 
@@ -48,8 +48,8 @@ public class CURETest {
         ClmLog.setup(Logger.getLogger(CURE.class.getName()));
     }
 
-    private void printClustering(Clustering<Instance, CureCluster<Instance>> clustering) {
-        for (CureCluster c : clustering) {
+    private void printClustering(Clustering<E, C> clustering) {
+        for (C c : clustering) {
             System.out.print(c.getName() + " [" + c.size() + "] ");
             System.out.print("{");
             for (int i = 0; i < c.size(); i++) {
@@ -70,13 +70,13 @@ public class CURETest {
         params.putInt(CURE.K, 2);
         //cluster all data, no subsets
         params.putBoolean(CURE.SAMPLING, false);
-        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+        Clustering<E, C> clustering = subject.cluster(dataset, params);
 
         assertNotNull(clustering);
         assertEquals(2, clustering.size());
         printClustering(clustering);
         assertEquals(17, clustering.instancesCount());
-        for (CureCluster c : clustering) {
+        for (C c : clustering) {
             if (c.size() < 5) {
                 assertEquals(2, c.size());
             } else {
@@ -93,7 +93,7 @@ public class CURETest {
         params.putInt(CURE.K, 2);
         //cluster all data, no subsets
         params.putBoolean(CURE.SAMPLING, true);
-        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+        Clustering<E, C> clustering = subject.cluster(dataset, params);
         assertNotNull(clustering);
         assertEquals(2, clustering.size());
         printClustering(clustering);
@@ -106,7 +106,7 @@ public class CURETest {
         Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
         Props params = new Props();
         params.putInt(CURE.K, 3);
-        Clustering<Instance, CureCluster<Instance>> clustering = subject.cluster(dataset, params);
+        Clustering<E, C> clustering = subject.cluster(dataset, params);
         assertEquals(3, clustering.size());
         assertEquals(150, clustering.instancesCount());
         printClustering(clustering);

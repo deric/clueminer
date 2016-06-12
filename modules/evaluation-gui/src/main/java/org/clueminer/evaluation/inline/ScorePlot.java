@@ -44,6 +44,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.clustering.api.factory.RankFactory;
@@ -370,7 +371,12 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
         if (crossAtMedian && external != null && external.length > 2) {
             int pos = (external.length / 2);
-            ymid = compExternal.getEvaluator().score(external[pos]);
+            try {
+                ymid = compExternal.getEvaluator().score(external[pos]);
+            } catch (ScoreException ex) {
+                ymid = 0.0;
+                LOGGER.log(Level.WARNING, "failed to compute{0}: {1}", new Object[]{compExternal.getEvaluator().getName(), ex.getMessage()});
+            }
         } else {
             ymid = (ymax - ymin) / 2.0 + ymin;
         }
