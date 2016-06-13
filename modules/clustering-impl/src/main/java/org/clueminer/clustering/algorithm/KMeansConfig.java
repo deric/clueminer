@@ -43,7 +43,12 @@ public class KMeansConfig<E extends Instance> implements Configurator<E> {
 
     @Override
     public void configure(Dataset<E> dataset, Props params) {
-        params.putInt(KMeans.K, (int) Math.sqrt(dataset.size() / 2));
+        int k = (int) Math.sqrt(dataset.size() / 2);
+        if (k < 2) {
+            //smaller k doesn't make sense
+            k = 2;
+        }
+        params.putInt(KMeans.K, k);
     }
 
 }
