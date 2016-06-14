@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.hts.fluorescence;
 
 import org.clueminer.approximation.api.DataTransform;
@@ -18,14 +34,14 @@ import org.openide.util.TaskListener;
  *
  * @author Tomas Barton
  */
-public class DataPreprocessing implements TaskListener {
+public class DataPreprocessing<E extends Instance> implements TaskListener {
 
-    private Dataset<? extends Instance> plate;
-    private Dataset<Instance> output;
+    private Dataset<E> plate;
+    private Dataset<E> output;
     private DataTransform transform;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
 
-    public DataPreprocessing(Dataset<? extends Instance> plate, DataTransform transform) {
+    public DataPreprocessing(Dataset<E> plate, DataTransform transform) {
         this.plate = plate;
         this.transform = transform;
     }
@@ -35,7 +51,7 @@ public class DataPreprocessing implements TaskListener {
         ProgressHandle ph = ProgressHandle.createHandle("Analyzing dataset");
         Timeseries<ContinuousInstance> dataset = (Timeseries<ContinuousInstance>) plate;
         output = new SampleDataset<>();
-        output.setParent((Dataset<Instance>) plate);
+        output.setParent(plate);
 
         final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, transform, ph));
         taskAnalyze.addTaskListener(this);
