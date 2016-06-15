@@ -17,11 +17,12 @@
 package org.clueminer.sort;
 
 /**
+ * After sorting data in passed array will be in incremental order.
  *
  * @author deric
- * @param <T>
+ * @param <T> type being sorted
  */
-public class HeapSelect<T extends Comparable<? super T>> {
+public class HeapSelectInv<T extends Comparable<? super T>> {
 
     /**
      * The heap size.
@@ -45,7 +46,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
      *
      * @param heap the array to store smallest values to track.
      */
-    public HeapSelect(T[] heap) {
+    public HeapSelectInv(T[] heap) {
         this.heap = heap;
         k = heap.length;
         n = 0;
@@ -66,7 +67,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
             }
         } else {
             n++;
-            if (datum.compareTo(heap[0]) < 0) {
+            if (datum.compareTo(heap[0]) > 0) {
                 heap[0] = datum;
                 SortUtils.siftDown(heap, 0, k - 1);
             }
@@ -168,7 +169,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
             for (int i = inc; i < n; i++) {
                 T v = a[i];
                 int j = i;
-                while (a[j - inc].compareTo(v) < 0) {
+                while (a[j - inc].compareTo(v) > 0) {
                     a[j] = a[j - inc];
                     j -= inc;
                     if (j < inc) {

@@ -26,7 +26,7 @@ import org.junit.Test;
  */
 public class HeapSelectTest {
 
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public HeapSelectTest() {
     }
@@ -44,7 +44,7 @@ public class HeapSelectTest {
         for (int i = 0; i < size; i++) {
             assertEquals(true, (i + 1) == heap.get(i));
         }
-        assertEquals(10.0, heap.peekLast(), delta);
+        assertEquals(10.0, heap.peekLast(), DELTA);
     }
 
     @Test
