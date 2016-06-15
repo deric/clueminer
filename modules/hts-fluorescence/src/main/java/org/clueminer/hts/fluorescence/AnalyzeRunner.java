@@ -28,18 +28,21 @@ import org.openide.util.Task;
  *
  * @author Tomas Barton
  */
-public class AnalyzeRunner extends Task implements Runnable {
+public class AnalyzeRunner<I extends Timeseries<ContinuousInstance>, O extends Dataset<? extends Instance>> extends Task implements Runnable {
 
-    private Timeseries<ContinuousInstance> dataset;
-    private Dataset<Instance> output;
+    private I dataset;
+    private O output;
     private ProgressHandle p;
     private DataTransform transform;
 
-    public AnalyzeRunner(Timeseries<ContinuousInstance> dataset, Dataset<Instance> output, DataTransform transform, ProgressHandle p) {
-        this.dataset = dataset;
-        this.output = output;
+    public AnalyzeRunner(DataTransform transform, ProgressHandle p) {
         this.p = p;
         this.transform = transform;
+    }
+
+    public void setup(I input, O output) {
+        this.dataset = input;
+        this.output = output;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class AnalyzeRunner extends Task implements Runnable {
         transform.analyze(dataset, output, p); //for debugging can save results to CSV file
     }
 
-    public Dataset<Instance> getAnalyzedData() {
+    public O getAnalyzedData() {
         return output;
     }
 }

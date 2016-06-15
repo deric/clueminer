@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DataTransform.class)
-public class QuadruplicateNormalization extends Normalization implements DataTransform {
+public class QuadruplicateNormalization<I extends HtsInstance, O extends HtsInstance> extends Normalization implements DataTransform<I, O> {
 
     private static final String name = "David's normalization";
     private static final Logger logger = Logger.getLogger(QuadruplicateNormalization.class.getName());
@@ -53,7 +53,7 @@ public class QuadruplicateNormalization extends Normalization implements DataTra
     }
 
     @Override
-    public void normalize(HtsPlate<HtsInstance> plate, HtsPlate<HtsInstance> normalized) {
+    public void normalize(HtsPlate<I> plate, HtsPlate<O> normalized) {
         //Dataset normalized = plate.duplicate();
         //columns are numbered from 0
         int colCnt = plate.getColumnsCount();
@@ -130,12 +130,12 @@ public class QuadruplicateNormalization extends Normalization implements DataTra
     }
 
     @Override
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         normalize((HtsPlate<HtsInstance>) dataset, (HtsPlate<HtsInstance>) output);
     }
 
     @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return input.duplicate();
+    public Dataset<O> createDefaultOutput(Dataset<I> input) {
+        return (Dataset<O>) input.duplicate();
     }
 }

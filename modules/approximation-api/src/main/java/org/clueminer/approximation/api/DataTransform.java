@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.approximation.api;
 
 import org.clueminer.dataset.api.Dataset;
@@ -9,8 +25,8 @@ import org.netbeans.api.progress.ProgressHandle;
  * representation
  *
  * @author Tomas Barton
- * @param <I>
- * @param <O>
+ * @param <I> input row type
+ * @param <O> output row type
  */
 public interface DataTransform<I extends Instance, O extends Instance> {
 
@@ -32,7 +48,7 @@ public interface DataTransform<I extends Instance, O extends Instance> {
      * transformation
      *
      * @param input input dataset, usually we use number of instances or
-     * dimensionality to optimize output storage
+     *              dimensionality to optimize output storage
      * @return dataset for storing results
      */
     public Dataset<O> createDefaultOutput(Dataset<I> input);

@@ -53,7 +53,9 @@ public class DataPreprocessing<E extends Instance> implements TaskListener {
         output = new SampleDataset<>();
         output.setParent(plate);
 
-        final RequestProcessor.Task taskAnalyze = RP.create(new AnalyzeRunner(dataset, output, transform, ph));
+        AnalyzeRunner<Timeseries<ContinuousInstance>, Dataset<E>> ar = new AnalyzeRunner(transform, ph);
+        ar.setup(dataset, output);
+        final RequestProcessor.Task taskAnalyze = RP.create(ar);
         taskAnalyze.addTaskListener(this);
         taskAnalyze.schedule(0);
     }

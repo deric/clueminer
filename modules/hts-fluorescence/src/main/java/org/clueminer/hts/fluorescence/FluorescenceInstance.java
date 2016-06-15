@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Stats;
@@ -144,8 +145,8 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     }
 
     @Override
-    public void setParent(Timeseries<? extends ContinuousInstance> parent) {
-        this.parent = parent;
+    public void setParent(Dataset parent) {
+        this.parent = (Timeseries<? extends ContinuousInstance>) parent;
     }
 
     @Override

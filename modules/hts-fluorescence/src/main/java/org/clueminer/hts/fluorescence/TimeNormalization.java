@@ -33,7 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DataTransform.class)
-public class TimeNormalization extends Normalization implements DataTransform {
+public class TimeNormalization<I extends HtsInstance, O extends HtsInstance>
+        extends Normalization implements DataTransform<I, O> {
 
     private static final String name = "Tom's normalization";
     private static final Logger logger = Logger.getLogger(TimeNormalization.class.getName());
@@ -121,14 +122,14 @@ public class TimeNormalization extends Normalization implements DataTransform {
     }
 
     @Override
-    public void analyze(Dataset<? extends Instance> dataset, Dataset<? extends Instance> output, ProgressHandle ph) {
+    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         //try to cast dataset
         normalize((HtsPlate<HtsInstance>) dataset, (HtsPlate<HtsInstance>) output);
     }
 
     @Override
-    public Dataset<? extends Instance> createDefaultOutput(Dataset<? extends Instance> input) {
-        return input.duplicate();
+    public Dataset<O> createDefaultOutput(Dataset<I> input) {
+        return (Dataset<O>) input.duplicate();
     }
 
 }
