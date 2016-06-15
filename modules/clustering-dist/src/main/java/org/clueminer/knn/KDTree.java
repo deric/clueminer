@@ -16,6 +16,7 @@
  */
 package org.clueminer.knn;
 
+import java.lang.reflect.Array;
 import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -24,7 +25,7 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
-import org.clueminer.sort.HeapSelect;
+import org.clueminer.sort.HeapSelectInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -57,13 +58,11 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     public KDTree(Dataset<E> dataset) {
         this.dataset = dataset;
         this.dm = EuclideanDistance.getInstance();
-        ((EuclideanDistance) dm).setSqrt(false);
         buildTree();
     }
 
     public KDTree() {
-        this.dm = new EuclideanDistance();
-        ((EuclideanDistance) dm).setSqrt(false);
+        this.dm = EuclideanDistance.getInstance();
     }
 
     private void buildTree() {
@@ -177,19 +176,19 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * Returns the nearest neighbors of the given target starting from the give
      * tree node.
      *
-     * @param q the query key.
-     * @param node the root of subtree.
+     * @param q        the query key.
+     * @param node     the root of subtree.
      * @param neighbor the current nearest neighbor.
      */
     private void search(E q, KDNode node, Neighbor<E> neighbor) {
         if (node.isLeaf()) {
+            double distance;
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == dataset.get(index[idx]) && identicalExcluded) {
+                if (q.equals(dataset.get(index[idx])) && identicalExcluded) {
                     continue;
                 }
-                //TODO: squared distance would be enough
-                double distance = dm.measure(q, dataset.get(index[idx]));
+                distance = dm.measure(q, dataset.get(index[idx]));
                 if (distance < neighbor.distance) {
                     neighbor.key = dataset.get(index[idx]);
                     neighbor.index = index[idx];
@@ -220,22 +219,23 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * Returns (in the supplied heap object) the k nearest neighbors of the
      * given target starting from the give tree node.
      *
-     * @param q the query key.
+     * @param q    the query key.
      * @param node the root of subtree.
-     * @param k the number of neighbors to find.
+     * @param k    the number of neighbors to find.
      * @param heap the heap object to store/update the kNNs found during the
-     * search.
+     *             search.
      */
-    private void search(E q, KDNode node, HeapSelect<Neighbor<E>> heap) {
+    private void search(E q, KDNode node, HeapSelectInv<Neighbor<E>> heap) {
         if (node.isLeaf()) {
+            double distance;
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == dataset.get(index[idx]) && identicalExcluded) {
+                if (q.equals(dataset.get(index[idx])) && identicalExcluded) {
                     continue;
                 }
 
                 //TODO: squared distance would be enough
-                double distance = dm.measure(q, dataset.get(index[idx]));
+                distance = dm.measure(q, dataset.get(index[idx]));
                 Neighbor<E> datum = heap.peek();
                 if (distance < datum.distance) {
                     datum.distance = distance;
@@ -268,16 +268,16 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * Returns the neighbors in the given range of search target from the give
      * tree node.
      *
-     * @param q the query key.
-     * @param node the root of subtree.
-     * @param radius	the radius of search range from target.
+     * @param q         the query key.
+     * @param node      the root of subtree.
+     * @param radius	   the radius of search range from target.
      * @param neighbors the list of found neighbors in the range.
      */
     private void search(E q, KDNode node, double radius, List<Neighbor<E>> neighbors) {
         if (node.isLeaf()) {
             // look at all the instances in this leaf
             for (int idx = node.index; idx < node.index + node.count; idx++) {
-                if (q == dataset.get(index[idx]) && identicalExcluded) {
+                if (q.equals(dataset.get(index[idx])) && identicalExcluded) {
                     continue;
                 }
 
@@ -310,7 +310,6 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     public Neighbor<E> nearest(E q) {
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         search(q, root, neighbor);
-        neighbor.distance = Math.sqrt(neighbor.distance);
         return neighbor;
     }
 
@@ -324,20 +323,19 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
             throw new IllegalArgumentException("Neighbor array length is larger than the dataset size");
         }
 
+        // array of neighbors for storing result
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
-        Neighbor<E>[] neighbors = (Neighbor<E>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
-        HeapSelect<Neighbor<E>> heap = new HeapSelect<>(neighbors);
+        Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
+        HeapSelectInv<Neighbor<E>> heap = new HeapSelectInv<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         }
 
         search(q, root, heap);
+        //sort neighbors
         heap.sort();
-        for (Neighbor<E> neighbor1 : neighbors) {
-            neighbor1.distance = Math.sqrt(neighbor1.distance);
-        }
 
         return neighbors;
     }

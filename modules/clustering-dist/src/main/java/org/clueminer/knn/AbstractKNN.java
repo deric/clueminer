@@ -38,7 +38,7 @@ public abstract class AbstractKNN<T extends Instance> implements NearestNeighbor
 
     protected Distance dm;
 
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<T> getDataset() {
         return dataset;
     }
 

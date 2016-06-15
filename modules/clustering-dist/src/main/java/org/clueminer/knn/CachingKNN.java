@@ -16,6 +16,7 @@
  */
 package org.clueminer.knn;
 
+import java.lang.reflect.Array;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -24,7 +25,7 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.Neighbor;
-import org.clueminer.sort.HeapSelect;
+import org.clueminer.sort.HeapSelectInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -93,21 +94,21 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
         Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
-        Neighbor<T>[] neighbors = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
-        HeapSelect<Neighbor<T>> heap = new HeapSelect<>(neighbors);
+        Neighbor<T>[] neighbors = (Neighbor<T>[]) Array.newInstance(neighbor.getClass(), k);
+        HeapSelectInv<Neighbor<T>> heap = new HeapSelectInv<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         }
 
         for (int i = 0; i < dataset.size(); i++) {
-            if (q == dataset.get(i) && identicalExcluded) {
+            if (q.equals(dataset.get(i)) && identicalExcluded) {
                 continue;
             }
 
             dist = dm.measure(q, dataset.get(i));
             //replace smallest value in the heap
-            Neighbor<T> datum = heap.peekLast();
+            Neighbor<T> datum = heap.peek();
             if (dm.compare(dist, datum.distance)) {
                 datum.distance = dist;
                 datum.index = i;
@@ -117,12 +118,7 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
         }
 
         heap.sort();
-        //heap is stored in inversed order
-        Neighbor<T>[] res = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
-        for (int i = 0; i < k; i++) {
-            res[i] = heap.get(i);
-        }
-        return res;
+        return neighbors;
 
     }
 
