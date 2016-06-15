@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = DataTransform.class)
 public class TimeNormalization<I extends HtsInstance, O extends HtsInstance>
-        extends Normalization implements DataTransform<I, O> {
+        extends Normalization<I, O> implements DataTransform<I, O> {
 
     private static final String name = "Tom's normalization";
     private static final Logger logger = Logger.getLogger(TimeNormalization.class.getName());
@@ -45,7 +45,7 @@ public class TimeNormalization<I extends HtsInstance, O extends HtsInstance>
     }
 
     @Override
-    public void normalize(HtsPlate<HtsInstance> plate, HtsPlate<HtsInstance> normalized) {
+    public void normalize(HtsPlate<I> plate, HtsPlate<O> normalized) {
         //Dataset normalized = plate.duplicate();
         //columns are numbered from 0
         int colCnt = plate.getColumnsCount();
@@ -115,7 +115,7 @@ public class TimeNormalization<I extends HtsInstance, O extends HtsInstance>
                         out.setColumn(inst.getColumn());
                         out.setId(inst.getId());
                     }
-                    normalized.add(out);
+                    normalized.add((O) out);
                 }
             }
         }
@@ -124,7 +124,7 @@ public class TimeNormalization<I extends HtsInstance, O extends HtsInstance>
     @Override
     public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         //try to cast dataset
-        normalize((HtsPlate<HtsInstance>) dataset, (HtsPlate<HtsInstance>) output);
+        normalize((HtsPlate<I>) dataset, (HtsPlate<O>) output);
     }
 
     @Override

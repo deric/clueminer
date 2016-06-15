@@ -33,7 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  */
 @ServiceProvider(service = DataTransform.class)
-public class QuadruplicateNormalization<I extends HtsInstance, O extends HtsInstance> extends Normalization implements DataTransform<I, O> {
+public class QuadruplicateNormalization<I extends HtsInstance, O extends HtsInstance>
+        extends Normalization<I, O> implements DataTransform<I, O> {
 
     private static final String name = "David's normalization";
     private static final Logger logger = Logger.getLogger(QuadruplicateNormalization.class.getName());
@@ -123,7 +124,7 @@ public class QuadruplicateNormalization<I extends HtsInstance, O extends HtsInst
                         out.setColumn(inst.getColumn());
                         out.setId(inst.getId());
                     }
-                    normalized.add(out);
+                    normalized.add((O) out);
                 }
             }
         }
@@ -131,7 +132,7 @@ public class QuadruplicateNormalization<I extends HtsInstance, O extends HtsInst
 
     @Override
     public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
-        normalize((HtsPlate<HtsInstance>) dataset, (HtsPlate<HtsInstance>) output);
+        normalize((HtsPlate<I>) dataset, (HtsPlate<O>) output);
     }
 
     @Override

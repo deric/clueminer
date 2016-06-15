@@ -23,7 +23,7 @@ import org.clueminer.hts.api.HtsPlate;
  *
  * @author Tomas Barton
  */
-public abstract class Normalization {
+public abstract class Normalization<I extends HtsInstance, O extends HtsInstance> {
 
     public abstract String getName();
 
@@ -33,7 +33,7 @@ public abstract class Normalization {
      * @param plate
      * @param normalized
      */
-    public abstract void normalize(HtsPlate<HtsInstance> plate, HtsPlate<HtsInstance> normalized);
+    public abstract void normalize(HtsPlate<I> plate, HtsPlate<O> normalized);
 
     /**
      *
@@ -41,7 +41,6 @@ public abstract class Normalization {
      * @param col    starts from 1, not zero!
      * @param colCnt
      * @return
-     * @throws IOException
      */
     public int translatePosition(int ord, int col, int colCnt) {
         int res = ord * colCnt + col;
