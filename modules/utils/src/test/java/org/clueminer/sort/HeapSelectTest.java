@@ -44,7 +44,7 @@ public class HeapSelectTest {
         for (int i = 0; i < size; i++) {
             assertEquals(true, (i + 1) == heap.get(i));
         }
-        assertEquals(10.0, heap.peekLast(), DELTA);
+        assertEquals(10.0, heap.peek(), DELTA);
     }
 
     @Test
