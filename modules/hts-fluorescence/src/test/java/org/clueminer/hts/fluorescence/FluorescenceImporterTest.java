@@ -4,14 +4,9 @@ import java.io.IOException;
 import org.clueminer.fixtures.FluorescenceFixture;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 
 /**
@@ -26,47 +21,16 @@ public class FluorescenceImporterTest {
     public FluorescenceImporterTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of cancel method, of class FluorescenceImporter.
-     */
-    @Test
-    public void testCancel() {
-    }
-
-    /**
-     * Test of setProgressTicket method, of class FluorescenceImporter.
-     */
-    @Test
-    public void testSetProgressTicket() {
-    }
-
     /**
      * Test of run method, of class FluorescenceImporter.
      */
     @Test
     public void testRun() {
 
-
         try {
             FluorescenceFixture tf = new FluorescenceFixture();
             importer = new FluorescenceImporter(tf.testData());
-            ProgressHandle ph = ProgressHandleFactory.createHandle("Importing dataset");
+            ProgressHandle ph = ProgressHandle.createHandle("Importing dataset");
             importer.setProgressHandle(ph);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
@@ -84,22 +48,9 @@ public class FluorescenceImporterTest {
         assertEquals(424, inst.value(0), delta);
         assertEquals(4087, inst.value(dataset.attributeCount() - 1), delta);
         assertEquals(15, inst.size());
-        System.out.println("size: "+inst.size());
-        System.out.println("a1: "+inst.toString());
+        System.out.println("size: " + inst.size());
+        System.out.println("a1: " + inst.toString());
         assertEquals("CP-001073", dataset.getName());
     }
 
-    /**
-     * Test of getFile method, of class FluorescenceImporter.
-     */
-    @Test
-    public void testGetFile() {
-    }
-
-    /**
-     * Test of setFile method, of class FluorescenceImporter.
-     */
-    @Test
-    public void testSetFile() {
-    }
 }

@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Exceptions;
 
 /**
@@ -153,7 +152,7 @@ public class FluorescenceOpenerTest {
     public void testSaveDataset() throws IOException {
         FluorescenceOpener opener = new FluorescenceOpener();
         FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+        ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
         importer.setProgressHandle(ph);
         importer.run();
         HtsPlate<HtsInstance> plate = importer.getDataset();

@@ -38,7 +38,6 @@ import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.Workspace;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -113,7 +112,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
     }
 
     protected void openFluorescenceFile(FluorescenceImporter importer) {
-        ProgressHandle ph = ProgressHandleFactory.createHandle("Opening file " + importer.getFile().getName());
+        ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
         importer.setProgressHandle(ph);
         //Project instance
         project = new ProjectImpl();
