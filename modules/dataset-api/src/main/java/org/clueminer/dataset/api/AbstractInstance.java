@@ -20,10 +20,10 @@ import java.awt.Color;
 import java.io.Serializable;
 
 /**
+ * Basic implementation of common methods.
  *
  * @author Tomas Barton
  * @param <T>
- * @param <E>
  */
 public abstract class AbstractInstance<T extends Number> implements Instance<T>, Serializable, Cloneable {
 

@@ -382,7 +382,7 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     public String toString(String separator) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < size(); i++) {
-            result.append(i == 0 ? "" : ",").append(data[i]);
+            result.append(i == 0 ? "" : separator).append(data[i]);
         }
         return result.toString();
     }

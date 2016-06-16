@@ -84,7 +84,7 @@ public class FastaParser<E extends Instance> implements DatasetLoader<E> {
         inst.setIndex(i);
         inst.setName(protein);
         for (int j = 0; j < sequence.length(); j++) {
-
+            inst.setObject(j, sequence.charAt(j));
         }
 
         return inst;
