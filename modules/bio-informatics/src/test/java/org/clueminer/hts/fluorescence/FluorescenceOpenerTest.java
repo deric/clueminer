@@ -1,9 +1,25 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.hts.fluorescence;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import org.clueminer.fixtures.FluorescenceFixture;
+import org.clueminer.fixtures.BioFixture;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.hts.api.HtsPlate;
 import org.junit.After;
@@ -21,7 +37,7 @@ import org.openide.util.Exceptions;
  */
 public class FluorescenceOpenerTest {
 
-    private static FluorescenceFixture fixture;
+    private static BioFixture fixture;
     private static FluorescenceOpener test;
 
     public FluorescenceOpenerTest() {
@@ -29,7 +45,7 @@ public class FluorescenceOpenerTest {
 
     @BeforeClass
     public static void setUpClass() {
-        fixture = new FluorescenceFixture();
+        fixture = new BioFixture();
         test = new FluorescenceOpener();
     }
 
@@ -51,7 +67,7 @@ public class FluorescenceOpenerTest {
     @Test
     public void testDetectMIME() {
         try {
-            Collection res = test.detectMIME(fixture.testData());
+            Collection res = test.detectMIME(fixture.apData());
             assertEquals(true, res.toString().contains("x-tex"));
             System.out.println("res: " + res);
         } catch (IOException ex) {
@@ -59,13 +75,10 @@ public class FluorescenceOpenerTest {
         }
     }
 
-    /**
-     * Test of open method, of class FluorescenceOpener.
-     */
     @Test
     public void testOpen() {
         try {
-            File file = fixture.testData();
+            File file = fixture.apData();
             boolean res = test.openFile(file);
             assertTrue(res);
         } catch (IOException ex) {
@@ -73,29 +86,12 @@ public class FluorescenceOpenerTest {
         }
     }
 
-    /**
-     * Test of openFluorescenceFile method, of class FluorescenceOpener.
-     */
-    @Test
-    public void testOpenFluorescenceFile() {
-    }
-
-    /**
-     * Test of taskFinished method, of class FluorescenceOpener.
-     */
-    @Test
-    public void testTaskFinished() {
-    }
-
-    /**
-     * Test of openFile method, of class FluorescenceOpener.
-     */
     @Test
     public void testOpenFile() {
         try {
             System.out.println("openFile");
             FluorescenceOpener opener = new FluorescenceOpener();
-            FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
+            FluorescenceImporter importer = new FluorescenceImporter(fixture.apData());
             ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
             importer.setProgressHandle(ph);
             importer.run();
@@ -151,7 +147,7 @@ public class FluorescenceOpenerTest {
     @Test
     public void testSaveDataset() throws IOException {
         FluorescenceOpener opener = new FluorescenceOpener();
-        FluorescenceImporter importer = new FluorescenceImporter(fixture.testData());
+        FluorescenceImporter importer = new FluorescenceImporter(fixture.apData());
         ProgressHandle ph = ProgressHandle.createHandle("Opening file " + importer.getFile().getName());
         importer.setProgressHandle(ph);
         importer.run();
