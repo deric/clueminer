@@ -97,6 +97,14 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
     void set(int index, double value);
 
     /**
+     * Parses converts object into underlying instance representation.
+     *
+     * @param index
+     * @param value
+     */
+    void setObject(int index, Object value);
+
+    /**
      * Current number of attributes (dimension of the instance)
      *
      * @return

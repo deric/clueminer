@@ -121,6 +121,11 @@ public class LongDataRow extends DataRow<Long> implements Iterable<Long>, Vector
         data[index] = (long) value;
     }
 
+    @Override
+    public void setObject(int index, Object value) {
+        set(index, (long) value);
+    }
+
     public final void set(long[] data) {
         this.data = data;
         last = data.length;

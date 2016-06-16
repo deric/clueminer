@@ -27,10 +27,10 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Statistics;
+import org.clueminer.dataset.api.Stats;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
-import org.clueminer.dataset.api.Stats;
 
 /**
  * Continuous representation of two variables (e.g. time and speed).
@@ -229,6 +229,11 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     @Override
     public void set(int index, double value) {
         y[index] = value;
+    }
+
+    @Override
+    public void setObject(int index, Object value) {
+        set(index, (double) value);
     }
 
     @Override
