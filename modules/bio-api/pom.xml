@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>org.clueminer</groupId>
-    <artifactId>hts-api</artifactId>
+    <artifactId>bio-api</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>nbm</packaging>
-    <name>hts-api</name>
+    <name>bio-api</name>
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
