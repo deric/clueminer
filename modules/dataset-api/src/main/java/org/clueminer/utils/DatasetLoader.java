@@ -17,7 +17,7 @@
 package org.clueminer.utils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
 import org.clueminer.dataset.api.Dataset;
@@ -40,10 +40,11 @@ public interface DatasetLoader<E extends Instance> {
      * @param file
      * @param output
      * @return
-     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws java.text.ParseException
      * @throws org.clueminer.exception.ParserError
      */
-    boolean load(File file, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException;
+    boolean load(File file, Dataset<E> output) throws ParserError, ParseException, IOException;
 
     /**
      * Convert input @param file into @param output. Dataset could not be empty
@@ -53,8 +54,9 @@ public interface DatasetLoader<E extends Instance> {
      * @param reader
      * @param output
      * @return
-     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws java.text.ParseException
      * @throws org.clueminer.exception.ParserError
      */
-    boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException;
+    boolean load(Reader reader, Dataset<E> output) throws ParserError, ParseException, IOException;
 }
