@@ -17,7 +17,7 @@
 package org.clueminer.bio;
 
 /**
- * Nucleic Acid encoding
+ * Nucleic Acid encoding.
  *
  * @author deric
  */

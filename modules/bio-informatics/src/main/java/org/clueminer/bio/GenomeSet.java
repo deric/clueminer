@@ -18,33 +18,27 @@ package org.clueminer.bio;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.fixtures.BioFixture;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.impl.ArrayDataset;
 
 /**
  *
  * @author deric
- * @param <E>
  */
-public class FastaParserTest<E extends Instance> {
+public class GenomeSet<E extends Instance> extends ArrayDataset<E> implements Dataset<E> {
 
-    private final FastaParser subject;
-    private static final BioFixture BF = new BioFixture();
+    private static final long serialVersionUID = 2123058901652874266L;
 
-    public FastaParserTest() {
-        subject = new FastaParser();
+    public GenomeSet(int instancesCapacity, int attributesCnt) {
+        super(instancesCapacity, attributesCnt);
     }
 
-    @Test
-    public void testLoad_File_Dataset() throws Exception {
-        Dataset<E> dataset = new GenomeSet(15, 2);
-        subject.load(BF.genomeFasta(), dataset);
-        assertEquals(38, dataset.size());
-    }
-
-    @Test
-    public void testLoad_Reader_Dataset() throws Exception {
+    @Override
+    public InstanceBuilder builder() {
+        if (builder == null) {
+            builder = new SequenceFactory(this);
+        }
+        return builder;
     }
 
 }

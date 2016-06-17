@@ -25,12 +25,12 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class GenomSequenceTest {
+public class GenomeSequenceTest {
 
-    private GenomSequence subject;
+    private GenomeSequence subject;
     private static final double DELTA = 1e-9;
 
-    public GenomSequenceTest() {
+    public GenomeSequenceTest() {
     }
 
     @Before
@@ -39,29 +39,33 @@ public class GenomSequenceTest {
 
     @Test
     public void testGenom() {
-        subject = new GenomSequence(4, 4);
+        subject = new GenomeSequence(4, 4);
         subject.setObject(0, "A");
         subject.setObject(1, "C");
         subject.setObject(2, "G");
         subject.setObject(3, "T");
 
-        System.out.println(subject.toString());
-
         assertEquals(4, subject.size());
         assertEquals(0.0, subject.statistics(StatsNum.SUM), DELTA);
     }
 
+    /**
+     * A-T pair and C-G pair should sum to zero.
+     */
     @Test
     public void testChar() {
-        subject = new GenomSequence(4, 4);
+        subject = new GenomeSequence(2, 4);
         subject.setObject(0, 'A');
+        subject.setObject(1, 'T');
+
+        assertEquals(2, subject.size());
+        assertEquals(0.0, subject.statistics(StatsNum.SUM), DELTA);
+
+        subject = new GenomeSequence(2, 4);
+        subject.setObject(0, 'G');
         subject.setObject(1, 'C');
-        subject.setObject(2, 'G');
-        subject.setObject(3, 'T');
 
-        System.out.println(subject.toString());
-
-        assertEquals(4, subject.size());
+        assertEquals(2, subject.size());
         assertEquals(0.0, subject.statistics(StatsNum.SUM), DELTA);
     }
 

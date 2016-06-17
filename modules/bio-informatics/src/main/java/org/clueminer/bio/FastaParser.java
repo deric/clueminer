@@ -48,7 +48,10 @@ public class FastaParser<E extends Instance> implements DatasetLoader<E> {
     @Override
     public boolean load(File file, Dataset<E> output) throws ParserError, ParseException, IOException {
         BufferedReader br = open(file);
+        return load(br, output);
+    }
 
+    public boolean load(BufferedReader br, Dataset<E> output) throws ParserError, ParseException, IOException {
         StringBuilder sequence = new StringBuilder();
         int i = -1;
         String protein;
@@ -59,9 +62,8 @@ public class FastaParser<E extends Instance> implements DatasetLoader<E> {
                 String tokens[] = line.split(" ");
                 i++;
                 protein = tokens[0].substring(1);
-                System.out.println("protein: " + protein);
                 if (sequence.length() > 0) {
-                    output.add(encodeProtein(i, protein, sequence, output.builder()));
+                    encodeProtein(i, protein, sequence, output.builder());
                     //reset sequence
                     sequence.setLength(0);
                 }
@@ -74,8 +76,9 @@ public class FastaParser<E extends Instance> implements DatasetLoader<E> {
     }
 
     @Override
-    public boolean load(Reader reader, Dataset<E> output) throws FileNotFoundException, ParserError, ParseException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean load(Reader reader, Dataset<E> output) throws ParserError, ParseException, IOException {
+        BufferedReader br = new BufferedReader(reader);
+        return load(br, output);
     }
 
     private E encodeProtein(int i, String protein, StringBuilder sequence, InstanceBuilder<E> builder) {
@@ -85,6 +88,10 @@ public class FastaParser<E extends Instance> implements DatasetLoader<E> {
         inst.setName(protein);
         for (int j = 0; j < sequence.length(); j++) {
             inst.setObject(j, sequence.charAt(j));
+        }
+        int pos = protein.indexOf("_");
+        if (pos > -1) {
+            inst.setClassValue(protein.substring(0, pos));
         }
 
         return inst;

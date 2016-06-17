@@ -32,7 +32,9 @@ import org.clueminer.stats.NumericalStats;
  *
  * @author deric
  */
-public class GenomSequence extends AbstractInstance<Double> {
+public class GenomeSequence extends AbstractInstance<Double> {
+
+    private static final long serialVersionUID = 337092785073847557L;
 
     private double[] data;
     private final int alphabet;
@@ -45,12 +47,18 @@ public class GenomSequence extends AbstractInstance<Double> {
      * @param size
      * @param alphaSize number of letters in the alphabet
      */
-    public GenomSequence(int size, int alphaSize) {
-        data = new double[size];
+    public GenomeSequence(int size, int alphaSize) {
         if (alphaSize < 2) {
             throw new RuntimeException("alphabet should be larger than 1");
         }
         this.alphabet = alphaSize;
+        data = new double[size];
+        registerStatistics(new NumericalStats(this));
+    }
+
+    public GenomeSequence(int size) {
+        this.alphabet = 4; //default size
+        data = new double[size];
         registerStatistics(new NumericalStats(this));
     }
 
@@ -76,7 +84,8 @@ public class GenomSequence extends AbstractInstance<Double> {
 
     @Override
     public void set(int index, double value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        data[index] = value;
+        updateStatistics(value);
     }
 
     @Override
@@ -96,8 +105,7 @@ public class GenomSequence extends AbstractInstance<Double> {
         }
         //encode in radians
         enc = Math.sin((e.ordinal() + 1) / (double) (alphabet + 1) * 2 * Math.PI);
-        data[index] = enc;
-        updateStatistics(enc);
+        set(index, enc);
     }
 
     @Override
