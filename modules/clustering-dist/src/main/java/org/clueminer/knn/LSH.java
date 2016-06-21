@@ -15,16 +15,24 @@
  ****************************************************************************** */
 package org.clueminer.knn;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
+import org.clueminer.utils.Props;
+import smile.math.IntArrayList;
+import smile.sort.HeapSelect;
+import smile.stat.distribution.GaussianDistribution;
 
 /**
  * Locality-Sensitive Hashing. LSH is an efficient algorithm for
@@ -61,6 +69,18 @@ import org.clueminer.neighbor.RNNSearch;
  * @author Haifeng Li
  */
 public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
+
+    public static final String NAME = "LSH";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void setDistanceMeasure(Distance dist) {
+        this.dm = dist;
+    }
 
     /**
      * A bucket is a container for points that all have the same value for hash
@@ -133,7 +153,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
          * Constructor.
          */
         HashEntry() {
-            entry = new LinkedList<BucketEntry>();
+            entry = new LinkedList<>();
         }
 
         /**
@@ -205,7 +225,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
                     a[i][j] = gaussian.rand();
                 }
 
-                b[i] = Math.random(0, w);
+                b[i] = smile.math.Math.random(0, w);
             }
 
             table = new HashEntry[H];
@@ -339,6 +359,12 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
      */
     boolean identicalExcluded = true;
 
+    private Distance dm;
+
+    public LSH() {
+        this.w = 4.0;
+    }
+
     /**
      * Constructor.
      *
@@ -373,7 +399,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
      * @param H    the size of universal hash tables.
      */
     public LSH(double[][] keys, E[] data, double w, int H) {
-        this(keys[0].length, Math.max(50, (int) Math.pow(keys.length, 0.25)), Math.max(3, (int) Math.log10(keys.length)), w, H);
+        init(keys[0].length, Math.max(50, (int) Math.pow(keys.length, 0.25)), Math.max(3, (int) Math.log10(keys.length)), w, H);
 
         if (keys.length != data.length) {
             throw new IllegalArgumentException("The array size of keys and data are different.");
@@ -413,7 +439,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
      *          will increase the query time.
      */
     public LSH(int d, int L, int k, double w) {
-        this(d, L, k, w, 1017881);
+        init(d, L, k, w, 1017881);
     }
 
     /**
@@ -428,7 +454,8 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
      *          will increase the query time.
      * @param H the size of universal hash tables.
      */
-    public LSH(int d, int L, int k, double w, int H) {
+    private void init(int d, int L, int k, double w, int H) {
+        this.dm = EuclideanDistance.getInstance();
         if (d < 2) {
             throw new IllegalArgumentException("Invalid input space dimension: " + d);
         }
@@ -455,17 +482,33 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         this.w = w;
         this.H = H;
 
-        data = new ArrayList<E>();
+        data = new ArrayList<>();
         r1 = new int[k];
         r2 = new int[k];
         for (int i = 0; i < k; i++) {
-            r1[i] = Math.randomInt(MAX_HASH_RND);
-            r2[i] = Math.randomInt(MAX_HASH_RND);
+            r1[i] = smile.math.Math.randomInt(MAX_HASH_RND);
+            r2[i] = smile.math.Math.randomInt(MAX_HASH_RND);
         }
 
-        hash = new ArrayList<Hash>(L);
+        hash = new ArrayList<>(L);
         for (int i = 0; i < L; i++) {
             hash.add(new Hash());
+        }
+    }
+
+    @Override
+    public Neighbor[] knn(E q, int k, Props params) {
+        return knn(q, k);
+    }
+
+    @Override
+    public void setDataset(Dataset<E> dataset) {
+        H = dataset.size();
+
+        init(dataset.attributeCount(), Math.max(50, (int) Math.pow(dataset.size(), 0.25)), Math.max(3, (int) Math.log10(dataset.size())), w, H);
+
+        for (E inst : dataset) {
+            put(inst);
         }
     }
 
@@ -483,6 +526,8 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
 
     /**
      * Set if exclude query object self from the neighborhood.
+     *
+     * @param excluded
      */
     public void setIdenticalExcluded(boolean excluded) {
         identicalExcluded = excluded;
@@ -491,11 +536,11 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
     /**
      * Insert an item into the hash table.
      */
-    public void put(E value) {
+    public final void put(E value) {
         int index = data.size();
         data.add(value);
         for (Hash h : hash) {
-            h.add(index, data);
+            h.add(index, value.arrayCopy());
         }
     }
 
@@ -504,16 +549,15 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         Set<Integer> candidates = obtainCandidates(q);
         Neighbor<E> neighbor = new Neighbor<E>(null, -1, Double.MAX_VALUE);
         for (int index : candidates) {
-            E key = keys.get(index);
+            E key = data.get(index);
             if (q == key && identicalExcluded) {
                 continue;
             }
-            double distance = Math.distance(q, key);
+            double distance = dm.measure(q, key);
             if (distance < neighbor.distance) {
                 neighbor.index = index;
                 neighbor.distance = distance;
                 neighbor.key = key;
-                neighbor.value = data.get(index);
             }
         }
 
@@ -527,32 +571,37 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         }
         Set<Integer> candidates = obtainCandidates(q);
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
-        @SuppressWarnings("unchecked")
-        Neighbor<E>[] neighbors = (Neighbor<E>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
-        HeapSelect<Neighbor<E>> heap = new HeapSelect<Neighbor<E>>(neighbors);
+        Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
+        HeapSelect<Neighbor<E>> heap = new HeapSelect<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
         }
 
         int hit = 0;
+        double distance;
         for (int index : candidates) {
-            E[] key = keys.get(index);
+            E key = data.get(index);
             if (q == key && identicalExcluded) {
                 continue;
             }
 
-            double distance = Math.distance(q, key);
+            distance = dm.measure(q, key);
             if (distance < heap.peek().distance) {
-                heap.add(new Neighbor<double[], E>(key, data.get(index), index, distance));
+                heap.add(new Neighbor<>(key, index, distance));
                 hit++;
+                //System.out.println("=== HIT");
             }
+            ///System.out.println("dist: " + distance + " max: " + heap.peekLast().distance);
+            /* for (int i = 0; i < k; i++) {                System.out.println(i + ": " + heap.get(i));
+            } */
         }
 
         heap.sort();
+        //System.out.println("hits: " + hit);
 
         if (hit < k) {
             @SuppressWarnings("unchecked")
-            Neighbor<double[], E>[] n2 = (Neighbor<double[], E>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), hit);
+            Neighbor<E>[] n2 = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), hit);
             int start = k - hit;
             for (int i = 0; i < hit; i++) {
                 n2[i] = neighbors[i + start];
@@ -575,9 +624,9 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
                 continue;
             }
 
-            double distance = Math.distance(q, key);
+            double distance = dm.measure(q, key);
             if (distance <= radius) {
-                neighbors.add(new Neighbor<double[], E>(key, data.get(index), index, distance));
+                neighbors.add(new Neighbor<>(key, index, distance));
             }
         }
     }
@@ -590,7 +639,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
     private Set<Integer> obtainCandidates(E q) {
         Set<Integer> candidates = new LinkedHashSet<>();
         for (Hash h : hash) {
-            BucketEntry bucket = h.get(q);
+            BucketEntry bucket = h.get(q.arrayCopy());
             if (bucket != null) {
                 int m = bucket.entry.size();
                 for (int i = 0; i < m; i++) {

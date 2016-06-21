@@ -23,13 +23,12 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 /**
  *
  * @author deric
  */
-public class LinearRNNTest extends KnnTest {
+public class LinearRNNTest extends AbstractNNTest {
 
     private final LinearRNN subject;
 

@@ -16,60 +16,17 @@
  */
 package org.clueminer.knn;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.impl.ArrayDataset;
-import org.clueminer.exception.ParserError;
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author deric
  */
-public class KnnTest {
-
-    protected static final double DELTA = 1e-9;
-    private Dataset<? extends Instance> irisData;
-    private Dataset<? extends Instance> insectData;
-
-    public Dataset<? extends Instance> insectDataset() {
-        if (insectData == null) {
-            CommonFixture tf = new CommonFixture();
-            insectData = new ArrayDataset(30, 3);
-            ARFFHandler arff = new ARFFHandler();
-            try {
-                arff.load(tf.insectArff(), insectData, 3);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException | ParserError ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return insectData;
-    }
-
-    public Dataset<? extends Instance> irisDataset() {
-        if (irisData == null) {
-            CommonFixture tf = new CommonFixture();
-            irisData = new ArrayDataset(150, 4);
-            ARFFHandler arff = new ARFFHandler();
-            try {
-                arff.load(tf.irisArff(), irisData, 4);
-            } catch (FileNotFoundException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException | ParserError ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-        return irisData;
-    }
+public class KnnTest extends AbstractNNTest {
 
     @Test
     public void testBenchmark() {

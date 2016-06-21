@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 clueminer.org
+ * Copyright (C) 2011-2016 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,53 +21,43 @@ import org.clueminer.dataset.api.Instance;
 import static org.clueminer.knn.AbstractNNTest.DELTA;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <E>
  */
-public class CachingKNNTest extends AbstractNNTest {
+public class LSHTest<E extends Instance> extends AbstractNNTest {
 
-    private final CachingKNN subject;
-
-    public CachingKNNTest() {
-        subject = new CachingKNN();
-    }
+    private LSH subject;
 
     @Test
-    public void testKnn() {
-        Dataset<? extends Instance> d = insectDataset();
+    public void testKnn_3args() {
+        Dataset<E> d = (Dataset<E>) irisDataset();
+        subject = new LSH();
         subject.setDataset(d);
-        int idx = 0;
-        int k = 3;
-        Neighbor[] neighbors = subject.knn(d.get(idx), k);
 
-        int[] expected = new int[]{6, 7, 1};
-
-        for (int i = 0; i < neighbors.length; i++) {
-            Neighbor neighbor = neighbors[i];
-            assertEquals(expected[i], ((Instance) neighbor.key).getIndex());
-        }
-    }
-
-    @Test
-    public void testNn() {
-        Dataset<? extends Instance> d = irisDataset();
-        subject.setDataset(d);
+        LinearSearch<E> refSearch = new LinearSearch(d);
         int k = 5;
         //4.9,3.1,1.5,0.1, Iris-setosa
-        Instance ref = d.get(9);
+        E ref = d.get(9);
         Neighbor[] nn = subject.knn(ref, k);
-        assertEquals(k, nn.length);
-        Instance inst;
+        Neighbor[] nn2 = refSearch.knn(ref, k);
+
+        E inst;
         //there are 3 same instances iris dataset
-        //should find two very same instances (id: 34, 37)
-        for (int i = 0; i < 2; i++) {
-            inst = (Instance) nn[i].key;
-            for (int j = 0; j < d.attributeCount(); j++) {
-                assertEquals(ref.get(j), inst.get(j), DELTA);
+
+        for (int i = 0; i < 5; i++) {
+            inst = (E) nn[i].key;
+            if (i < 2) {
+                //should find two very same instances (id: 34, 37)
+                //assertEquals(true, (nn[i].distance < 0.2));
+                assertEquals(0.0, nn2[i].distance, DELTA);
             }
+            System.out.println(inst.getIndex() + ": " + inst.toString());
+            assertNotNull(inst);
         }
         assertEquals(k, nn.length);
     }

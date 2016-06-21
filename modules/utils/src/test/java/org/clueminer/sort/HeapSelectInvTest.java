@@ -43,6 +43,34 @@ public class HeapSelectInvTest {
             assertEquals((i + 1), data[i], DELTA);
         }
         assertEquals(10.0, heap.peekLast(), DELTA);
+        assertEquals(1.0, heap.peek(), DELTA);
+    }
+
+    @Test
+    public void testUnSorted() {
+        int size = 5;
+        Integer[] data = new Integer[size];
+        HeapSelectInv<Integer> heap = new HeapSelectInv<>(data);
+        for (int i = 0; i < size; i++) {
+            heap.add(999999);
+        }
+        print(heap, size);
+
+        heap.add(1);
+        heap.add(5);
+        heap.add(3);
+        heap.add(8);
+        heap.add(4);
+
+
+        heap.sort();
+        print(heap, size);
+    }
+
+    private void print(HeapSelectInv<Integer> heap, int n) {
+        for (int i = 0; i < n; i++) {
+            System.out.println(i + ": " + heap.get(i));
+        }
     }
 
 }

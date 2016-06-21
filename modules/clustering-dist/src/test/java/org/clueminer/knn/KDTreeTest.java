@@ -30,14 +30,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class KDTreeTest<E extends Instance> extends KnnTest {
+public class KDTreeTest<E extends Instance> extends AbstractNNTest {
 
     private KDTree subject;
 
     Dataset<E> data;
     KDTree<E> kdtree = null;
     LinearSearch<E> naive = null;
-    private static double DELTA = 1e-9;
 
     public KDTreeTest() {
         int n = 5;
