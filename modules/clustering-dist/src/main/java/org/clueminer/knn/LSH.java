@@ -547,14 +547,15 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
     @Override
     public Neighbor<E> nearest(E q) {
         Set<Integer> candidates = obtainCandidates(q);
-        Neighbor<E> neighbor = new Neighbor<E>(null, -1, Double.MAX_VALUE);
+        Neighbor<E> neighbor = new Neighbor<>(null, -1, Double.MAX_VALUE);
+        double distance;
         for (int index : candidates) {
             E key = data.get(index);
             if (q == key && identicalExcluded) {
                 continue;
             }
-            double distance = dm.measure(q, key);
-            if (distance < neighbor.distance) {
+            distance = dm.measure(q, key);
+            if (dm.compare(distance, neighbor.distance)) {
                 neighbor.index = index;
                 neighbor.distance = distance;
                 neighbor.key = key;
@@ -586,7 +587,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
             }
 
             distance = dm.measure(q, key);
-            if (distance < heap.peek().distance) {
+            if (distance < heap.peekLast().distance) {
                 heap.add(new Neighbor<>(key, index, distance));
                 hit++;
                 //System.out.println("=== HIT");

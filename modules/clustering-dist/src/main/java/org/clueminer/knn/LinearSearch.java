@@ -16,6 +16,7 @@
  */
 package org.clueminer.knn;
 
+import java.lang.reflect.Array;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = KNNSearch.class)
 public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements NearestNeighborSearch<T>, KNNSearch<T> {
 
-    public static final String name = "linear k-nn";
+    public static final String NAME = "linear k-nn";
 
     public LinearSearch() {
         this.dm = EuclideanDistance.getInstance();
@@ -57,7 +58,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
         double dist;
         Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
-        Neighbor<T>[] neighbors = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
+        Neighbor<T>[] neighbors = (Neighbor<T>[]) Array.newInstance(neighbor.getClass(), k);
         MinHeap<Neighbor<T>> heap = new MinHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
@@ -84,9 +85,11 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
                 continue;
             }
 
+            //TODO: distance is expected to be minimized (e.g Euclidean)
+            // it won't be true in case of correlation etc.
             dist = dm.measure(q, dataset.get(i));
-            //replace smallest value in the heap
-            Neighbor<T> datum = heap.peek();
+            //replace largest value in the heap
+            Neighbor<T> datum = heap.peekLast();
             if (dm.compare(dist, datum.distance)) {
                 datum.distance = dist;
                 datum.index = i;
@@ -94,7 +97,6 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
                 heap.heapify();
             }
         }
-
         heap.sort();
         return neighbors;
     }

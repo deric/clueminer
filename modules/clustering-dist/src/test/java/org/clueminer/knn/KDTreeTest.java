@@ -21,14 +21,17 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <E>
  */
 public class KDTreeTest<E extends Instance> extends AbstractNNTest {
 
@@ -85,6 +88,13 @@ public class KDTreeTest<E extends Instance> extends AbstractNNTest {
     }
 
     @Test
+    public void testDistance() {
+        Distance dm = EuclideanDistance.getInstance();
+        assertTrue("zero should be better than max value", dm.compare(0.0, Double.MAX_VALUE));
+        assertTrue("zero should be better than infinity", dm.compare(0.0, Double.POSITIVE_INFINITY));
+    }
+
+    @Test
     public void testNn() {
         Dataset<E> d = (Dataset<E>) irisDataset();
         subject = new KDTree();
@@ -99,7 +109,6 @@ public class KDTreeTest<E extends Instance> extends AbstractNNTest {
         assertEquals(k, nn.length);
         E inst;
         //there are 3 same instances iris dataset
-
         for (int i = 0; i < 5; i++) {
             inst = (E) nn[i].key;
             if (i < 2) {

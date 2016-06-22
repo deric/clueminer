@@ -62,6 +62,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
     }
 
     public KDTree() {
+        //this.dm = new EuclideanDistance(false);
         this.dm = EuclideanDistance.getInstance();
     }
 
@@ -189,7 +190,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
                     continue;
                 }
                 distance = dm.measure(q, dataset.get(index[idx]));
-                if (distance < neighbor.distance) {
+                if (dm.compare(distance, neighbor.distance)) {
                     neighbor.key = dataset.get(index[idx]);
                     neighbor.index = index[idx];
                     neighbor.distance = distance;
@@ -236,8 +237,8 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
                 //TODO: squared distance would be enough
                 distance = dm.measure(q, dataset.get(index[idx]));
-                Neighbor<E> datum = heap.peek();
-                if (distance < datum.distance) {
+                Neighbor<E> datum = heap.peekLast();
+                if (dm.compare(distance, datum.distance)) {
                     datum.distance = distance;
                     datum.index = index[idx];
                     datum.key = dataset.get(index[idx]);
@@ -258,7 +259,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
             search(q, nearer, heap);
 
             // now look in further half
-            if (heap.peek().distance >= diff * diff) {
+            if (heap.peekLast().distance >= diff * diff) {
                 search(q, further, heap);
             }
         }

@@ -91,4 +91,22 @@ public class MinHeapTest {
         }
     }
 
+    @Test
+    public void testDoubleSorted() {
+        int size = 5;
+        Double[] data = new Double[size];
+        MinHeap<Double> heap = new MinHeap<>(data);
+        for (int i = 0; i < size; i++) {
+            heap.add(Double.MAX_VALUE);
+        }
+        heap.add(0.35);
+        heap.add(1.35);
+        heap.add(0.5);
+        heap.add(0.1);
+        heap.add(0.01);
+        assertEquals(0.01, heap.peek(), DELTA);
+
+        heap.print();
+    }
+
 }

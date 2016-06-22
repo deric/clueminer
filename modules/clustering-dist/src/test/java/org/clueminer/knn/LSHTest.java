@@ -18,7 +18,6 @@ package org.clueminer.knn;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import static org.clueminer.knn.AbstractNNTest.DELTA;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -49,14 +48,14 @@ public class LSHTest<E extends Instance> extends AbstractNNTest {
         E inst;
         //there are 3 same instances iris dataset
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < k; i++) {
             inst = (E) nn[i].key;
             if (i < 2) {
                 //should find two very same instances (id: 34, 37)
-                //assertEquals(true, (nn[i].distance < 0.2));
+                assertEquals(0.0, nn[i].distance, DELTA);
                 assertEquals(0.0, nn2[i].distance, DELTA);
             }
-            System.out.println(inst.getIndex() + ": " + inst.toString());
+            System.out.println(nn[i].distance + ", " + inst.getIndex() + ": " + inst.toString());
             assertNotNull(inst);
         }
         assertEquals(k, nn.length);

@@ -22,6 +22,10 @@ public class EuclideanDistance extends MinkowskiDistance {
         this.power = 2;
     }
 
+    public EuclideanDistance(boolean sqrt) {
+        this.sqrt = sqrt;
+    }
+
     @Override
     public String getName() {
         return NAME;
