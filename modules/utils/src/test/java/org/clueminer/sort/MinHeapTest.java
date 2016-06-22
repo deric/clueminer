@@ -39,8 +39,8 @@ public class MinHeapTest {
         }
         heap.print();
         //TODO: heapify should guarantee that smallest element is first
-        //heap.heapify();
-        heap.sort();
+        heap.heapify();
+        //heap.sort();
         assertEquals(1, data[0].intValue());
         assertEquals(10, data[9].intValue());
 
@@ -51,7 +51,7 @@ public class MinHeapTest {
         arrPrint(data);
     }
 
-    @Test
+    //@Test
     public void testUnSorted() {
         int size = 5;
         Integer[] data = new Integer[size];

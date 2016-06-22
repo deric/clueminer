@@ -16,6 +16,8 @@
  */
 package org.clueminer.sort;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 
 /**
@@ -45,7 +47,6 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      * The heap array.
      */
     private final T[] heap;
-
 
     /**
      * Constructor.
@@ -98,7 +99,8 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
     public static <T extends Comparable<? super T>> void siftDown(T[] arr, int i, int n) {
         System.out.println("before: " + Arrays.toString(arr));
         int k = arr.length;
-        while ((k - 2 * (k - i)) > n) {
+
+        while (i > n) {
             int j = k - 2 * (k - i);
 
             if (j > n) {
@@ -107,6 +109,7 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
                     j--;
                 }
             }
+
             if (arr[i].compareTo(arr[j]) >= 0) {
                 break;
             }
@@ -114,6 +117,20 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
             SortUtils.swap(arr, i, j);
             i = j;
         }
+    }
+
+    public static int parent(int i) {
+        int parent;
+        if (i <= 2) {
+            return 0; //root of the tree
+        }
+        if (i % 2 == 0) {
+            //right node
+            parent = (i - 2) / 2;
+        } else {
+            parent = (i - 1) / 2;
+        }
+        return parent;
     }
 
     /**
@@ -218,6 +235,19 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
                 a[j] = v;
             }
         } while (inc > 1);
+    }
+
+    /**
+     * Avoid calling getter, cause it causes sorting
+     *
+     * @param out
+     * @param index
+     * @throws IOException
+     */
+    @Override
+    protected void printNodeValue(OutputStreamWriter out, int index) throws IOException {
+        out.write("#" + index + " (" + heap[index] + ")");
+        out.write('\n');
     }
 
 }
