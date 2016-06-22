@@ -155,10 +155,6 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
             throw new IllegalArgumentException("HeapSelect +" + i + "+ is greater than the number of data received so far.");
         }
 
-        if (i == k) {
-            return heap[0];
-        }
-
         if (!sorted) {
             sort(heap, Math.min(k, n));
             sorted = true;
