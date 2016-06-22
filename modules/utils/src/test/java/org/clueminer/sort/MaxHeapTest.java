@@ -16,6 +16,7 @@
  */
 package org.clueminer.sort;
 
+import java.util.Arrays;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +38,9 @@ public class MaxHeapTest {
         for (int i = 0; i < size; i++) {
             heap.add(10 - i);
         }
-        heap.sort();
+        System.out.println("data: " + Arrays.toString(data));
+        heap.heapify();
+//        heap.sort();
 
         //sorted values from 1 to 10
         for (int i = 0; i < size; i++) {

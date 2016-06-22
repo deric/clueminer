@@ -16,6 +16,8 @@
  */
 package org.clueminer.sort;
 
+import java.util.Arrays;
+
 /**
  * A heap build on top of passed array, it keeps limited number of items (k).
  * After sorting data in passed array will be in incremental (ascending) order.
@@ -38,10 +40,12 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      * True if the heap is fully sorted.
      */
     private boolean sorted;
+
     /**
      * The heap array.
      */
     private final T[] heap;
+
 
     /**
      * Constructor.
@@ -92,11 +96,13 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      * @param n
      */
     public static <T extends Comparable<? super T>> void siftDown(T[] arr, int i, int n) {
+        System.out.println("before: " + Arrays.toString(arr));
         int k = arr.length;
         while ((k - 2 * (k - i)) > n) {
             int j = k - 2 * (k - i);
 
             if (j > n) {
+                System.out.println("p =" + i + " = " + arr[i] + " c1: " + j + " = " + arr[j] + " c2: " + (j - 1) + " = " + arr[j - 1]);
                 if (arr[j].compareTo(arr[j - 1]) < 0) {
                     j--;
                 }
@@ -104,6 +110,7 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
             if (arr[i].compareTo(arr[j]) >= 0) {
                 break;
             }
+            System.out.println("swapping " + arr[i] + " with " + arr[j]);
             SortUtils.swap(arr, i, j);
             i = j;
         }
@@ -118,8 +125,10 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
         if (n < k) {
             throw new IllegalStateException();
         }
+        print();
 
         siftDown(heap, k - 1, 0);
+        System.out.println("after: " + Arrays.toString(heap));
     }
 
     /**
