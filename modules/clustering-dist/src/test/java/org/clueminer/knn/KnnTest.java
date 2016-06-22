@@ -20,6 +20,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -45,7 +46,9 @@ public class KnnTest extends AbstractNNTest {
             for (int j = 0; j < k; j++) {
                 inst1 = (Instance) nn1[j].key;
                 inst2 = (Instance) nn2[j].key;
-                assertEquals(inst1, inst2);
+                assertNotNull(inst1);
+                assertNotNull(inst2);
+                assertEquals(nn1[j].distance, nn2[j].distance, DELTA);
             }
         }
     }
