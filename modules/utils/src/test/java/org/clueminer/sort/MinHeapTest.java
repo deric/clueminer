@@ -16,7 +16,9 @@
  */
 package org.clueminer.sort;
 
+import java.util.Random;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -107,6 +109,21 @@ public class MinHeapTest {
         assertEquals(0.01, heap.peek(), DELTA);
 
         heap.print();
+    }
+
+    @Test
+    public void testRandom() {
+        int size = 20;
+        Double[] data = new Double[size];
+        Random rand = new Random();
+        MinHeap<Double> heap = new MinHeap<>(data);
+        for (int i = 0; i < size; i++) {
+            heap.add(rand.nextDouble() * 10);
+        }
+        double prev = 0.0;
+        for (double d : heap) {
+            assertTrue("expect " + prev + " to be smaller than " + d, prev < d);
+        }
     }
 
 }
