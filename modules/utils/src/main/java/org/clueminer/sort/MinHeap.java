@@ -20,6 +20,7 @@ package org.clueminer.sort;
  * A heap build on top of passed array, it keeps limited number of items (k).
  * After sorting data in passed array will be in incremental (ascending) order.
  *
+ * @TODO: implementation is not entirely correct
  * @author deric
  * @param <T> type being sorted
  */
@@ -107,19 +108,6 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
             i = j;
         }
     }
-
-    /**
-     * Swap two positions.
-     *
-     * @param i
-     */
-    public void swap(int i, int j) {
-        T a;
-        a = get(i);
-        set(i, get(j));
-        set(j, a);
-    }
-
 
     /**
      * In case of avoiding creating new objects frequently, one may check and

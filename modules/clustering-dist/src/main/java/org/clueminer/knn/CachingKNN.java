@@ -109,7 +109,7 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
 
             dist = dm.measure(q, dataset.get(i));
             //replace smallest value in the heap
-            Neighbor<T> datum = heap.peek();
+            Neighbor<T> datum = heap.peekLast();
             if (dm.compare(dist, datum.distance)) {
                 datum.distance = dist;
                 datum.index = i;
