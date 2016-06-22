@@ -18,22 +18,21 @@ package org.clueminer.sort;
 
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class HeapSelectTest {
+public class MaxHeapTest {
 
     private static final double DELTA = 1e-9;
 
-    public HeapSelectTest() {
-    }
-
     @Test
     public void testSort() {
-        HeapSelect<Integer> heap = new HeapSelect<>(new Integer[10]);
+        Integer[] data = new Integer[10];
+        MaxHeap<Integer> heap = new MaxHeap<>(data);
         int size = 10;
         for (int i = 0; i < size; i++) {
             heap.add(10 - i);
@@ -45,11 +44,19 @@ public class HeapSelectTest {
             assertEquals(true, (i + 1) == heap.get(i));
         }
         assertEquals(10.0, heap.peek(), DELTA);
+        heap.print();
+        arrPrint(data);
+    }
+
+    private void arrPrint(Integer[] heap) {
+        for (int i = 0; i < heap.length; i++) {
+            System.out.println("[" + i + "] = " + heap[i]);
+        }
     }
 
     @Test
     public void testSelect() {
-        HeapSelect<Integer> instance = new HeapSelect<>(new Integer[10]);
+        MaxHeap<Integer> instance = new MaxHeap<>(new Integer[10]);
         for (int i = 0; i < 1000; i++) {
             instance.add(i);
             if (i > 10) {
@@ -59,7 +66,7 @@ public class HeapSelectTest {
             }
         }
 
-        instance = new HeapSelect<>(new Integer[10]);
+        instance = new MaxHeap<>(new Integer[10]);
         for (int i = 0; i < 1000; i++) {
             instance.add(1000 - i);
             if (i >= 9) {
@@ -70,20 +77,17 @@ public class HeapSelectTest {
         }
     }
 
-    /**
-     * Test of get method, of class HeapSelect.
-     */
     @Test
     public void testSelectBig() {
         System.out.println("HeapSelect Big");
-        HeapSelect<Double> instance = new HeapSelect<>(new Double[10]);
+        MaxHeap<Double> instance = new MaxHeap<>(new Double[10]);
         Random rand = new Random();
         for (int i = 0; i < 1000000; i++) {
             instance.add(rand.nextDouble());
         }
 
-        for (int j = 0; j < 10; j++) {
-            System.out.println(instance.get(j));
+        for (int j = 0; j < 9; j++) {
+            assertTrue(instance.get(j) < instance.get(j + 1));
         }
     }
 

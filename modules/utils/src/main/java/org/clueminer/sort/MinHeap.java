@@ -17,12 +17,13 @@
 package org.clueminer.sort;
 
 /**
- * After sorting data in passed array will be in incremental order.
+ * A heap build on top of passed array, it keeps limited number of items (k).
+ * After sorting data in passed array will be in incremental (ascending) order.
  *
  * @author deric
  * @param <T> type being sorted
  */
-public class HeapSelectInv<T extends Comparable<? super T>> {
+public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
 
     /**
      * The heap size.
@@ -46,7 +47,7 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
      *
      * @param heap the array to store smallest values to track.
      */
-    public HeapSelectInv(T[] heap) {
+    public MinHeap(T[] heap) {
         this.heap = heap;
         k = heap.length;
         n = 0;
@@ -63,16 +64,62 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
         if (n < k) {
             heap[n++] = datum;
             if (n == k) {
-                heapify(heap);
+                heapify();
             }
         } else {
             n++;
-            if (datum.compareTo(heap[0]) > 0) {
-                heap[0] = datum;
-                SortUtils.siftDown(heap, 0, k - 1);
+            //positon k-1 contains largest element
+            if (datum.compareTo(heap[k - 1]) < 0) {
+                heap[k - 1] = datum;
+                //siftUp(heap, k - 1);
+                siftDown(heap, k - 1, 0);
             }
         }
     }
+
+    /**
+     * To restore the max-heap condition when a node's priority is decreased. We
+     * move down the heap, exchanging the node at position k with the larger of
+     * that node's two children if necessary and stopping when the node at k is
+     * not smaller than either child or the bottom is reached. Note that if n is
+     * even and k is n/2, then the node at k has only one child -- this case
+     * must be treated properly.
+     *
+     * @param <T>
+     * @param arr
+     * @param i
+     * @param n
+     */
+    public static <T extends Comparable<? super T>> void siftDown(T[] arr, int i, int n) {
+        int k = arr.length;
+        while ((k - 2 * (k - i)) > n) {
+            int j = k - 2 * (k - i);
+
+            if (j > n) {
+                if (arr[j].compareTo(arr[j - 1]) < 0) {
+                    j--;
+                }
+            }
+            if (arr[i].compareTo(arr[j]) >= 0) {
+                break;
+            }
+            SortUtils.swap(arr, i, j);
+            i = j;
+        }
+    }
+
+    /**
+     * Swap two positions.
+     *
+     * @param i
+     */
+    public void swap(int i, int j) {
+        T a;
+        a = get(i);
+        set(i, get(j));
+        set(j, a);
+    }
+
 
     /**
      * In case of avoiding creating new objects frequently, one may check and
@@ -84,7 +131,7 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
             throw new IllegalStateException();
         }
 
-        SortUtils.siftDown(heap, 0, k - 1);
+        siftDown(heap, k - 1, 0);
     }
 
     /**
@@ -102,7 +149,7 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
      * @return
      */
     public T peekLast() {
-        return get(0);
+        return heap[k - 1];
     }
 
     /**
@@ -114,12 +161,13 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
      * @param i
      * @return
      */
+    @Override
     public T get(int i) {
-        if (i > Math.min(k, n) - 1) {
-            throw new IllegalArgumentException("HeapSelect i is greater than the number of data received so far.");
+        if (i > Math.min(k, n) - 1 || i < 0) {
+            throw new IllegalArgumentException("HeapSelect +" + i + "+ is greater than the number of data received so far.");
         }
 
-        if (i == k - 1) {
+        if (i == k) {
             return heap[0];
         }
 
@@ -128,7 +176,11 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
             sorted = true;
         }
 
-        return heap[k - 1 - i];
+        return heap[i];
+    }
+
+    public void set(int i, T value) {
+        heap[i] = value;
     }
 
     /**
@@ -141,19 +193,13 @@ public class HeapSelectInv<T extends Comparable<? super T>> {
         }
     }
 
-    /**
-     * Place the array in max-heap order. Note that the array is not fully
-     * sorted.
-     */
-    private static <T extends Comparable<? super T>> void heapify(T[] arr) {
-        int n = arr.length;
-        for (int i = n / 2 - 1; i >= 0; i--) {
-            SortUtils.siftDown(arr, i, n - 1);
-        }
+    @Override
+    public int size() {
+        return k;
     }
 
     /**
-     * Sorts the specified array into descending order. It is based on Shell
+     * Sorts the specified array into ascending order. It is based on Shell
      * sort, which is very efficient because the array is almost sorted by
      * heapifying.
      */

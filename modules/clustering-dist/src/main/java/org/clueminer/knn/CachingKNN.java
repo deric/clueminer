@@ -25,7 +25,7 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.Neighbor;
-import org.clueminer.sort.HeapSelectInv;
+import org.clueminer.sort.MinHeap;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -95,7 +95,7 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
         Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
         Neighbor<T>[] neighbors = (Neighbor<T>[]) Array.newInstance(neighbor.getClass(), k);
-        HeapSelectInv<Neighbor<T>> heap = new HeapSelectInv<>(neighbors);
+        MinHeap<Neighbor<T>> heap = new MinHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);

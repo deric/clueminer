@@ -25,7 +25,7 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
-import org.clueminer.sort.HeapSelectInv;
+import org.clueminer.sort.MinHeap;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -73,7 +73,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
         Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
         Neighbor<T>[] neighbors = (Neighbor<T>[]) java.lang.reflect.Array.newInstance(neighbor.getClass(), k);
-        HeapSelectInv<Neighbor<T>> heap = new HeapSelectInv<>(neighbors);
+        MinHeap<Neighbor<T>> heap = new MinHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);

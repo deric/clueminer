@@ -25,7 +25,7 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
-import org.clueminer.sort.HeapSelectInv;
+import org.clueminer.sort.MinHeap;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -225,7 +225,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param heap the heap object to store/update the kNNs found during the
      *             search.
      */
-    private void search(E q, KDNode node, HeapSelectInv<Neighbor<E>> heap) {
+    private void search(E q, KDNode node, MinHeap<Neighbor<E>> heap) {
         if (node.isLeaf()) {
             double distance;
             // look at all the instances in this leaf
@@ -327,7 +327,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
         Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
-        HeapSelectInv<Neighbor<E>> heap = new HeapSelectInv<>(neighbors);
+        MinHeap<Neighbor<E>> heap = new MinHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);

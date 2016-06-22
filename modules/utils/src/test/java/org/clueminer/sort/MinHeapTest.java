@@ -23,53 +23,71 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class HeapSelectInvTest {
+public class MinHeapTest {
 
     private static final double DELTA = 1e-9;
 
     @Test
     public void testSort() {
         Integer[] data = new Integer[10];
-        HeapSelectInv<Integer> heap = new HeapSelectInv<>(data);
+        MinHeap<Integer> heap = new MinHeap<>(data);
         int size = 10;
         for (int i = 0; i < size; i++) {
-            heap.add(10 - i);
+            heap.add(size - i);
         }
 
         heap.sort();
+        assertEquals(1, data[0].intValue());
+        assertEquals(10, data[9].intValue());
 
-        //sorted values from 1 to 10
-        for (int i = 0; i < size; i++) {
-            assertEquals((i + 1), data[i], DELTA);
-        }
-        assertEquals(10.0, heap.peekLast(), DELTA);
-        assertEquals(1.0, heap.peek(), DELTA);
+        assertEquals(1, heap.peek().intValue());
+        assertEquals(10, heap.peekLast().intValue());
+
+        heap.print();
+        arrPrint(data);
     }
 
     @Test
     public void testUnSorted() {
         int size = 5;
         Integer[] data = new Integer[size];
-        HeapSelectInv<Integer> heap = new HeapSelectInv<>(data);
+        MinHeap<Integer> heap = new MinHeap<>(data);
         for (int i = 0; i < size; i++) {
             heap.add(999999);
         }
-        print(heap, size);
 
         heap.add(1);
         heap.add(5);
+        //heap.print();
         heap.add(3);
         heap.add(8);
         heap.add(4);
+        System.out.println("==== 8 should be last");
+        assertEquals(8, heap.peekLast().intValue());
+        heap.print();
 
+        heap.add(2);
 
         heap.sort();
-        print(heap, size);
+        arrPrint(data);
+        //smallest value should be at position 0
+        assertEquals(1, data[0].intValue());
     }
 
-    private void print(HeapSelectInv<Integer> heap, int n) {
+    private void print(MinHeap<Integer> heap, int n) {
         for (int i = 0; i < n; i++) {
             System.out.println(i + ": " + heap.get(i));
+        }
+    }
+
+    /**
+     * we use heap for sorting an array
+     *
+     * @param heap
+     */
+    private void arrPrint(Integer[] heap) {
+        for (int i = 0; i < heap.length; i++) {
+            System.out.println("[" + i + "] = " + heap[i]);
         }
     }
 

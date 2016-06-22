@@ -29,9 +29,9 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
+import org.clueminer.sort.MinHeap;
 import org.clueminer.utils.Props;
 import smile.math.IntArrayList;
-import smile.sort.HeapSelect;
 import smile.stat.distribution.GaussianDistribution;
 
 /**
@@ -572,7 +572,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         Set<Integer> candidates = obtainCandidates(q);
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
-        HeapSelect<Neighbor<E>> heap = new HeapSelect<>(neighbors);
+        MinHeap<Neighbor<E>> heap = new MinHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
         }

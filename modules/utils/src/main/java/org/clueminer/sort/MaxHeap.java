@@ -17,11 +17,12 @@
 package org.clueminer.sort;
 
 /**
+ * Keeps k numbers sorted from min to max (an array stores them in inverse order).
  *
  * @author deric
  * @param <T>
  */
-public class HeapSelect<T extends Comparable<? super T>> {
+public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implements Iterable<T> {
 
     /**
      * The heap size.
@@ -45,7 +46,7 @@ public class HeapSelect<T extends Comparable<? super T>> {
      *
      * @param heap the array to store smallest values to track.
      */
-    public HeapSelect(T[] heap) {
+    public MaxHeap(T[] heap) {
         this.heap = heap;
         k = heap.length;
         n = 0;
@@ -180,4 +181,8 @@ public class HeapSelect<T extends Comparable<? super T>> {
         } while (inc > 1);
     }
 
+    @Override
+    public int size() {
+        return k;
+    }
 }
