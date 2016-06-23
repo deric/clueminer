@@ -16,6 +16,7 @@
  */
 package org.clueminer.knn;
 
+import java.util.Arrays;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.Neighbor;
@@ -52,6 +53,7 @@ public class LinearSearchTest extends AbstractNNTest {
 
         int[] expected = new int[]{6, 7, 1};
 
+        System.out.println("res: " + Arrays.toString(neighbors));
         for (int i = 0; i < neighbors.length; i++) {
             Neighbor neighbor = neighbors[i];
             assertEquals(expected[i], ((Instance) neighbor.key).getIndex());

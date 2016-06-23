@@ -17,6 +17,7 @@
 package org.clueminer.knn;
 
 import java.lang.reflect.Array;
+import java.util.Arrays;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -90,6 +91,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
             dist = dm.measure(q, dataset.get(i));
             //replace largest value in the heap
             Neighbor<T> datum = heap.peekLast();
+            System.out.println("res: " + Arrays.toString(neighbors));
             if (dm.compare(dist, datum.distance)) {
                 datum.distance = dist;
                 datum.index = i;

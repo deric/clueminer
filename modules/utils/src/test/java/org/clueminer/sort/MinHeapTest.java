@@ -38,14 +38,9 @@ public class MinHeapTest {
             heap.add(size - i);
         }
         //heapify should guarantee that smallest element is first
-        //heap.print();
-        heap.heapify();
-
+        //heap.heapify();
+        heap.print();
         assertEquals(1, data[0].intValue());
-        //heap is not fully sorted
-        assertEquals(9, data[9].intValue());
-        heap.sort();
-        //now it should be sorted
         assertEquals(10, data[9].intValue());
 
         assertEquals(1, heap.peek().intValue());
@@ -72,6 +67,8 @@ public class MinHeapTest {
         heap.add(4);
         System.out.println("==== 8 should be last");
         heap.heapify();
+        heap.print();
+        heap.sort();
         assertEquals(8, heap.peekLast().intValue());
         heap.print();
 
@@ -100,7 +97,7 @@ public class MinHeapTest {
         }
     }
 
-    //@Test
+    @Test
     public void testDoubleSorted() {
         int size = 5;
         Double[] data = new Double[size];
@@ -113,9 +110,9 @@ public class MinHeapTest {
         heap.add(0.5);
         heap.add(0.1);
         heap.add(0.01);
-        assertEquals(0.01, heap.peek(), DELTA);
-
         heap.print();
+        heap.sort();
+        assertEquals(0.01, heap.peek(), DELTA);
     }
 
     //@Test

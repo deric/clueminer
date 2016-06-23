@@ -23,9 +23,10 @@ import java.io.OutputStreamWriter;
  * A heap build on top of passed array, it keeps limited number of items (k).
  * After sorting data in passed array will be in incremental (ascending) order.
  *
- * @TODO: implementation is not entirely correct
+ * @TODO: implementation is NOT correct
  * @author deric
  * @param <T> type being sorted
+ * @deprecated
  */
 public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
 
@@ -94,18 +95,36 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      * @param arr
      * @param i
      * @param n
+     * @return true when heap was modified
      */
-    public static <T extends Comparable<? super T>> void siftDown(T[] arr, int i, int n) {
-        int p;
+    public static <T extends Comparable<? super T>> boolean siftDown(T[] arr, int i, int n) {
+        int p, sibling;
+        boolean changed = false;
         while (i > n) {
             p = parent(i);
 
-            if (arr[i].compareTo(arr[p]) >= 0) {
-                break;
+            if (i % 2 == 0) {//right node
+                sibling = i - 1;
+            } else {
+                sibling = i + 1;
             }
+            System.out.println(i + " has sibling " + sibling);
+            if (sibling > n && sibling < arr.length) {
+                if (arr[i].compareTo(arr[sibling]) > 0) {
+                    System.out.println("swapping " + arr[i] + " with " + arr[sibling]);
+                    SortUtils.swap(arr, i, sibling);
+                }
+            }
+
+            if (arr[i].compareTo(arr[p]) >= 0) {
+                return changed;
+            }
+            System.out.println("swapping:" + arr[i] + " with " + arr[p]);
             SortUtils.swap(arr, i, p);
             i = p;
+            changed = true;
         }
+        return changed;
     }
 
     public static int parent(int i) {
@@ -132,7 +151,11 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
             throw new IllegalStateException();
         }
 
-        siftDown(heap, k - 1, 0);
+        boolean changes;
+        do {
+            print();
+            changes = siftDown(heap, k - 1, 0);
+        } while (changes);
     }
 
     /**
