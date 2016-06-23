@@ -196,9 +196,11 @@ public class SortUtils {
     public static <T extends Comparable<? super T>> void siftDown(T[] arr, int k, int n) {
         while (2 * k <= n) {
             int j = 2 * k;
+            //select larger childern
             if (j < n && arr[j].compareTo(arr[j + 1]) < 0) {
                 j++;
             }
+            //stop if parent is larger than children
             if (arr[k].compareTo(arr[j]) >= 0) {
                 break;
             }

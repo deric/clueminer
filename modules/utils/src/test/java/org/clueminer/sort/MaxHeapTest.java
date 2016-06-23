@@ -36,20 +36,26 @@ public class MaxHeapTest {
         MaxHeap<Integer> heap = new MaxHeap<>(data);
         int size = 10;
         for (int i = 0; i < size; i++) {
-            heap.add(10 - i);
+            heap.add(i);
         }
-        System.out.println("data: " + Arrays.toString(data));
-        heap.heapify();
+        //after adding last item heapify is called anyway
+        //heap.heapify();
+        assertEquals(1, heap.peek().intValue());
+        System.out.println("heapify: " + Arrays.toString(data));
 //        heap.sort();
+
+        assertEquals(1, heap.peek().intValue());
+        //heap is not fully sorted
+        assertEquals(9, heap.peekLast().intValue());
+        //printing causes heap sorting!
+        heap.print();
+        System.out.println("sorted: " + Arrays.toString(data));
+        arrPrint(data);
 
         //sorted values from 1 to 10
         for (int i = 0; i < size; i++) {
-            assertEquals(true, (i + 1) == heap.get(i));
+            assertEquals(true, i == heap.get(i));
         }
-        assertEquals(1.0, heap.peek(), DELTA);
-        assertEquals(10.0, heap.peekLast(), DELTA);
-        heap.print();
-        arrPrint(data);
     }
 
     private void arrPrint(Integer[] heap) {

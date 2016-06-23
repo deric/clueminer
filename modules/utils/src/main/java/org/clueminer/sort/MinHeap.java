@@ -18,7 +18,6 @@ package org.clueminer.sort;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.Arrays;
 
 /**
  * A heap build on top of passed array, it keeps limited number of items (k).
@@ -97,25 +96,15 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      * @param n
      */
     public static <T extends Comparable<? super T>> void siftDown(T[] arr, int i, int n) {
-        System.out.println("before: " + Arrays.toString(arr));
-        int k = arr.length;
-
+        int p;
         while (i > n) {
-            int j = k - 2 * (k - i);
+            p = parent(i);
 
-            if (j > n) {
-                System.out.println("p =" + i + " = " + arr[i] + " c1: " + j + " = " + arr[j] + " c2: " + (j - 1) + " = " + arr[j - 1]);
-                if (arr[j].compareTo(arr[j - 1]) < 0) {
-                    j--;
-                }
-            }
-
-            if (arr[i].compareTo(arr[j]) >= 0) {
+            if (arr[i].compareTo(arr[p]) >= 0) {
                 break;
             }
-            System.out.println("swapping " + arr[i] + " with " + arr[j]);
-            SortUtils.swap(arr, i, j);
-            i = j;
+            SortUtils.swap(arr, i, p);
+            i = p;
         }
     }
 
@@ -126,9 +115,9 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
         }
         if (i % 2 == 0) {
             //right node
-            parent = (i - 2) / 2;
+            parent = (i - 2) >>> 1;
         } else {
-            parent = (i - 1) / 2;
+            parent = (i - 1) >>> 1;
         }
         return parent;
     }
@@ -142,10 +131,8 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
         if (n < k) {
             throw new IllegalStateException();
         }
-        print();
 
         siftDown(heap, k - 1, 0);
-        System.out.println("after: " + Arrays.toString(heap));
     }
 
     /**

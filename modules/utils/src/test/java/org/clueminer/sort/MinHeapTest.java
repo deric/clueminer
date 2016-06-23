@@ -37,11 +37,15 @@ public class MinHeapTest {
         for (int i = 0; i < size; i++) {
             heap.add(size - i);
         }
-        heap.print();
-        //TODO: heapify should guarantee that smallest element is first
+        //heapify should guarantee that smallest element is first
+        //heap.print();
         heap.heapify();
-        //heap.sort();
+
         assertEquals(1, data[0].intValue());
+        //heap is not fully sorted
+        assertEquals(9, data[9].intValue());
+        heap.sort();
+        //now it should be sorted
         assertEquals(10, data[9].intValue());
 
         assertEquals(1, heap.peek().intValue());
