@@ -16,6 +16,7 @@
  */
 package org.clueminer.sort;
 
+import java.util.Arrays;
 import java.util.Random;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,18 +26,19 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class MinHeapTest {
+public class MaxHeapInvTest {
 
     private static final double DELTA = 1e-9;
 
     @Test
     public void testSort() {
         Integer[] data = new Integer[10];
-        MinHeap<Integer> heap = new MinHeap<>(data);
+        MaxHeapInv<Integer> heap = new MaxHeapInv<>(data);
         int size = 10;
         for (int i = 0; i < size; i++) {
             heap.add(size - i);
         }
+        System.out.println("data: " + Arrays.toString(data));
         //heapify should guarantee that smallest element is first
         //heap.heapify();
         heap.print();
@@ -54,7 +56,7 @@ public class MinHeapTest {
     public void testUnSorted() {
         int size = 5;
         Integer[] data = new Integer[size];
-        MinHeap<Integer> heap = new MinHeap<>(data);
+        MaxHeapInv<Integer> heap = new MaxHeapInv<>(data);
         for (int i = 0; i < size; i++) {
             heap.add(999999);
         }
@@ -80,7 +82,7 @@ public class MinHeapTest {
         assertEquals(1, data[0].intValue());
     }
 
-    private void print(MinHeap<Integer> heap, int n) {
+    private void print(MaxHeapInv<Integer> heap, int n) {
         for (int i = 0; i < n; i++) {
             System.out.println(i + ": " + heap.get(i));
         }
@@ -101,7 +103,7 @@ public class MinHeapTest {
     public void testDoubleSorted() {
         int size = 5;
         Double[] data = new Double[size];
-        MinHeap<Double> heap = new MinHeap<>(data);
+        MaxHeapInv<Double> heap = new MaxHeapInv<>(data);
         for (int i = 0; i < size; i++) {
             heap.add(Double.MAX_VALUE);
         }
@@ -120,7 +122,7 @@ public class MinHeapTest {
         int size = 20;
         Double[] data = new Double[size];
         Random rand = new Random();
-        MinHeap<Double> heap = new MinHeap<>(data);
+        MaxHeapInv<Double> heap = new MaxHeapInv<>(data);
         for (int i = 0; i < size; i++) {
             heap.add(rand.nextDouble() * 10);
         }

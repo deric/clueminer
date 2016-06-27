@@ -26,9 +26,8 @@ import java.io.OutputStreamWriter;
  * @TODO: implementation is NOT correct
  * @author deric
  * @param <T> type being sorted
- * @deprecated
  */
-public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
+public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
 
     /**
      * The heap size.
@@ -53,7 +52,7 @@ public class MinHeap<T extends Comparable<? super T>> extends BaseHeap<T> {
      *
      * @param heap the array to store smallest values to track.
      */
-    public MinHeap(T[] heap) {
+    public MaxHeapInv(T[] heap) {
         this.heap = heap;
         k = heap.length;
         n = 0;
