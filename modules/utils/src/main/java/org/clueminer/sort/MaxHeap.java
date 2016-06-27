@@ -36,10 +36,6 @@ public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implem
      * True if the heap is fully sorted.
      */
     private boolean sorted;
-    /**
-     * The heap array.
-     */
-    private final T[] heap;
 
     /**
      * Constructor.
@@ -114,6 +110,7 @@ public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implem
      * @param i
      * @return
      */
+    @Override
     public T get(int i) {
         if (i > Math.min(k, n) - 1) {
             throw new IllegalArgumentException("HeapSelect i is greater than the number of data received so far.");

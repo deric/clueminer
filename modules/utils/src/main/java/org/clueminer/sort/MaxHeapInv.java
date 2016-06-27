@@ -18,6 +18,7 @@ package org.clueminer.sort;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import org.openide.util.Exceptions;
 
 /**
  * A heap build on top of passed array, it keeps limited number of items (k).
@@ -41,11 +42,6 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
      * True if the heap is fully sorted.
      */
     private boolean sorted;
-
-    /**
-     * The heap array.
-     */
-    private final T[] heap;
 
     /**
      * Constructor.
@@ -107,10 +103,10 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
             } else {
                 sibling = i + 1;
             }
-            System.out.println(i + " has sibling " + sibling);
+            System.out.println("#" + i + " has sibling #" + sibling);
             if (sibling > n && sibling < arr.length) {
                 if (arr[i].compareTo(arr[sibling]) > 0) {
-                    System.out.println("swapping " + arr[i] + " with " + arr[sibling]);
+                    System.out.println("swapping #" + i + "=" + arr[i] + " with #" + sibling + "=" + arr[sibling]);
                     SortUtils.swap(arr, i, sibling);
                 }
             }
@@ -118,7 +114,7 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
             if (arr[i].compareTo(arr[p]) >= 0) {
                 return changed;
             }
-            System.out.println("swapping:" + arr[i] + " with " + arr[p]);
+            System.out.println("swapping: #" + i + "=" + arr[i] + " with #" + p + "=" + arr[p]);
             SortUtils.swap(arr, i, p);
             i = p;
             changed = true;
@@ -126,7 +122,7 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
         return changed;
     }
 
-    public static int parent(int i) {
+    public static int parent(int i) {;
         int parent;
         if (i <= 2) {
             return 0; //root of the tree
@@ -257,6 +253,26 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
     protected void printNodeValue(OutputStreamWriter out, int index) throws IOException {
         out.write("#" + index + " (" + heap[index] + ")");
         out.write('\n');
+    }
+
+    public void print() {
+        try {
+            OutputStreamWriter out = new OutputStreamWriter(System.out);
+            printTree(out, k - 1);
+            out.flush();
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+
+    @Override
+    int left(final int i) {
+        return 2 * i + 1;
+    }
+
+    @Override
+    int right(final int i) {
+        return 2 * i + 2;
     }
 
 }

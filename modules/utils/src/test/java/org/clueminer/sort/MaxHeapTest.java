@@ -39,7 +39,7 @@ public class MaxHeapTest {
             heap.add(i);
         }
         //after adding last item heapify is called anyway
-        //heap.heapify();
+        heap.heapify();
         assertEquals(1, heap.peek().intValue());
         System.out.println("heapify: " + Arrays.toString(data));
 //        heap.sort();

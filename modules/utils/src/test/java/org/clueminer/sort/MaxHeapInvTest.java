@@ -99,7 +99,7 @@ public class MaxHeapInvTest {
         }
     }
 
-    @Test
+    //@Test
     public void testDoubleSorted() {
         int size = 5;
         Double[] data = new Double[size];

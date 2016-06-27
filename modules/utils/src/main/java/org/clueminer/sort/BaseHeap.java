@@ -25,8 +25,14 @@ import org.openide.util.Exceptions;
  * Helper methods for heap (a binary tree).
  *
  * @author deric
+ * @param <T> element type
  */
 public abstract class BaseHeap<T> implements Iterable<T> {
+
+    /**
+     * The heap array.
+     */
+    protected T[] heap;
 
     /**
      *
@@ -64,7 +70,7 @@ public abstract class BaseHeap<T> implements Iterable<T> {
     }
 
     protected void printNodeValue(OutputStreamWriter out, int index) throws IOException {
-        out.write("#" + index + " (" + get(index) + ")");
+        out.write("#" + index + " (" + heap[index] + ")");
         out.write('\n');
     }
 
