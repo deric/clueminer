@@ -46,9 +46,6 @@ public class MaxHeapInvTest {
         heap.print();
 //        assertEquals(1, data[0].intValue());
 //        assertEquals(10, data[9].intValue());
-
-        //      assertEquals(1, heap.peek().intValue());
-        //      assertEquals(10, heap.peekLast().intValue());
         System.out.println("final: " + Arrays.toString(data));
         heap.print();
 
@@ -56,6 +53,8 @@ public class MaxHeapInvTest {
 
         heap.sort();
         heap.print();
+        assertEquals(1, heap.peekLast().intValue());
+        assertEquals(10, heap.peek().intValue());
         System.out.println("sorted: " + Arrays.toString(data));
     }
 
@@ -78,7 +77,7 @@ public class MaxHeapInvTest {
         heap.heapify();
         heap.print();
         heap.sort();
-        assertEquals(8, heap.peekLast().intValue());
+        assertEquals(8, heap.peek().intValue());
         heap.print();
 
         heap.add(2);
@@ -122,7 +121,7 @@ public class MaxHeapInvTest {
         heap.add(0.01);
         heap.print();
         heap.sort();
-        assertEquals(0.01, heap.peek(), DELTA);
+        assertEquals(0.01, heap.peekLast(), DELTA);
     }
 
     @Test

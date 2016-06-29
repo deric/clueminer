@@ -17,7 +17,6 @@ package org.clueminer.knn;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +29,7 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
-import org.clueminer.sort.MaxHeap;
+import org.clueminer.sort.MaxHeapInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import smile.math.IntArrayList;
@@ -576,7 +575,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         Set<Integer> candidates = obtainCandidates(q);
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
-        MaxHeap<Neighbor<E>> heap = new MaxHeap<>(neighbors);
+        MaxHeapInv<Neighbor<E>> heap = new MaxHeapInv<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
         }
@@ -590,7 +589,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
             }
 
             distance = dm.measure(q, key);
-            if (distance < heap.peekLast().distance) {
+            if (distance < heap.peek().distance) {
                 heap.add(new Neighbor<>(key, index, distance));
                 hit++;
                 //System.out.println("=== HIT");
@@ -601,9 +600,6 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         }
 
         heap.sort();
-        //TODO: necessary until MinHeap is fixed
-        Arrays.sort(neighbors);
-        //System.out.println("hits: " + hit);
 
         if (hit < k) {
             @SuppressWarnings("unchecked")

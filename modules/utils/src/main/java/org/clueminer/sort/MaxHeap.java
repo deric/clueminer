@@ -88,7 +88,7 @@ public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implem
      *
      * @return
      */
-    public T peek() {
+    public T peekLast() {
         return heap[k - 1];
     }
 
@@ -97,7 +97,7 @@ public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implem
      *
      * @return
      */
-    public T peekLast() {
+    public T peek() {
         return heap[0];
     }
 

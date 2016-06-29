@@ -27,7 +27,7 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
-import org.clueminer.sort.MinHeap;
+import org.clueminer.sort.MaxHeap;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -75,7 +75,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
         Neighbor<T> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
         Neighbor<T>[] neighbors = (Neighbor<T>[]) Array.newInstance(neighbor.getClass(), k);
-        MinHeap<Neighbor<T>> heap = new MinHeap<>(neighbors);
+        MaxHeap<Neighbor<T>> heap = new MaxHeap<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
@@ -90,8 +90,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
             // it won't be true in case of correlation etc.
             dist = dm.measure(q, dataset.get(i));
             //replace largest value in the heap
-            Neighbor<T> datum = heap.peekLast();
-            System.out.println("res: " + Arrays.toString(neighbors));
+            Neighbor<T> datum = heap.peek();
             if (dm.compare(dist, datum.distance)) {
                 datum.distance = dist;
                 datum.index = i;
@@ -99,7 +98,9 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
                 heap.heapify();
             }
         }
-        heap.sort();
+        //heap.sort();
+        //TODO: array is sorted from max to min
+        Arrays.sort(neighbors);
         return neighbors;
     }
 

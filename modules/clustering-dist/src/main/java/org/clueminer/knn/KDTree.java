@@ -25,7 +25,7 @@ import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.NearestNeighborSearch;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
-import org.clueminer.sort.MinHeap;
+import org.clueminer.sort.MaxHeapInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -226,7 +226,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
      * @param heap the heap object to store/update the kNNs found during the
      *             search.
      */
-    private void search(E q, KDNode node, MinHeap<Neighbor<E>> heap) {
+    private void search(E q, KDNode node, MaxHeapInv<Neighbor<E>> heap) {
         if (node.isLeaf()) {
             double distance;
             // look at all the instances in this leaf
@@ -237,7 +237,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
 
                 //TODO: squared distance would be enough
                 distance = dm.measure(q, dataset.get(index[idx]));
-                Neighbor<E> datum = heap.peekLast();
+                Neighbor<E> datum = heap.peek();
                 if (dm.compare(distance, datum.distance)) {
                     datum.distance = distance;
                     datum.index = index[idx];
@@ -259,7 +259,7 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
             search(q, nearer, heap);
 
             // now look in further half
-            if (heap.peekLast().distance >= diff * diff) {
+            if (heap.peek().distance >= diff * diff) {
                 search(q, further, heap);
             }
         }
@@ -328,14 +328,14 @@ public class KDTree<E extends Instance> extends AbstractKNN<E> implements Neares
         Neighbor<E> neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         @SuppressWarnings("unchecked")
         Neighbor<E>[] neighbors = (Neighbor<E>[]) Array.newInstance(neighbor.getClass(), k);
-        MinHeap<Neighbor<E>> heap = new MinHeap<>(neighbors);
+        MaxHeapInv<Neighbor<E>> heap = new MaxHeapInv<>(neighbors);
         for (int i = 0; i < k; i++) {
             heap.add(neighbor);
             neighbor = new Neighbor<>(null, 0, Double.MAX_VALUE);
         }
 
         search(q, root, heap);
-        //sort neighbors
+        //make sure heap is fully sorted
         heap.sort();
 
         return neighbors;

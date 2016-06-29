@@ -42,13 +42,12 @@ public class MaxHeapTest {
         //after adding last item heapify is called anyway
         heap.print();
         heap.heapify();
-        //assertEquals(1, heap.peek().intValue());
         System.out.println("heapify: " + Arrays.toString(data));
         heap.sort();
 
-        assertEquals(1, heap.peek().intValue());
+        assertEquals(1, heap.peekLast().intValue());
         //heap is not fully sorted
-        assertEquals(10, heap.peekLast().intValue());
+        assertEquals(10, heap.peek().intValue());
         //printing causes heap sorting!
         heap.print();
         System.out.println("sorted: " + Arrays.toString(data));

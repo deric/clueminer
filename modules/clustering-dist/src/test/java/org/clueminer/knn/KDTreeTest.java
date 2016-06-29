@@ -63,7 +63,7 @@ public class KDTreeTest<E extends Instance> extends AbstractNNTest {
         naive = new LinearSearch<>(data, eucl);
     }
 
-    @Test
+    //@Test
     public void testNear() {
         System.out.println("data: " + data.toString());
         for (int i = 0; i < data.size(); i++) {

@@ -144,12 +144,8 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
             throw new IllegalStateException();
         }
 
-        boolean changes;
-        int i = k - 1;
-        do {
-            changes = siftDown(heap, i, 0);
-            i--;
-        } while (changes);
+        heapify(heap);
+        siftDown(heap, k - 1, 0);
     }
 
     /**
@@ -157,7 +153,7 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
      *
      * @return
      */
-    public T peek() {
+    public T peekLast() {
         return heap[0];
     }
 
@@ -166,7 +162,7 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
      *
      * @return
      */
-    public T peekLast() {
+    public T peek() {
         return heap[k - 1];
     }
 
