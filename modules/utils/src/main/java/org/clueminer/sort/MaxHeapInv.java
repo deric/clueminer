@@ -65,14 +65,14 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
         if (n < k) {
             heap[n++] = datum;
             if (n == k) {
-                heapify();
+                //when heap is full, ensure that heap condition holds
+                heapify(heap);
             }
         } else {
             n++;
             //positon k-1 contains largest element
             if (datum.compareTo(heap[k - 1]) < 0) {
                 heap[k - 1] = datum;
-                //siftUp(heap, k - 1);
                 siftDown(heap, k - 1, 0);
             }
         }
@@ -92,48 +92,46 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
      * @param n
      * @return true when heap was modified
      */
-    public static <T extends Comparable<? super T>> boolean siftDown(T[] arr, int i, int n) {
-        int p, sibling;
-        boolean changed = false;
-        while (i > n) {
-            p = parent(i);
+    public <T extends Comparable<? super T>> boolean siftDown(T[] arr, int i, int n) {
+        int l, r, j;
+        j = i;
+        boolean changes = false;
+        while (i >= n) {
+            l = left(i);
+            r = right(i);
 
-            if (i % 2 == 0) {//right node
-                sibling = i - 1;
-            } else {
-                sibling = i + 1;
-            }
-            System.out.println("#" + i + " has sibling #" + sibling);
-            if (sibling > n && sibling < arr.length) {
-                if (arr[i].compareTo(arr[sibling]) > 0) {
-                    System.out.println("swapping #" + i + "=" + arr[i] + " with #" + sibling + "=" + arr[sibling]);
-                    SortUtils.swap(arr, i, sibling);
+            //select larger childern
+            if (l >= n) {
+                j = l;
+                if (r >= n && arr[l].compareTo(arr[r]) < 0) {
+                    j = r;
                 }
+            } else if (r >= n) {
+                j = r;
             }
 
-            if (arr[i].compareTo(arr[p]) >= 0) {
-                return changed;
+            //avoid endless loop
+            if (i == j) {
+                return false;
             }
-            System.out.println("swapping: #" + i + "=" + arr[i] + " with #" + p + "=" + arr[p]);
-            SortUtils.swap(arr, i, p);
-            i = p;
-            changed = true;
+            //check heap condition is broken (parent is smaller)
+            if (arr[i].compareTo(arr[j]) < 0) {
+                SortUtils.swap(arr, i, j);
+                changes = true;
+            }
+            i = j;
         }
-        return changed;
+        return changes;
     }
 
-    public static int parent(int i) {;
-        int parent;
-        if (i <= 2) {
-            return 0; //root of the tree
+    /**
+     * Place the array in max-heap order. Note that the array is not fully
+     * sorted.
+     */
+    private <T extends Comparable<? super T>> void heapify(T[] arr) {
+        for (int i = k / 2; i < k; i++) {
+            siftDown(arr, i, 0);
         }
-        if (i % 2 == 0) {
-            //right node
-            parent = (i - 2) >>> 1;
-        } else {
-            parent = (i - 1) >>> 1;
-        }
-        return parent;
     }
 
     /**
@@ -147,9 +145,10 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
         }
 
         boolean changes;
+        int i = k - 1;
         do {
-            print();
-            changes = siftDown(heap, k - 1, 0);
+            changes = siftDown(heap, i, 0);
+            i--;
         } while (changes);
     }
 
@@ -266,13 +265,15 @@ public class MaxHeapInv<T extends Comparable<? super T>> extends BaseHeap<T> {
     }
 
     @Override
-    int left(final int i) {
-        return 2 * i + 1;
+    public int left(final int i) {
+        int j = k - i;
+        return k - (2 * j);
     }
 
     @Override
-    int right(final int i) {
-        return 2 * i + 2;
+    public int right(final int i) {
+        int j = k - i;
+        return k - (2 * j + 1);
     }
 
 }

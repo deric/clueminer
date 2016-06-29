@@ -52,11 +52,11 @@ public abstract class BaseHeap<T> implements Iterable<T> {
         }
     }
 
-    int left(final int i) {
+    public int left(final int i) {
         return 2 * i + 1;
     }
 
-    int right(final int i) {
+    public int right(final int i) {
         return 2 * i + 2;
     }
 

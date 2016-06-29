@@ -29,34 +29,41 @@ import org.junit.Test;
 public class MaxHeapInvTest {
 
     private static final double DELTA = 1e-9;
+    private MaxHeapInv<Integer> heap;
 
     @Test
     public void testSort() {
         Integer[] data = new Integer[10];
-        MaxHeapInv<Integer> heap = new MaxHeapInv<>(data);
+        heap = new MaxHeapInv<>(data);
         int size = 10;
         for (int i = 0; i < size; i++) {
             heap.add(size - i);
         }
         System.out.println("data: " + Arrays.toString(data));
         //heapify should guarantee that smallest element is first
-        //heap.heapify();
+        System.out.println("another heapify");
+        heap.heapify();
         heap.print();
-        assertEquals(1, data[0].intValue());
-        assertEquals(10, data[9].intValue());
+//        assertEquals(1, data[0].intValue());
+//        assertEquals(10, data[9].intValue());
 
-        assertEquals(1, heap.peek().intValue());
-        assertEquals(10, heap.peekLast().intValue());
-
+        //      assertEquals(1, heap.peek().intValue());
+        //      assertEquals(10, heap.peekLast().intValue());
+        System.out.println("final: " + Arrays.toString(data));
         heap.print();
+
         arrPrint(data);
+
+        heap.sort();
+        heap.print();
+        System.out.println("sorted: " + Arrays.toString(data));
     }
 
-    //@Test
+    @Test
     public void testUnSorted() {
         int size = 5;
         Integer[] data = new Integer[size];
-        MaxHeapInv<Integer> heap = new MaxHeapInv<>(data);
+        heap = new MaxHeapInv<>(data);
         for (int i = 0; i < size; i++) {
             heap.add(999999);
         }
@@ -75,11 +82,12 @@ public class MaxHeapInvTest {
         heap.print();
 
         heap.add(2);
-
+        System.out.println("before sort: " + Arrays.toString(data));
         heap.sort();
         arrPrint(data);
         //smallest value should be at position 0
         assertEquals(1, data[0].intValue());
+        heap.print();
     }
 
     private void print(MaxHeapInv<Integer> heap, int n) {
@@ -91,15 +99,15 @@ public class MaxHeapInvTest {
     /**
      * we use heap for sorting an array
      *
-     * @param heap
+     * @param data
      */
-    private void arrPrint(Integer[] heap) {
-        for (int i = 0; i < heap.length; i++) {
-            System.out.println("[" + i + "] = " + heap[i]);
+    private void arrPrint(Integer[] data) {
+        for (int i = 0; i < data.length; i++) {
+            System.out.println("[" + i + "] = " + data[i] + " L: " + heap.left(i) + " R: " + heap.right(i));
         }
     }
 
-    //@Test
+    @Test
     public void testDoubleSorted() {
         int size = 5;
         Double[] data = new Double[size];
@@ -117,7 +125,7 @@ public class MaxHeapInvTest {
         assertEquals(0.01, heap.peek(), DELTA);
     }
 
-    //@Test
+    @Test
     public void testRandom() {
         int size = 20;
         Double[] data = new Double[size];
