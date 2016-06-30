@@ -34,7 +34,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * multi-objective merger (heap sorting)
+ * multi-objective merger (heap sorting). Uses {@link FrontHeapQueue}
  *
  * @author deric
  */
@@ -111,6 +111,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
+        //remove any pair containing merged items from current fronts
         queue.filterOut();
     }
 

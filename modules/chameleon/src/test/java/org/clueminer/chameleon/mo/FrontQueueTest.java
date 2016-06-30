@@ -69,7 +69,7 @@ public class FrontQueueTest {
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 

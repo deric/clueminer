@@ -66,7 +66,7 @@ public class PairMergerMSHTest {
         objectives.add(new Closeness());
         objectives.add(new Interconnectivity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());

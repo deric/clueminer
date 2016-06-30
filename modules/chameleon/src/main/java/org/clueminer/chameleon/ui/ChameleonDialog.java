@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.PairMerger;
 import org.clueminer.chameleon.mo.PairMergerMO;
-import org.clueminer.chameleon.mo.PairMergerMOF;
 import org.clueminer.chameleon.mo.PairMergerMOH;
 import org.clueminer.chameleon.mo.PairMergerMS;
 import org.clueminer.chameleon.mo.PairMergerMSH;
@@ -773,7 +772,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 tfPareto.setEnabled(false);
                 break;
             case PairMergerMO.name:
-            case PairMergerMOF.name:
             case PairMergerMOH.name:
             case PairMergerMS.name:
             case PairMergerMSH.name:
@@ -930,7 +928,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
             case PairMerger.name:
                 params.put(Chameleon.SIM_MEASURE, (String) comboSimilarity.getSelectedItem());
                 break;
-            case PairMergerMOF.name:
             case PairMergerMO.name:
             case PairMergerMOH.name:
             case PairMergerMS.name:

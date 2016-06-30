@@ -34,7 +34,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Queue with faster heap filtering
+ * Queue with faster heap filtering, replies on {@link FrontHeapQueueMsh}.
  *
  * @author deric
  */
@@ -115,8 +115,7 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
-        int removed = queue.filterOut(curr);
-        //System.out.println("removed " + removed);
+        queue.filterOut(curr);
     }
 
     private void addIntoQueue(C cluster, Props pref) {

@@ -70,7 +70,7 @@ public class NsgaQueueTest {
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
@@ -111,7 +111,7 @@ public class NsgaQueueTest {
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
@@ -150,7 +150,7 @@ public class NsgaQueueTest {
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 

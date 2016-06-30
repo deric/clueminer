@@ -70,7 +70,7 @@ public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P exte
         objectives.add(new Closeness());
         objectives.add(new Interconnectivity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
@@ -124,7 +124,7 @@ public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P exte
         objectives.add(new RiRcSimilarity());
         objectives.add(new ShatovskaSimilarity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
@@ -169,7 +169,7 @@ public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P exte
         objectives.add(new Closeness());
         objectives.add(new Interconnectivity());
 
-        PairMergerMOF merger = new PairMergerMOF();
+        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());
