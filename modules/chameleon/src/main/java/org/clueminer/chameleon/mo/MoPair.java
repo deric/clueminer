@@ -32,6 +32,7 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
     private double[] objectives;
     private MergeEvaluation<E> eval;
     private Props props = new Props();
+    private double sortScore = Double.NaN;
 
     public MoPair(C A, C B) {
         super(A, B);
@@ -42,6 +43,9 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
         super(A, B);
         setNumObjectives(numObjectives);
         this.eval = eval;
+        if (eval != null) {
+            sortScore = eval.score(A, B, props);
+        }
     }
 
     public MoPair(C A, C B, int numObjectives) {
@@ -61,6 +65,10 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
         objectives[i] = value;
     }
 
+    public double getSortObjective() {
+        return sortScore;
+    }
+
     /**
      * Express multiple objectives by single value
      *
@@ -77,9 +85,15 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
 
     @Override
     public int compareTo(PairValue<C> o) {
-        PairValue<C> e = (PairValue<C>) o;
-        double sc1 = eval.score(this.A, this.B, props);
-        double sc2 = eval.score(e.A, e.B, props);
+        MoPair<E, C> e = (MoPair<E, C>) o;
+        double sc1 = sortScore;
+        if (Double.isNaN(sc1)) {
+            sc1 = eval.score(this.A, this.B, props);
+        }
+        double sc2 = e.getSortObjective();
+        if (Double.isNaN(sc2)) { // is not cached
+            sc2 = eval.score(e.A, e.B, props);
+        }
         if (sc1 > sc2) {
             return eval.isMaximized() ? -1 : 1;
         } else if (sc1 < sc2) {
