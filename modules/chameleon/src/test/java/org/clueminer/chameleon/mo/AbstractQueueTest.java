@@ -44,7 +44,10 @@ import org.clueminer.utils.Props;
 public class AbstractQueueTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> {
 
     public PairMergerMOH initializeMerger() {
-        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        return initializeMerger((Dataset<E>) FakeDatasets.usArrestData());
+    }
+
+    public PairMergerMOH initializeMerger(Dataset<E> dataset) {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         Props props = new Props();

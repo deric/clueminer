@@ -181,6 +181,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
             int currFront = 0;
             int offset = index;
             P item = null;
+            int paretoSize = 0;
             Heap<P> front;
             do {
                 front = fronts[currFront++];
@@ -192,9 +193,14 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                         index++;
                         return item;
                     }
+                    paretoSize += front.size();
                 }
 
             } while (currFront < fronts.length && front != null);
+            if (item == null) {
+                int idx = index - paretoSize;
+                item = pairs.get(idx);
+            }
             index++;
             return item;
         }

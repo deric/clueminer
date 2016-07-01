@@ -17,8 +17,10 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -33,19 +35,20 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMOHTest {
+public class PairMergerMOHTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
     private PairMergerMOH subject;
 
-    @Test
-    public void testUsArrest() {
-        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+    private void testMerging(Dataset<E> dataset) {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         int maxPartitionSize = 20;
@@ -62,12 +65,37 @@ public class PairMergerMOHTest {
         subject.addObjective(new Closeness());
         subject.addObjective(new Interconnectivity());
 
-        subject.initialize(partitioningResult, g, bisection, pref);
-
+        ArrayList<P> pairs = subject.initialize(partitioningResult, g, bisection, pref);
+        assertNull(pairs);
         HierarchicalResult result = subject.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
-        tree.print();
+        assertNotNull(tree);
+    }
 
-        subject.printQueue(subject.queue, 0);
+    @Test
+    public void testUsArrest() {
+        testMerging((Dataset<E>) FakeDatasets.usArrestData());
+    }
+
+    @Test
+    public void testIris() {
+        Props props = new Props();
+        subject = initializeMerger((Dataset<E>) FakeDatasets.irisDataset());
+        ArrayList<P> pairs = subject.createPairs(subject.getClusters().size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        subject.queue = new FrontHeapQueue(5, blacklist, subject.objectives, props);
+        subject.queue.addAll(pairs);
+
+        //merge some items - just enough to overflow queue to buffer
+        for (int i = 0; i < 5; i++) {
+            subject.singleMerge(subject.queue.poll(), props, 0);
+        }
+        //make sure we iterate over all items
+        int i = 0;
+        for (Object p : subject.queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, subject.queue.size());
     }
 }

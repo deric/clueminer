@@ -114,8 +114,11 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
             writer.append(sb.append("\n"));
             sb.setLength(0);
             //data
+            int i = 0;
             for (P pair : pairs) {
+                System.out.println("pair " + i);
                 for (int j = 0; j < objectives.size(); j++) {
+
                     if (j > 0) {
                         sb.append(",");
                     }
@@ -125,13 +128,15 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
                 sb.append(",").append(pair.A.getClusterId()).append("+").append(pair.B.getClusterId());
                 writer.append(sb.append("\n"));
                 sb.setLength(0);
+                System.out.println(pair.toString());
+                i++;
             }
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
-    private void singleMerge(P curr, Props pref, int debug) {
+    protected void singleMerge(P curr, Props pref, int debug) {
         if (debug > 1) {
             System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.toString());
         }
