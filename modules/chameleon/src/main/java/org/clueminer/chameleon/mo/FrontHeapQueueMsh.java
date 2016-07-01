@@ -420,7 +420,6 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
         public int compare(P o1, P o2) {
             return o1.compareTo(o2);
         }
-
     }
 
     public int numFronts() {

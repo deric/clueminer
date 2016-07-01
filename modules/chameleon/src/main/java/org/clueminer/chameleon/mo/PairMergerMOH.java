@@ -16,6 +16,9 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
@@ -31,6 +34,7 @@ import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -62,6 +66,11 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
         queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+        int debug = pref.getInt("debug", 0);
+        if (debug > 0) {
+            System.out.println("initial Pareto space");
+            printQueue(pairs);
+        }
         //initialize queue
         queue.addAll(pairs);
         height = 0;
@@ -69,8 +78,10 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
 
         level = 1;
         int numClusters = clusters.size();
-        System.out.println("total " + numClusters + ", queue size " + queue.size());
-        System.out.println(queue.stats());
+        if (debug > 0) {
+            System.out.println("total " + numClusters + ", queue size " + queue.size());
+            System.out.println(queue.stats());
+        }
         for (int i = 0; i < numClusters - 1; i++) {
             singleMerge(queue.poll(), pref);
             //System.out.println("queue size: " + queue.size());
@@ -82,6 +93,37 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
         result.setTreeData(treeData);
         return result;
+    }
+
+    private void printQueue(ArrayList<P> pairs) {
+        String file = "pareto-front.csv";
+        try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
+            System.out.println("writing to file: " + file);
+            //header
+            StringBuilder sb = new StringBuilder();
+            for (MergeEvaluation<E> obj : objectives) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(obj.getName());
+            }
+            writer.append(sb.append("\n"));
+            sb.setLength(0);
+            //data
+            for (P pair : pairs) {
+                for (int j = 0; j < objectives.size(); j++) {
+                    if (j > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(pair.getObjective(j));
+                }
+                sb.append(",").append(pair.A.getClusterId()).append("+").append(pair.B.getClusterId());
+                writer.append(sb.append("\n"));
+                sb.setLength(0);
+            }
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     private void singleMerge(P curr, Props pref) {
@@ -104,8 +146,8 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
         clusters.add(newCluster);
-        for (MergeEvaluation<E> eval : objectives) {
-            eval.clusterCreated(curr, newCluster, pref);
+        for (MergeEvaluation<E> me : objectives) {
+            me.clusterCreated(curr, newCluster, pref);
         }
         //eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
