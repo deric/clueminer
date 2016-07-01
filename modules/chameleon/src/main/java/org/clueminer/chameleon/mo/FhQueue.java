@@ -162,7 +162,6 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
 
         @Override
         public P next() {
-            index++;
             int currFront = 0;
             int offset = index;
             P item = null;
@@ -173,12 +172,13 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
+                        index++;
                         return front.get(offset);
                     }
                 }
 
             } while (currFront < fronts.length && front != null);
-
+            index++;
             return item;
         }
     }

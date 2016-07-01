@@ -178,7 +178,6 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
 
         @Override
         public P next() {
-            index++;
             int currFront = 0;
             int offset = index;
             P item = null;
@@ -189,11 +188,14 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
-                        return front.get(offset);
+                        item = front.get(offset);
+                        index++;
+                        return item;
                     }
                 }
 
             } while (currFront < fronts.length && front != null);
+            index++;
             return item;
         }
     }

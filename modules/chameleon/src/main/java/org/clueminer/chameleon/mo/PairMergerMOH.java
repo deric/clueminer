@@ -47,7 +47,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
 
     public static final String name = "MOM-HS";
 
-    private FrontHeapQueue<E, C, P> queue;
+    protected FrontHeapQueue<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -67,10 +67,6 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         ArrayList<P> pairs = createPairs(clusters.size(), pref);
         queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
         int debug = pref.getInt("debug", 0);
-        if (debug > 0) {
-            System.out.println("initial Pareto space");
-            printQueue(pairs);
-        }
         //initialize queue
         queue.addAll(pairs);
         height = 0;
@@ -83,7 +79,14 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
             System.out.println(queue.stats());
         }
         for (int i = 0; i < numClusters - 1; i++) {
-            singleMerge(queue.poll(), pref);
+
+            if (debug > 0) {
+                if (i % 10 == 0) {
+                    printQueue(queue, i);
+                }
+            }
+            singleMerge(queue.poll(), pref, debug);
+
             //System.out.println("queue size: " + queue.size());
             //queue.filterOut();
             //System.out.println(queue);
@@ -95,8 +98,8 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         return result;
     }
 
-    private void printQueue(ArrayList<P> pairs) {
-        String file = "pareto-front.csv";
+    protected void printQueue(Iterable<P> pairs, int step) {
+        String file = "pareto-front-" + step + ".csv";
         try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
             System.out.println("writing to file: " + file);
             //header
@@ -107,6 +110,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
                 }
                 sb.append(obj.getName());
             }
+            sb.append(",").append(eval.getName()).append(",clusterIDs");
             writer.append(sb.append("\n"));
             sb.setLength(0);
             //data
@@ -117,6 +121,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
                     }
                     sb.append(pair.getObjective(j));
                 }
+                sb.append(",").append(pair.getSortObjective());
                 sb.append(",").append(pair.A.getClusterId()).append("+").append(pair.B.getClusterId());
                 writer.append(sb.append("\n"));
                 sb.setLength(0);
@@ -126,7 +131,10 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
     }
 
-    private void singleMerge(P curr, Props pref) {
+    private void singleMerge(P curr, Props pref, int debug) {
+        if (debug > 1) {
+            System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.toString());
+        }
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {

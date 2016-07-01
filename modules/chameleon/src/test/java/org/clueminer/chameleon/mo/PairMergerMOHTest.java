@@ -67,5 +67,7 @@ public class PairMergerMOHTest {
         HierarchicalResult result = subject.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
         tree.print();
+
+        subject.printQueue(subject.queue, 0);
     }
 }

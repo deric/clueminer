@@ -109,7 +109,10 @@ public class MoPair<E extends Instance, C extends Cluster<E>> extends PairValue<
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(i).append(":").append(objectives[i]);
+            sb.append(objectives[i]);
+        }
+        if (eval != null) {
+            sb.append(", ").append(eval.getName()).append(": ").append(sortScore);
         }
         //sb.append("A: ").append(A.toString()).append(", ");
         //sb.append("B: ").append(B.toString());

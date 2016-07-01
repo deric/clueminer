@@ -47,7 +47,7 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> {
+public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
     private FrontHeapQueue<E, C, P> queue;
 
@@ -152,31 +152,11 @@ public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P exte
 
     @Test
     public void testPairsRemoval() {
-        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
-        KNNGraphBuilder knn = new KNNGraphBuilder();
-        int k = 3;
         Props props = new Props();
-        int maxPartitionSize = 20;
-        Graph g = new AdjMatrixGraph();
-        Bisection bisection = new FiducciaMattheyses(20);
-        g.ensureCapacity(dataset.size());
-        g = knn.getNeighborGraph(dataset, g, k);
-
-        Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
-
-        List<MergeEvaluation> objectives = new LinkedList<>();
-        objectives.add(new Closeness());
-        objectives.add(new Interconnectivity());
-
-        PairMergerMOH merger = new PairMergerMOH();
-        merger.initialize(partitioningResult, g, bisection, props);
-        merger.setObjectives(objectives);
-        merger.setSortEvaluation(new ShatovskaSimilarity());
-
-        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
+        PairMergerMOH merger = initializeMerger();
+        ArrayList<P> pairs = merger.createPairs(merger.getClusters().size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
-        queue = new FrontHeapQueue(5, blacklist, objectives, props);
+        queue = new FrontHeapQueue(5, blacklist, merger.objectives, props);
         queue.pairs.addAll(pairs);
 
         //for (MoPair<Instance, GraphCluster<Instance>> p : pairs) {
@@ -186,6 +166,23 @@ public class FrontHeapQueueTest<E extends Instance, C extends Cluster<E>, P exte
         queue.blacklist.add(2);
         queue.rebuildQueue();
         assertEquals(0, queue.pairs.size());
+    }
+
+    @Test
+    public void testIterator() {
+        Props props = new Props();
+        PairMergerMOH merger = initializeMerger();
+        ArrayList<P> pairs = merger.createPairs(merger.getClusters().size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        queue = new FrontHeapQueue(5, blacklist, merger.objectives, props);
+        queue.addAll(pairs);
+
+        int i = 0;
+        for (P p : queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, queue.size());
     }
 
 }

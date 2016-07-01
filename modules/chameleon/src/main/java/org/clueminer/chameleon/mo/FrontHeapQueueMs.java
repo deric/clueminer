@@ -50,7 +50,7 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
 
     /**
      *
-     * @param max number of fronts kept
+     * @param max        number of fronts kept
      * @param blacklist
      * @param objectives
      * @param pref
@@ -178,7 +178,6 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
 
         @Override
         public P next() {
-            index++;
             int currFront = 0;
             int offset = index;
             P item = null;
@@ -189,12 +188,14 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
-                        return front.get(offset);
+                        item = front.get(offset);
+                        index++;
+                        return item;
                     }
                 }
 
             } while (currFront < fronts.length && front != null);
-
+            index++;
             return item;
         }
     }
@@ -302,11 +303,9 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //remove the item
                 removePair(pairs, item, i, size);
-            } else {
-                if (insertIntoFront(item, 0)) {
-                    //item is in the front, we can remove it
-                    removePair(pairs, item, i, size);
-                }
+            } else if (insertIntoFront(item, 0)) {
+                //item is in the front, we can remove it
+                removePair(pairs, item, i, size);
             }
             //dumpPairs();
         }

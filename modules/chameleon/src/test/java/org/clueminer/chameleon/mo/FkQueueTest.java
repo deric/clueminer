@@ -24,6 +24,7 @@ import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -46,9 +47,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class FkQueueTest {
+public class FkQueueTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
-    private FkQueue queue;
+    private FkQueue<E, C, P> queue;
 
     public FkQueueTest() {
     }
@@ -76,7 +77,7 @@ public class FkQueueTest {
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
-        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FkQueue(5, blacklist, objectives, props);
         queue.addAll(pairs);
@@ -129,7 +130,7 @@ public class FkQueueTest {
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
 
-        ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
+        ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FkQueue(5, blacklist, objectives, props);
         System.out.println("pairs size: " + pairs.size());
@@ -150,4 +151,22 @@ public class FkQueueTest {
         }
         //assertEquals(0, queue.size());
     }
+
+    @Test
+    public void testIterator() {
+        Props props = new Props();
+        PairMergerMOH merger = initializeMerger();
+        ArrayList<P> pairs = merger.createPairs(merger.getClusters().size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        queue = new FkQueue(5, blacklist, merger.objectives, props);
+        queue.addAll(pairs);
+
+        int i = 0;
+        for (P p : queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, queue.size());
+    }
+
 }
