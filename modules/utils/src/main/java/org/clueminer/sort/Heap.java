@@ -56,7 +56,7 @@ public class Heap<T> implements Iterable<T> {
      * Create heap with given capacity
      *
      * @param comparator
-     * @param capacity expected capacity (might be eventually exceeded)
+     * @param capacity   expected capacity (might be eventually exceeded)
      */
     public Heap(Comparator<T> comparator, int capacity) {
         size = 0;
@@ -93,6 +93,13 @@ public class Heap<T> implements Iterable<T> {
      */
     public final T peek() {
         return heap.get(0);
+    }
+
+    public final T peekLast() {
+        if (size() > 0) {
+            return heap.get(size() - 1);
+        }
+        return null;
     }
 
     //bound check missing

@@ -206,7 +206,32 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
         }
     }
 
+    /**
+     * Many items are just much worser than the items on the Pareto front, we try
+     * to detect such items in the first place.
+     *
+     * @param pair
+     */
     public void add(P pair) {
+        //try to avoid comparing current pair to all items on the front
+        if (lastFront == maxFront) {
+            //only in case that pareto front is full
+            Heap<P> front = getFront(lastFront);
+            int flagDominate;
+            if (front != null) {
+                P last = front.peekLast();
+                if (last != null) {
+                    flagDominate = comparator.compare(pair, front.peek());
+                    if (flagDominate > 0) {
+                        //item is dominated by last item on Pareto front
+                        //-> won't dominate any item on the front
+                        buffer.add(pair);
+                        return;
+                    }
+                }
+            }
+        }
+
         //try to insert into first front
         add(pair, 0, buffer);
     }
