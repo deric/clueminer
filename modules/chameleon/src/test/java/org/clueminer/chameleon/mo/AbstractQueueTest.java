@@ -48,6 +48,10 @@ public class AbstractQueueTest<E extends Instance, C extends Cluster<E>, P exten
     }
 
     public PairMergerMOH initializeMerger(Dataset<E> dataset) {
+        return initializeMerger(dataset, new PairMergerMOH());
+    }
+
+    public <T extends PairMergerMO> T initializeMerger(Dataset<E> dataset, T merger) {
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         Props props = new Props();
@@ -64,7 +68,6 @@ public class AbstractQueueTest<E extends Instance, C extends Cluster<E>, P exten
         objectives.add(new Closeness());
         objectives.add(new Interconnectivity());
 
-        PairMergerMOH merger = new PairMergerMOH();
         merger.initialize(partitioningResult, g, bisection, props);
         merger.setObjectives(objectives);
         merger.setSortEvaluation(new ShatovskaSimilarity());

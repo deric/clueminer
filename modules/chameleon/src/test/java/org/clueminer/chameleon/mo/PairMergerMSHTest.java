@@ -23,6 +23,7 @@ import java.util.List;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -37,15 +38,17 @@ import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMSHTest {
+public class PairMergerMSHTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
     private FrontHeapQueueMsh queue;
+    private PairMergerMSH subject;
 
     @Test
     public void testPairsRemoval() {
@@ -74,7 +77,7 @@ public class PairMergerMSHTest {
         ArrayList<MoPair> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueueMsh(5, blacklist, objectives, props);
-        queue.pairs.addAll(pairs);
+        queue.buffer.addAll(pairs);
 
         //for (MoPair<Instance, GraphCluster<Instance>> p : pairs) {
         //    queue.blacklist.insertIntoFront(p.A.getClusterId());
@@ -82,6 +85,29 @@ public class PairMergerMSHTest {
         queue.blacklist.add(1);
         queue.blacklist.add(2);
         queue.rebuildQueue();
-        assertEquals(0, queue.pairs.size());
+        assertEquals(0, queue.buffer.size());
     }
+
+    @Test
+    public void testIris() {
+        Props props = new Props();
+        subject = initializeMerger((Dataset<E>) FakeDatasets.irisDataset(), new PairMergerMSH());
+        ArrayList<P> pairs = subject.createPairs(subject.getClusters().size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        subject.queue = new FrontHeapQueueMsh<>(5, blacklist, subject.objectives, props);
+        subject.queue.addAll(pairs);
+
+        //merge some items - just enough to overflow queue to buffer
+        for (int i = 0; i < 5; i++) {
+            subject.singleMerge(subject.queue.poll(), props);
+        }
+        //make sure we iterate over all items
+        int i = 0;
+        for (Object p : subject.queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, subject.queue.size());
+    }
+
 }

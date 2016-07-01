@@ -89,7 +89,7 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
     }
 
 
-    private void singleMerge(P curr, Props pref) {
+    protected void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {

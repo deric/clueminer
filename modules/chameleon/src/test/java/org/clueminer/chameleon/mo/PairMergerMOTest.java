@@ -17,8 +17,10 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -33,13 +35,15 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class PairMergerMOTest {
+public class PairMergerMOTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
     private PairMergerMO subject;
 
@@ -70,6 +74,28 @@ public class PairMergerMOTest {
         HierarchicalResult result = subject.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
         tree.print();
+    }
+
+    @Test
+    public void testIris() {
+        Props props = new Props();
+        subject = initializeMerger((Dataset<E>) FakeDatasets.irisDataset(), new PairMergerMO());
+        ArrayList<P> pairs = subject.createPairs(subject.getClusters().size(), props);
+        HashSet<Integer> blacklist = new HashSet<>();
+        subject.queue = new FhQueue(5, blacklist, subject.objectives, props);
+        subject.queue.addAll(pairs);
+
+        //merge some items - just enough to overflow queue to buffer
+        for (int i = 0; i < 5; i++) {
+            subject.singleMerge(subject.queue.poll(), props);
+        }
+        //make sure we iterate over all items
+        int i = 0;
+        for (Object p : subject.queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, subject.queue.size());
     }
 
 }

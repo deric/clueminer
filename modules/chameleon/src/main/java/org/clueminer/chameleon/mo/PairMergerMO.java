@@ -51,7 +51,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     protected List<MergeEvaluation<E>> objectives = new LinkedList<>();
     public static final String name = "multi-objective merger";
 
-    private FhQueue<E, C, P> queue;
+    protected FhQueue<E, C, P> queue;
     protected MergeEvaluation eval;
 
     @Override
@@ -114,7 +114,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         return ((n - 1) * n) >>> 1;
     }
 
-    private void singleMerge(P curr, Props pref) {
+    protected void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {

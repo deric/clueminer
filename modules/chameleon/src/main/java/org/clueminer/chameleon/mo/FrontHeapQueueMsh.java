@@ -41,7 +41,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
     private int lastFront = 0;
     //maximum number of fronts
     private int maxFront;
-    ArrayList<P> pairs;
+    ArrayList<P> buffer;
     final HashSet<Integer> blacklist;
     private MoPairComparator itemCmp;
     private int frontsRemoved = 0;
@@ -55,7 +55,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
      */
     public FrontHeapQueueMsh(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
         this.comparator = new DominanceComparator(objectives);
-        this.pairs = new ArrayList<>();
+        this.buffer = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
@@ -69,7 +69,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
      * @return first item or null
      */
     public P poll() {
-        if (isEmpty() && pairs.isEmpty()) {
+        if (isEmpty() && buffer.isEmpty()) {
             return null;
         }
         P item;
@@ -106,7 +106,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
             }
             front = fronts[curr++];
         }
-        return pairs.size() > 0;
+        return buffer.size() > 0;
     }
 
     /**
@@ -151,7 +151,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
                 }
             }
         }
-        return size + pairs.size();
+        return size + buffer.size();
     }
 
     @Override
@@ -179,6 +179,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
             int currFront = 0;
             int offset = index;
             P item = null;
+            int paretoSize = 0;
             Heap<P> front;
             do {
                 front = fronts[currFront++];
@@ -186,12 +187,18 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
+                        item = front.get(offset);
                         index++;
-                        return front.get(offset);
+                        return item;
                     }
+                    paretoSize += front.size();
                 }
 
             } while (currFront < fronts.length && front != null);
+            if (item == null) {
+                int idx = index - paretoSize;
+                item = buffer.get(idx);
+            }
             index++;
             return item;
         }
@@ -201,7 +208,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
         //try to insert into first front
         if (!insertIntoFront(pair, 0)) {
             //if item doesn't fit into pareto front, save it for later
-            pairs.add(pair);
+            buffer.add(pair);
         }
     }
 
@@ -246,7 +253,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
             //move last front to "do it later" list
             Iterator<P> iter = fronts[maxFront - 1].iterator();
             while (iter.hasNext()) {
-                pairs.add(iter.next());
+                buffer.add(iter.next());
             }
             //free memory
             fronts[maxFront - 1] = null;
@@ -273,7 +280,7 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
     }
 
     void rebuildQueue() {
-        if (pairs.isEmpty() || blacklist.isEmpty()) {
+        if (buffer.isEmpty() || blacklist.isEmpty()) {
             return;
         }
         Iterator<P> iter;
@@ -283,26 +290,26 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
                 iter = front.iterator();
                 while (iter.hasNext()) {
                     elem = iter.next();
-                    pairs.add(elem);
+                    buffer.add(elem);
                 }
                 front.clear();
             }
         }
 
         P item;
-        int originalSize = (pairs.size() - 1);
+        int originalSize = (buffer.size() - 1);
         int size;
         for (int i = originalSize; i >= 0; i--) {
             //index of last item
-            size = pairs.size() - 1;
-            item = pairs.get(i);
+            size = buffer.size() - 1;
+            item = buffer.get(i);
 
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //remove the item
-                removePair(pairs, item, i, size);
+                removePair(buffer, item, i, size);
             } else if (insertIntoFront(item, 0)) {
                 //item is in the front, we can remove it
-                removePair(pairs, item, i, size);
+                removePair(buffer, item, i, size);
             }
             //dumpPairs();
         }
@@ -327,8 +334,8 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
 
     private void dumpPairs() {
         P pair;
-        for (int j = 0; j < pairs.size(); j++) {
-            pair = pairs.get(j);
+        for (int j = 0; j < buffer.size(); j++) {
+            pair = buffer.get(j);
             if (j > 0) {
                 System.out.print(", ");
             }

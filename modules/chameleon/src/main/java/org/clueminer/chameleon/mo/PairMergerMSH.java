@@ -43,7 +43,7 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
 
     public static final String name = "MOM-HSX2";
 
-    private FrontHeapQueueMsh<E, C, P> queue;
+    protected FrontHeapQueueMsh<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -88,7 +88,7 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
         queue = new FrontHeapQueueMsh<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
     }
 
-    private void singleMerge(P curr, Props pref) {
+    protected void singleMerge(P curr, Props pref) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {

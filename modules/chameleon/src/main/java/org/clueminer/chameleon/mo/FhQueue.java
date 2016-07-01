@@ -42,7 +42,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     private int lastFront = 0;
     //maximum number of fronts
     private int maxFront;
-    private ArrayList<P> pairs;
+    private ArrayList<P> buffer;
     private HashSet<Integer> blacklist;
     private MoPairComparator itemCmp;
 
@@ -55,7 +55,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      */
     public FhQueue(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
         this.comparator = new DominanceComparator(objectives);
-        this.pairs = new ArrayList<>();
+        this.buffer = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
@@ -69,7 +69,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      * @return first item or null
      */
     public P poll() {
-        if (isEmpty() && pairs.isEmpty()) {
+        if (isEmpty() && buffer.isEmpty()) {
             return null;
         }
         P item;
@@ -102,7 +102,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             }
             front = fronts[curr++];
         }
-        return pairs.size() > 0;
+        return buffer.size() > 0;
     }
 
     /**
@@ -137,7 +137,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 }
             }
         }
-        return size + pairs.size();
+        return size + buffer.size();
     }
 
     @Override
@@ -165,6 +165,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             int currFront = 0;
             int offset = index;
             P item = null;
+            int paretoSize = 0;
             Heap<P> front;
             do {
                 front = fronts[currFront++];
@@ -172,12 +173,18 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                     if (offset >= front.size()) {
                         offset -= front.size();
                     } else {
+                        item = front.get(offset);
                         index++;
-                        return front.get(offset);
+                        return item;
                     }
+                    paretoSize += front.size();
                 }
 
             } while (currFront < fronts.length && front != null);
+            if (item == null) {
+                int idx = index - paretoSize;
+                item = buffer.get(idx);
+            }
             index++;
             return item;
         }
@@ -185,7 +192,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
 
     public void add(P pair) {
         //try to insert into first front
-        add(pair, 0, pairs);
+        add(pair, 0, buffer);
     }
 
     /**
@@ -257,7 +264,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     }
 
     private void rebuildQueue() {
-        ArrayList<P> tmp = new ArrayList<>(pairs.size());
+        ArrayList<P> tmp = new ArrayList<>(buffer.size());
         Iterator<P> iter;
         P elem;
         for (Heap<P> front : fronts) {
@@ -265,12 +272,12 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 iter = front.iterator();
                 while (iter.hasNext()) {
                     elem = iter.next();
-                    pairs.add(elem);
+                    buffer.add(elem);
                 }
                 front.clear();
             }
         }
-        for (P item : pairs) {
+        for (P item : buffer) {
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //skip the item
             } else {
@@ -279,7 +286,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
             }
         }
         //System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
-        pairs = tmp;
+        buffer = tmp;
     }
 
     /**

@@ -76,7 +76,7 @@ public class FrontHeapQueueMsTest<E extends Instance, C extends Cluster<E>, P ex
         ArrayList<P> pairs = merger.createPairs(partitioningResult.size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
         queue = new FrontHeapQueueMs(5, blacklist, objectives, props);
-        queue.pairs.addAll(pairs);
+        queue.buffer.addAll(pairs);
 
         //for (MoPair<Instance, GraphCluster<Instance>> p : pairs) {
         //    queue.blacklist.add(p.A.getClusterId());
@@ -84,7 +84,7 @@ public class FrontHeapQueueMsTest<E extends Instance, C extends Cluster<E>, P ex
         queue.blacklist.add(1);
         queue.blacklist.add(2);
         queue.rebuildQueue();
-        assertEquals(0, queue.pairs.size());
+        assertEquals(0, queue.buffer.size());
     }
 
     @Test

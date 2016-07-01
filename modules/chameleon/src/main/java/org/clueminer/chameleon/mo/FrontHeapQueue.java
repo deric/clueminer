@@ -43,7 +43,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
     private int lastFront = 0;
     //maximum number of fronts
     private int maxFront;
-    ArrayList<P> pairs;
+    ArrayList<P> buffer;
     final HashSet<Integer> blacklist;
     private MoPairComparator itemCmp;
     private int frontsRemoved = 0;
@@ -57,7 +57,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      */
     public FrontHeapQueue(int max, HashSet<Integer> blacklist, List<MergeEvaluation<E>> objectives, Props pref) {
         this.comparator = new DominanceComparator(objectives);
-        this.pairs = new ArrayList<>();
+        this.buffer = new ArrayList<>();
         //maximum number of fronts
         maxFront = max;
         this.blacklist = blacklist;
@@ -71,7 +71,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      * @return first item or null
      */
     public P poll() {
-        if (isEmpty() && pairs.isEmpty()) {
+        if (isEmpty() && buffer.isEmpty()) {
             return null;
         }
         P item;
@@ -108,7 +108,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
             }
             front = fronts[curr++];
         }
-        return pairs.size() > 0;
+        return buffer.size() > 0;
     }
 
     /**
@@ -153,7 +153,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 }
             }
         }
-        return size + pairs.size();
+        return size + buffer.size();
     }
 
     @Override
@@ -199,7 +199,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
             } while (currFront < fronts.length && front != null);
             if (item == null) {
                 int idx = index - paretoSize;
-                item = pairs.get(idx);
+                item = buffer.get(idx);
             }
             index++;
             return item;
@@ -208,7 +208,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
 
     public void add(P pair) {
         //try to insert into first front
-        add(pair, 0, pairs);
+        add(pair, 0, buffer);
     }
 
     /**
@@ -280,10 +280,10 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
     }
 
     void rebuildQueue() {
-        if (pairs.isEmpty() || blacklist.isEmpty()) {
+        if (buffer.isEmpty() || blacklist.isEmpty()) {
             return;
         }
-        ArrayList<P> tmp = new ArrayList<>(pairs.size());
+        ArrayList<P> tmp = new ArrayList<>(buffer.size());
         Iterator<P> iter;
         P elem;
         for (Heap<P> front : fronts) {
@@ -291,12 +291,12 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 iter = front.iterator();
                 while (iter.hasNext()) {
                     elem = iter.next();
-                    pairs.add(elem);
+                    buffer.add(elem);
                 }
                 front.clear();
             }
         }
-        for (P item : pairs) {
+        for (P item : buffer) {
             if (blacklist.contains(item.A.getClusterId()) || blacklist.contains(item.B.getClusterId())) {
                 //skip the item
             } else {
@@ -305,7 +305,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
             }
         }
         //System.out.println("reduced pairs from " + pairs.size() + " to " + tmp.size());
-        pairs = tmp;
+        buffer = tmp;
     }
 
     /**
