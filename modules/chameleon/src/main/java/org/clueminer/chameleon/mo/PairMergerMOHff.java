@@ -17,78 +17,58 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
-import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Queue with faster heap filtering, replies on {@link FrontHeapQueueMsh}.
  *
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
+public class PairMergerMOHff<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMOH<E, C, P> implements Merger<E> {
 
-    public static final String NAME = "MOM-HSX2";
-
-    protected FrontHeapQueueMsh<E, C, P> queue;
+    public static final String NAME = "MOM-HS-no-filter";
 
     @Override
     public String getName() {
         return NAME;
     }
 
+    /**
+     * Generate all possible (unique) combinations of pairs
+     * - complexity O(n^2) = O(n * (n-1) / 2)
+     *
+     * @param queue
+     * @param pref
+     */
     @Override
-    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
-        if (clusters.isEmpty()) {
-            throw new RuntimeException("initialize() must be called first");
+    protected void fillQueue(FrontHeapQueue<E, C, P> queue, Props pref) {
+        C c1, c2;
+        //generate all pairs
+        for (int i = 0; i < clusters.size(); i++) {
+            c1 = (C) clusters.get(i);
+            for (int j = 0; j < i; j++) {
+                c2 = (C) clusters.get(j);
+                queue.add((P) createPair(c1, c2, pref));
+            }
         }
-        if (objectives.isEmpty()) {
-            throw new RuntimeException("you must specify at least 2 objectives");
-        }
-        MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
-        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
-        ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        initQueue(pref);
-        //initialize queue
-        queue.addAll(pairs);
-        height = 0;
-        HierarchicalResult result = new HClustResult(dataset, pref);
-
-        level = 1;
-        int numClusters = clusters.size();
-        System.out.println("total " + numClusters + ", queue size " + queue.size());
-        System.out.println(queue.stats());
-        for (int i = 0; i < numClusters - 1; i++) {
-            singleMerge(queue.poll(), pref);
-            //System.out.println("queue size: " + queue.size());
-            //queue.filterOut();
-            //System.out.println(queue);
-        }
-
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
-        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
-        result.setTreeData(treeData);
-        return result;
     }
 
-    protected void initQueue(Props pref) {
-        queue = new FrontHeapQueueMsh<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
-    }
-
-    protected void singleMerge(P curr, Props pref) {
+    /**
+     * TODO: could be safely if we had a Queue interface
+     *
+     * @param cluster
+     * @param pref
+     */
+    protected void singleMerge(P curr, Props pref, int debug) {
+        if (debug > 1) {
+            System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.toString());
+        }
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {
@@ -108,16 +88,23 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
         clusters.add(newCluster);
-        for (MergeEvaluation<E> eval : objectives) {
-            eval.clusterCreated(curr, newCluster, pref);
+        for (MergeEvaluation<E> me : objectives) {
+            me.clusterCreated(curr, newCluster, pref);
         }
         //eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
-        queue.filterOut(curr);
+        //remove any pair containing merged items from current fronts
+        queue.filterOut();
     }
 
+    /**
+     * TODO: could be safely if we had a Queue interface
+     *
+     * @param cluster
+     * @param pref
+     */
     private void addIntoQueue(C cluster, Props pref) {
         for (int i = 0; i < cluster.getClusterId(); i++) {
             if (!blacklist.contains(i)) {
@@ -126,4 +113,5 @@ public class PairMergerMSH<E extends Instance, C extends GraphCluster<E>, P exte
             }
         }
     }
+
 }

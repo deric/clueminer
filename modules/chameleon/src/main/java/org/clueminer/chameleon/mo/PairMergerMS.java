@@ -41,13 +41,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "MOM-HSX";
+    public static final String NAME = "MOM-HSX";
 
     protected FrontHeapQueueMs<E, C, P> queue;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

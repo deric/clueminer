@@ -45,13 +45,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
 
-    public static final String name = "MOM-HS";
+    public static final String NAME = "MOM-HS";
 
     protected FrontHeapQueue<E, C, P> queue;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -63,13 +63,26 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
      */
     protected void fillQueue(FrontHeapQueue<E, C, P> queue, Props pref) {
         C c1, c2;
+        P pair;
+        int skip = 0;
         //generate all pairs
         for (int i = 0; i < clusters.size(); i++) {
             c1 = (C) clusters.get(i);
             for (int j = 0; j < i; j++) {
                 c2 = (C) clusters.get(j);
-                queue.add((P) createPair(c1, c2, pref));
+                pair = (P) createPair(c1, c2, pref);
+                //eliminate pair that won't be merged (doesn't share NN)
+                if (pair.getObjective(0) != 0.0 && pair.getObjective(1) != 0.0) {
+                    queue.add(pair);
+                } else {
+                    //else: don't even add such point to queue
+                    skip++;
+                }
             }
+        }
+        int debug = pref.getInt("debug", 0);
+        if (debug > 0) {
+            System.out.println("skippid " + skip + " pairs during merging initialization");
         }
     }
 

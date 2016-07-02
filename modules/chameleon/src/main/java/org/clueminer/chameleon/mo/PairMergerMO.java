@@ -49,14 +49,14 @@ import org.openide.util.lookup.ServiceProvider;
 public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractMerger<E> implements Merger<E> {
 
     protected List<MergeEvaluation<E>> objectives = new LinkedList<>();
-    public static final String name = "multi-objective merger";
+    public static final String NAME = "multi-objective merger";
 
     protected FhQueue<E, C, P> queue;
     protected MergeEvaluation eval;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

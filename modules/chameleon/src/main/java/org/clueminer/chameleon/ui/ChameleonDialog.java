@@ -22,6 +22,7 @@ import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.PairMerger;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.mo.PairMergerMOH;
+import org.clueminer.chameleon.mo.PairMergerMOHff;
 import org.clueminer.chameleon.mo.PairMergerMS;
 import org.clueminer.chameleon.mo.PairMergerMSH;
 import org.clueminer.chameleon.similarity.BBK1;
@@ -771,10 +772,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                 combo3rdSort.setEnabled(false);
                 tfPareto.setEnabled(false);
                 break;
-            case PairMergerMO.name:
-            case PairMergerMOH.name:
-            case PairMergerMS.name:
-            case PairMergerMSH.name:
+            case PairMergerMO.NAME:
+            case PairMergerMOH.NAME:
+            case PairMergerMS.NAME:
+            case PairMergerMSH.NAME:
+            case PairMergerMOHff.NAME:
                 comboMoObjective.setEnabled(true);
                 combo3rdSort.setEnabled(true);
                 tfPareto.setEnabled(true);
@@ -928,10 +930,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
             case PairMerger.name:
                 params.put(Chameleon.SIM_MEASURE, (String) comboSimilarity.getSelectedItem());
                 break;
-            case PairMergerMO.name:
-            case PairMergerMOH.name:
-            case PairMergerMS.name:
-            case PairMergerMSH.name:
+            case PairMergerMO.NAME:
+            case PairMergerMOH.NAME:
+            case PairMergerMS.NAME:
+            case PairMergerMSH.NAME:
+            case PairMergerMOHff.NAME:
                 params.put(Chameleon.OBJECTIVE_1, (String) comboSimilarity.getSelectedItem());
                 params.put(Chameleon.OBJECTIVE_2, (String) comboMoObjective.getSelectedItem());
                 params.put(Chameleon.SORT_OBJECTIVE, (String) combo3rdSort.getSelectedItem());
