@@ -54,6 +54,25 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         return name;
     }
 
+    /**
+     * Generate all possible (unique) combinations of pairs
+     * - complexity O(n^2) = O(n * (n-1) / 2)
+     *
+     * @param queue
+     * @param pref
+     */
+    protected void fillQueue(FrontHeapQueue<E, C, P> queue, Props pref) {
+        C c1, c2;
+        //generate all pairs
+        for (int i = 0; i < clusters.size(); i++) {
+            c1 = (C) clusters.get(i);
+            for (int j = 0; j < i; j++) {
+                c2 = (C) clusters.get(j);
+                queue.add((P) createPair(c1, c2, pref));
+            }
+        }
+    }
+
     @Override
     public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
         if (clusters.isEmpty()) {
@@ -64,11 +83,11 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
-        ArrayList<P> pairs = createPairs(clusters.size(), pref);
+
         queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
         int debug = pref.getInt("debug", 0);
         //initialize queue
-        queue.addAll(pairs);
+        fillQueue(queue, pref);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
