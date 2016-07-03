@@ -34,7 +34,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
+public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<P> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -66,8 +66,11 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     /**
      * Removes the first item from the first front, if any
      *
+     * See {@link java.util.Queue#poll}
+     *
      * @return first item or null
      */
+    @Override
     public P poll() {
         if (isEmpty() && buffer.isEmpty()) {
             return null;
@@ -111,6 +114,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      *
      * @return true when Pareto front is empty
      */
+    @Override
     public boolean isEmpty() {
         boolean empty = true;
         for (Heap<P> front : fronts) {
@@ -127,6 +131,7 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      *
      * @return
      */
+    @Override
     public int size() {
         int size = 0;
         if (fronts.length > 0) {
@@ -143,6 +148,17 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     @Override
     public Iterator<P> iterator() {
         return new FrontIterator();
+    }
+
+    /**
+     * See {@link java.util.Queue#peek}
+     *
+     * @return first element in the queue (but does not remove it)
+     */
+    @Override
+    public P peek() {
+        Iterator<P> iter = iterator();
+        return iter.next();
     }
 
     class FrontIterator implements Iterator<P> {
@@ -190,9 +206,9 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         }
     }
 
-    public void add(P pair) {
+    public boolean add(P pair) {
         //try to insert into first front
-        add(pair, 0, buffer);
+        return add(pair, 0, buffer);
     }
 
     /**
@@ -201,17 +217,18 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
      * @param pair
      * @param curr
      * @param buffer list of items that does not fit to the front
+     * @return true when collection has changed
      */
-    public void add(P pair, int curr, ArrayList<P> buffer) {
+    public boolean add(P pair, int curr, ArrayList<P> buffer) {
         int flagDominate;
         if (curr >= maxFront) {
             buffer.add(pair);
-            return;
+            return true;
         }
         Heap<P> front = getFront(curr);
         if (front.isEmpty()) {
             front.add(pair);
-            return;
+            return true;
         }
 
         flagDominate = comparator.compare(pair, front.peek());
@@ -253,14 +270,18 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 front.add(pair);
                 break;
             default:
-                break;
+                return false;
         }
+        return true;
     }
 
-    public void addAll(Collection<P> coll) {
+    @Override
+    public boolean addAll(Collection<? extends P> coll) {
+        boolean changed = false;
         for (P item : coll) {
-            add(item);
+            changed |= add(item);
         }
+        return changed;
     }
 
     private void rebuildQueue() {

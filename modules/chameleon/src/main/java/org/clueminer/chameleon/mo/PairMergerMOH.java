@@ -82,7 +82,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
         int debug = pref.getInt("debug", 0);
         if (debug > 0) {
-            System.out.println("skippid " + skip + " pairs during merging initialization");
+            System.out.println("skipping " + skip + " pairs during merging initialization");
         }
     }
 
