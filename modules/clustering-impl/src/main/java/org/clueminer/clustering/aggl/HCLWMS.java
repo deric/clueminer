@@ -58,8 +58,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> implements AgglomerativeClustering<E, C> {
 
-    private final static String NAME = "HC-LW(ms)";
-    private static final Logger logger = Logger.getLogger(HCLWMS.class.getName());
+    private final static String NAME = "HC-LW";
+    private static final Logger LOGGER = Logger.getLogger(HCLWMS.class.getName());
 
     @Override
     public String getName() {
@@ -118,7 +118,7 @@ public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> i
                 assignments.put(curr.getRow(), left);
             }
         }
-        logger.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
+        LOGGER.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
         return treeData;
