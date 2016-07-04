@@ -17,6 +17,7 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -213,6 +214,8 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      * to detect such items in the first place.
      *
      * @param pair
+     * @see java.util.Queue#add
+     * @retrun true when queue has changed
      */
     @Override
     public boolean add(P pair) {
