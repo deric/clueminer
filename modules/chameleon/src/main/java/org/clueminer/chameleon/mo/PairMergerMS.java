@@ -24,12 +24,16 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * multi-objective merger (heap, memory saving)
+ * Multi-objective merger with dominate-all policy.
+ *
+ * Uses several optimizations:
+ * - items to be added are compared to last front item first
+ * - when both objectives are equal to zero, item is not added at all
  *
  * @author deric
  */
 @ServiceProvider(service = Merger.class)
-public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMO<E, C, P> implements Merger<E> {
+public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends PairMergerMOH<E, C, P> implements Merger<E> {
 
     public static final String NAME = "MOM-DA";
 

@@ -235,11 +235,11 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             }
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
-        if (m instanceof PairMerger) {
+        if (!m.isMultiObjective()) {
             similarityMeasure = pref.get(SIM_MEASURE, BBK1.name);
             MergeEvaluation me = mef.getProvider(similarityMeasure);
             ((PairMerger) m).setMergeEvaluation(me);
-        } else if (m instanceof PairMergerMO) {
+        } else {
             PairMergerMO mo = (PairMergerMO) m;
             mo.clearObjectives();
             mo.addObjective(mef.getProvider(pref.get(OBJECTIVE_1)));

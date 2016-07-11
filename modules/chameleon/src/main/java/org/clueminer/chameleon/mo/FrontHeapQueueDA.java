@@ -24,10 +24,13 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.sort.Heap;
+import org.clueminer.utils.Duple;
 import org.clueminer.utils.Props;
 
 /**
  * Test pair if dominate all other pairs on the front.
+ *
+ * @TODO method is currently suboptimal: items moving causes strange behavior
  *
  * @author deric
  */
@@ -57,55 +60,100 @@ public class FrontHeapQueueDA<E extends Instance, C extends Cluster<E>, P extend
             return true;
         }
         boolean dominateAll = true;
-        for (P item : front) {
+        HashSet<Integer> toRemove = new HashSet<>(5);
+        Iterator<Duple<Integer, P>> it = front.indexValue();
+        Duple<Integer, P> dup;
+        P item;
+        while (it.hasNext()) {
+            dup = it.next();
+            item = dup.y;
+            //System.out.println("pair: " + pair);
+            //System.out.println("item: " + item);
             flagDominate = comparator.compare(pair, item);
-            if (flagDominate == 1) {
-                if (curr < maxFront) {
-                    return add(pair, ++curr, buffer);
-                } else {
-                    //last resort - save the item for later
-                    buffer.add(pair);
-                    return false;
-                }
-            } else if (flagDominate == 0) {
-                dominateAll = false;
+            //System.out.println(flagDominate);
+            switch (flagDominate) {
+                case 1:
+                    if (curr < maxFront) {
+                        return add(pair, ++curr, buffer);
+                    } else {
+                        //last resort - save the item for later
+                        buffer.add(pair);
+                        return false;
+                    }
+                case 0:
+                    dominateAll = false;
+                    break;
+                case -1:
+                    //remove dominated items (move to next front)
+                    //System.out.println("curr: " + pair);
+                    //System.out.println("item: " + item);
+                    toRemove.add(dup.x); //mark for removal
+                    break;
+                default:
+                    break;
             }
         }
 
+        if (dominateAll) {
+            //item dominates whole front
+            Heap<P> ff = new Heap<>(itemCmp);
+            ff.add(pair);
+            //item dominates all known fronts
+            if (fronts[maxFront - 1] != null) {
+                //move last front to "do it later" list
+                Iterator<P> iter = fronts[maxFront - 1].iterator();
+                while (iter.hasNext()) {
+                    buffer.add(iter.next());
+                }
+                //free memory
+                fronts[maxFront - 1] = null;
+            }
+            //shift all fronts one down
+            Heap<P>[] tmp = new Heap[maxFront];
+            if (curr > 0) {
+                //copy first fronts up to curr
+                System.arraycopy(fronts, 0, tmp, 0, curr);
+            }
+            //insert new front
+            tmp[curr] = ff;
+            //copy rest of fronts except last one
+            System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
+            fronts = tmp;
+
+            return true;
+        }
+
+        if (!toRemove.isEmpty()) {
+            /* System.out.println("to RM " + toRemove.toString());
+             * System.out.println("adding " + pair);
+             * System.out.println("before"); */
+            //front.print();
+
+            front.add(pair);
+            //curr is better than some solution(s) on the front, but not all of them
+            for (int x : toRemove) {
+                item = front.remove(x);
+                // we're changing heap while iterating over
+                if (item != null) {
+                    flagDominate = comparator.compare(pair, item);
+                    //make sure we have correct item
+                    if (flagDominate == -1) {
+                        add(item, (curr + 1), buffer);
+                    }
+                }
+            }
+            //System.out.println("after");
+            //front.print();
+            return true;
+        }
+
         if (!dominateAll) {
-            //there's at least on item that is non-dominating
             //we can't decide which one dominates, item belongs to this front
             front.add(pair);
             return true;
         }
-
-        //item dominates whole front
-        Heap<P> ff = new Heap<>(itemCmp);
-        ff.add(pair);
-        //item dominates all known fronts
-        if (fronts[maxFront - 1] != null) {
-            //move last front to "do it later" list
-            Iterator<P> iter = fronts[maxFront - 1].iterator();
-            while (iter.hasNext()) {
-                buffer.add(iter.next());
-            }
-            //free memory
-            fronts[maxFront - 1] = null;
-        }
-        //shift all fronts one down
-        Heap<P>[] tmp = new Heap[maxFront];
-        if (curr > 0) {
-            //copy first fronts up to curr
-            System.arraycopy(fronts, 0, tmp, 0, curr);
-        }
-        //insert new front
-        tmp[curr] = ff;
-        //copy rest of fronts except last one
-        System.arraycopy(fronts, curr, tmp, curr + 1, maxFront - 1 - curr);
-        fronts = tmp;
-
-        return true;
-
+        throw new RuntimeException("should not happen");
+        //return false;
     }
 
 }
