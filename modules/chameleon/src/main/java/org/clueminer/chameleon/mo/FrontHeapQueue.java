@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +34,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
+public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<P> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -70,6 +69,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      *
      * @return first item or null
      */
+    @Override
     public P poll() {
         if (isEmpty() && buffer.isEmpty()) {
             return null;
@@ -143,6 +143,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      *
      * @return
      */
+    @Override
     public int size() {
         int size = 0;
         if (fronts.length > 0) {
@@ -212,7 +213,8 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      *
      * @param pair
      */
-    public void add(P pair) {
+    @Override
+    public boolean add(P pair) {
         //try to avoid comparing current pair to all items on the front
         if (lastFront == maxFront) {
             //only in case that pareto front is full
@@ -226,14 +228,14 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                         //item is dominated by last item on Pareto front
                         //-> won't dominate any item on the front
                         buffer.add(pair);
-                        return;
+                        return true;
                     }
                 }
             }
         }
 
         //try to insert into first front
-        add(pair, 0, buffer);
+        return add(pair, 0, buffer);
     }
 
     /**
@@ -243,16 +245,16 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      * @param curr
      * @param buffer list of items that does not fit to the front
      */
-    public void add(P pair, int curr, ArrayList<P> buffer) {
+    public boolean add(P pair, int curr, ArrayList<P> buffer) {
         int flagDominate;
         if (curr >= maxFront) {
             buffer.add(pair);
-            return;
+            return true;
         }
         Heap<P> front = getFront(curr);
         if (front.isEmpty()) {
             front.add(pair);
-            return;
+            return true;
         }
 
         flagDominate = comparator.compare(pair, front.peek());
@@ -294,14 +296,9 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
                 front.add(pair);
                 break;
             default:
-                break;
+                return false;
         }
-    }
-
-    public void addAll(Collection<P> coll) {
-        for (P item : coll) {
-            add(item);
-        }
+        return true;
     }
 
     void rebuildQueue() {

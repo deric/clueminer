@@ -42,6 +42,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Approximated merger, compares item to only best front's solution.
  *
  * @author deric
  */
@@ -183,14 +184,14 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         DTreeNode newNode = new DTreeNode(clusters.size() - 1);
         newNode.setLeft(left);
         newNode.setRight(right);
-        /*double sim = 0.0;
-         double val;
-         for (int i = 0; i < objectives.size(); i++) {
-         //TODO: we might multiply objectives or use another criteria for building tree
-         val = pair.getObjective(i);
-         if (!Double.isNaN(val)) {
-         sim += val;            }
-         }*/
+        /* double sim = 0.0;
+         * double val;
+         * for (int i = 0; i < objectives.size(); i++) {
+         * //TODO: we might multiply objectives or use another criteria for building tree
+         * val = pair.getObjective(i);
+         * if (!Double.isNaN(val)) {
+         * sim += val; }
+         * } */
         double sim = eval.score(pair.A, pair.B, pref);
         if (sim > 10) {
             sim = 10;

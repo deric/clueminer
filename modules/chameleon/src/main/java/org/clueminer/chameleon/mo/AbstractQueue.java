@@ -60,6 +60,31 @@ public abstract class AbstractQueue<P> implements Queue<P> {
         return poll();
     }
 
+    /**
+     * See {@link java.util.Queue#peek}
+     *
+     * @return first element in the queue (but does not remove it)
+     */
+    @Override
+    public P peek() {
+        Iterator<P> iter = iterator();
+        return iter.next();
+    }
+
+    /**
+     * See {@link java.util.Collection#addAll}
+     *
+     * @return true when queue was modified
+     */
+    @Override
+    public boolean addAll(Collection<? extends P> coll) {
+        boolean changed = false;
+        for (P item : coll) {
+            changed |= add(item);
+        }
+        return changed;
+    }
+
     @Override
     public boolean contains(Object o) {
         Iterator<P> iter = iterator();

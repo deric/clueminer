@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,7 +29,8 @@ import org.clueminer.utils.Props;
 
 /**
  * Multi-objective sorting that preserves first k fronts. The order is
- * approximated because we don't compare an item with all front members.
+ * approximated because we don't compare an item with all front members. Does not
+ * support removing fronts (full rebuild is used instead).
  *
  * @author deric
  */
@@ -150,17 +150,6 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
         return new FrontIterator();
     }
 
-    /**
-     * See {@link java.util.Queue#peek}
-     *
-     * @return first element in the queue (but does not remove it)
-     */
-    @Override
-    public P peek() {
-        Iterator<P> iter = iterator();
-        return iter.next();
-    }
-
     class FrontIterator implements Iterator<P> {
 
         private int index = 0;
@@ -273,15 +262,6 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends P> coll) {
-        boolean changed = false;
-        for (P item : coll) {
-            changed |= add(item);
-        }
-        return changed;
     }
 
     private void rebuildQueue() {
