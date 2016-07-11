@@ -16,6 +16,9 @@
  */
 package org.clueminer.chameleon.mo;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +42,7 @@ import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -60,6 +64,15 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         return NAME;
     }
 
+    protected void initQueue(Props pref) {
+        queue = new FhQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+    }
+
+    protected void fillQueue(AbstractQueue<E, C, P> queue, Props pref) {
+        ArrayList<P> pairs = createPairs(clusters.size(), pref);
+        queue.addAll(pairs);
+    }
+
     @Override
     public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
         if (clusters.isEmpty()) {
@@ -70,19 +83,29 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
-        ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        queue = new FhQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+
         //initialize queue
-        queue.addAll(pairs);
+        initQueue(pref);
+        //add items into queue
+        fillQueue(queue, pref);
+
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
         level = 1;
         int numClusters = clusters.size();
-        System.out.println("total " + numClusters + ", queue size " + queue.size());
-        System.out.println(queue.stats());
+        int debug = pref.getInt("debug", 0);
+        if (debug > 0) {
+            System.out.println("total " + numClusters + ", queue size " + queue.size());
+            System.out.println(queue.stats());
+        }
         for (int i = 0; i < numClusters - 1; i++) {
-            singleMerge(queue.poll(), pref);
+            if (debug > 1) {
+                if (i % 10 == 0) {
+                    printQueue(queue, i);
+                }
+            }
+            singleMerge(queue.poll(), pref, debug);
         }
 
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
@@ -115,7 +138,10 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         return ((n - 1) * n) >>> 1;
     }
 
-    protected void singleMerge(P curr, Props pref) {
+    protected void singleMerge(P curr, Props pref, int debug) {
+        if (debug > 1) {
+            System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.toString());
+        }
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (blacklist.contains(i) || blacklist.contains(j)) {
@@ -135,16 +161,18 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
 
         GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
         clusters.add(newCluster);
-        for (MergeEvaluation<E> eval : objectives) {
-            eval.clusterCreated(curr, newCluster, pref);
+        for (MergeEvaluation<E> me : objectives) {
+            me.clusterCreated(curr, newCluster, pref);
         }
-        eval.clusterCreated(curr, newCluster, pref);
+        //eval.clusterCreated(curr, newCluster, pref);
         addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue((C) newCluster, pref);
+        //remove any pair containing merged items from current fronts
+        queue.filterOut();
     }
 
-    private void addIntoQueue(C cluster, Props pref) {
+    protected void addIntoQueue(C cluster, Props pref) {
         for (int i = 0; i < cluster.getClusterId(); i++) {
             if (!blacklist.contains(i)) {
                 //System.out.println("adding pair [" + cluster.getClusterId() + ", " + clusters.get(i).getClusterId() + "]");
@@ -238,6 +266,39 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     @Override
     public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
         //nothing to do
+    }
+
+    protected void printQueue(Iterable<P> pairs, int step) {
+        String file = "pareto-front-" + step + ".csv";
+        try (PrintWriter writer = new PrintWriter(file, "UTF-8")) {
+            System.out.println("writing to file: " + file);
+            //header
+            StringBuilder sb = new StringBuilder();
+            for (MergeEvaluation<E> obj : objectives) {
+                if (sb.length() > 0) {
+                    sb.append(",");
+                }
+                sb.append(obj.getName());
+            }
+            sb.append(",").append(eval.getName()).append(",clusterIDs");
+            writer.append(sb.append("\n"));
+            sb.setLength(0);
+            //data
+            for (P pair : pairs) {
+                for (int j = 0; j < objectives.size(); j++) {
+                    if (j > 0) {
+                        sb.append(",");
+                    }
+                    sb.append(pair.getObjective(j));
+                }
+                sb.append(",").append(pair.getSortObjective());
+                sb.append(",").append(pair.A.getClusterId()).append("+").append(pair.B.getClusterId());
+                writer.append(sb.append("\n"));
+                sb.setLength(0);
+            }
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
 }

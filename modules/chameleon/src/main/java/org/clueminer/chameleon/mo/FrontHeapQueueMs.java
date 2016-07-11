@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,7 +34,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
+public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<E, C, P> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -206,12 +205,13 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
         }
     }
 
-    public void add(P pair) {
+    public boolean add(P pair) {
         //try to insert into first front
         if (!insertIntoFront(pair, 0)) {
             //if item doesn't fit into pareto front, save it for later
             buffer.add(pair);
         }
+        return true;
     }
 
     /**
@@ -275,11 +275,6 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
         return true;
     }
 
-    public void addAll(Collection<P> coll) {
-        for (P item : coll) {
-            add(item);
-        }
-    }
 
     void rebuildQueue() {
         if (buffer.isEmpty() || blacklist.isEmpty()) {
@@ -352,6 +347,7 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
      * @param item
      * @return
      */
+    @Override
     public int filterOut() {
         int removed = 0;
         //System.out.println("merging " + item.A.getClusterId() + ", " + item.B.getClusterId());
@@ -461,7 +457,7 @@ public class FrontHeapQueueMs<E extends Instance, C extends Cluster<E>, P extend
     }
 
     public String stats() {
-        StringBuilder sb = new StringBuilder("FkQueue [");
+        StringBuilder sb = new StringBuilder("FrontHeapQueueMs [");
         if (fronts != null) {
             for (int i = 0; i < fronts.length; i++) {
                 if (i > 0) {

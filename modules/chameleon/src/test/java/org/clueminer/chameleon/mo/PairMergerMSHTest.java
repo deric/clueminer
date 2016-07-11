@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -45,10 +45,10 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMSHTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
+public class PairMergerMSHTest<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
     private FrontHeapQueueMsh queue;
-    private PairMergerMSH subject;
+    private PairMergerMSH<E, C, P> subject;
 
     @Test
     public void testPairsRemoval() {
@@ -99,7 +99,7 @@ public class PairMergerMSHTest<E extends Instance, C extends Cluster<E>, P exten
 
         //merge some items - just enough to overflow queue to buffer
         for (int i = 0; i < 5; i++) {
-            subject.singleMerge(subject.queue.poll(), props);
+            subject.singleMerge(subject.queue.poll(), props, 0);
         }
         //make sure we iterate over all items
         int i = 0;

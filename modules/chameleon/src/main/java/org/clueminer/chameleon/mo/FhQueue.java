@@ -152,7 +152,8 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
 
     @Override
     public int filterOut() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        //not supported in this implementation
+        return 0;
     }
 
     class FrontIterator implements Iterator<P> {

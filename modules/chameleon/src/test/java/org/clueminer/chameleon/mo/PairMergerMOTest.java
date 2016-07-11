@@ -47,9 +47,6 @@ public class PairMergerMOTest<E extends Instance, C extends GraphCluster<E>, P e
 
     private PairMergerMO<E, C, P> subject;
 
-    public PairMergerMOTest() {
-    }
-
     @Test
     public void testUsArrest() {
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.usArrestData();
@@ -87,7 +84,7 @@ public class PairMergerMOTest<E extends Instance, C extends GraphCluster<E>, P e
 
         //merge some items - just enough to overflow queue to buffer
         for (int i = 0; i < 5; i++) {
-            subject.singleMerge(subject.queue.poll(), props);
+            subject.singleMerge(subject.queue.poll(), props, 0);
         }
         //make sure we iterate over all items
         int i = 0;

@@ -16,19 +16,9 @@
  */
 package org.clueminer.chameleon.mo;
 
-import java.util.ArrayList;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.GraphCluster;
-import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
-import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.MergeEvaluation;
-import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.factory.MergeEvaluationFactory;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Node;
-import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -43,89 +33,13 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
 
     public static final String NAME = "MOM-HSX";
 
-    protected FrontHeapQueueMs<E, C, P> queue;
-
     @Override
     public String getName() {
         return NAME;
     }
 
-    @Override
-    public HierarchicalResult getHierarchy(Dataset<E> dataset, Props pref) {
-        if (clusters.isEmpty()) {
-            throw new RuntimeException("initialize() must be called first");
-        }
-        if (objectives.isEmpty()) {
-            throw new RuntimeException("you must specify at least 2 objectives");
-        }
-        MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
-        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
-        ArrayList<P> pairs = createPairs(clusters.size(), pref);
-        initQueue(pref);
-        //initialize queue
-        queue.addAll(pairs);
-        height = 0;
-        HierarchicalResult result = new HClustResult(dataset, pref);
-
-        level = 1;
-        int numClusters = clusters.size();
-        System.out.println("total " + numClusters + ", queue size " + queue.size());
-        System.out.println(queue.stats());
-        for (int i = 0; i < numClusters - 1; i++) {
-            singleMerge(queue.poll(), pref);
-            //System.out.println("queue size: " + queue.size());
-            //queue.filterOut();
-            //System.out.println(queue);
-        }
-
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * numClusters - 2]);
-        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * numClusters - 1]);
-        result.setTreeData(treeData);
-        return result;
-    }
-
     protected void initQueue(Props pref) {
         queue = new FrontHeapQueueMs<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
-    }
-
-
-    protected void singleMerge(P curr, Props pref) {
-        int i = curr.A.getClusterId();
-        int j = curr.B.getClusterId();
-        while (blacklist.contains(i) || blacklist.contains(j)) {
-            curr = queue.poll();
-            i = curr.A.getClusterId();
-            j = curr.B.getClusterId();
-        }
-        blacklist.add(i);
-        blacklist.add(j);
-        if (i == j) {
-            throw new RuntimeException("Cannot merge two same clusters");
-        }
-        //System.out.println("merging: [" + curr.A.getClusterId() + ", " + curr.B.getClusterId() + "] " + curr.getValue());
-        //System.out.println("   " + curr.toString());
-        ArrayList<Node<E>> clusterNodes = (ArrayList<Node<E>>) curr.A.getNodes().clone();
-        clusterNodes.addAll(curr.B.getNodes());
-
-        GraphCluster<E> newCluster = new GraphCluster(clusterNodes, graph, clusters.size(), bisection, pref);
-        clusters.add(newCluster);
-        for (MergeEvaluation<E> eval : objectives) {
-            eval.clusterCreated(curr, newCluster, pref);
-        }
-        //eval.clusterCreated(curr, newCluster, pref);
-        addIntoTree((MoPair<E, GraphCluster<E>>) curr, pref);
-        updateExternalProperties(newCluster, curr.A, curr.B);
-        addIntoQueue((C) newCluster, pref);
-        queue.filterOut();
-    }
-
-    private void addIntoQueue(C cluster, Props pref) {
-        for (int i = 0; i < cluster.getClusterId(); i++) {
-            if (!blacklist.contains(i)) {
-                //System.out.println("adding pair [" + cluster.getClusterId() + ", " + clusters.get(i).getClusterId() + "]");
-                queue.add((P) createPair((C) clusters.get(i), cluster, pref));
-            }
-        }
     }
 
 }

@@ -17,7 +17,6 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +32,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Iterable<P> {
+public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<E, C, P> implements Iterable<P> {
 
     private ClusterHeap<E, C, P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -204,12 +203,13 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
         }
     }
 
-    public void add(P pair) {
+    public boolean add(P pair) {
         //try to insert into first front
         if (!insertIntoFront(pair, 0)) {
             //if item doesn't fit into pareto front, save it for later
             buffer.add(pair);
         }
+        return true;
     }
 
     /**
@@ -271,12 +271,6 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
         fronts = tmp;
 
         return true;
-    }
-
-    public void addAll(Collection<P> coll) {
-        for (P item : coll) {
-            add(item);
-        }
     }
 
     void rebuildQueue() {
@@ -342,6 +336,12 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
             System.out.print(j + ": [" + pair.A.getClusterId() + "," + pair.B.getClusterId() + "]");
         }
         System.out.println("");
+    }
+
+    @Override
+    public int filterOut() {
+        //not supported yet
+        return 0;
     }
 
     /**
@@ -455,8 +455,9 @@ public class FrontHeapQueueMsh<E extends Instance, C extends Cluster<E>, P exten
         return sb.toString();
     }
 
+    @Override
     public String stats() {
-        StringBuilder sb = new StringBuilder("FkQueue [");
+        StringBuilder sb = new StringBuilder("FrontHeapQueueMsh [");
         if (fronts != null) {
             for (int i = 0; i < fronts.length; i++) {
                 if (i > 0) {
