@@ -31,52 +31,48 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMSHTest<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
+public class FrontHeapQueueDATest<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
-    private FrontHeapQueueMsh queue;
-    private PairMergerMSH<E, C, P> subject;
+    private FrontHeapQueueDA<E, C, P> queue;
+    private PairMergerMOH<E, C, P> merger;
 
     @Test
-    public void testPairsRemoval() {
+    public void testIterator() {
         Props props = new Props();
-        Dataset<E> dataset = (Dataset<E>) FakeDatasets.usArrestData();
-        subject = initializeMerger(dataset, new PairMergerMSH<E, C, P>());
-
-        ArrayList<P> pairs = subject.createPairs(subject.getClusters().size(), props);
+        PairMergerMOH merger = initializeMerger((Dataset<E>) FakeDatasets.kumarData(), new PairMergerMOH<E, C, P>());
+        ArrayList<P> pairs = merger.createPairs(merger.getClusters().size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
-        subject.queue = new FrontHeapQueueMsh<>(5, blacklist, subject.objectives, props);
-        subject.queue.addAll(pairs);
+        queue = new FrontHeapQueueDA(5, blacklist, merger.objectives, props);
+        queue.addAll(pairs);
 
-        //for (MoPair<Instance, GraphCluster<Instance>> p : pairs) {
-        //    queue.blacklist.insertIntoFront(p.A.getClusterId());
-        //}
-        FrontHeapQueueMsh queue = (FrontHeapQueueMsh) subject.queue;
-        queue.blacklist.add(1);
-        queue.blacklist.add(2);
-        queue.rebuildQueue();
-        assertEquals(0, queue.buffer.size());
+        int i = 0;
+        for (P p : queue) {
+            assertNotNull(p);
+            i++;
+        }
+        assertEquals(i, queue.size());
     }
 
     @Test
     public void testIris() {
         Props props = new Props();
-        subject = initializeMerger((Dataset<E>) FakeDatasets.irisDataset(), new PairMergerMSH());
-        ArrayList<P> pairs = subject.createPairs(subject.getClusters().size(), props);
+        merger = initializeMerger((Dataset<E>) FakeDatasets.irisDataset());
+        ArrayList<P> pairs = merger.createPairs(merger.getClusters().size(), props);
         HashSet<Integer> blacklist = new HashSet<>();
-        subject.queue = new FrontHeapQueueMsh<>(5, blacklist, subject.objectives, props);
-        subject.queue.addAll(pairs);
+        merger.queue = new FrontHeapQueueDA<>(5, blacklist, merger.objectives, props);
+        merger.queue.addAll(pairs);
 
         //merge some items - just enough to overflow queue to buffer
         for (int i = 0; i < 5; i++) {
-            subject.singleMerge(subject.queue.poll(), props, 0);
+            merger.singleMerge(merger.queue.poll(), props, 0);
         }
         //make sure we iterate over all items
         int i = 0;
-        for (Object p : subject.queue) {
+        for (Object p : merger.queue) {
             assertNotNull(p);
             i++;
         }
-        assertEquals(i, subject.queue.size());
+        assertEquals(i, merger.queue.size());
     }
 
 }

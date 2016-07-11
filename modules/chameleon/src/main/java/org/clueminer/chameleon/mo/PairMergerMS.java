@@ -39,7 +39,7 @@ public class PairMergerMS<E extends Instance, C extends GraphCluster<E>, P exten
     }
 
     protected void initQueue(Props pref) {
-        queue = new FrontHeapQueueMs<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
+        queue = new FrontHeapQueueDA<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
     }
 
 }

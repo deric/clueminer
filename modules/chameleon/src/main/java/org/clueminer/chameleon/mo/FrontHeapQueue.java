@@ -36,15 +36,15 @@ import org.clueminer.utils.Props;
  */
 public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<E, C, P> implements Iterable<P> {
 
-    private Heap<P>[] fronts;
-    private final DominanceComparator<E, C, P> comparator;
+    protected Heap<P>[] fronts;
+    protected final DominanceComparator<E, C, P> comparator;
 
     private int lastFront = 0;
     //maximum number of fronts
-    private int maxFront;
-    ArrayList<P> buffer;
+    protected int maxFront;
+    protected ArrayList<P> buffer;
     final HashSet<Integer> blacklist;
-    private MoPairComparator itemCmp;
+    protected MoPairComparator itemCmp;
     private int frontsRemoved = 0;
 
     /**
@@ -117,6 +117,7 @@ public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends 
      *
      * @return true when Pareto front is empty
      */
+    @Override
     public boolean isEmpty() {
         boolean empty = true;
         for (Heap<P> front : fronts) {
