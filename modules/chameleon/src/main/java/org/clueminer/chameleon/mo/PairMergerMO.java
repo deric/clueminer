@@ -301,4 +301,9 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
         }
     }
 
+    @Override
+    public boolean isMultiObjective() {
+        return true;
+    }
+
 }

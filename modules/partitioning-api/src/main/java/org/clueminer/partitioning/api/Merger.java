@@ -78,4 +78,10 @@ public interface Merger<E extends Instance> {
      * @param dm a distance function
      */
     void setDistanceMeasure(Distance dm);
+
+    /**
+     *
+     * @return true when optimizes more than one objective
+     */
+    boolean isMultiObjective();
 }

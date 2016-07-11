@@ -260,4 +260,9 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         //nothing to do
     }
 
+    @Override
+    public boolean isMultiObjective() {
+        return false;
+    }
+
 }

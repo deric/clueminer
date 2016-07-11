@@ -154,4 +154,9 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
         //nothing to do
     }
 
+    @Override
+    public boolean isMultiObjective() {
+        return false;
+    }
+
 }
