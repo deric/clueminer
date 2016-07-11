@@ -38,7 +38,11 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * multi-objective merger (heap sorting). Uses {@link FrontHeapQueue}
+ * Multi-objective merger (heap sorting). Uses {@link FrontHeapQueue}
+ *
+ * Uses several optimizations:
+ * - items to be added are compared to last front item first
+ * - when both objectives are equal to zero, item is not added at all
  *
  * @author deric
  */
@@ -47,7 +51,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
 
     public static final String NAME = "MOM-HS";
 
-    protected FrontHeapQueue<E, C, P> queue;
+    protected AbstractQueue<E, C, P> queue;
 
     @Override
     public String getName() {
@@ -61,7 +65,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
      * @param queue
      * @param pref
      */
-    protected void fillQueue(FrontHeapQueue<E, C, P> queue, Props pref) {
+    protected void fillQueue(AbstractQueue<E, C, P> queue, Props pref) {
         C c1, c2;
         P pair;
         int skip = 0;

@@ -20,13 +20,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.dataset.api.Instance;
 
 /**
  * Common queue methods.
  *
  * @author deric
  */
-public abstract class AbstractQueue<P> implements Queue<P> {
+public abstract class AbstractQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> implements Queue<P> {
 
     /**
      * See {@link java.util.Queue#offer}
@@ -132,5 +134,17 @@ public abstract class AbstractQueue<P> implements Queue<P> {
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    /**
+     * Filter out blacklisted items
+     *
+     * @return number of removed items
+     */
+    public abstract int filterOut();
+
+    /**
+     * Return queue statistics as a String
+     */
+    public abstract String stats();
 
 }

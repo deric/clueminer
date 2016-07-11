@@ -18,9 +18,9 @@ package org.clueminer.chameleon.mo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.chameleon.similarity.Closeness;
 import org.clueminer.chameleon.similarity.Interconnectivity;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -43,16 +43,16 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMOTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
+public class PairMergerMOTest<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
-    private PairMergerMO subject;
+    private PairMergerMO<E, C, P> subject;
 
     public PairMergerMOTest() {
     }
 
     @Test
     public void testUsArrest() {
-        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         int maxPartitionSize = 20;
@@ -63,7 +63,7 @@ public class PairMergerMOTest<E extends Instance, C extends Cluster<E>, P extend
         g = knn.getNeighborGraph(dataset, g, k);
 
         Partitioning partitioning = new RecursiveBisection(bisection);
-        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
+        ArrayList<ArrayList<Node<E>>> partitioningResult = partitioning.partition(maxPartitionSize, g, pref);
 
         subject = new PairMergerMO();
         subject.addObjective(new Closeness());

@@ -17,7 +17,7 @@
 package org.clueminer.chameleon.mo;
 
 import java.util.HashSet;
-import org.clueminer.clustering.api.Cluster;
+import org.clueminer.chameleon.GraphCluster;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
@@ -30,9 +30,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class PairMergerMOHffTest<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
+public class PairMergerMOHffTest<E extends Instance, C extends GraphCluster<E>, P extends MoPair<E, C>> extends AbstractQueueTest<E, C, P> {
 
-    private PairMergerMOHff subject;
+    private PairMergerMOHff<E, C, P> subject;
 
     @Test
     public void testIris() {

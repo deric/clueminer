@@ -34,7 +34,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<P> implements Iterable<P> {
+public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<E, C, P> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;
@@ -148,6 +148,11 @@ public class FhQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<
     @Override
     public Iterator<P> iterator() {
         return new FrontIterator();
+    }
+
+    @Override
+    public int filterOut() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     class FrontIterator implements Iterator<P> {

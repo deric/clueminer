@@ -34,7 +34,7 @@ import org.clueminer.utils.Props;
  *
  * @author deric
  */
-public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<P> implements Iterable<P> {
+public class FrontHeapQueue<E extends Instance, C extends Cluster<E>, P extends MoPair<E, C>> extends AbstractQueue<E, C, P> implements Iterable<P> {
 
     private Heap<P>[] fronts;
     private final DominanceComparator<E, C, P> comparator;

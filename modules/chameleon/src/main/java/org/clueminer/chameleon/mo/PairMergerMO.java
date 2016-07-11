@@ -52,7 +52,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     protected List<MergeEvaluation<E>> objectives = new LinkedList<>();
     public static final String NAME = "multi-objective merger";
 
-    protected FhQueue<E, C, P> queue;
+    protected AbstractQueue<E, C, P> queue;
     protected MergeEvaluation eval;
 
     @Override
