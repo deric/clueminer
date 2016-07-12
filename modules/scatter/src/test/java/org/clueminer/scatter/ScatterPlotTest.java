@@ -24,11 +24,11 @@ import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.fixtures.clustering.FakeClustering;
 
-public class ScatterTest extends JPanel {
+public class ScatterPlotTest extends JPanel {
 
     private ScatterPlot plot;
 
-    public ScatterTest() {
+    public ScatterPlotTest() {
         setPreferredSize(new Dimension(800, 600));
         initComponents();
     }
@@ -41,7 +41,7 @@ public class ScatterTest extends JPanel {
 
             @Override
             public void run() {
-                new ScatterTest().showInFrame();
+                new ScatterPlotTest().showInFrame();
             }
         });
     }

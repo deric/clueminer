@@ -30,7 +30,7 @@ public class SwingWrapper {
 
     private String windowTitle = "XChart";
 
-    private List<Chart> charts = new ArrayList<Chart>();
+    private List<Chart> charts = new ArrayList<>();
     private int numRows;
     private int numColumns;
 
@@ -40,7 +40,6 @@ public class SwingWrapper {
      * @param chart
      */
     public SwingWrapper(Chart chart) {
-
         this.charts.add(chart);
     }
 
@@ -50,9 +49,7 @@ public class SwingWrapper {
      * @param charts
      */
     public SwingWrapper(List<Chart> charts) {
-
         this.charts = charts;
-
         this.numRows = (int) (Math.sqrt(charts.size()) + .5);
         this.numColumns = (int) ((double) charts.size() / this.numRows + 1);
     }
