@@ -66,7 +66,7 @@ public class Chart {
      *
      * @param width
      * @param height
-     * @param theme instance of Theme class
+     * @param theme  instance of Theme class
      */
     public Chart(int width, int height, Theme theme) {
 
@@ -110,8 +110,8 @@ public class Chart {
      * Add a series to the chart using Collections
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param yData the Y-Axis data
+     * @param xData      the X-Axis data
+     * @param yData      the Y-Axis data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData) {
@@ -123,9 +123,9 @@ public class Chart {
      * Add a Number series to the chart using Collections with error bars
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param yData the Y-Axis data
-     * @param errorBars the error bar data
+     * @param xData      the X-Axis data
+     * @param yData      the Y-Axis data
+     * @param errorBars  the error bar data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData, Collection<? extends Number> errorBars) {
@@ -137,8 +137,8 @@ public class Chart {
      * Add a series to the chart using double arrays
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param xData the Y-Axis data
+     * @param xData      the X-Axis data
+     * @param xData      the Y-Axis data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, double[] xData, double[] yData) {
@@ -150,9 +150,9 @@ public class Chart {
      * Add a series to the chart using double arrays with error bars
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param xData the Y-Axis data
-     * @param errorBars the error bar data
+     * @param xData      the X-Axis data
+     * @param xData      the Y-Axis data
+     * @param errorBars  the error bar data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, double[] xData, double[] yData, double[] errorBars) {
@@ -183,8 +183,8 @@ public class Chart {
      * Add a series to the chart using int arrays
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param xData the Y-Axis data
+     * @param xData      the X-Axis data
+     * @param xData      the Y-Axis data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, int[] xData, int[] yData) {
@@ -196,9 +196,9 @@ public class Chart {
      * Add a series to the chart using int arrays with error bars
      *
      * @param seriesName
-     * @param xData the X-Axis data
-     * @param xData the Y-Axis data
-     * @param errorBars the error bar data
+     * @param xData      the X-Axis data
+     * @param xData      the Y-Axis data
+     * @param errorBars  the error bar data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, int[] xData, int[] yData, int[] errorBars) {

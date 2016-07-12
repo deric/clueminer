@@ -15,6 +15,10 @@
  */
 package com.xeiam.xchart.internal.chartpart;
 
+import com.xeiam.xchart.Series;
+import com.xeiam.xchart.StyleManager.ChartType;
+import com.xeiam.xchart.internal.chartpart.Axis.AxisType;
+import com.xeiam.xchart.internal.style.SeriesColorMarkerLineStyleCycler;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -25,156 +29,146 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.xeiam.xchart.Series;
-import com.xeiam.xchart.StyleManager.ChartType;
-import com.xeiam.xchart.internal.chartpart.Axis.AxisType;
-import com.xeiam.xchart.internal.style.SeriesColorMarkerLineStyleCycler;
-
 /**
  * @author timmolter
  */
 public class AxisPair implements ChartPart {
 
-  /** parent */
-  private final ChartPainter chartPainter;
+    /** parent */
+    private final ChartPainter chartPainter;
 
-  private Map<String, Series> seriesMap = new LinkedHashMap<String, Series>();
+    private Map<String, Series> seriesMap = new LinkedHashMap<String, Series>();
 
-  private Axis xAxis;
-  private Axis yAxis;
+    private Axis xAxis;
+    private Axis yAxis;
 
-  private SeriesColorMarkerLineStyleCycler seriesColorMarkerLineStyleCycler = new SeriesColorMarkerLineStyleCycler();
+    private SeriesColorMarkerLineStyleCycler seriesColorMarkerLineStyleCycler = new SeriesColorMarkerLineStyleCycler();
 
-  /**
-   * Constructor
-   *
-   * @param the parent chartPainter
-   */
-  public AxisPair(ChartPainter chartPainter) {
+    /**
+     * Constructor
+     *
+     * @param the parent chartPainter
+     */
+    public AxisPair(ChartPainter chartPainter) {
 
-    this.chartPainter = chartPainter;
+        this.chartPainter = chartPainter;
 
-    // add axes
-    xAxis = new Axis(this, Axis.Direction.X);
-    yAxis = new Axis(this, Axis.Direction.Y);
-  }
-
-  /**
-   * @param seriesName
-   * @param xData
-   * @param yData
-   * @param errorBars
-   * @return Series
-   */
-  public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData, Collection<? extends Number> errorBars) {
-
-    // Sanity checks
-    if (seriesName == null) {
-      throw new IllegalArgumentException("Series Name cannot be null!!!");
-    }
-    if (yData == null) {
-      throw new IllegalArgumentException("Y-Axis data cannot be null!!!");
-    }
-    if (yData.size() == 0) {
-      throw new IllegalArgumentException("Y-Axis data cannot be empty!!!");
-    }
-    if (xData != null && xData.size() == 0) {
-      throw new IllegalArgumentException("X-Axis data cannot be empty!!!");
-    }
-    // Sanity check
-    if (errorBars != null && errorBars.size() != yData.size()) {
-      throw new IllegalArgumentException("errorbars and Y-Axis sizes are not the same!!!");
+        // add axes
+        xAxis = new Axis(this, Axis.Direction.X);
+        yAxis = new Axis(this, Axis.Direction.Y);
     }
 
-    Series series = null;
-    if (xData != null) {
+    /**
+     * @param seriesName
+     * @param xData
+     * @param yData
+     * @param errorBars
+     * @return Series
+     */
+    public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData, Collection<? extends Number> errorBars) {
 
-      // Sanity check
-      if (xData.size() != yData.size()) {
-        throw new IllegalArgumentException("X and Y-Axis sizes are not the same!!!");
-      }
-      // inspect the series to see what kind of data it contains (Number, Date or String)
-      Iterator<?> itr = xData.iterator();
-      Object dataPoint = itr.next();
-      if (dataPoint instanceof Number) {
-        xAxis.setAxisType(AxisType.Number);
-      }
-      else if (dataPoint instanceof Date) {
-        xAxis.setAxisType(AxisType.Date);
-      }
-      else if (dataPoint instanceof String) {
-        if (getChartPainter().getStyleManager().getChartType() != ChartType.Bar) {
-          throw new RuntimeException("X-Axis data types of String can only be used for Bar Charts!!!");
+        // Sanity checks
+        if (seriesName == null) {
+            throw new IllegalArgumentException("Series Name cannot be null!!!");
         }
-        xAxis.setAxisType(AxisType.String);
-      }
-      else {
-        throw new RuntimeException("Series data must be either Number, Date or String type!!!");
-      }
-      yAxis.setAxisType(AxisType.Number);
-      series = new Series(seriesName, xData, xAxis.getAxisType(), yData, yAxis.getAxisType(), errorBars, seriesColorMarkerLineStyleCycler.getNextSeriesColorMarkerLineStyle());
+        if (yData == null) {
+            throw new IllegalArgumentException("Y-Axis data cannot be null!!!");
+        }
+        if (yData.size() == 0) {
+            throw new IllegalArgumentException("Y-Axis data cannot be empty!!!");
+        }
+        if (xData != null && xData.size() == 0) {
+            throw new IllegalArgumentException("X-Axis data cannot be empty!!!");
+        }
+        // Sanity check
+        if (errorBars != null && errorBars.size() != yData.size()) {
+            throw new IllegalArgumentException("errorbars and Y-Axis sizes are not the same!!!");
+        }
+
+        Series series = null;
+        if (xData != null) {
+
+            // Sanity check
+            if (xData.size() != yData.size()) {
+                throw new IllegalArgumentException("X and Y-Axis sizes are not the same!!!");
+            }
+            // inspect the series to see what kind of data it contains (Number, Date or String)
+            Iterator<?> itr = xData.iterator();
+            Object dataPoint = itr.next();
+            if (dataPoint instanceof Number) {
+                xAxis.setAxisType(AxisType.Number);
+            } else if (dataPoint instanceof Date) {
+                xAxis.setAxisType(AxisType.Date);
+            } else if (dataPoint instanceof String) {
+                if (getChartPainter().getStyleManager().getChartType() != ChartType.Bar) {
+                    throw new RuntimeException("X-Axis data types of String can only be used for Bar Charts!!!");
+                }
+                xAxis.setAxisType(AxisType.String);
+            } else {
+                throw new RuntimeException("Series data must be either Number, Date or String type!!!");
+            }
+            yAxis.setAxisType(AxisType.Number);
+            series = new Series(seriesName, xData, xAxis.getAxisType(), yData, yAxis.getAxisType(), errorBars, seriesColorMarkerLineStyleCycler.getNextSeriesColorMarkerLineStyle());
+        } else { // generate xData
+            List<Double> generatedXData = new ArrayList<Double>();
+            for (int i = 1; i < yData.size() + 1; i++) {
+                generatedXData.add((double) i);
+            }
+            xAxis.setAxisType(AxisType.Number);
+            yAxis.setAxisType(AxisType.Number);
+            series = new Series(seriesName, generatedXData, xAxis.getAxisType(), yData, yAxis.getAxisType(), errorBars, seriesColorMarkerLineStyleCycler.getNextSeriesColorMarkerLineStyle());
+        }
+
+        switch (chartPainter.getStyleManager().getChartType()) {
+            case Area:
+                series.setSeriesType(Series.SeriesType.Area);
+                break;
+            case Line:
+                series.setSeriesType(Series.SeriesType.Line);
+        }
+
+        if (seriesMap.keySet().contains(seriesName)) {
+            throw new IllegalArgumentException("Series name >" + seriesName + "< has already been used. Use unique names for each series!!!");
+        }
+
+        seriesMap.put(seriesName, series);
+
+        return series;
     }
-    else { // generate xData
-      List<Double> generatedXData = new ArrayList<Double>();
-      for (int i = 1; i < yData.size() + 1; i++) {
-        generatedXData.add((double) i);
-      }
-      xAxis.setAxisType(AxisType.Number);
-      yAxis.setAxisType(AxisType.Number);
-      series = new Series(seriesName, generatedXData, xAxis.getAxisType(), yData, yAxis.getAxisType(), errorBars, seriesColorMarkerLineStyleCycler.getNextSeriesColorMarkerLineStyle());
+
+    @Override
+    public void paint(Graphics2D g) {
+
+        yAxis.paint(g);
+        xAxis.paint(g);
     }
 
-    switch (chartPainter.getStyleManager().getChartType()) {
-    case Area:
-      series.setSeriesType(Series.SeriesType.Area);
-      break;
-    case Line:
-      series.setSeriesType(Series.SeriesType.Line);
+    @Override
+    public Rectangle getBounds() {
+
+        return null; // should never be called
     }
 
-    if (seriesMap.keySet().contains(seriesName)) {
-      throw new IllegalArgumentException("Series name >" + seriesName + "< has already been used. Use unique names for each series!!!");
+    @Override
+    public ChartPainter getChartPainter() {
+
+        return chartPainter;
     }
 
-    seriesMap.put(seriesName, series);
+    // Getters /////////////////////////////////////////////////
+    public Map<String, Series> getSeriesMap() {
 
-    return series;
-  }
+        return seriesMap;
+    }
 
-  @Override
-  public void paint(Graphics2D g) {
+    public Axis getXAxis() {
 
-    yAxis.paint(g);
-    xAxis.paint(g);
-  }
+        return xAxis;
+    }
 
-  @Override
-  public Rectangle getBounds() {
+    public Axis getYAxis() {
 
-    return null; // should never be called
-  }
-
-  @Override
-  public ChartPainter getChartPainter() {
-
-    return chartPainter;
-  }
-
-  // Getters /////////////////////////////////////////////////
-
-  public Map<String, Series> getSeriesMap() {
-
-    return seriesMap;
-  }
-
-  public Axis getXAxis() {
-
-    return xAxis;
-  }
-
-  public Axis getYAxis() {
-
-    return yAxis;
-  }
+        return yAxis;
+    }
 
 }

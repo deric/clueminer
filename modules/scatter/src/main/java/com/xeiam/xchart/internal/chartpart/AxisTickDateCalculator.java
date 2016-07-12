@@ -26,57 +26,57 @@ import com.xeiam.xchart.internal.chartpart.Axis.Direction;
  */
 public class AxisTickDateCalculator extends AxisTickCalculator {
 
-  DateFormatter dateFormatter;
+    DateFormatter dateFormatter;
 
-  /**
-   * Constructor
-   *
-   * @param axisDirection
-   * @param workingSpace
-   * @param minValue
-   * @param maxValue
-   * @param styleManager
-   */
-  public AxisTickDateCalculator(Direction axisDirection, double workingSpace, double minValue, double maxValue, StyleManager styleManager) {
+    /**
+     * Constructor
+     *
+     * @param axisDirection
+     * @param workingSpace
+     * @param minValue
+     * @param maxValue
+     * @param styleManager
+     */
+    public AxisTickDateCalculator(Direction axisDirection, double workingSpace, double minValue, double maxValue, StyleManager styleManager) {
 
-    super(axisDirection, workingSpace, minValue, maxValue, styleManager);
-    dateFormatter = new DateFormatter(styleManager);
-    calculate();
-  }
-
-  private void calculate() {
-
-    // tick space - a percentage of the working space available for ticks
-    double tickSpace = styleManager.getAxisTickSpacePercentage() * workingSpace; // in plot space
-
-    // where the tick should begin in the working space in pixels
-    double margin = Utils.getTickStartOffset(workingSpace, tickSpace); // in plot space double gridStep = getGridStepForDecimal(tickSpace);
-
-    // the span of the data
-    long span = (long) Math.abs(maxValue - minValue); // in data space
-
-    long gridStepHint = (long) (span / tickSpace * styleManager.getXAxisTickMarkSpacingHint());
-
-    long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    double gridStep = 0.0;
-    int[] steps = dateFormatter.getValidTickStepsMap().get(timeUnit);
-    for (int i = 0; i < steps.length - 1; i++) {
-      if (gridStepHint < (timeUnit * steps[i] + timeUnit * steps[i + 1]) / 2.0) {
-        gridStep = timeUnit * steps[i];
-        break;
-      }
+        super(axisDirection, workingSpace, minValue, maxValue, styleManager);
+        dateFormatter = new DateFormatter(styleManager);
+        calculate();
     }
 
-    double firstPosition = getFirstPosition(gridStep);
+    private void calculate() {
 
-    // generate all tickLabels and tickLocations from the first to last position
-    for (double value = firstPosition; value <= maxValue + 2 * gridStep; value = value + gridStep) {
+        // tick space - a percentage of the working space available for ticks
+        double tickSpace = styleManager.getAxisTickSpacePercentage() * workingSpace; // in plot space
 
-      tickLabels.add(dateFormatter.formatDate(value, timeUnit));
-      // here we convert tickPosition finally to plot space, i.e. pixels
-      double tickLabelPosition = margin + ((value - minValue) / (maxValue - minValue) * tickSpace);
-      tickLocations.add(tickLabelPosition);
+        // where the tick should begin in the working space in pixels
+        double margin = Utils.getTickStartOffset(workingSpace, tickSpace); // in plot space double gridStep = getGridStepForDecimal(tickSpace);
+
+        // the span of the data
+        long span = (long) Math.abs(maxValue - minValue); // in data space
+
+        long gridStepHint = (long) (span / tickSpace * styleManager.getXAxisTickMarkSpacingHint());
+
+        long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        double gridStep = 0.0;
+        int[] steps = dateFormatter.getValidTickStepsMap().get(timeUnit);
+        for (int i = 0; i < steps.length - 1; i++) {
+            if (gridStepHint < (timeUnit * steps[i] + timeUnit * steps[i + 1]) / 2.0) {
+                gridStep = timeUnit * steps[i];
+                break;
+            }
+        }
+
+        double firstPosition = getFirstPosition(gridStep);
+
+        // generate all tickLabels and tickLocations from the first to last position
+        for (double value = firstPosition; value <= maxValue + 2 * gridStep; value = value + gridStep) {
+
+            tickLabels.add(dateFormatter.formatDate(value, timeUnit));
+            // here we convert tickPosition finally to plot space, i.e. pixels
+            double tickLabelPosition = margin + ((value - minValue) / (maxValue - minValue) * tickSpace);
+            tickLocations.add(tickLabelPosition);
+        }
     }
-  }
 
 }

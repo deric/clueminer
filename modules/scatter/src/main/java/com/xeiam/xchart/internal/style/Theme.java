@@ -15,123 +15,114 @@
  */
 package com.xeiam.xchart.internal.style;
 
+import com.xeiam.xchart.StyleManager.LegendPosition;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
-
-import com.xeiam.xchart.StyleManager.LegendPosition;
 
 /**
  * @author timmolter
  */
 public interface Theme {
 
-  // Chart Style ///////////////////////////////
+    // Chart Style ///////////////////////////////
+    public Color getChartBackgroundColor();
 
-  public Color getChartBackgroundColor();
+    public Color getChartFontColor();
 
-  public Color getChartFontColor();
+    public int getChartPadding();
 
-  public int getChartPadding();
+    // Chart Title ///////////////////////////////
+    public Font getChartTitleFont();
 
-  // Chart Title ///////////////////////////////
+    public boolean isChartTitleVisible();
 
-  public Font getChartTitleFont();
+    public boolean isChartTitleBoxVisible();
 
-  public boolean isChartTitleVisible();
+    public Color getChartTitleBoxBackgroundColor();
 
-  public boolean isChartTitleBoxVisible();
+    public Color getChartTitleBoxBorderColor();
 
-  public Color getChartTitleBoxBackgroundColor();
+    public int getChartTitlePadding();
 
-  public Color getChartTitleBoxBorderColor();
+    // Chart Legend ///////////////////////////////
+    public Font getLegendFont();
 
-  public int getChartTitlePadding();
+    public boolean isLegendVisible();
 
-  // Chart Legend ///////////////////////////////
+    public Color getLegendBackgroundColor();
 
-  public Font getLegendFont();
+    public Color getLegendBorderColor();
 
-  public boolean isLegendVisible();
+    public int getLegendPadding();
 
-  public Color getLegendBackgroundColor();
+    public int getLegendSeriesLineLength();
 
-  public Color getLegendBorderColor();
+    public LegendPosition getLegendPosition();
 
-  public int getLegendPadding();
+    // Chart Axes ///////////////////////////////
+    public boolean isXAxisTitleVisible();
 
-  public int getLegendSeriesLineLength();
+    public boolean isYAxisTitleVisible();
 
-  public LegendPosition getLegendPosition();
+    public Font getAxisTitleFont();
 
-  // Chart Axes ///////////////////////////////
+    public boolean isXAxisTicksVisible();
 
-  public boolean isXAxisTitleVisible();
+    public boolean isYAxisTicksVisible();
 
-  public boolean isYAxisTitleVisible();
+    public Font getAxisTickLabelsFont();
 
-  public Font getAxisTitleFont();
+    public int getAxisTickMarkLength();
 
-  public boolean isXAxisTicksVisible();
+    public int getAxisTickPadding();
 
-  public boolean isYAxisTicksVisible();
+    public Color getAxisTickMarksColor();
 
-  public Font getAxisTickLabelsFont();
+    public Stroke getAxisTickMarksStroke();
 
-  public int getAxisTickMarkLength();
+    public Color getAxisTickLabelsColor();
 
-  public int getAxisTickPadding();
+    public boolean isAxisTicksLineVisible();
 
-  public Color getAxisTickMarksColor();
+    public boolean isAxisTicksMarksVisible();
 
-  public Stroke getAxisTickMarksStroke();
+    public int getAxisTitlePadding();
 
-  public Color getAxisTickLabelsColor();
+    public int getPlotPadding();
 
-  public boolean isAxisTicksLineVisible();
+    public int getXAxisTickMarkSpacingHint();
 
-  public boolean isAxisTicksMarksVisible();
+    public int getYAxisTickMarkSpacingHint();
 
-  public int getAxisTitlePadding();
+    // Chart Plot Area ///////////////////////////////
+    public boolean isPlotGridLinesVisible();
 
-  public int getPlotPadding();
+    public Color getPlotBackgroundColor();
 
-  public int getXAxisTickMarkSpacingHint();
+    public Color getPlotBorderColor();
 
-  public int getYAxisTickMarkSpacingHint();
+    public boolean isPlotBorderVisible();
 
-  // Chart Plot Area ///////////////////////////////
+    public Color getPlotGridLinesColor();
 
-  public boolean isPlotGridLinesVisible();
+    public Stroke getPlotGridLinesStroke();
 
-  public Color getPlotBackgroundColor();
+    public boolean isPlotTicksMarksVisible();
 
-  public Color getPlotBorderColor();
+    // Bar Charts ///////////////////////////////
+    public double getBarWidthPercentage();
 
-  public boolean isPlotBorderVisible();
+    public boolean isBarsOverlapped();
 
-  public Color getPlotGridLinesColor();
+    public boolean isBarFilled();
 
-  public Stroke getPlotGridLinesStroke();
+    // Line, Scatter, Area Charts ///////////////////////////////
+    public int getMarkerSize();
 
-  public boolean isPlotTicksMarksVisible();
+    // Error Bars ///////////////////////////////
+    public Color getErrorBarsColor();
 
-  // Bar Charts ///////////////////////////////
-
-  public double getBarWidthPercentage();
-
-  public boolean isBarsOverlapped();
-
-  public boolean isBarFilled();
-
-  // Line, Scatter, Area Charts ///////////////////////////////
-
-  public int getMarkerSize();
-
-  // Error Bars ///////////////////////////////
-
-  public Color getErrorBarsColor();
-
-  public boolean isErrorBarsColorSeriesColor();
+    public boolean isErrorBarsColorSeriesColor();
 
 }

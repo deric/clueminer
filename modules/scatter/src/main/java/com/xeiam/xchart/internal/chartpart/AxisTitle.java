@@ -27,128 +27,119 @@ import java.awt.geom.Rectangle2D;
  */
 public class AxisTitle implements ChartPart {
 
-  /** parent */
-  private final Axis axis;
+    /** parent */
+    private final Axis axis;
 
-  /** the title text */
-  private String text = ""; // default to ""
+    /** the title text */
+    private String text = ""; // default to ""
 
-  /** the bounds */
-  private Rectangle2D bounds;
+    /** the bounds */
+    private Rectangle2D bounds;
 
-  /**
-   * Constructor
-   *
-   * @param axis the axis
-   */
-  protected AxisTitle(Axis axis) {
+    /**
+     * Constructor
+     *
+     * @param axis the axis
+     */
+    protected AxisTitle(Axis axis) {
 
-    this.axis = axis;
-  }
-
-  @Override
-  public Rectangle2D getBounds() {
-
-    return bounds;
-  }
-
-  @Override
-  public void paint(Graphics2D g) {
-
-    bounds = new Rectangle2D.Double();
-
-    g.setColor(getChartPainter().getStyleManager().getChartFontColor());
-    g.setFont(getChartPainter().getStyleManager().getAxisTitleFont());
-
-    if (axis.getDirection() == Axis.Direction.Y) {
-
-      if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isYAxisTitleVisible()) {
-
-        FontRenderContext frc = g.getFontRenderContext();
-        TextLayout nonRotatedTextLayout = new TextLayout(text, getChartPainter().getStyleManager().getAxisTitleFont(), frc);
-        Rectangle2D nonRotatedRectangle = nonRotatedTextLayout.getBounds();
-
-        // ///////////////////////////////////////////////
-
-        int xOffset = (int) (axis.getPaintZone().getX() + nonRotatedRectangle.getHeight());
-        int yOffset = (int) ((axis.getPaintZone().getHeight() + nonRotatedRectangle.getWidth()) / 2.0 + axis.getPaintZone().getY());
-
-        AffineTransform rot = AffineTransform.getRotateInstance(-1 * Math.PI / 2, 0, 0);
-        Shape shape = nonRotatedTextLayout.getOutline(rot);
-
-        AffineTransform orig = g.getTransform();
-        AffineTransform at = new AffineTransform();
-
-        at.translate(xOffset, yOffset);
-        g.transform(at);
-        g.fill(shape);
-        g.setTransform(orig);
-
-        // ///////////////////////////////////////////////
-        // System.out.println(nonRotatedRectangle.getHeight());
-
-        // bounds
-        bounds = new Rectangle2D.Double(xOffset - nonRotatedRectangle.getHeight(), yOffset - nonRotatedRectangle.getWidth(), nonRotatedRectangle.getHeight() + getChartPainter().getStyleManager()
-            .getAxisTitlePadding(), nonRotatedRectangle.getWidth());
-        // g.setColor(Color.blue);
-        // g.draw(bounds);
-      }
-      else {
-        bounds = new Rectangle2D.Double(axis.getPaintZone().getX(), axis.getPaintZone().getY(), 0, axis.getPaintZone().getHeight());
-      }
-
+        this.axis = axis;
     }
-    else {
 
-      if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isXAxisTitleVisible()) {
+    @Override
+    public Rectangle2D getBounds() {
 
-        FontRenderContext frc = g.getFontRenderContext();
-        TextLayout textLayout = new TextLayout(text, getChartPainter().getStyleManager().getAxisTitleFont(), frc);
-        Rectangle2D rectangle = textLayout.getBounds();
-        // System.out.println(rectangle);
-
-        double xOffset = axis.getPaintZone().getX() + (axis.getPaintZone().getWidth() - rectangle.getWidth()) / 2.0;
-        double yOffset = axis.getPaintZone().getY() + axis.getPaintZone().getHeight() - rectangle.getHeight();
-
-        // textLayout.draw(g, (float) xOffset, (float) (yOffset - rectangle.getY()));
-        Shape shape = textLayout.getOutline(null);
-        AffineTransform orig = g.getTransform();
-        AffineTransform at = new AffineTransform();
-        at.translate((float) xOffset, (float) (yOffset - rectangle.getY()));
-        g.transform(at);
-        g.fill(shape);
-        g.setTransform(orig);
-
-        bounds = new Rectangle2D.Double(xOffset, yOffset - getChartPainter().getStyleManager().getAxisTitlePadding(), rectangle.getWidth(), rectangle.getHeight() + getChartPainter().getStyleManager()
-            .getAxisTitlePadding());
-        // g.setColor(Color.blue);
-        // g.draw(bounds);
-
-      }
-      else {
-        bounds = new Rectangle2D.Double(axis.getPaintZone().getX(), axis.getPaintZone().getY() + axis.getPaintZone().getHeight(), axis.getPaintZone().getWidth(), 0);
-        // g.setColor(Color.blue);
-        // g.draw(bounds);
-
-      }
+        return bounds;
     }
-  }
 
-  @Override
-  public ChartPainter getChartPainter() {
+    @Override
+    public void paint(Graphics2D g) {
 
-    return axis.getChartPainter();
-  }
+        bounds = new Rectangle2D.Double();
 
-  // Getters /////////////////////////////////////////////////
+        g.setColor(getChartPainter().getStyleManager().getChartFontColor());
+        g.setFont(getChartPainter().getStyleManager().getAxisTitleFont());
 
-  public String getText() {
+        if (axis.getDirection() == Axis.Direction.Y) {
 
-    return text;
-  }
+            if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isYAxisTitleVisible()) {
 
-  public void setText(String text) {
+                FontRenderContext frc = g.getFontRenderContext();
+                TextLayout nonRotatedTextLayout = new TextLayout(text, getChartPainter().getStyleManager().getAxisTitleFont(), frc);
+                Rectangle2D nonRotatedRectangle = nonRotatedTextLayout.getBounds();
 
-    this.text = text;
-  }
+                // ///////////////////////////////////////////////
+                int xOffset = (int) (axis.getPaintZone().getX() + nonRotatedRectangle.getHeight());
+                int yOffset = (int) ((axis.getPaintZone().getHeight() + nonRotatedRectangle.getWidth()) / 2.0 + axis.getPaintZone().getY());
+
+                AffineTransform rot = AffineTransform.getRotateInstance(-1 * Math.PI / 2, 0, 0);
+                Shape shape = nonRotatedTextLayout.getOutline(rot);
+
+                AffineTransform orig = g.getTransform();
+                AffineTransform at = new AffineTransform();
+
+                at.translate(xOffset, yOffset);
+                g.transform(at);
+                g.fill(shape);
+                g.setTransform(orig);
+
+                // ///////////////////////////////////////////////
+                // System.out.println(nonRotatedRectangle.getHeight());
+                // bounds
+                bounds = new Rectangle2D.Double(xOffset - nonRotatedRectangle.getHeight(), yOffset - nonRotatedRectangle.getWidth(), nonRotatedRectangle.getHeight() + getChartPainter().getStyleManager()
+                        .getAxisTitlePadding(), nonRotatedRectangle.getWidth());
+                // g.setColor(Color.blue);
+                // g.draw(bounds);
+            } else {
+                bounds = new Rectangle2D.Double(axis.getPaintZone().getX(), axis.getPaintZone().getY(), 0, axis.getPaintZone().getHeight());
+            }
+
+        } else if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isXAxisTitleVisible()) {
+
+            FontRenderContext frc = g.getFontRenderContext();
+            TextLayout textLayout = new TextLayout(text, getChartPainter().getStyleManager().getAxisTitleFont(), frc);
+            Rectangle2D rectangle = textLayout.getBounds();
+            // System.out.println(rectangle);
+
+            double xOffset = axis.getPaintZone().getX() + (axis.getPaintZone().getWidth() - rectangle.getWidth()) / 2.0;
+            double yOffset = axis.getPaintZone().getY() + axis.getPaintZone().getHeight() - rectangle.getHeight();
+
+            // textLayout.draw(g, (float) xOffset, (float) (yOffset - rectangle.getY()));
+            Shape shape = textLayout.getOutline(null);
+            AffineTransform orig = g.getTransform();
+            AffineTransform at = new AffineTransform();
+            at.translate((float) xOffset, (float) (yOffset - rectangle.getY()));
+            g.transform(at);
+            g.fill(shape);
+            g.setTransform(orig);
+
+            bounds = new Rectangle2D.Double(xOffset, yOffset - getChartPainter().getStyleManager().getAxisTitlePadding(), rectangle.getWidth(), rectangle.getHeight() + getChartPainter().getStyleManager()
+                    .getAxisTitlePadding());
+            // g.setColor(Color.blue);
+            // g.draw(bounds);
+
+        } else {
+            bounds = new Rectangle2D.Double(axis.getPaintZone().getX(), axis.getPaintZone().getY() + axis.getPaintZone().getHeight(), axis.getPaintZone().getWidth(), 0);
+            // g.setColor(Color.blue);
+            // g.draw(bounds);
+
+        }
+    }
+
+    @Override
+    public ChartPainter getChartPainter() {
+
+        return axis.getChartPainter();
+    }
+
+    // Getters /////////////////////////////////////////////////
+    public String getText() {
+
+        return text;
+    }
+
+    public void setText(String text) {
+
+        this.text = text;
+    }
 }

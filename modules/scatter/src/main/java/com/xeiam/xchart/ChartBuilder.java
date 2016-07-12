@@ -20,70 +20,70 @@ import com.xeiam.xchart.StyleManager.ChartType;
 
 /**
  * A "Builder" to make creating charts easier
- * 
+ *
  * @author timmolter
  */
 public class ChartBuilder {
 
-  ChartType chartType = ChartType.Line;
-  int width = 800;
-  int height = 600;
-  String title = "";
-  String xAxisTitle = "";
-  String yAxisTitle = "";
-  ChartTheme chartTheme = ChartTheme.XChart;
+    ChartType chartType = ChartType.Line;
+    int width = 800;
+    int height = 600;
+    String title = "";
+    String xAxisTitle = "";
+    String yAxisTitle = "";
+    ChartTheme chartTheme = ChartTheme.XChart;
 
-  public ChartBuilder chartType(ChartType chartType) {
+    public ChartBuilder chartType(ChartType chartType) {
 
-    this.chartType = chartType;
-    return this;
-  }
+        this.chartType = chartType;
+        return this;
+    }
 
-  public ChartBuilder width(int width) {
+    public ChartBuilder width(int width) {
 
-    this.width = width;
-    return this;
-  }
+        this.width = width;
+        return this;
+    }
 
-  public ChartBuilder height(int height) {
+    public ChartBuilder height(int height) {
 
-    this.height = height;
-    return this;
-  }
+        this.height = height;
+        return this;
+    }
 
-  public ChartBuilder title(String title) {
+    public ChartBuilder title(String title) {
 
-    this.title = title;
-    return this;
-  }
+        this.title = title;
+        return this;
+    }
 
-  public ChartBuilder xAxisTitle(String xAxisTitle) {
+    public ChartBuilder xAxisTitle(String xAxisTitle) {
 
-    this.xAxisTitle = xAxisTitle;
-    return this;
-  }
+        this.xAxisTitle = xAxisTitle;
+        return this;
+    }
 
-  public ChartBuilder yAxisTitle(String yAxisTitle) {
+    public ChartBuilder yAxisTitle(String yAxisTitle) {
 
-    this.yAxisTitle = yAxisTitle;
-    return this;
-  }
+        this.yAxisTitle = yAxisTitle;
+        return this;
+    }
 
-  public ChartBuilder theme(ChartTheme chartTheme) {
+    public ChartBuilder theme(ChartTheme chartTheme) {
 
-    this.chartTheme = chartTheme;
-    return this;
-  }
+        this.chartTheme = chartTheme;
+        return this;
+    }
 
-  /**
-   * return fully built Chart
-   * 
-   * @return a Chart
-   */
-  public Chart build() {
+    /**
+     * return fully built Chart
+     *
+     * @return a Chart
+     */
+    public Chart build() {
 
-    return new Chart(this);
+        return new Chart(this);
 
-  }
+    }
 
 }

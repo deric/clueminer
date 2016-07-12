@@ -15,78 +15,72 @@
  */
 package com.xeiam.xchart.internal.chartpart;
 
+import com.xeiam.xchart.StyleManager.ChartType;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
-
-import com.xeiam.xchart.StyleManager.ChartType;
 
 /**
  * @author timmolter
  */
 public class Plot implements ChartPart {
 
-  /** parent */
-  private final ChartPainter chartPainter;
+    /** parent */
+    private final ChartPainter chartPainter;
 
-  /** the bounds */
-  private Rectangle2D bounds;
+    /** the bounds */
+    private Rectangle2D bounds;
 
-  private PlotSurface plotSurface;
+    private PlotSurface plotSurface;
 
-  private PlotContent plotContent;
+    private PlotContent plotContent;
 
-  /**
-   * Constructor
-   *
-   * @param chartPainter
-   */
-  public Plot(ChartPainter chartPainter) {
+    /**
+     * Constructor
+     *
+     * @param chartPainter
+     */
+    public Plot(ChartPainter chartPainter) {
 
-    this.chartPainter = chartPainter;
-    this.plotSurface = new PlotSurface(this);
-  }
-
-  @Override
-  public Rectangle2D getBounds() {
-
-    return bounds;
-  }
-
-  @Override
-  public void paint(Graphics2D g) {
-
-    bounds = new Rectangle2D.Double();
-
-    // calculate bounds
-    double xOffset = chartPainter.getAxisPair().getYAxis().getBounds().getX()
-
-    + chartPainter.getAxisPair().getYAxis().getBounds().getWidth()
-
-    + (chartPainter.getStyleManager().isYAxisTicksVisible() ? (chartPainter.getStyleManager().getPlotPadding()) : 0)
-
-    ;
-
-    double yOffset = chartPainter.getAxisPair().getYAxis().getBounds().getY();
-    double width = chartPainter.getAxisPair().getXAxis().getBounds().getWidth();
-    double height = chartPainter.getAxisPair().getYAxis().getBounds().getHeight();
-    bounds = new Rectangle2D.Double(xOffset, yOffset, width, height);
-    // g.setColor(Color.green);
-    // g.draw(bounds);
-
-    plotSurface.paint(g);
-    if (getChartPainter().getStyleManager().getChartType() == ChartType.Bar) {
-      this.plotContent = new PlotContentBarChart(this);
+        this.chartPainter = chartPainter;
+        this.plotSurface = new PlotSurface(this);
     }
-    else {
-      this.plotContent = new PlotContentLineChart(this);
+
+    @Override
+    public Rectangle2D getBounds() {
+
+        return bounds;
     }
-    plotContent.paint(g);
 
-  }
+    @Override
+    public void paint(Graphics2D g) {
 
-  @Override
-  public ChartPainter getChartPainter() {
+        bounds = new Rectangle2D.Double();
 
-    return chartPainter;
-  }
+        // calculate bounds
+        double xOffset = chartPainter.getAxisPair().getYAxis().getBounds().getX()
+                + chartPainter.getAxisPair().getYAxis().getBounds().getWidth()
+                + (chartPainter.getStyleManager().isYAxisTicksVisible() ? (chartPainter.getStyleManager().getPlotPadding()) : 0);
+
+        double yOffset = chartPainter.getAxisPair().getYAxis().getBounds().getY();
+        double width = chartPainter.getAxisPair().getXAxis().getBounds().getWidth();
+        double height = chartPainter.getAxisPair().getYAxis().getBounds().getHeight();
+        bounds = new Rectangle2D.Double(xOffset, yOffset, width, height);
+        // g.setColor(Color.green);
+        // g.draw(bounds);
+
+        plotSurface.paint(g);
+        if (getChartPainter().getStyleManager().getChartType() == ChartType.Bar) {
+            this.plotContent = new PlotContentBarChart(this);
+        } else {
+            this.plotContent = new PlotContentLineChart(this);
+        }
+        plotContent.paint(g);
+
+    }
+
+    @Override
+    public ChartPainter getChartPainter() {
+
+        return chartPainter;
+    }
 }

@@ -27,123 +27,122 @@ import java.util.List;
  */
 public class Histogram {
 
-  private List<Double> xAxisData; // bin centers
-  private List<Double> yAxisData; // frequency counts
-  private final Collection<? extends Number> originalData;
-  private final int numBins;
-  private final double min;
-  private final double max;
+    private List<Double> xAxisData; // bin centers
+    private List<Double> yAxisData; // frequency counts
+    private final Collection<? extends Number> originalData;
+    private final int numBins;
+    private final double min;
+    private final double max;
 
-  /**
-   * Constructor
-   *
-   * @param data
-   * @param numBins
-   */
-  public Histogram(Collection<? extends Number> data, int numBins) {
+    /**
+     * Constructor
+     *
+     * @param data
+     * @param numBins
+     */
+    public Histogram(Collection<? extends Number> data, int numBins) {
 
-    this.numBins = numBins;
-    this.originalData = data;
+        this.numBins = numBins;
+        this.originalData = data;
 
-    Double tempMax = -Double.MAX_VALUE;
-    Double tempMin = Double.MAX_VALUE;
-    for (Number number : data) {
-      double value = number.doubleValue();
-      if (value > tempMax) {
-        tempMax = value;
-      }
-      if (value < tempMin) {
-        tempMin = value;
-      }
-    }
-    max = tempMax;
-    min = tempMin;
+        Double tempMax = -Double.MAX_VALUE;
+        Double tempMin = Double.MAX_VALUE;
+        for (Number number : data) {
+            double value = number.doubleValue();
+            if (value > tempMax) {
+                tempMax = value;
+            }
+            if (value < tempMin) {
+                tempMin = value;
+            }
+        }
+        max = tempMax;
+        min = tempMin;
 
-    init();
-  }
-
-  /**
-   * Constructor
-   *
-   * @param data
-   * @param numBins
-   * @param min
-   * @param max
-   */
-  public Histogram(Collection<? extends Number> data, int numBins, double min, double max) {
-
-    this.numBins = numBins;
-    this.originalData = data;
-    this.min = min;
-    this.max = max;
-
-    init();
-  }
-
-  private void init() {
-
-    double[] tempYAxisData = new double[numBins];
-    final double binSize = (max - min) / numBins;
-
-    // y axis data
-    Iterator<? extends Number> itr = originalData.iterator();
-    while (itr.hasNext()) {
-
-      double doubleValue = ((Number) itr.next()).doubleValue();
-      int bin = (int) ((doubleValue - min) / binSize); // changed this from numBins
-      if (bin < 0) { /* this data is smaller than min */
-        // System.out.println("less than");
-      }
-      else if (doubleValue == max) { // the value falls exactly on the max value
-        tempYAxisData[bin - 1] += 1;
-      }
-      else if (bin > numBins || bin == numBins) { /* this data point is bigger than max */
-        // System.out.println("greater than");
-      }
-      else {
-        tempYAxisData[bin] += 1;
-      }
-    }
-    yAxisData = new ArrayList<Double>(numBins);
-    for (double d : tempYAxisData) {
-      yAxisData.add(d);
+        init();
     }
 
-    // x axis data
-    xAxisData = new ArrayList<Double>(numBins);
-    for (int i = 0; i < numBins; i++) {
-      xAxisData.add(((i * (max - min)) / numBins + min) + binSize / 2);
+    /**
+     * Constructor
+     *
+     * @param data
+     * @param numBins
+     * @param min
+     * @param max
+     */
+    public Histogram(Collection<? extends Number> data, int numBins, double min, double max) {
+
+        this.numBins = numBins;
+        this.originalData = data;
+        this.min = min;
+        this.max = max;
+
+        init();
     }
-  }
 
-  public List<Double> getxAxisData() {
+    private void init() {
 
-    return xAxisData;
-  }
+        double[] tempYAxisData = new double[numBins];
+        final double binSize = (max - min) / numBins;
 
-  public List<Double> getyAxisData() {
+        // y axis data
+        Iterator<? extends Number> itr = originalData.iterator();
+        while (itr.hasNext()) {
 
-    return yAxisData;
-  }
+            double doubleValue = ((Number) itr.next()).doubleValue();
+            int bin = (int) ((doubleValue - min) / binSize); // changed this from numBins
+            if (bin < 0) {
+                /* this data is smaller than min */
+                // System.out.println("less than");
+            } else if (doubleValue == max) { // the value falls exactly on the max value
+                tempYAxisData[bin - 1] += 1;
+            } else if (bin > numBins || bin == numBins) {
+                /* this data point is bigger than max */
+                // System.out.println("greater than");
+            } else {
+                tempYAxisData[bin] += 1;
+            }
+        }
+        yAxisData = new ArrayList<>(numBins);
+        for (double d : tempYAxisData) {
+            yAxisData.add(d);
+        }
 
-  public Collection<? extends Number> getOriginalData() {
+        // x axis data
+        xAxisData = new ArrayList<>(numBins);
+        for (int i = 0; i < numBins; i++) {
+            xAxisData.add(((i * (max - min)) / numBins + min) + binSize / 2);
+        }
+    }
 
-    return originalData;
-  }
+    public List<Double> getxAxisData() {
 
-  public int getNumBins() {
+        return xAxisData;
+    }
 
-    return numBins;
-  }
+    public List<Double> getyAxisData() {
 
-  public double getMin() {
+        return yAxisData;
+    }
 
-    return min;
-  }
+    public Collection<? extends Number> getOriginalData() {
 
-  public double getMax() {
+        return originalData;
+    }
 
-    return max;
-  }
+    public int getNumBins() {
+
+        return numBins;
+    }
+
+    public double getMin() {
+
+        return min;
+    }
+
+    public double getMax() {
+
+        return max;
+    }
 
 }

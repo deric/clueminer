@@ -19,73 +19,69 @@ import java.awt.BasicStroke;
 
 /**
  * Pre-defined Line Styles used for Series Lines
- * 
+ *
  * @author timmolter
  */
 public enum SeriesLineStyle {
 
-  /** NONE */
-  NONE(-1, null),
+    /** NONE */
+    NONE(-1, null),
+    /** SOLID */
+    SOLID(0, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER)),
+    /** DASH_DOT */
+    DASH_DOT(1, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{3.0f, 1.0f}, 0.0f)),
+    /** DASH_DASH */
+    DASH_DASH(2, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{3.0f, 3.0f}, 0.0f)),
+    /** DOT_DOT */
+    DOT_DOT(3, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND, 10.0f, new float[]{2.0f}, 0.0f));
 
-  /** SOLID */
-  SOLID(0, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER)),
+    /** The index */
+    private int index;
 
-  /** DASH_DOT */
-  DASH_DOT(1, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 1.0f }, 0.0f)),
+    /** The basicStroke */
+    private BasicStroke basicStroke;
 
-  /** DASH_DASH */
-  DASH_DASH(2, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f)),
+    /**
+     * Constructor
+     *
+     * @param index
+     * @param basicStroke
+     */
+    private SeriesLineStyle(int index, BasicStroke basicStroke) {
 
-  /** DOT_DOT */
-  DOT_DOT(3, new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.CAP_ROUND, 10.0f, new float[] { 2.0f }, 0.0f));
+        this.index = index;
+        this.basicStroke = basicStroke;
+    }
 
-  /** The index */
-  private int index;
+    /**
+     * Gets the SeriesLineStyle's index
+     *
+     * @return
+     */
+    public Integer getIndex() {
 
-  /** The basicStroke */
-  private BasicStroke basicStroke;
+        return index;
+    }
 
-  /**
-   * Constructor
-   * 
-   * @param index
-   * @param basicStroke
-   */
-  private SeriesLineStyle(int index, BasicStroke basicStroke) {
+    /**
+     * Gets the SeriesLineStyle's BasicStroke
+     *
+     * @return the BasicStroke
+     */
+    public BasicStroke getBasicStroke() {
 
-    this.index = index;
-    this.basicStroke = basicStroke;
-  }
+        return basicStroke;
+    }
 
-  /**
-   * Gets the SeriesLineStyle's index
-   * 
-   * @return
-   */
-  public Integer getIndex() {
+    /**
+     * Get an AWT Stroke
+     *
+     * @param seriesMarker
+     * @return an AWT Stroke
+     */
+    public static BasicStroke getBasicStroke(SeriesLineStyle seriesMarker) {
 
-    return index;
-  }
-
-  /**
-   * Gets the SeriesLineStyle's BasicStroke
-   * 
-   * @return the BasicStroke
-   */
-  public BasicStroke getBasicStroke() {
-
-    return basicStroke;
-  }
-
-  /**
-   * Get an AWT Stroke
-   * 
-   * @param seriesMarker
-   * @return an AWT Stroke
-   */
-  public static BasicStroke getBasicStroke(SeriesLineStyle seriesMarker) {
-
-    return seriesMarker.basicStroke;
-  }
+        return seriesMarker.basicStroke;
+    }
 
 }

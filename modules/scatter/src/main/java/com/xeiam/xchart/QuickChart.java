@@ -38,11 +38,11 @@ public final class QuickChart {
      * Creates a Chart with default style
      *
      * @param chartTitle the Chart title
-     * @param xTitle The X-Axis title
-     * @param yTitle The Y-Axis title
+     * @param xTitle     The X-Axis title
+     * @param yTitle     The Y-Axis title
      * @param seriesName The name of the series
-     * @param xData An array containing the X-Axis data
-     * @param yData An array containing Y-Axis data
+     * @param xData      An array containing the X-Axis data
+     * @param yData      An array containing Y-Axis data
      * @return a Chart Object
      */
     public static Chart getChart(String chartTitle, String xTitle, String yTitle, String seriesName, double[] xData, double[] yData) {
@@ -59,12 +59,12 @@ public final class QuickChart {
      * Creates a Chart with multiple Series for the same X-Axis data with
      * default style
      *
-     * @param chartTitle the Chart title
-     * @param xTitle The X-Axis title
-     * @param yTitle The Y-Axis title
+     * @param chartTitle  the Chart title
+     * @param xTitle      The X-Axis title
+     * @param yTitle      The Y-Axis title
      * @param seriesNames An array of the name of the multiple series
-     * @param xData An array containing the X-Axis data
-     * @param yData An array of double arrays containing multiple Y-Axis data
+     * @param xData       An array containing the X-Axis data
+     * @param yData       An array of double arrays containing multiple Y-Axis data
      * @return a Chart Object
      */
     public static Chart getChart(String chartTitle, String xTitle, String yTitle, String[] seriesNames, double[] xData, double[][] yData) {
@@ -96,11 +96,11 @@ public final class QuickChart {
      * Creates a Chart with default style
      *
      * @param chartTitle the Chart title
-     * @param xTitle The X-Axis title
-     * @param yTitle The Y-Axis title
+     * @param xTitle     The X-Axis title
+     * @param yTitle     The Y-Axis title
      * @param seriesName The name of the series
-     * @param xData A Collection containing the X-Axis data
-     * @param yData A Collection containing Y-Axis data
+     * @param xData      A Collection containing the X-Axis data
+     * @param yData      A Collection containing Y-Axis data
      * @return a Chart Object
      */
     public static Chart getChart(String chartTitle, String xTitle, String yTitle, String seriesName, Collection<Number> xData, Collection<Number> yData) {

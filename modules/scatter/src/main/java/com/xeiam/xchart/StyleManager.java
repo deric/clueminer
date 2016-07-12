@@ -15,16 +15,15 @@
  */
 package com.xeiam.xchart;
 
+import com.xeiam.xchart.internal.style.GGPlot2Theme;
+import com.xeiam.xchart.internal.style.MatlabTheme;
+import com.xeiam.xchart.internal.style.Theme;
+import com.xeiam.xchart.internal.style.XChartTheme;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import com.xeiam.xchart.internal.style.GGPlot2Theme;
-import com.xeiam.xchart.internal.style.MatlabTheme;
-import com.xeiam.xchart.internal.style.Theme;
-import com.xeiam.xchart.internal.style.XChartTheme;
 
 /**
  * The StyleManager is used to manage all things related to styling of the vast number of Chart components
@@ -33,1183 +32,1170 @@ import com.xeiam.xchart.internal.style.XChartTheme;
  */
 public class StyleManager {
 
-  /**
-   * Note: For Area Charts, the X-Axis data must be in ascending order.
-   */
-  public enum ChartType {
+    /**
+     * Note: For Area Charts, the X-Axis data must be in ascending order.
+     */
+    public enum ChartType {
 
-    Line, Scatter, Area, Bar
-  }
-
-  public enum LegendPosition {
-
-    OutsideE, InsideNW, InsideNE, InsideSE, InsideSW, InsideN
-  }
-
-  public enum ChartTheme {
-
-    XChart, GGPlot2, Matlab;
-
-    public Theme newInstance(ChartTheme chartTheme) {
-
-      switch (chartTheme) {
-      case GGPlot2:
-        return new GGPlot2Theme();
-
-      case Matlab:
-        return new MatlabTheme();
-
-      case XChart:
-      default:
-        return new XChartTheme();
-      }
+        Line, Scatter, Area, Bar
     }
-  }
 
-  public enum TextAlignment {
-    Left, Centre, Right;
-  }
+    public enum LegendPosition {
 
-  /** the default Theme */
-  private Theme theme = new XChartTheme();
+        OutsideE, InsideNW, InsideNE, InsideSE, InsideSW, InsideN
+    }
 
-  // Chart Style ///////////////////////////////
-  private ChartType chartType;
-  private Color chartBackgroundColor;
-  public Color chartFontColor;
-  private int chartPadding;
+    public enum ChartTheme {
 
-  // Chart Title ///////////////////////////////
-  private Font chartTitleFont;
-  private boolean isChartTitleVisible;
-  private boolean isChartTitleBoxVisible;
-  private Color chartTitleBoxBackgroundColor;
-  private Color chartTitleBoxBorderColor;
-  private int chartTitlePadding;
+        XChart, GGPlot2, Matlab;
 
-  // Chart Legend ///////////////////////////////
-  private boolean isLegendVisible;
-  private Color legendBackgroundColor;
-  private Color legendBorderColor;
-  private Font legendFont;
-  private int legendPadding;
-  private int legendSeriesLineLength;
-  private LegendPosition legendPosition;
+        public Theme newInstance(ChartTheme chartTheme) {
 
-  // Chart Axes ///////////////////////////////
-  private boolean xAxisTitleVisible;
-  private boolean yAxisTitleVisible;
-  private Font axisTitleFont;
-  private boolean xAxisTicksVisible;
-  private boolean yAxisTicksVisible;
-  private Font axisTickLabelsFont;
-  private int axisTickMarkLength;
-  private int axisTickPadding;
-  private Color axisTickMarksColor;
-  private Stroke axisTickMarksStroke;
-  private Color axisTickLabelsColor;
-  private boolean isAxisTicksLineVisible;
-  private boolean isAxisTicksMarksVisible;
-  private int plotPadding;
-  private int axisTitlePadding;
-  private int xAxisTickMarkSpacingHint;
-  private int yAxisTickMarkSpacingHint;
-  private boolean isXAxisLogarithmic;
-  private boolean isYAxisLogarithmic;
-  private Double xAxisMin;
-  private Double xAxisMax;
-  private Double yAxisMin;
-  private Double yAxisMax;
-  private double axisTickSpacePercentage;
-  private TextAlignment xAxisLabelAlignment = TextAlignment.Centre;
-  private TextAlignment yAxisLabelAlignment = TextAlignment.Left;
-  private int xAxisLabelRotation = 0;
+            switch (chartTheme) {
+                case GGPlot2:
+                    return new GGPlot2Theme();
 
-  // Chart Plot Area ///////////////////////////////
-  private boolean isPlotGridLinesVisible;
-  private Color plotBackgroundColor;
-  private Color plotBorderColor;
-  private boolean isPlotBorderVisible;
-  private boolean isPlotTicksMarksVisible;
-  private Color plotGridLinesColor;
-  private Stroke plotGridLinesStroke;
+                case Matlab:
+                    return new MatlabTheme();
 
-  // Bar Charts ///////////////////////////////
-  private double barWidthPercentage;
-  private boolean isBarsOverlapped;
-  private boolean isBarFilled;
+                case XChart:
+                default:
+                    return new XChartTheme();
+            }
+        }
+    }
 
-  // Line, Scatter, Area Charts ///////////////////////////////
-  private int markerSize;
+    public enum TextAlignment {
+        Left, Centre, Right;
+    }
 
-  // Error Bars ///////////////////////////////
-  private Color errorBarsColor;
-  private boolean isErrorBarsColorSeriesColor;
-
-  // Formatting ////////////////////////////////
-  private Locale locale;
-  private TimeZone timezone;
-  private String datePattern;
-  private String decimalPattern;
-  private String xAxisDecimalPattern;
-  private String yAxisDecimalPattern;
-
-  /**
-   * Constructor
-   */
-  public StyleManager() {
-
-    setAllStyles();
-  }
-
-  private void setAllStyles() {
+    /** the default Theme */
+    private Theme theme = new XChartTheme();
 
     // Chart Style ///////////////////////////////
-    chartType = ChartType.Line;
-    chartBackgroundColor = theme.getChartBackgroundColor();
-    chartFontColor = theme.getChartFontColor();
-    chartPadding = theme.getChartPadding();
+    private ChartType chartType;
+    private Color chartBackgroundColor;
+    public Color chartFontColor;
+    private int chartPadding;
 
     // Chart Title ///////////////////////////////
-    chartTitleFont = theme.getChartTitleFont();
-    isChartTitleVisible = theme.isChartTitleVisible();
-    isChartTitleBoxVisible = theme.isChartTitleBoxVisible();
-    chartTitleBoxBackgroundColor = theme.getChartTitleBoxBackgroundColor();
-    chartTitleBoxBorderColor = theme.getChartTitleBoxBorderColor();
-    chartTitlePadding = theme.getChartTitlePadding();
+    private Font chartTitleFont;
+    private boolean isChartTitleVisible;
+    private boolean isChartTitleBoxVisible;
+    private Color chartTitleBoxBackgroundColor;
+    private Color chartTitleBoxBorderColor;
+    private int chartTitlePadding;
 
-    // legend
-    isLegendVisible = theme.isLegendVisible();
-    legendBackgroundColor = theme.getLegendBackgroundColor();
-    legendBorderColor = theme.getLegendBorderColor();
-    legendFont = theme.getLegendFont();
-    legendPadding = theme.getLegendPadding();
-    legendSeriesLineLength = theme.getLegendSeriesLineLength();
-    legendPosition = theme.getLegendPosition();
+    // Chart Legend ///////////////////////////////
+    private boolean isLegendVisible;
+    private Color legendBackgroundColor;
+    private Color legendBorderColor;
+    private Font legendFont;
+    private int legendPadding;
+    private int legendSeriesLineLength;
+    private LegendPosition legendPosition;
 
-    // axes
-    xAxisTitleVisible = theme.isXAxisTitleVisible();
-    yAxisTitleVisible = theme.isYAxisTitleVisible();
-    axisTitleFont = theme.getAxisTitleFont();
-    xAxisTicksVisible = theme.isXAxisTicksVisible();
-    yAxisTicksVisible = theme.isYAxisTicksVisible();
-    axisTickLabelsFont = theme.getAxisTickLabelsFont();
-    axisTickMarkLength = theme.getAxisTickMarkLength();
-    axisTickPadding = theme.getAxisTickPadding();
-    axisTickMarksColor = theme.getAxisTickMarksColor();
-    axisTickMarksStroke = theme.getAxisTickMarksStroke();
-    axisTickLabelsColor = theme.getAxisTickLabelsColor();
-    isAxisTicksLineVisible = theme.isAxisTicksLineVisible();
-    isAxisTicksMarksVisible = theme.isAxisTicksMarksVisible();
-    plotPadding = theme.getPlotPadding();
-    axisTitlePadding = theme.getAxisTitlePadding();
-    xAxisTickMarkSpacingHint = theme.getXAxisTickMarkSpacingHint();
-    yAxisTickMarkSpacingHint = theme.getYAxisTickMarkSpacingHint();
-    isXAxisLogarithmic = false;
-    isYAxisLogarithmic = false;
-    xAxisMin = null;
-    xAxisMax = null;
-    yAxisMin = null;
-    yAxisMax = null;
-    axisTickSpacePercentage = .95;
+    // Chart Axes ///////////////////////////////
+    private boolean xAxisTitleVisible;
+    private boolean yAxisTitleVisible;
+    private Font axisTitleFont;
+    private boolean xAxisTicksVisible;
+    private boolean yAxisTicksVisible;
+    private Font axisTickLabelsFont;
+    private int axisTickMarkLength;
+    private int axisTickPadding;
+    private Color axisTickMarksColor;
+    private Stroke axisTickMarksStroke;
+    private Color axisTickLabelsColor;
+    private boolean isAxisTicksLineVisible;
+    private boolean isAxisTicksMarksVisible;
+    private int plotPadding;
+    private int axisTitlePadding;
+    private int xAxisTickMarkSpacingHint;
+    private int yAxisTickMarkSpacingHint;
+    private boolean isXAxisLogarithmic;
+    private boolean isYAxisLogarithmic;
+    private Double xAxisMin;
+    private Double xAxisMax;
+    private Double yAxisMin;
+    private Double yAxisMax;
+    private double axisTickSpacePercentage;
+    private TextAlignment xAxisLabelAlignment = TextAlignment.Centre;
+    private TextAlignment yAxisLabelAlignment = TextAlignment.Left;
+    private int xAxisLabelRotation = 0;
 
     // Chart Plot Area ///////////////////////////////
-    isPlotGridLinesVisible = theme.isPlotGridLinesVisible();
-    plotBackgroundColor = theme.getPlotBackgroundColor();
-    plotBorderColor = theme.getPlotBorderColor();
-    isPlotBorderVisible = theme.isPlotBorderVisible();
-    isPlotTicksMarksVisible = theme.isPlotTicksMarksVisible();
-    plotGridLinesColor = theme.getPlotGridLinesColor();
-    plotGridLinesStroke = theme.getPlotGridLinesStroke();
+    private boolean isPlotGridLinesVisible;
+    private Color plotBackgroundColor;
+    private Color plotBorderColor;
+    private boolean isPlotBorderVisible;
+    private boolean isPlotTicksMarksVisible;
+    private Color plotGridLinesColor;
+    private Stroke plotGridLinesStroke;
 
     // Bar Charts ///////////////////////////////
-    barWidthPercentage = theme.getBarWidthPercentage();
-    isBarsOverlapped = theme.isBarsOverlapped();
-    isBarFilled = theme.isBarFilled();
+    private double barWidthPercentage;
+    private boolean isBarsOverlapped;
+    private boolean isBarFilled;
 
     // Line, Scatter, Area Charts ///////////////////////////////
-
-    markerSize = theme.getMarkerSize();
+    private int markerSize;
 
     // Error Bars ///////////////////////////////
-    errorBarsColor = theme.getErrorBarsColor();
-    isErrorBarsColorSeriesColor = theme.isErrorBarsColorSeriesColor();
+    private Color errorBarsColor;
+    private boolean isErrorBarsColorSeriesColor;
 
     // Formatting ////////////////////////////////
-    locale = Locale.getDefault();
-    timezone = TimeZone.getDefault();
-    datePattern = null; // if not null, this override pattern will be used
-    decimalPattern = null;
-    xAxisDecimalPattern = null;
-    yAxisDecimalPattern = null;
-  }
-
-  /**
-   * Set the theme the style manager should use
-   *
-   * @param theme
-   */
-  protected void setTheme(Theme theme) {
-
-    this.theme = theme;
-    setAllStyles();
-  }
-
-  public Theme getTheme() {
-
-    return theme;
-  }
-
-  // Chart Style ///////////////////////////////
-
-  /**
-   * sets the Chart Type
-   *
-   * @param chartType
-   */
-  public void setChartType(ChartType chartType) {
-
-    this.chartType = chartType;
-  }
-
-  public ChartType getChartType() {
-
-    return chartType;
-  }
-
-  /**
-   * Set the chart background color - the part around the edge of the chart
-   *
-   * @param color
-   */
-  public void setChartBackgroundColor(Color color) {
-
-    this.chartBackgroundColor = color;
-  }
-
-  public Color getChartBackgroundColor() {
-
-    return chartBackgroundColor;
-  }
-
-  /**
-   * Set the chart font color. includes: Chart title, axes label, legend
-   *
-   * @param color
-   */
-  public void setChartFontColor(Color color) {
-
-    this.chartFontColor = color;
-  }
-
-  public Color getChartFontColor() {
-
-    return chartFontColor;
-  }
-
-  /**
-   * Set the chart padding
-   *
-   * @param chartPadding
-   */
-  public void setChartPadding(int chartPadding) {
-
-    this.chartPadding = chartPadding;
-  }
-
-  public int getChartPadding() {
-
-    return chartPadding;
-  }
-
-  // Chart Title ///////////////////////////////
-
-  /**
-   * Set the chart title font
-   *
-   * @param font
-   */
-  public void setChartTitleFont(Font chartTitleFont) {
-
-    this.chartTitleFont = chartTitleFont;
-  }
-
-  public Font getChartTitleFont() {
-
-    return chartTitleFont;
-  }
-
-  /**
-   * Set the chart title visibility
-   *
-   * @param isChartTitleVisible
-   */
-  public void setChartTitleVisible(boolean isChartTitleVisible) {
-
-    this.isChartTitleVisible = isChartTitleVisible;
-  }
-
-  public boolean isChartTitleVisible() {
-
-    return isChartTitleVisible;
-  }
-
-  /**
-   * Set the chart title box visibility
-   *
-   * @param isChartTitleBoxVisible
-   */
-  public void setChartTitleBoxVisible(boolean isChartTitleBoxVisible) {
-
-    this.isChartTitleBoxVisible = isChartTitleBoxVisible;
-  }
-
-  public boolean isChartTitleBoxVisible() {
-
-    return isChartTitleBoxVisible;
-  }
-
-  /**
-   * set the chart title box background color
-   *
-   * @param chartTitleBoxBackgroundColor
-   */
-  public void setChartTitleBoxBackgroundColor(Color chartTitleBoxBackgroundColor) {
-
-    this.chartTitleBoxBackgroundColor = chartTitleBoxBackgroundColor;
-  }
-
-  public Color getChartTitleBoxBackgroundColor() {
-
-    return chartTitleBoxBackgroundColor;
-  }
-
-  /**
-   * set the chart title box border color
-   *
-   * @param chartTitleBoxBorderColor
-   */
-  public void setChartTitleBoxBorderColor(Color chartTitleBoxBorderColor) {
-
-    this.chartTitleBoxBorderColor = chartTitleBoxBorderColor;
-  }
-
-  public Color getChartTitleBoxBorderColor() {
-
-    return chartTitleBoxBorderColor;
-  }
-
-  /**
-   * set the chart title padding; the space between the chart title and the plot area
-   *
-   * @param chartTitlePadding
-   */
-  public void setChartTitlePadding(int chartTitlePadding) {
-
-    this.chartTitlePadding = chartTitlePadding;
-  }
-
-  public int getChartTitlePadding() {
-
-    return chartTitlePadding;
-  }
-
-  // Chart Legend ///////////////////////////////
-
-  /**
-   * Set the chart legend background color
-   *
-   * @param color
-   */
-  public void setLegendBackgroundColor(Color color) {
-
-    this.legendBackgroundColor = color;
-  }
-
-  public Color getLegendBackgroundColor() {
-
-    return legendBackgroundColor;
-  }
-
-  /**
-   * Set the chart legend border color
-   *
-   * @return
-   */
-  public Color getLegendBorderColor() {
-
-    return legendBorderColor;
-  }
-
-  public void setLegendBorderColor(Color legendBorderColor) {
-
-    this.legendBorderColor = legendBorderColor;
-  }
-
-  /**
-   * Set the chart legend font
-   *
-   * @param font
-   */
-  public void setLegendFont(Font font) {
-
-    this.legendFont = font;
-  }
-
-  public Font getLegendFont() {
-
-    return legendFont;
-  }
-
-  /**
-   * Set the chart legend visibility
-   *
-   * @param isLegendVisible
-   */
-  public void setLegendVisible(boolean isLegendVisible) {
-
-    this.isLegendVisible = isLegendVisible;
-  }
-
-  public boolean isLegendVisible() {
-
-    return isLegendVisible;
-  }
-
-  /**
-   * Set the chart legend padding
-   *
-   * @param legendPadding
-   */
-  public void setLegendPadding(int legendPadding) {
-
-    this.legendPadding = legendPadding;
-  }
-
-  public int getLegendPadding() {
-
-    return legendPadding;
-  }
-
-  /**
-   * Set the chart legend series line length
-   *
-   * @param legendPadding
-   */
-  public void setLegendSeriesLineLength(int legendSeriesLineLength) {
-
-    if (legendSeriesLineLength < 0) {
-      this.legendSeriesLineLength = 0;
+    private Locale locale;
+    private TimeZone timezone;
+    private String datePattern;
+    private String decimalPattern;
+    private String xAxisDecimalPattern;
+    private String yAxisDecimalPattern;
+
+    /**
+     * Constructor
+     */
+    public StyleManager() {
+
+        setAllStyles();
     }
-    else {
-      this.legendSeriesLineLength = legendSeriesLineLength;
+
+    private void setAllStyles() {
+
+        // Chart Style ///////////////////////////////
+        chartType = ChartType.Line;
+        chartBackgroundColor = theme.getChartBackgroundColor();
+        chartFontColor = theme.getChartFontColor();
+        chartPadding = theme.getChartPadding();
+
+        // Chart Title ///////////////////////////////
+        chartTitleFont = theme.getChartTitleFont();
+        isChartTitleVisible = theme.isChartTitleVisible();
+        isChartTitleBoxVisible = theme.isChartTitleBoxVisible();
+        chartTitleBoxBackgroundColor = theme.getChartTitleBoxBackgroundColor();
+        chartTitleBoxBorderColor = theme.getChartTitleBoxBorderColor();
+        chartTitlePadding = theme.getChartTitlePadding();
+
+        // legend
+        isLegendVisible = theme.isLegendVisible();
+        legendBackgroundColor = theme.getLegendBackgroundColor();
+        legendBorderColor = theme.getLegendBorderColor();
+        legendFont = theme.getLegendFont();
+        legendPadding = theme.getLegendPadding();
+        legendSeriesLineLength = theme.getLegendSeriesLineLength();
+        legendPosition = theme.getLegendPosition();
+
+        // axes
+        xAxisTitleVisible = theme.isXAxisTitleVisible();
+        yAxisTitleVisible = theme.isYAxisTitleVisible();
+        axisTitleFont = theme.getAxisTitleFont();
+        xAxisTicksVisible = theme.isXAxisTicksVisible();
+        yAxisTicksVisible = theme.isYAxisTicksVisible();
+        axisTickLabelsFont = theme.getAxisTickLabelsFont();
+        axisTickMarkLength = theme.getAxisTickMarkLength();
+        axisTickPadding = theme.getAxisTickPadding();
+        axisTickMarksColor = theme.getAxisTickMarksColor();
+        axisTickMarksStroke = theme.getAxisTickMarksStroke();
+        axisTickLabelsColor = theme.getAxisTickLabelsColor();
+        isAxisTicksLineVisible = theme.isAxisTicksLineVisible();
+        isAxisTicksMarksVisible = theme.isAxisTicksMarksVisible();
+        plotPadding = theme.getPlotPadding();
+        axisTitlePadding = theme.getAxisTitlePadding();
+        xAxisTickMarkSpacingHint = theme.getXAxisTickMarkSpacingHint();
+        yAxisTickMarkSpacingHint = theme.getYAxisTickMarkSpacingHint();
+        isXAxisLogarithmic = false;
+        isYAxisLogarithmic = false;
+        xAxisMin = null;
+        xAxisMax = null;
+        yAxisMin = null;
+        yAxisMax = null;
+        axisTickSpacePercentage = .95;
+
+        // Chart Plot Area ///////////////////////////////
+        isPlotGridLinesVisible = theme.isPlotGridLinesVisible();
+        plotBackgroundColor = theme.getPlotBackgroundColor();
+        plotBorderColor = theme.getPlotBorderColor();
+        isPlotBorderVisible = theme.isPlotBorderVisible();
+        isPlotTicksMarksVisible = theme.isPlotTicksMarksVisible();
+        plotGridLinesColor = theme.getPlotGridLinesColor();
+        plotGridLinesStroke = theme.getPlotGridLinesStroke();
+
+        // Bar Charts ///////////////////////////////
+        barWidthPercentage = theme.getBarWidthPercentage();
+        isBarsOverlapped = theme.isBarsOverlapped();
+        isBarFilled = theme.isBarFilled();
+
+        // Line, Scatter, Area Charts ///////////////////////////////
+        markerSize = theme.getMarkerSize();
+
+        // Error Bars ///////////////////////////////
+        errorBarsColor = theme.getErrorBarsColor();
+        isErrorBarsColorSeriesColor = theme.isErrorBarsColorSeriesColor();
+
+        // Formatting ////////////////////////////////
+        locale = Locale.getDefault();
+        timezone = TimeZone.getDefault();
+        datePattern = null; // if not null, this override pattern will be used
+        decimalPattern = null;
+        xAxisDecimalPattern = null;
+        yAxisDecimalPattern = null;
     }
-  }
 
-  public int getLegendSeriesLineLength() {
+    /**
+     * Set the theme the style manager should use
+     *
+     * @param theme
+     */
+    protected void setTheme(Theme theme) {
 
-    return legendSeriesLineLength;
-  }
+        this.theme = theme;
+        setAllStyles();
+    }
 
-  /**
-   * sets the legend position
-   *
-   * @param legendPosition
-   */
-  public void setLegendPosition(LegendPosition legendPosition) {
+    public Theme getTheme() {
 
-    this.legendPosition = legendPosition;
-  }
+        return theme;
+    }
 
-  public LegendPosition getLegendPosition() {
+    // Chart Style ///////////////////////////////
+    /**
+     * sets the Chart Type
+     *
+     * @param chartType
+     */
+    public void setChartType(ChartType chartType) {
 
-    return legendPosition;
-  }
+        this.chartType = chartType;
+    }
 
-  // Chart Axes ///////////////////////////////
+    public ChartType getChartType() {
 
-  /**
-   * Set the x-axis title visibility
-   *
-   * @param isVisible
-   */
-  public void setXAxisTitleVisible(boolean xAxisTitleVisible) {
+        return chartType;
+    }
 
-    this.xAxisTitleVisible = xAxisTitleVisible;
-  }
+    /**
+     * Set the chart background color - the part around the edge of the chart
+     *
+     * @param color
+     */
+    public void setChartBackgroundColor(Color color) {
 
-  public boolean isXAxisTitleVisible() {
+        this.chartBackgroundColor = color;
+    }
 
-    return xAxisTitleVisible;
-  }
+    public Color getChartBackgroundColor() {
 
-  /**
-   * Set the y-axis title visibility
-   *
-   * @param isVisible
-   */
-  public void setYAxisTitleVisible(boolean yAxisTitleVisible) {
+        return chartBackgroundColor;
+    }
 
-    this.yAxisTitleVisible = yAxisTitleVisible;
-  }
+    /**
+     * Set the chart font color. includes: Chart title, axes label, legend
+     *
+     * @param color
+     */
+    public void setChartFontColor(Color color) {
 
-  public boolean isYAxisTitleVisible() {
+        this.chartFontColor = color;
+    }
 
-    return yAxisTitleVisible;
-  }
+    public Color getChartFontColor() {
 
-  /**
-   * Set the x- and y-axis titles visibility
-   *
-   * @param isVisible
-   */
-  public void setAxisTitlesVisible(boolean isVisible) {
+        return chartFontColor;
+    }
 
-    this.xAxisTitleVisible = isVisible;
-    this.yAxisTitleVisible = isVisible;
-  }
+    /**
+     * Set the chart padding
+     *
+     * @param chartPadding
+     */
+    public void setChartPadding(int chartPadding) {
 
-  /**
-   * Set the x- and y-axis title font
-   *
-   * @param axisTitleFont
-   */
-  public void setAxisTitleFont(Font axisTitleFont) {
+        this.chartPadding = chartPadding;
+    }
 
-    this.axisTitleFont = axisTitleFont;
-  }
+    public int getChartPadding() {
 
-  public Font getAxisTitleFont() {
+        return chartPadding;
+    }
 
-    return axisTitleFont;
-  }
+    // Chart Title ///////////////////////////////
+    /**
+     * Set the chart title font
+     *
+     * @param font
+     */
+    public void setChartTitleFont(Font chartTitleFont) {
 
-  /**
-   * Set the x-axis tick marks and labels visibility
-   *
-   * @param isVisible
-   */
+        this.chartTitleFont = chartTitleFont;
+    }
 
-  public void setXAxisTicksVisible(boolean xAxisTicksVisible) {
+    public Font getChartTitleFont() {
 
-    this.xAxisTicksVisible = xAxisTicksVisible;
-  }
+        return chartTitleFont;
+    }
 
-  public boolean isXAxisTicksVisible() {
+    /**
+     * Set the chart title visibility
+     *
+     * @param isChartTitleVisible
+     */
+    public void setChartTitleVisible(boolean isChartTitleVisible) {
 
-    return xAxisTicksVisible;
-  }
+        this.isChartTitleVisible = isChartTitleVisible;
+    }
 
-  /**
-   * Set the y-axis tick marks and labels visibility
-   *
-   * @param isVisible
-   */
+    public boolean isChartTitleVisible() {
 
-  public void setYAxisTicksVisible(boolean yAxisTicksVisible) {
+        return isChartTitleVisible;
+    }
 
-    this.yAxisTicksVisible = yAxisTicksVisible;
-  }
+    /**
+     * Set the chart title box visibility
+     *
+     * @param isChartTitleBoxVisible
+     */
+    public void setChartTitleBoxVisible(boolean isChartTitleBoxVisible) {
 
-  public boolean isYAxisTicksVisible() {
+        this.isChartTitleBoxVisible = isChartTitleBoxVisible;
+    }
 
-    return yAxisTicksVisible;
-  }
+    public boolean isChartTitleBoxVisible() {
 
-  /**
-   * Set the x- and y-axis tick marks and labels visibility
-   *
-   * @param isVisible
-   */
-  public void setAxisTicksVisible(boolean isVisible) {
+        return isChartTitleBoxVisible;
+    }
 
-    this.xAxisTicksVisible = isVisible;
-    this.yAxisTicksVisible = isVisible;
-  }
+    /**
+     * set the chart title box background color
+     *
+     * @param chartTitleBoxBackgroundColor
+     */
+    public void setChartTitleBoxBackgroundColor(Color chartTitleBoxBackgroundColor) {
 
-  /**
-   * Set the x- and y-axis tick label font
-   *
-   * @param foxAxisTicksFontnt
-   */
-  public void setAxisTickLabelsFont(Font axisTicksFont) {
+        this.chartTitleBoxBackgroundColor = chartTitleBoxBackgroundColor;
+    }
 
-    this.axisTickLabelsFont = axisTicksFont;
-  }
+    public Color getChartTitleBoxBackgroundColor() {
 
-  public Font getAxisTickLabelsFont() {
+        return chartTitleBoxBackgroundColor;
+    }
 
-    return axisTickLabelsFont;
-  }
+    /**
+     * set the chart title box border color
+     *
+     * @param chartTitleBoxBorderColor
+     */
+    public void setChartTitleBoxBorderColor(Color chartTitleBoxBorderColor) {
 
-  /**
-   * set the axis tick mark length
-   *
-   * @param axisTickMarkLength
-   */
-  public void setAxisTickMarkLength(int axisTickMarkLength) {
+        this.chartTitleBoxBorderColor = chartTitleBoxBorderColor;
+    }
 
-    this.axisTickMarkLength = axisTickMarkLength;
-  }
+    public Color getChartTitleBoxBorderColor() {
 
-  public int getAxisTickMarkLength() {
+        return chartTitleBoxBorderColor;
+    }
 
-    return axisTickMarkLength;
-  }
+    /**
+     * set the chart title padding; the space between the chart title and the plot area
+     *
+     * @param chartTitlePadding
+     */
+    public void setChartTitlePadding(int chartTitlePadding) {
 
-  /**
-   * sets the padding between the tick labels and the tick marks
-   *
-   * @param axisTickPadding
-   */
-  public void setAxisTickPadding(int axisTickPadding) {
+        this.chartTitlePadding = chartTitlePadding;
+    }
 
-    this.axisTickPadding = axisTickPadding;
-  }
+    public int getChartTitlePadding() {
 
-  public int getAxisTickPadding() {
+        return chartTitlePadding;
+    }
 
-    return axisTickPadding;
-  }
+    // Chart Legend ///////////////////////////////
+    /**
+     * Set the chart legend background color
+     *
+     * @param color
+     */
+    public void setLegendBackgroundColor(Color color) {
 
-  /**
-   * sets the axis tick mark color
-   *
-   * @param axisTickColor
-   */
-  public void setAxisTickMarksColor(Color axisTickColor) {
+        this.legendBackgroundColor = color;
+    }
 
-    this.axisTickMarksColor = axisTickColor;
-  }
+    public Color getLegendBackgroundColor() {
 
-  public Color getAxisTickMarksColor() {
+        return legendBackgroundColor;
+    }
 
-    return axisTickMarksColor;
-  }
+    /**
+     * Set the chart legend border color
+     *
+     * @return
+     */
+    public Color getLegendBorderColor() {
 
-  /**
-   * sets the axis tick marks Stroke
-   *
-   * @param axisTickMarksStroke
-   */
-  public void setAxisTickMarksStroke(Stroke axisTickMarksStroke) {
+        return legendBorderColor;
+    }
 
-    this.axisTickMarksStroke = axisTickMarksStroke;
-  }
+    public void setLegendBorderColor(Color legendBorderColor) {
 
-  public Stroke getAxisTickMarksStroke() {
+        this.legendBorderColor = legendBorderColor;
+    }
 
-    return axisTickMarksStroke;
-  }
+    /**
+     * Set the chart legend font
+     *
+     * @param font
+     */
+    public void setLegendFont(Font font) {
 
-  /**
-   * sets the axis tick label color
-   *
-   * @param axisTickLabelsColor
-   */
-  public void setAxisTickLabelsColor(Color axisTickLabelsColor) {
+        this.legendFont = font;
+    }
 
-    this.axisTickLabelsColor = axisTickLabelsColor;
-  }
+    public Font getLegendFont() {
 
-  public Color getAxisTickLabelsColor() {
+        return legendFont;
+    }
 
-    return axisTickLabelsColor;
-  }
+    /**
+     * Set the chart legend visibility
+     *
+     * @param isLegendVisible
+     */
+    public void setLegendVisible(boolean isLegendVisible) {
 
-  /**
-   * sets the visibility of the line parallel to the plot edges that go along with the tick marks
-   *
-   * @param isAxisTicksLineVisible
-   */
-  public void setAxisTicksLineVisible(boolean isAxisTicksLineVisible) {
+        this.isLegendVisible = isLegendVisible;
+    }
 
-    this.isAxisTicksLineVisible = isAxisTicksLineVisible;
-  }
+    public boolean isLegendVisible() {
 
-  public boolean isAxisTicksLineVisible() {
+        return isLegendVisible;
+    }
 
-    return isAxisTicksLineVisible;
-  }
+    /**
+     * Set the chart legend padding
+     *
+     * @param legendPadding
+     */
+    public void setLegendPadding(int legendPadding) {
 
-  /**
-   * sets the visibility of the tick marks
-   *
-   * @param isAxisTicksMarksVisible
-   */
-  public void setAxisTicksMarksVisible(boolean isAxisTicksMarksVisible) {
+        this.legendPadding = legendPadding;
+    }
 
-    this.isAxisTicksMarksVisible = isAxisTicksMarksVisible;
-  }
+    public int getLegendPadding() {
 
-  public boolean isAxisTicksMarksVisible() {
+        return legendPadding;
+    }
 
-    return isAxisTicksMarksVisible;
-  }
+    /**
+     * Set the chart legend series line length
+     *
+     * @param legendPadding
+     */
+    public void setLegendSeriesLineLength(int legendSeriesLineLength) {
 
-  /**
-   * sets the padding between the tick marks and the plot area
-   *
-   * @param plotPadding
-   */
-  public void setPlotPadding(int plotPadding) {
+        if (legendSeriesLineLength < 0) {
+            this.legendSeriesLineLength = 0;
+        } else {
+            this.legendSeriesLineLength = legendSeriesLineLength;
+        }
+    }
 
-    this.plotPadding = plotPadding;
-  }
+    public int getLegendSeriesLineLength() {
 
-  public int getPlotPadding() {
+        return legendSeriesLineLength;
+    }
 
-    return plotPadding;
-  }
+    /**
+     * sets the legend position
+     *
+     * @param legendPosition
+     */
+    public void setLegendPosition(LegendPosition legendPosition) {
 
-  /**
-   * sets the padding between the axis title and the tick labels
-   *
-   * @param axisTitlePadding
-   */
-  public void setAxisTitlePadding(int axisTitlePadding) {
+        this.legendPosition = legendPosition;
+    }
 
-    this.axisTitlePadding = axisTitlePadding;
-  }
+    public LegendPosition getLegendPosition() {
 
-  public int getAxisTitlePadding() {
+        return legendPosition;
+    }
 
-    return axisTitlePadding;
-  }
+    // Chart Axes ///////////////////////////////
+    /**
+     * Set the x-axis title visibility
+     *
+     * @param isVisible
+     */
+    public void setXAxisTitleVisible(boolean xAxisTitleVisible) {
 
-  /**
-   * set the spacing between tick marks for the X-Axis
-   *
-   * @param xAxisTickMarkSpacingHint
-   */
-  public void setXAxisTickMarkSpacingHint(int xAxisTickMarkSpacingHint) {
+        this.xAxisTitleVisible = xAxisTitleVisible;
+    }
 
-    this.xAxisTickMarkSpacingHint = xAxisTickMarkSpacingHint;
-  }
+    public boolean isXAxisTitleVisible() {
 
-  public int getXAxisTickMarkSpacingHint() {
+        return xAxisTitleVisible;
+    }
 
-    return xAxisTickMarkSpacingHint;
-  }
+    /**
+     * Set the y-axis title visibility
+     *
+     * @param isVisible
+     */
+    public void setYAxisTitleVisible(boolean yAxisTitleVisible) {
 
-  /**
-   * set the spacing between tick marks for the Y-Axis
-   *
-   * @param xAxisTickMarkSpacingHint
-   */
-  public void setYAxisTickMarkSpacingHint(int yAxisTickMarkSpacingHint) {
+        this.yAxisTitleVisible = yAxisTitleVisible;
+    }
 
-    this.yAxisTickMarkSpacingHint = yAxisTickMarkSpacingHint;
-  }
+    public boolean isYAxisTitleVisible() {
 
-  public int getYAxisTickMarkSpacingHint() {
+        return yAxisTitleVisible;
+    }
 
-    return yAxisTickMarkSpacingHint;
-  }
+    /**
+     * Set the x- and y-axis titles visibility
+     *
+     * @param isVisible
+     */
+    public void setAxisTitlesVisible(boolean isVisible) {
 
-  /**
-   * sets the X-Axis to be rendered with a logarithmic scale or not
-   *
-   * @param isxAxisLogarithmic
-   */
-  public void setXAxisLogarithmic(boolean isXAxisLogarithmic) {
+        this.xAxisTitleVisible = isVisible;
+        this.yAxisTitleVisible = isVisible;
+    }
 
-    this.isXAxisLogarithmic = isXAxisLogarithmic;
-  }
+    /**
+     * Set the x- and y-axis title font
+     *
+     * @param axisTitleFont
+     */
+    public void setAxisTitleFont(Font axisTitleFont) {
 
-  public boolean isXAxisLogarithmic() {
+        this.axisTitleFont = axisTitleFont;
+    }
 
-    return isXAxisLogarithmic;
-  }
+    public Font getAxisTitleFont() {
 
-  /**
-   * sets the Y-Axis to be rendered with a logarithmic scale or not
-   *
-   * @param isyAxisLogarithmic
-   */
-  public void setYAxisLogarithmic(boolean isYAxisLogarithmic) {
+        return axisTitleFont;
+    }
 
-    this.isYAxisLogarithmic = isYAxisLogarithmic;
-  }
+    /**
+     * Set the x-axis tick marks and labels visibility
+     *
+     * @param isVisible
+     */
+    public void setXAxisTicksVisible(boolean xAxisTicksVisible) {
 
-  public boolean isYAxisLogarithmic() {
+        this.xAxisTicksVisible = xAxisTicksVisible;
+    }
 
-    return isYAxisLogarithmic;
-  }
+    public boolean isXAxisTicksVisible() {
 
-  public void setXAxisMin(double xAxisMin) {
+        return xAxisTicksVisible;
+    }
 
-    this.xAxisMin = xAxisMin;
-  }
+    /**
+     * Set the y-axis tick marks and labels visibility
+     *
+     * @param isVisible
+     */
+    public void setYAxisTicksVisible(boolean yAxisTicksVisible) {
 
-  public Double getXAxisMin() {
+        this.yAxisTicksVisible = yAxisTicksVisible;
+    }
 
-    return xAxisMin;
-  }
+    public boolean isYAxisTicksVisible() {
 
-  public void setXAxisMax(double xAxisMax) {
+        return yAxisTicksVisible;
+    }
 
-    this.xAxisMax = xAxisMax;
-  }
+    /**
+     * Set the x- and y-axis tick marks and labels visibility
+     *
+     * @param isVisible
+     */
+    public void setAxisTicksVisible(boolean isVisible) {
 
-  public Double getXAxisMax() {
+        this.xAxisTicksVisible = isVisible;
+        this.yAxisTicksVisible = isVisible;
+    }
 
-    return xAxisMax;
-  }
+    /**
+     * Set the x- and y-axis tick label font
+     *
+     * @param foxAxisTicksFontnt
+     */
+    public void setAxisTickLabelsFont(Font axisTicksFont) {
 
-  public void setYAxisMin(double yAxisMin) {
+        this.axisTickLabelsFont = axisTicksFont;
+    }
 
-    this.yAxisMin = yAxisMin;
-  }
+    public Font getAxisTickLabelsFont() {
 
-  public Double getYAxisMin() {
+        return axisTickLabelsFont;
+    }
 
-    return yAxisMin;
-  }
+    /**
+     * set the axis tick mark length
+     *
+     * @param axisTickMarkLength
+     */
+    public void setAxisTickMarkLength(int axisTickMarkLength) {
 
-  public void setYAxisMax(double yAxisMax) {
+        this.axisTickMarkLength = axisTickMarkLength;
+    }
 
-    this.yAxisMax = yAxisMax;
-  }
+    public int getAxisTickMarkLength() {
 
-  public Double getYAxisMax() {
+        return axisTickMarkLength;
+    }
 
-    return yAxisMax;
-  }
+    /**
+     * sets the padding between the tick labels and the tick marks
+     *
+     * @param axisTickPadding
+     */
+    public void setAxisTickPadding(int axisTickPadding) {
 
-  public void setAxisTickSpacePercentage(double axisTickSpacePercentage) {
+        this.axisTickPadding = axisTickPadding;
+    }
 
-    this.axisTickSpacePercentage = axisTickSpacePercentage;
-  }
+    public int getAxisTickPadding() {
 
-  public double getAxisTickSpacePercentage() {
+        return axisTickPadding;
+    }
 
-    return axisTickSpacePercentage;
-  }
+    /**
+     * sets the axis tick mark color
+     *
+     * @param axisTickColor
+     */
+    public void setAxisTickMarksColor(Color axisTickColor) {
 
-  public TextAlignment getXAxisLabelAlignment() {
+        this.axisTickMarksColor = axisTickColor;
+    }
 
-    return xAxisLabelAlignment;
-  }
+    public Color getAxisTickMarksColor() {
 
-  public void setXAxisLabelAlignment(TextAlignment xAxisLabelAlignment) {
+        return axisTickMarksColor;
+    }
 
-    this.xAxisLabelAlignment = xAxisLabelAlignment;
-  }
+    /**
+     * sets the axis tick marks Stroke
+     *
+     * @param axisTickMarksStroke
+     */
+    public void setAxisTickMarksStroke(Stroke axisTickMarksStroke) {
 
-  public TextAlignment getYAxisLabelAlignment() {
+        this.axisTickMarksStroke = axisTickMarksStroke;
+    }
 
-    return yAxisLabelAlignment;
-  }
+    public Stroke getAxisTickMarksStroke() {
 
-  public void setYAxisLabelAlignment(TextAlignment yAxisLabelAlignment) {
+        return axisTickMarksStroke;
+    }
 
-    this.yAxisLabelAlignment = yAxisLabelAlignment;
-  }
+    /**
+     * sets the axis tick label color
+     *
+     * @param axisTickLabelsColor
+     */
+    public void setAxisTickLabelsColor(Color axisTickLabelsColor) {
 
-  public int getXAxisLabelRotation() {
+        this.axisTickLabelsColor = axisTickLabelsColor;
+    }
 
-    return xAxisLabelRotation;
-  }
+    public Color getAxisTickLabelsColor() {
 
-  public void setXAxisLabelRotation(int xAxisLabelRotation) {
+        return axisTickLabelsColor;
+    }
 
-    this.xAxisLabelRotation = xAxisLabelRotation;
-  }
+    /**
+     * sets the visibility of the line parallel to the plot edges that go along with the tick marks
+     *
+     * @param isAxisTicksLineVisible
+     */
+    public void setAxisTicksLineVisible(boolean isAxisTicksLineVisible) {
 
-  // Chart Plot Area ///////////////////////////////
+        this.isAxisTicksLineVisible = isAxisTicksLineVisible;
+    }
 
-  /**
-   * sets the visibility of the gridlines on the plot area
-   *
-   * @param isPlotGridLinesVisible
-   */
-  public void setPlotGridLinesVisible(boolean isPlotGridLinesVisible) {
+    public boolean isAxisTicksLineVisible() {
 
-    this.isPlotGridLinesVisible = isPlotGridLinesVisible;
-  }
+        return isAxisTicksLineVisible;
+    }
 
-  public boolean isPlotGridLinesVisible() {
+    /**
+     * sets the visibility of the tick marks
+     *
+     * @param isAxisTicksMarksVisible
+     */
+    public void setAxisTicksMarksVisible(boolean isAxisTicksMarksVisible) {
 
-    return isPlotGridLinesVisible;
-  }
+        this.isAxisTicksMarksVisible = isAxisTicksMarksVisible;
+    }
 
-  /**
-   * set the plot area's background color
-   *
-   * @param plotBackgroundColor
-   */
-  public void setPlotBackgroundColor(Color plotBackgroundColor) {
+    public boolean isAxisTicksMarksVisible() {
 
-    this.plotBackgroundColor = plotBackgroundColor;
-  }
+        return isAxisTicksMarksVisible;
+    }
 
-  public Color getPlotBackgroundColor() {
+    /**
+     * sets the padding between the tick marks and the plot area
+     *
+     * @param plotPadding
+     */
+    public void setPlotPadding(int plotPadding) {
 
-    return plotBackgroundColor;
-  }
+        this.plotPadding = plotPadding;
+    }
 
-  /**
-   * set the plot area's border color
-   *
-   * @param plotBorderColor
-   */
-  public void setPlotBorderColor(Color plotBorderColor) {
+    public int getPlotPadding() {
 
-    this.plotBorderColor = plotBorderColor;
-  }
+        return plotPadding;
+    }
 
-  public Color getPlotBorderColor() {
+    /**
+     * sets the padding between the axis title and the tick labels
+     *
+     * @param axisTitlePadding
+     */
+    public void setAxisTitlePadding(int axisTitlePadding) {
 
-    return plotBorderColor;
-  }
+        this.axisTitlePadding = axisTitlePadding;
+    }
 
-  /**
-   * sets the visibility of the border around the plot area
-   *
-   * @param isPlotBorderVisible
-   */
-  public void setPlotBorderVisible(boolean isPlotBorderVisible) {
+    public int getAxisTitlePadding() {
 
-    this.isPlotBorderVisible = isPlotBorderVisible;
-  }
+        return axisTitlePadding;
+    }
 
-  public boolean isPlotBorderVisible() {
+    /**
+     * set the spacing between tick marks for the X-Axis
+     *
+     * @param xAxisTickMarkSpacingHint
+     */
+    public void setXAxisTickMarkSpacingHint(int xAxisTickMarkSpacingHint) {
 
-    return isPlotBorderVisible;
-  }
+        this.xAxisTickMarkSpacingHint = xAxisTickMarkSpacingHint;
+    }
 
-  /**
-   * sets the visibility of the ticks marks inside the plot area
-   *
-   * @param isPlotTicksMarksVisible
-   */
-  public void setPlotTicksMarksVisible(boolean isPlotTicksMarksVisible) {
+    public int getXAxisTickMarkSpacingHint() {
 
-    this.isPlotTicksMarksVisible = isPlotTicksMarksVisible;
-  }
+        return xAxisTickMarkSpacingHint;
+    }
 
-  public boolean isPlotTicksMarksVisible() {
+    /**
+     * set the spacing between tick marks for the Y-Axis
+     *
+     * @param xAxisTickMarkSpacingHint
+     */
+    public void setYAxisTickMarkSpacingHint(int yAxisTickMarkSpacingHint) {
 
-    return isPlotTicksMarksVisible;
-  }
+        this.yAxisTickMarkSpacingHint = yAxisTickMarkSpacingHint;
+    }
 
-  /**
-   * set the plot area's grid lines color
-   *
-   * @param plotGridLinesColor
-   */
-  public void setPlotGridLinesColor(Color plotGridLinesColor) {
+    public int getYAxisTickMarkSpacingHint() {
 
-    this.plotGridLinesColor = plotGridLinesColor;
-  }
+        return yAxisTickMarkSpacingHint;
+    }
 
-  public Color getPlotGridLinesColor() {
+    /**
+     * sets the X-Axis to be rendered with a logarithmic scale or not
+     *
+     * @param isxAxisLogarithmic
+     */
+    public void setXAxisLogarithmic(boolean isXAxisLogarithmic) {
 
-    return plotGridLinesColor;
-  }
+        this.isXAxisLogarithmic = isXAxisLogarithmic;
+    }
 
-  /**
-   * set the plot area's grid lines Stroke
-   *
-   * @param plotGridLinesStroke
-   */
-  public void setPlotGridLinesStroke(Stroke plotGridLinesStroke) {
+    public boolean isXAxisLogarithmic() {
 
-    this.plotGridLinesStroke = plotGridLinesStroke;
-  }
+        return isXAxisLogarithmic;
+    }
 
-  public Stroke getPlotGridLinesStroke() {
+    /**
+     * sets the Y-Axis to be rendered with a logarithmic scale or not
+     *
+     * @param isyAxisLogarithmic
+     */
+    public void setYAxisLogarithmic(boolean isYAxisLogarithmic) {
 
-    return plotGridLinesStroke;
-  }
+        this.isYAxisLogarithmic = isYAxisLogarithmic;
+    }
 
-  // Bar Charts ///////////////////////////////
+    public boolean isYAxisLogarithmic() {
 
-  /**
-   * set the width of a single bar in a bar chart. full width is 100%, i.e. 1.0
-   *
-   * @param barWidthPercentage
-   */
-  public void setBarWidthPercentage(double barWidthPercentage) {
+        return isYAxisLogarithmic;
+    }
 
-    this.barWidthPercentage = barWidthPercentage;
-  }
+    public void setXAxisMin(double xAxisMin) {
 
-  public double getBarWidthPercentage() {
+        this.xAxisMin = xAxisMin;
+    }
 
-    return barWidthPercentage;
-  }
+    public Double getXAxisMin() {
 
-  /**
-   * set whether or no bars are overlapped. Otherwise they are places side-by-side
-   *
-   * @param isBarsOverlapped
-   */
-  public void setBarsOverlapped(boolean isBarsOverlapped) {
+        return xAxisMin;
+    }
 
-    this.isBarsOverlapped = isBarsOverlapped;
-  }
+    public void setXAxisMax(double xAxisMax) {
 
-  public boolean isBarsOverlapped() {
+        this.xAxisMax = xAxisMax;
+    }
 
-    return isBarsOverlapped;
-  }
+    public Double getXAxisMax() {
 
-  /**
-   * set whether or no bars are filled with a solid color or empty.
-   *
-   * @param isBarFilled
-   */
-  public void setBarFilled(boolean isBarFilled) {
+        return xAxisMax;
+    }
 
-    this.isBarFilled = isBarFilled;
-  }
+    public void setYAxisMin(double yAxisMin) {
 
-  public boolean isBarFilled() {
+        this.yAxisMin = yAxisMin;
+    }
 
-    return isBarFilled;
-  }
+    public Double getYAxisMin() {
 
-  // Line, Scatter, Area Charts ///////////////////////////////
+        return yAxisMin;
+    }
 
-  /**
-   * Sets the size of the markers in pixels
-   *
-   * @param markerSize
-   */
-  public void setMarkerSize(int markerSize) {
+    public void setYAxisMax(double yAxisMax) {
 
-    this.markerSize = markerSize;
-  }
+        this.yAxisMax = yAxisMax;
+    }
 
-  public int getMarkerSize() {
+    public Double getYAxisMax() {
 
-    return markerSize;
-  }
+        return yAxisMax;
+    }
 
-  // Error Bars ///////////////////////////////
+    public void setAxisTickSpacePercentage(double axisTickSpacePercentage) {
 
-  /**
-   * Sets the color of the error bars
-   *
-   * @param errorBarsColor
-   */
-  public void setErrorBarsColor(Color errorBarsColor) {
+        this.axisTickSpacePercentage = axisTickSpacePercentage;
+    }
 
-    this.errorBarsColor = errorBarsColor;
-  }
+    public double getAxisTickSpacePercentage() {
 
-  public Color getErrorBarsColor() {
+        return axisTickSpacePercentage;
+    }
 
-    return errorBarsColor;
-  }
+    public TextAlignment getXAxisLabelAlignment() {
 
-  /**
-   * Set true if the the error bar color should match the series color
-   *
-   * @return
-   */
-  public void setErrorBarsColorSeriesColor(boolean isErrorBarsColorSeriesColor) {
+        return xAxisLabelAlignment;
+    }
 
-    this.isErrorBarsColorSeriesColor = isErrorBarsColorSeriesColor;
-  }
+    public void setXAxisLabelAlignment(TextAlignment xAxisLabelAlignment) {
 
-  public boolean isErrorBarsColorSeriesColor() {
+        this.xAxisLabelAlignment = xAxisLabelAlignment;
+    }
 
-    return isErrorBarsColorSeriesColor;
-  }
+    public TextAlignment getYAxisLabelAlignment() {
 
-  // Formatting ////////////////////////////////
+        return yAxisLabelAlignment;
+    }
 
-  /**
-   * Set the locale to use for rendering the chart
-   *
-   * @param locale - the locale to use when formatting Strings and dates for the axis tick labels
-   */
-  public void setLocale(Locale locale) {
+    public void setYAxisLabelAlignment(TextAlignment yAxisLabelAlignment) {
 
-    this.locale = locale;
-  }
+        this.yAxisLabelAlignment = yAxisLabelAlignment;
+    }
 
-  public Locale getLocale() {
+    public int getXAxisLabelRotation() {
 
-    return locale;
-  }
+        return xAxisLabelRotation;
+    }
 
-  /**
-   * Set the timezone to use for formatting Date axis tick labels
-   *
-   * @param timezone the timezone to use when formatting date data
-   */
-  public void setTimezone(TimeZone timezone) {
+    public void setXAxisLabelRotation(int xAxisLabelRotation) {
 
-    this.timezone = timezone;
-  }
+        this.xAxisLabelRotation = xAxisLabelRotation;
+    }
 
-  public TimeZone getTimezone() {
+    // Chart Plot Area ///////////////////////////////
+    /**
+     * sets the visibility of the gridlines on the plot area
+     *
+     * @param isPlotGridLinesVisible
+     */
+    public void setPlotGridLinesVisible(boolean isPlotGridLinesVisible) {
 
-    return timezone;
-  }
+        this.isPlotGridLinesVisible = isPlotGridLinesVisible;
+    }
 
-  /**
-   * Set the String formatter for Data x-axis
-   *
-   * @param pattern - the pattern describing the date and time format
-   */
-  public void setDatePattern(String datePattern) {
+    public boolean isPlotGridLinesVisible() {
 
-    this.datePattern = datePattern;
-  }
+        return isPlotGridLinesVisible;
+    }
 
-  public String getDatePattern() {
+    /**
+     * set the plot area's background color
+     *
+     * @param plotBackgroundColor
+     */
+    public void setPlotBackgroundColor(Color plotBackgroundColor) {
 
-    return datePattern;
-  }
+        this.plotBackgroundColor = plotBackgroundColor;
+    }
 
-  /**
-   * Set the decimal formatter for all tick labels
-   *
-   * @param pattern - the pattern describing the decimal format
-   */
-  public void setDecimalPattern(String decimalPattern) {
+    public Color getPlotBackgroundColor() {
 
-    this.decimalPattern = decimalPattern;
-  }
+        return plotBackgroundColor;
+    }
 
-  public String getDecimalPattern() {
+    /**
+     * set the plot area's border color
+     *
+     * @param plotBorderColor
+     */
+    public void setPlotBorderColor(Color plotBorderColor) {
 
-    return decimalPattern;
-  }
+        this.plotBorderColor = plotBorderColor;
+    }
 
-  public String getXAxisDecimalPattern() {
+    public Color getPlotBorderColor() {
 
-    return xAxisDecimalPattern;
-  }
+        return plotBorderColor;
+    }
 
-  /**
-   * Set the decimal formatting pattern for the X-Axis
-   *
-   * @param xAxisDecimalPattern
-   */
-  public void setXAxisDecimalPattern(String xAxisDecimalPattern) {
+    /**
+     * sets the visibility of the border around the plot area
+     *
+     * @param isPlotBorderVisible
+     */
+    public void setPlotBorderVisible(boolean isPlotBorderVisible) {
 
-    this.xAxisDecimalPattern = xAxisDecimalPattern;
-  }
+        this.isPlotBorderVisible = isPlotBorderVisible;
+    }
 
-  public String getYAxisDecimalPattern() {
+    public boolean isPlotBorderVisible() {
 
-    return yAxisDecimalPattern;
-  }
+        return isPlotBorderVisible;
+    }
 
-  /**
-   * Set the decimal formatting pattern for the Y-Axis
-   *
-   * @param yAxisDecimalPattern
-   */
-  public void setYAxisDecimalPattern(String yAxisDecimalPattern) {
+    /**
+     * sets the visibility of the ticks marks inside the plot area
+     *
+     * @param isPlotTicksMarksVisible
+     */
+    public void setPlotTicksMarksVisible(boolean isPlotTicksMarksVisible) {
 
-    this.yAxisDecimalPattern = yAxisDecimalPattern;
-  }
+        this.isPlotTicksMarksVisible = isPlotTicksMarksVisible;
+    }
+
+    public boolean isPlotTicksMarksVisible() {
+
+        return isPlotTicksMarksVisible;
+    }
+
+    /**
+     * set the plot area's grid lines color
+     *
+     * @param plotGridLinesColor
+     */
+    public void setPlotGridLinesColor(Color plotGridLinesColor) {
+
+        this.plotGridLinesColor = plotGridLinesColor;
+    }
+
+    public Color getPlotGridLinesColor() {
+
+        return plotGridLinesColor;
+    }
+
+    /**
+     * set the plot area's grid lines Stroke
+     *
+     * @param plotGridLinesStroke
+     */
+    public void setPlotGridLinesStroke(Stroke plotGridLinesStroke) {
+
+        this.plotGridLinesStroke = plotGridLinesStroke;
+    }
+
+    public Stroke getPlotGridLinesStroke() {
+
+        return plotGridLinesStroke;
+    }
+
+    // Bar Charts ///////////////////////////////
+    /**
+     * set the width of a single bar in a bar chart. full width is 100%, i.e. 1.0
+     *
+     * @param barWidthPercentage
+     */
+    public void setBarWidthPercentage(double barWidthPercentage) {
+
+        this.barWidthPercentage = barWidthPercentage;
+    }
+
+    public double getBarWidthPercentage() {
+
+        return barWidthPercentage;
+    }
+
+    /**
+     * set whether or no bars are overlapped. Otherwise they are places side-by-side
+     *
+     * @param isBarsOverlapped
+     */
+    public void setBarsOverlapped(boolean isBarsOverlapped) {
+
+        this.isBarsOverlapped = isBarsOverlapped;
+    }
+
+    public boolean isBarsOverlapped() {
+
+        return isBarsOverlapped;
+    }
+
+    /**
+     * set whether or no bars are filled with a solid color or empty.
+     *
+     * @param isBarFilled
+     */
+    public void setBarFilled(boolean isBarFilled) {
+
+        this.isBarFilled = isBarFilled;
+    }
+
+    public boolean isBarFilled() {
+
+        return isBarFilled;
+    }
+
+    // Line, Scatter, Area Charts ///////////////////////////////
+    /**
+     * Sets the size of the markers in pixels
+     *
+     * @param markerSize
+     */
+    public void setMarkerSize(int markerSize) {
+
+        this.markerSize = markerSize;
+    }
+
+    public int getMarkerSize() {
+
+        return markerSize;
+    }
+
+    // Error Bars ///////////////////////////////
+    /**
+     * Sets the color of the error bars
+     *
+     * @param errorBarsColor
+     */
+    public void setErrorBarsColor(Color errorBarsColor) {
+
+        this.errorBarsColor = errorBarsColor;
+    }
+
+    public Color getErrorBarsColor() {
+
+        return errorBarsColor;
+    }
+
+    /**
+     * Set true if the the error bar color should match the series color
+     *
+     * @return
+     */
+    public void setErrorBarsColorSeriesColor(boolean isErrorBarsColorSeriesColor) {
+
+        this.isErrorBarsColorSeriesColor = isErrorBarsColorSeriesColor;
+    }
+
+    public boolean isErrorBarsColorSeriesColor() {
+
+        return isErrorBarsColorSeriesColor;
+    }
+
+    // Formatting ////////////////////////////////
+    /**
+     * Set the locale to use for rendering the chart
+     *
+     * @param locale - the locale to use when formatting Strings and dates for the axis tick labels
+     */
+    public void setLocale(Locale locale) {
+
+        this.locale = locale;
+    }
+
+    public Locale getLocale() {
+
+        return locale;
+    }
+
+    /**
+     * Set the timezone to use for formatting Date axis tick labels
+     *
+     * @param timezone the timezone to use when formatting date data
+     */
+    public void setTimezone(TimeZone timezone) {
+
+        this.timezone = timezone;
+    }
+
+    public TimeZone getTimezone() {
+
+        return timezone;
+    }
+
+    /**
+     * Set the String formatter for Data x-axis
+     *
+     * @param pattern - the pattern describing the date and time format
+     */
+    public void setDatePattern(String datePattern) {
+
+        this.datePattern = datePattern;
+    }
+
+    public String getDatePattern() {
+
+        return datePattern;
+    }
+
+    /**
+     * Set the decimal formatter for all tick labels
+     *
+     * @param pattern - the pattern describing the decimal format
+     */
+    public void setDecimalPattern(String decimalPattern) {
+
+        this.decimalPattern = decimalPattern;
+    }
+
+    public String getDecimalPattern() {
+
+        return decimalPattern;
+    }
+
+    public String getXAxisDecimalPattern() {
+
+        return xAxisDecimalPattern;
+    }
+
+    /**
+     * Set the decimal formatting pattern for the X-Axis
+     *
+     * @param xAxisDecimalPattern
+     */
+    public void setXAxisDecimalPattern(String xAxisDecimalPattern) {
+
+        this.xAxisDecimalPattern = xAxisDecimalPattern;
+    }
+
+    public String getYAxisDecimalPattern() {
+
+        return yAxisDecimalPattern;
+    }
+
+    /**
+     * Set the decimal formatting pattern for the Y-Axis
+     *
+     * @param yAxisDecimalPattern
+     */
+    public void setYAxisDecimalPattern(String yAxisDecimalPattern) {
+
+        this.yAxisDecimalPattern = yAxisDecimalPattern;
+    }
 
 }

@@ -24,65 +24,60 @@ import com.xeiam.xchart.internal.markers.TriangleUp;
 
 /**
  * Pre-defined Markers used for Series Lines
- * 
+ *
  * @author timmolter
  */
 public enum SeriesMarker {
 
-  /** NONE */
-  NONE(-1, null),
+    /** NONE */
+    NONE(-1, null),
+    /** CIRCLE */
+    CIRCLE(0, new Circle()),
+    /** DIAMOND */
+    DIAMOND(1, new Diamond()),
+    /** SQUARE */
+    SQUARE(2, new Square()),
+    /** TRIANGLE_DOWN */
+    TRIANGLE_DOWN(3, new TriangleDown()),
+    /** TRIANGLE_UP */
+    TRIANGLE_UP(4, new TriangleUp());
 
-  /** CIRCLE */
-  CIRCLE(0, new Circle()),
+    /** The index */
+    private int index;
 
-  /** DIAMOND */
-  DIAMOND(1, new Diamond()),
+    /** The Marker */
+    private Marker marker;
 
-  /** SQUARE */
-  SQUARE(2, new Square()),
+    /**
+     * Constructor
+     *
+     * @param index
+     * @param marker
+     */
+    private SeriesMarker(int index, Marker marker) {
 
-  /** TRIANGLE_DOWN */
-  TRIANGLE_DOWN(3, new TriangleDown()),
+        this.index = index;
+        this.marker = marker;
+    }
 
-  /** TRIANGLE_UP */
-  TRIANGLE_UP(4, new TriangleUp());
+    /**
+     * Gets the SeriesMarker index
+     *
+     * @return
+     */
+    public Integer getIndex() {
 
-  /** The index */
-  private int index;
+        return index;
+    }
 
-  /** The Marker */
-  private Marker marker;
+    /**
+     * Gets the SeriesMarker marker
+     *
+     * @return
+     */
+    public Marker getMarker() {
 
-  /**
-   * Constructor
-   * 
-   * @param index
-   * @param marker
-   */
-  private SeriesMarker(int index, Marker marker) {
-
-    this.index = index;
-    this.marker = marker;
-  }
-
-  /**
-   * Gets the SeriesMarker index
-   * 
-   * @return
-   */
-  public Integer getIndex() {
-
-    return index;
-  }
-
-  /**
-   * Gets the SeriesMarker marker
-   * 
-   * @return
-   */
-  public Marker getMarker() {
-
-    return marker;
-  }
+        return marker;
+    }
 
 }

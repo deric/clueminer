@@ -15,309 +15,300 @@
  */
 package com.xeiam.xchart.internal.style;
 
+import com.xeiam.xchart.ChartColor;
+import com.xeiam.xchart.StyleManager.LegendPosition;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
-
-import com.xeiam.xchart.ChartColor;
-import com.xeiam.xchart.StyleManager.LegendPosition;
 
 /**
  * @author timmolter
  */
 public class GGPlot2Theme implements Theme {
 
-  // Chart Style ///////////////////////////////
+    // Chart Style ///////////////////////////////
+    @Override
+    public Color getChartBackgroundColor() {
 
-  @Override
-  public Color getChartBackgroundColor() {
+        return ChartColor.getAWTColor(ChartColor.WHITE);
+    }
 
-    return ChartColor.getAWTColor(ChartColor.WHITE);
-  }
+    @Override
+    public Color getChartFontColor() {
 
-  @Override
-  public Color getChartFontColor() {
+        return ChartColor.getAWTColor(ChartColor.BLACK);
+    }
 
-    return ChartColor.getAWTColor(ChartColor.BLACK);
-  }
+    @Override
+    public int getChartPadding() {
 
-  @Override
-  public int getChartPadding() {
+        return 10;
+    }
 
-    return 10;
-  }
+    // Chart Title ///////////////////////////////
+    @Override
+    public Font getChartTitleFont() {
 
-  // Chart Title ///////////////////////////////
+        return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    }
 
-  @Override
-  public Font getChartTitleFont() {
+    @Override
+    public boolean isChartTitleVisible() {
 
-    return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-  }
+        return false;
+    }
 
-  @Override
-  public boolean isChartTitleVisible() {
+    @Override
+    public boolean isChartTitleBoxVisible() {
 
-    return false;
-  }
+        return true;
+    }
 
-  @Override
-  public boolean isChartTitleBoxVisible() {
+    @Override
+    public Color getChartTitleBoxBackgroundColor() {
 
-    return true;
-  }
+        return ChartColor.getAWTColor(ChartColor.GREY);
+    }
 
-  @Override
-  public Color getChartTitleBoxBackgroundColor() {
+    @Override
+    public Color getChartTitleBoxBorderColor() {
 
-    return ChartColor.getAWTColor(ChartColor.GREY);
-  }
+        return ChartColor.getAWTColor(ChartColor.GREY);
+    }
 
-  @Override
-  public Color getChartTitleBoxBorderColor() {
+    @Override
+    public int getChartTitlePadding() {
 
-    return ChartColor.getAWTColor(ChartColor.GREY);
-  }
+        return 5;
+    }
 
-  @Override
-  public int getChartTitlePadding() {
+    // Chart Legend ///////////////////////////////
+    @Override
+    public Font getLegendFont() {
 
-    return 5;
-  }
+        return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    }
 
-  // Chart Legend ///////////////////////////////
+    @Override
+    public boolean isLegendVisible() {
 
-  @Override
-  public Font getLegendFont() {
+        return true;
+    }
 
-    return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-  }
+    @Override
+    public Color getLegendBackgroundColor() {
 
-  @Override
-  public boolean isLegendVisible() {
+        return ChartColor.getAWTColor(ChartColor.WHITE);
+    }
 
-    return true;
-  }
+    @Override
+    public Color getLegendBorderColor() {
 
-  @Override
-  public Color getLegendBackgroundColor() {
+        return ChartColor.getAWTColor(ChartColor.WHITE);
+    }
 
-    return ChartColor.getAWTColor(ChartColor.WHITE);
-  }
+    @Override
+    public int getLegendPadding() {
 
-  @Override
-  public Color getLegendBorderColor() {
+        return 10;
+    }
 
-    return ChartColor.getAWTColor(ChartColor.WHITE);
-  }
+    @Override
+    public int getLegendSeriesLineLength() {
 
-  @Override
-  public int getLegendPadding() {
+        return 24;
+    }
 
-    return 10;
-  }
+    @Override
+    public LegendPosition getLegendPosition() {
 
-  @Override
-  public int getLegendSeriesLineLength() {
+        return LegendPosition.OutsideE;
+    }
 
-    return 24;
-  }
+    // Chart Axes ///////////////////////////////
+    @Override
+    public boolean isXAxisTitleVisible() {
 
-  @Override
-  public LegendPosition getLegendPosition() {
+        return true;
+    }
 
-    return LegendPosition.OutsideE;
-  }
+    @Override
+    public boolean isYAxisTitleVisible() {
 
-  // Chart Axes ///////////////////////////////
+        return true;
+    }
 
-  @Override
-  public boolean isXAxisTitleVisible() {
+    @Override
+    public Font getAxisTitleFont() {
 
-    return true;
-  }
+        return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+    }
 
-  @Override
-  public boolean isYAxisTitleVisible() {
+    @Override
+    public boolean isXAxisTicksVisible() {
 
-    return true;
-  }
+        return true;
+    }
 
-  @Override
-  public Font getAxisTitleFont() {
+    @Override
+    public boolean isYAxisTicksVisible() {
 
-    return new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-  }
+        return true;
+    }
 
-  @Override
-  public boolean isXAxisTicksVisible() {
+    @Override
+    public Font getAxisTickLabelsFont() {
 
-    return true;
-  }
+        return new Font(Font.SANS_SERIF, Font.BOLD, 13);
+    }
 
-  @Override
-  public boolean isYAxisTicksVisible() {
+    @Override
+    public int getAxisTickMarkLength() {
 
-    return true;
-  }
+        return 8;
+    }
 
-  @Override
-  public Font getAxisTickLabelsFont() {
+    @Override
+    public int getAxisTickPadding() {
 
-    return new Font(Font.SANS_SERIF, Font.BOLD, 13);
-  }
+        return 5;
+    }
 
-  @Override
-  public int getAxisTickMarkLength() {
+    @Override
+    public boolean isAxisTicksLineVisible() {
 
-    return 8;
-  }
+        return false;
+    }
 
-  @Override
-  public int getAxisTickPadding() {
+    @Override
+    public boolean isAxisTicksMarksVisible() {
 
-    return 5;
-  }
+        return true;
+    }
 
-  @Override
-  public boolean isAxisTicksLineVisible() {
+    @Override
+    public int getPlotPadding() {
 
-    return false;
-  }
+        return 0;
+    }
 
-  @Override
-  public boolean isAxisTicksMarksVisible() {
+    @Override
+    public Color getAxisTickMarksColor() {
 
-    return true;
-  }
+        return ChartColor.getAWTColor(ChartColor.DARK_GREY);
 
-  @Override
-  public int getPlotPadding() {
+    }
 
-    return 0;
-  }
+    @Override
+    public Stroke getAxisTickMarksStroke() {
 
-  @Override
-  public Color getAxisTickMarksColor() {
+        return new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f, new float[]{3.0f, 0.0f}, 0.0f);
+    }
 
-    return ChartColor.getAWTColor(ChartColor.DARK_GREY);
+    @Override
+    public Color getAxisTickLabelsColor() {
 
-  }
+        return ChartColor.getAWTColor(ChartColor.DARK_GREY);
+    }
 
-  @Override
-  public Stroke getAxisTickMarksStroke() {
+    @Override
+    public int getAxisTitlePadding() {
 
-    return new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f, new float[] { 3.0f, 0.0f }, 0.0f);
-  }
+        return 10;
+    }
 
-  @Override
-  public Color getAxisTickLabelsColor() {
+    @Override
+    public int getXAxisTickMarkSpacingHint() {
 
-    return ChartColor.getAWTColor(ChartColor.DARK_GREY);
-  }
+        return 74;
+    }
 
-  @Override
-  public int getAxisTitlePadding() {
+    @Override
+    public int getYAxisTickMarkSpacingHint() {
 
-    return 10;
-  }
+        return 44;
+    }
 
-  @Override
-  public int getXAxisTickMarkSpacingHint() {
+    // Chart Plot Area ///////////////////////////////
+    @Override
+    public boolean isPlotGridLinesVisible() {
 
-    return 74;
-  }
+        return true;
+    }
 
-  @Override
-  public int getYAxisTickMarkSpacingHint() {
+    @Override
+    public Color getPlotBackgroundColor() {
 
-    return 44;
-  }
+        return ChartColor.getAWTColor(ChartColor.LIGHT_GREY);
+    }
 
-  // Chart Plot Area ///////////////////////////////
+    @Override
+    public Color getPlotBorderColor() {
 
-  @Override
-  public boolean isPlotGridLinesVisible() {
+        return ChartColor.getAWTColor(ChartColor.WHITE);
+    }
 
-    return true;
-  }
+    @Override
+    public boolean isPlotBorderVisible() {
 
-  @Override
-  public Color getPlotBackgroundColor() {
+        return false;
+    }
 
-    return ChartColor.getAWTColor(ChartColor.LIGHT_GREY);
-  }
+    @Override
+    public boolean isPlotTicksMarksVisible() {
 
-  @Override
-  public Color getPlotBorderColor() {
+        return false;
+    }
 
-    return ChartColor.getAWTColor(ChartColor.WHITE);
-  }
+    @Override
+    public Color getPlotGridLinesColor() {
 
-  @Override
-  public boolean isPlotBorderVisible() {
+        return ChartColor.getAWTColor(ChartColor.WHITE);
+    }
 
-    return false;
-  }
+    @Override
+    public Stroke getPlotGridLinesStroke() {
 
-  @Override
-  public boolean isPlotTicksMarksVisible() {
+        return new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f, new float[]{3.0f, 0.0f}, 0.0f);
+    }
 
-    return false;
-  }
+    // Bar Charts ///////////////////////////////
+    @Override
+    public double getBarWidthPercentage() {
 
-  @Override
-  public Color getPlotGridLinesColor() {
+        return 0.9;
+    }
 
-    return ChartColor.getAWTColor(ChartColor.WHITE);
-  }
+    @Override
+    public boolean isBarsOverlapped() {
 
-  @Override
-  public Stroke getPlotGridLinesStroke() {
+        return false;
+    }
 
-    return new BasicStroke(1.5f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 10.0f, new float[] { 3.0f, 0.0f }, 0.0f);
-  }
+    @Override
+    public boolean isBarFilled() {
 
-  // Bar Charts ///////////////////////////////
+        return true;
+    }
 
-  @Override
-  public double getBarWidthPercentage() {
+    // Line, Scatter, Area Charts ///////////////////////////////
+    @Override
+    public int getMarkerSize() {
 
-    return 0.9;
-  }
+        return 8;
+    }
 
-  @Override
-  public boolean isBarsOverlapped() {
+    // Error Bars ///////////////////////////////
+    @Override
+    public Color getErrorBarsColor() {
 
-    return false;
-  }
+        return ChartColor.getAWTColor(ChartColor.DARK_GREY);
+    }
 
-  @Override
-  public boolean isBarFilled() {
+    @Override
+    public boolean isErrorBarsColorSeriesColor() {
 
-    return true;
-  }
-
-  // Line, Scatter, Area Charts ///////////////////////////////
-
-  @Override
-  public int getMarkerSize() {
-
-    return 8;
-  }
-
-  // Error Bars ///////////////////////////////
-
-  @Override
-  public Color getErrorBarsColor() {
-
-    return ChartColor.getAWTColor(ChartColor.DARK_GREY);
-  }
-
-  @Override
-  public boolean isErrorBarsColorSeriesColor() {
-
-    return false;
-  }
+        return false;
+    }
 }

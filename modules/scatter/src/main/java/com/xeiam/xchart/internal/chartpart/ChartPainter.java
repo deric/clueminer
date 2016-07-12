@@ -15,163 +15,162 @@
  */
 package com.xeiam.xchart.internal.chartpart;
 
+import com.xeiam.xchart.Series;
+import com.xeiam.xchart.StyleManager;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
-
-import com.xeiam.xchart.Series;
-import com.xeiam.xchart.StyleManager;
 
 /**
  * @author timmolter
  */
 public class ChartPainter {
 
-  private int width;
-  private int height;
+    private int width;
+    private int height;
 
-  private final StyleManager styleManager;
+    private final StyleManager styleManager;
 
-  // Chart Parts
-  private Legend chartLegend;
-  private AxisPair axisPair;
-  private Plot plot;
-  private ChartTitle chartTitle;
+    // Chart Parts
+    private Legend chartLegend;
+    private AxisPair axisPair;
+    private Plot plot;
+    private ChartTitle chartTitle;
 
-  /**
-   * Constructor
-   *
-   * @param width
-   * @param height
-   */
-  public ChartPainter(int width, int height) {
+    /**
+     * Constructor
+     *
+     * @param width
+     * @param height
+     */
+    public ChartPainter(int width, int height) {
 
-    this.width = width;
-    this.height = height;
+        this.width = width;
+        this.height = height;
 
-    styleManager = new StyleManager();
+        styleManager = new StyleManager();
 
-    chartLegend = new Legend(this);
-    axisPair = new AxisPair(this);
-    plot = new Plot(this);
-    chartTitle = new ChartTitle(this);
-  }
-
-  /**
-   * @param g
-   * @param width
-   * @param height
-   */
-  public void paint(Graphics2D g, int width, int height) {
-
-    this.width = width;
-    this.height = height;
-    paint(g);
-  }
-
-  /**
-   * @param g
-   */
-  public void paint(Graphics2D g) {
-
-    // calc axis min and max
-    axisPair.getXAxis().resetMinMax();
-    axisPair.getYAxis().resetMinMax();
-
-    for (Series series : getAxisPair().getSeriesMap().values()) {
-      // add min/max to axis
-      // System.out.println(series.getxMin());
-      // System.out.println(series.getxMax());
-      // System.out.println(series.getyMin());
-      // System.out.println(series.getyMax());
-      // System.out.println("****");
-      axisPair.getXAxis().addMinMax(series.getXMin(), series.getXMax());
-      axisPair.getYAxis().addMinMax(series.getYMin(), series.getYMax());
+        chartLegend = new Legend(this);
+        axisPair = new AxisPair(this);
+        plot = new Plot(this);
+        chartTitle = new ChartTitle(this);
     }
 
-    // Sanity checks
-    if (axisPair.getSeriesMap().isEmpty()) {
-      throw new RuntimeException("No series defined for Chart!!!");
+    /**
+     * @param g
+     * @param width
+     * @param height
+     */
+    public void paint(Graphics2D g, int width, int height) {
+
+        this.width = width;
+        this.height = height;
+        paint(g);
     }
-    if (getStyleManager().isXAxisLogarithmic() && axisPair.getXAxis().getMin() <= 0.0) {
-      throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic X-Axis!!!");
+
+    /**
+     * @param g
+     */
+    public void paint(Graphics2D g) {
+
+        // calc axis min and max
+        axisPair.getXAxis().resetMinMax();
+        axisPair.getYAxis().resetMinMax();
+
+        for (Series series : getAxisPair().getSeriesMap().values()) {
+            // add min/max to axis
+            // System.out.println(series.getxMin());
+            // System.out.println(series.getxMax());
+            // System.out.println(series.getyMin());
+            // System.out.println(series.getyMax());
+            // System.out.println("****");
+            axisPair.getXAxis().addMinMax(series.getXMin(), series.getXMax());
+            axisPair.getYAxis().addMinMax(series.getYMin(), series.getYMax());
+        }
+
+        // Sanity checks
+        if (axisPair.getSeriesMap().isEmpty()) {
+            throw new RuntimeException("No series defined for Chart!!!");
+        }
+        if (getStyleManager().isXAxisLogarithmic() && axisPair.getXAxis().getMin() <= 0.0) {
+            throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic X-Axis!!!");
+        }
+        if (getStyleManager().isYAxisLogarithmic() && axisPair.getYAxis().getMin() <= 0.0) {
+            // System.out.println(axisPair.getyAxis().getMin());
+            throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic Y-Axis!!!");
+        }
+
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // global rendering hint
+        g.setColor(styleManager.getChartBackgroundColor());
+        Shape rect = new Rectangle2D.Double(0, 0, width, height);
+        g.fill(rect);
+
+        axisPair.paint(g);
+        plot.paint(g);
+        chartTitle.paint(g);
+        chartLegend.paint(g);
+
+        g.dispose();
     }
-    if (getStyleManager().isYAxisLogarithmic() && axisPair.getYAxis().getMin() <= 0.0) {
-      // System.out.println(axisPair.getyAxis().getMin());
-      throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic Y-Axis!!!");
+
+    /**
+     * for internal usage
+     *
+     * @return
+     */
+    public ChartTitle getChartTitle() {
+
+        return chartTitle;
     }
 
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // global rendering hint
-    g.setColor(styleManager.getChartBackgroundColor());
-    Shape rect = new Rectangle2D.Double(0, 0, width, height);
-    g.fill(rect);
+    /**
+     * for internal usage
+     *
+     * @return
+     */
+    public Legend getChartLegend() {
 
-    axisPair.paint(g);
-    plot.paint(g);
-    chartTitle.paint(g);
-    chartLegend.paint(g);
+        return chartLegend;
+    }
 
-    g.dispose();
-  }
+    /**
+     * for internal usage
+     *
+     * @return
+     */
+    public AxisPair getAxisPair() {
 
-  /**
-   * for internal usage
-   *
-   * @return
-   */
-  public ChartTitle getChartTitle() {
+        return axisPair;
+    }
 
-    return chartTitle;
-  }
+    /**
+     * for internal usage
+     *
+     * @return
+     */
+    public Plot getPlot() {
 
-  /**
-   * for internal usage
-   *
-   * @return
-   */
-  public Legend getChartLegend() {
+        return plot;
+    }
 
-    return chartLegend;
-  }
+    public int getWidth() {
 
-  /**
-   * for internal usage
-   *
-   * @return
-   */
-  public AxisPair getAxisPair() {
+        return width;
+    }
 
-    return axisPair;
-  }
+    public int getHeight() {
 
-  /**
-   * for internal usage
-   *
-   * @return
-   */
-  public Plot getPlot() {
+        return height;
+    }
 
-    return plot;
-  }
+    /**
+     * Gets the Chart's style manager, which can be used to customize the Chart's appearance
+     *
+     * @return the style manager
+     */
+    public StyleManager getStyleManager() {
 
-  public int getWidth() {
-
-    return width;
-  }
-
-  public int getHeight() {
-
-    return height;
-  }
-
-  /**
-   * Gets the Chart's style manager, which can be used to customize the Chart's appearance
-   *
-   * @return the style manager
-   */
-  public StyleManager getStyleManager() {
-
-    return styleManager;
-  }
+        return styleManager;
+    }
 }

@@ -65,11 +65,11 @@ public class ScatterMatrixPanel<E extends Instance, C extends Cluster<E>> extend
         return Tables.newCustomTable(
                 Maps.<Integer, Map<String, LegendEntry>>newHashMap(),
                 new Supplier<Map<String, LegendEntry>>() {
-                    @Override
-                    public Map<String, LegendEntry> get() {
-                        return Maps.newHashMap();
-                    }
-                });
+            @Override
+            public Map<String, LegendEntry> get() {
+                return Maps.newHashMap();
+            }
+        });
     }
 
     public void setClustering(final Clustering<E, C> clustering) {

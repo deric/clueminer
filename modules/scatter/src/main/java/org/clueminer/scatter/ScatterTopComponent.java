@@ -30,7 +30,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.scatter.ScatterTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ScatterAction",
         preferredID = "ScatterTopComponent"
@@ -78,7 +78,7 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
 
     @Override
     public void componentClosed() {
-        if(result != null){
+        if (result != null) {
             result.removeLookupListener(this);
         }
     }
@@ -105,14 +105,11 @@ public final class ScatterTopComponent extends TopComponent implements LookupLis
                 Clustering clustA = it.next();
                 Clustering clustB = it.next();
                 frame.setClusterings(clustA, clustB);
-            } else {
-                if (it.hasNext()) {
-                    Clustering clust = it.next();
-                    if (clust != null) {
-                        frame.setClustering(clust);
-                    }
+            } else if (it.hasNext()) {
+                Clustering clust = it.next();
+                if (clust != null) {
+                    frame.setClustering(clust);
                 }
-
             }
         }
 

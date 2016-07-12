@@ -37,7 +37,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.scatter.matrix.ScatterMatrixTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ScatterMatrixAction",
         preferredID = "ScatterMatrixTopComponent"

@@ -15,49 +15,48 @@
  */
 package com.xeiam.xchart.internal.style;
 
+import com.xeiam.xchart.internal.markers.Marker;
 import java.awt.BasicStroke;
 import java.awt.Color;
 
-import com.xeiam.xchart.internal.markers.Marker;
-
 /**
  * A DTO to hold the Series' Color, Marker, and LineStyle
- * 
+ *
  * @author timmolter
  */
 public final class SeriesColorMarkerLineStyle {
 
-  private final Color color;
-  private final Marker marker;
-  private final BasicStroke stroke;
+    private final Color color;
+    private final Marker marker;
+    private final BasicStroke stroke;
 
-  /**
-   * Constructor
-   * 
-   * @param color
-   * @param marker
-   * @param stroke
-   */
-  public SeriesColorMarkerLineStyle(Color color, Marker marker, BasicStroke stroke) {
+    /**
+     * Constructor
+     *
+     * @param color
+     * @param marker
+     * @param stroke
+     */
+    public SeriesColorMarkerLineStyle(Color color, Marker marker, BasicStroke stroke) {
 
-    this.color = color;
-    this.marker = marker;
-    this.stroke = stroke;
-  }
+        this.color = color;
+        this.marker = marker;
+        this.stroke = stroke;
+    }
 
-  public Color getColor() {
+    public Color getColor() {
 
-    return color;
-  }
+        return color;
+    }
 
-  public Marker getMarker() {
+    public Marker getMarker() {
 
-    return marker;
-  }
+        return marker;
+    }
 
-  public BasicStroke getStroke() {
+    public BasicStroke getStroke() {
 
-    return stroke;
-  }
+        return stroke;
+    }
 
 }

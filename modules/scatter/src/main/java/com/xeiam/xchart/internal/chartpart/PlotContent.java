@@ -24,31 +24,31 @@ import java.awt.geom.Rectangle2D;
  */
 public abstract class PlotContent implements ChartPart {
 
-  /** parent */
-  protected Plot plot;
+    /** parent */
+    protected Plot plot;
 
-  protected final Stroke errorBarStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+    protected final Stroke errorBarStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
-  /**
-   * Constructor
-   * 
-   * @param plot
-   */
-  protected PlotContent(Plot plot) {
+    /**
+     * Constructor
+     *
+     * @param plot
+     */
+    protected PlotContent(Plot plot) {
 
-    this.plot = plot;
-  }
+        this.plot = plot;
+    }
 
-  @Override
-  public Rectangle2D getBounds() {
+    @Override
+    public Rectangle2D getBounds() {
 
-    return plot.getBounds();
-  }
+        return plot.getBounds();
+    }
 
-  @Override
-  public ChartPainter getChartPainter() {
+    @Override
+    public ChartPainter getChartPainter() {
 
-    return plot.getChartPainter();
-  }
+        return plot.getChartPainter();
+    }
 
 }

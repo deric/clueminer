@@ -20,15 +20,15 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * All components of a chart that need to be painted should implement this interface
- * 
+ *
  * @author timmolter
  */
 public interface ChartPart {
 
-  public Rectangle2D getBounds();
+    public Rectangle2D getBounds();
 
-  public void paint(final Graphics2D g);
+    public void paint(final Graphics2D g);
 
-  public ChartPainter getChartPainter();
+    public ChartPainter getChartPainter();
 
 }

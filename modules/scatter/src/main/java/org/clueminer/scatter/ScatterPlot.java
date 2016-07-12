@@ -19,6 +19,7 @@ package org.clueminer.scatter;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.Series;
 import com.xeiam.xchart.StyleManager;
+import com.xeiam.xchart.StyleManager.ChartTheme;
 import com.xeiam.xchart.XChartPanel;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -98,7 +99,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         int attrX = 0;
         int attrY = 1;
 
-        Chart chart = new Chart(getWidth(), getHeight());
+        Chart chart = new Chart(getWidth(), getHeight(), ChartTheme.XChart);
         if (title != null) {
             chart.setChartTitle(title);
         }
