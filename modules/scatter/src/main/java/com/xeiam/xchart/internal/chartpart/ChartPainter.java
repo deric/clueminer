@@ -94,11 +94,13 @@ public class ChartPainter {
             throw new RuntimeException("No series defined for Chart!!!");
         }
         if (getStyleManager().isXAxisLogarithmic() && axisPair.getXAxis().getMin() <= 0.0) {
-            throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic X-Axis!!!");
+            throw new IllegalArgumentException("Series data (accounting for error bars too) "
+                    + "cannot be less or equal to zero for a logarithmic X-Axis!!!");
         }
         if (getStyleManager().isYAxisLogarithmic() && axisPair.getYAxis().getMin() <= 0.0) {
             // System.out.println(axisPair.getyAxis().getMin());
-            throw new IllegalArgumentException("Series data (accounting for error bars too) cannot be less or equal to zero for a logarithmic Y-Axis!!!");
+            throw new IllegalArgumentException("Series data (accounting for error bars too) "
+                    + "cannot be less or equal to zero for a logarithmic Y-Axis!!!");
         }
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // global rendering hint

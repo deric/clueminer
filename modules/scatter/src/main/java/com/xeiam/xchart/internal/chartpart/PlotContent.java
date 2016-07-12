@@ -35,19 +35,16 @@ public abstract class PlotContent implements ChartPart {
      * @param plot
      */
     protected PlotContent(Plot plot) {
-
         this.plot = plot;
     }
 
     @Override
     public Rectangle2D getBounds() {
-
         return plot.getBounds();
     }
 
     @Override
     public ChartPainter getChartPainter() {
-
         return plot.getChartPainter();
     }
 

@@ -40,20 +40,17 @@ public class Plot implements ChartPart {
      * @param chartPainter
      */
     public Plot(ChartPainter chartPainter) {
-
         this.chartPainter = chartPainter;
         this.plotSurface = new PlotSurface(this);
     }
 
     @Override
     public Rectangle2D getBounds() {
-
         return bounds;
     }
 
     @Override
     public void paint(Graphics2D g) {
-
         bounds = new Rectangle2D.Double();
 
         // calculate bounds
@@ -80,7 +77,6 @@ public class Plot implements ChartPart {
 
     @Override
     public ChartPainter getChartPainter() {
-
         return chartPainter;
     }
 }

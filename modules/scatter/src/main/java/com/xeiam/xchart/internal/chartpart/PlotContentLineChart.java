@@ -150,8 +150,7 @@ public class PlotContentLineChart extends PlotContent {
                 }
 
                 double yOrig = next.doubleValue();
-
-                double y = 0.0;
+                double y;
 
                 // System.out.println(y);
                 if (getChartPainter().getStyleManager().isYAxisLogarithmic()) {

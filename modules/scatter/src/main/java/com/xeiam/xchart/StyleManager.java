@@ -248,13 +248,11 @@ public class StyleManager {
      * @param theme
      */
     protected void setTheme(Theme theme) {
-
         this.theme = theme;
         setAllStyles();
     }
 
     public Theme getTheme() {
-
         return theme;
     }
 
@@ -265,12 +263,10 @@ public class StyleManager {
      * @param chartType
      */
     public void setChartType(ChartType chartType) {
-
         this.chartType = chartType;
     }
 
     public ChartType getChartType() {
-
         return chartType;
     }
 
@@ -280,12 +276,10 @@ public class StyleManager {
      * @param color
      */
     public void setChartBackgroundColor(Color color) {
-
         this.chartBackgroundColor = color;
     }
 
     public Color getChartBackgroundColor() {
-
         return chartBackgroundColor;
     }
 
@@ -295,12 +289,10 @@ public class StyleManager {
      * @param color
      */
     public void setChartFontColor(Color color) {
-
         this.chartFontColor = color;
     }
 
     public Color getChartFontColor() {
-
         return chartFontColor;
     }
 
@@ -310,12 +302,10 @@ public class StyleManager {
      * @param chartPadding
      */
     public void setChartPadding(int chartPadding) {
-
         this.chartPadding = chartPadding;
     }
 
     public int getChartPadding() {
-
         return chartPadding;
     }
 
@@ -326,7 +316,6 @@ public class StyleManager {
      * @param font
      */
     public void setChartTitleFont(Font chartTitleFont) {
-
         this.chartTitleFont = chartTitleFont;
     }
 
