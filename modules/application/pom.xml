@@ -34,7 +34,6 @@
         <dependency>
             <groupId>org.netbeans.cluster</groupId>
             <artifactId>platform</artifactId>
-            <version>${netbeans.version}</version>
             <type>pom</type>
         </dependency>
         <dependency>
@@ -46,7 +45,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-nbjunit</artifactId>
-            <version>${netbeans.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- To use Jelly Tools in your functional tests, add or replace with:
@@ -152,7 +150,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.5.6</version>
+            <version>${clueminer.slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -162,7 +160,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.5.6</version>
+            <version>${clueminer.slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
