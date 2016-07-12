@@ -138,7 +138,7 @@ public class Chart {
      *
      * @param seriesName
      * @param xData      the X-Axis data
-     * @param xData      the Y-Axis data
+     * @param yData      the Y-Axis data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, double[] xData, double[] yData) {
@@ -151,7 +151,7 @@ public class Chart {
      *
      * @param seriesName
      * @param xData      the X-Axis data
-     * @param xData      the Y-Axis data
+     * @param yData      the Y-Axis data
      * @param errorBars  the error bar data
      * @return A Series object that you can set properties on
      */
@@ -159,20 +159,20 @@ public class Chart {
 
         List<Double> xDataNumber = null;
         if (xData != null) {
-            xDataNumber = new ArrayList<Double>();
+            xDataNumber = new ArrayList<>();
             for (double d : xData) {
-                xDataNumber.add(new Double(d));
+                xDataNumber.add(d);
             }
         }
-        List<Double> yDataNumber = new ArrayList<Double>();
+        List<Double> yDataNumber = new ArrayList<>();
         for (double d : yData) {
-            yDataNumber.add(new Double(d));
+            yDataNumber.add(d);
         }
         List<Double> errorBarDataNumber = null;
         if (errorBars != null) {
-            errorBarDataNumber = new ArrayList<Double>();
+            errorBarDataNumber = new ArrayList<>();
             for (double d : errorBars) {
-                errorBarDataNumber.add(new Double(d));
+                errorBarDataNumber.add(d);
             }
         }
 
@@ -184,7 +184,7 @@ public class Chart {
      *
      * @param seriesName
      * @param xData      the X-Axis data
-     * @param xData      the Y-Axis data
+     * @param yData      the Y-Axis data
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, int[] xData, int[] yData) {
@@ -197,7 +197,7 @@ public class Chart {
      *
      * @param seriesName
      * @param xData      the X-Axis data
-     * @param xData      the Y-Axis data
+     * @param yData      the Y-Axis data
      * @param errorBars  the error bar data
      * @return A Series object that you can set properties on
      */
@@ -205,18 +205,18 @@ public class Chart {
 
         List<Double> xDataNumber = null;
         if (xData != null) {
-            xDataNumber = new ArrayList<Double>();
+            xDataNumber = new ArrayList<>();
             for (int d : xData) {
                 xDataNumber.add(new Double(d));
             }
         }
-        List<Double> yDataNumber = new ArrayList<Double>();
+        List<Double> yDataNumber = new ArrayList<>();
         for (int d : yData) {
             yDataNumber.add(new Double(d));
         }
         List<Double> errorBarDataNumber = null;
         if (errorBars != null) {
-            errorBarDataNumber = new ArrayList<Double>();
+            errorBarDataNumber = new ArrayList<>();
             for (int d : errorBars) {
                 errorBarDataNumber.add(new Double(d));
             }
@@ -231,7 +231,6 @@ public class Chart {
      * @param title
      */
     public void setChartTitle(String title) {
-
         chartPainter.getChartTitle().setText(title);
     }
 
@@ -241,7 +240,6 @@ public class Chart {
      * @param title
      */
     public void setXAxisTitle(String title) {
-
         chartPainter.getAxisPair().getXAxis().getAxisTitle().setText(title);
     }
 
@@ -262,17 +260,14 @@ public class Chart {
      * @return the style manager
      */
     public StyleManager getStyleManager() {
-
         return chartPainter.getStyleManager();
     }
 
     public int getWidth() {
-
         return chartPainter.getWidth();
     }
 
     public int getHeight() {
-
         return chartPainter.getHeight();
     }
 

@@ -34,43 +34,36 @@ public class ChartBuilder {
     ChartTheme chartTheme = ChartTheme.XChart;
 
     public ChartBuilder chartType(ChartType chartType) {
-
         this.chartType = chartType;
         return this;
     }
 
     public ChartBuilder width(int width) {
-
         this.width = width;
         return this;
     }
 
     public ChartBuilder height(int height) {
-
         this.height = height;
         return this;
     }
 
     public ChartBuilder title(String title) {
-
         this.title = title;
         return this;
     }
 
     public ChartBuilder xAxisTitle(String xAxisTitle) {
-
         this.xAxisTitle = xAxisTitle;
         return this;
     }
 
     public ChartBuilder yAxisTitle(String yAxisTitle) {
-
         this.yAxisTitle = yAxisTitle;
         return this;
     }
 
     public ChartBuilder theme(ChartTheme chartTheme) {
-
         this.chartTheme = chartTheme;
         return this;
     }
@@ -81,9 +74,7 @@ public class ChartBuilder {
      * @return a Chart
      */
     public Chart build() {
-
         return new Chart(this);
-
     }
 
 }
