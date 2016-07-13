@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String name = "PBM";
+    private static final String NAME = "PBM";
     private static final long serialVersionUID = -8947980448201668614L;
 
     public PBM() {
@@ -48,18 +48,18 @@ public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         double db = Double.MIN_VALUE;
         double tmp, score;
-        Instance g = clusters.getCentroid();
+        E g = clusters.getCentroid();
         double et = 0.0;
         double ew = 0.0;
-        Instance x, y;
-        Cluster clust;
+        E x, y;
+        Cluster<E> clust;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             x = clust.getCentroid();

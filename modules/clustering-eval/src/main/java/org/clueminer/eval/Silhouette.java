@@ -86,7 +86,7 @@ public class Silhouette<E extends Instance, C extends Cluster<E>> extends Abstra
      * @return
      */
     public double instanceScore(C clust, Clustering<E, C> clusters, int i, E x) {
-        Instance y;
+        E y;
         double a, b, dist, denom;
         a = 0;
         //we can't compute Silhouette for cluster with single item
@@ -127,8 +127,8 @@ public class Silhouette<E extends Instance, C extends Cluster<E>> extends Abstra
     protected double minDistance(E x, Clustering<E, C> clusters, int i) {
         double minDist = Double.MAX_VALUE;
         double clusterDist;
-        Instance y;
-        for (Cluster clust : clusters) {
+        E y;
+        for (Cluster<E> clust : clusters) {
             if (clust.getClusterId() != i) {
                 clusterDist = 0;
                 for (int j = 0; j < clust.size(); j++) {

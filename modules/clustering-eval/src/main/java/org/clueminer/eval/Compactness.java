@@ -54,10 +54,10 @@ public class Compactness<E extends Instance, C extends Cluster<E>> extends Abstr
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
-        Cluster clust;
+        Cluster<E> clust;
         double dist;
         int instCnt = 0;
-        Instance a, b;
+        E a, b;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             dist = 0;

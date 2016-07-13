@@ -19,7 +19,6 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
@@ -48,7 +47,7 @@ public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        Dataset a, b;
+        Cluster<E> a, b;
         double sum = 0;
         for (int i = 0; i < clusters.size(); i++) {
             double tmpTop = 0;

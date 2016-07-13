@@ -54,9 +54,9 @@ public class BallHall<E extends Instance, C extends Cluster<E>> extends Abstract
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         double sum = 0;
-        Cluster clust;
+        Cluster<E> clust;
         double error, tmpSum;
-        Instance centroid;
+        E centroid;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             tmpSum = 0;

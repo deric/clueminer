@@ -74,8 +74,8 @@ public class SDbw<E extends Instance, C extends Cluster<E>> extends SDindex<E, C
     }
 
     private double rkk(Clustering<E, C> clusters, double sigma, int i, int j) {
-        Cluster x = clusters.get(i);
-        Cluster y = clusters.get(j);
+        Cluster<E> x = clusters.get(i);
+        Cluster<E> y = clusters.get(j);
         //centroid of two clusters
         Instance h = centroid(x, y);
 
@@ -84,12 +84,12 @@ public class SDbw<E extends Instance, C extends Cluster<E>> extends SDindex<E, C
         return res;
     }
 
-    private Instance centroid(Cluster x, Cluster y) {
+    private E centroid(Cluster<E> x, Cluster<E> y) {
         int attrCount = x.attributeCount();
         if (attrCount == 0) {
             throw new RuntimeException("number of attributes should not be 0");
         }
-        Instance avg = x.builder().build(attrCount);
+        E avg = x.builder().build(attrCount);
         for (int j = 0; j < attrCount; j++) {
             avg.set(j, (x.getCentroid().get(j) + y.getCentroid().get(j)) / 2.0);
         }

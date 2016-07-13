@@ -82,7 +82,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
      */
     public double sumWithin(Cluster<E> cluster) {
         double sum = 0.0;
-        Instance x, y;
+        E x, y;
         for (int i = 0; i < cluster.size(); i++) {
             x = cluster.instance(i);
             for (int j = 0; j < i; j++) {
@@ -95,8 +95,8 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     public double sumBetween(Clustering<E, C> clusters) {
-        Cluster xc, yc;
-        Instance x, y;
+        Cluster<E> xc, yc;
+        E x, y;
         double distance;
         double sum = 0.0;
         for (int i = 0; i < clusters.size(); i++) {
@@ -213,14 +213,14 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     /**
-     * With-in group squared scatter - distances between centroid.
+     * Within group squared scatter - distances between centroid.
      *
      * @param clusters
      * @return
      */
     public double wgss(Clustering<E, C> clusters) {
         double wgss = 0.0, dist;
-        Cluster clust;
+        Cluster<E> clust;
         for (int i = 0; i < clusters.size(); i++) {
             clust = clusters.get(i);
             for (int j = 0; j < clust.size(); j++) {
@@ -238,7 +238,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
      * @return
      */
     public Matrix totalDispersion(Clustering<E, C> clusters) {
-        Instance curr = clusters.get(0).get(0);
+        E curr = clusters.get(0).get(0);
         int n = clusters.instancesCount();
         //number of dimensions
         int m = curr.size();

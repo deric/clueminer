@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CalinskiHarabasz<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -2699019526373205522L;
-    private static final String name = "Calinski-Harabasz";
+    private static final String NAME = "Calinski-Harabasz";
 
     public CalinskiHarabasz() {
         dm = EuclideanDistance.getInstance();
@@ -63,7 +63,7 @@ public class CalinskiHarabasz<E extends Instance, C extends Cluster<E>> extends 
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

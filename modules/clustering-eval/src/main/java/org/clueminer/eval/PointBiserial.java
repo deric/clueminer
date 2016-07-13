@@ -72,7 +72,7 @@ public class PointBiserial<E extends Instance, C extends Cluster<E>> extends Abs
         double sw = 0.0, sb;
 
         //sum of within cluster distances
-        for (Cluster clust : clusters) {
+        for (Cluster<E> clust : clusters) {
             sw += sumWithin(clust);
         }
         //sum of between cluster distances

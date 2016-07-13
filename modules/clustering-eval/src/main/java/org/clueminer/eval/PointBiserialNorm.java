@@ -65,7 +65,7 @@ public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends
         double nd, sd, pb;
 
         C first, second;
-        Instance x, y;
+        E x, y;
         for (int i = 0; i < clusters.size(); i++) {
             first = clusters.get(i);
             for (int j = 0; j < first.size(); j++) {

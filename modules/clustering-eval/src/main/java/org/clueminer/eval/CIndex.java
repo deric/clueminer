@@ -76,7 +76,7 @@ public class CIndex<E extends Instance, C extends Cluster<E>> extends AbstractEv
         double dw = 0;
         double minSum = 0.0, maxSum = 0.0;
 
-        Instance x, y;
+        E x, y;
         // calculate intra cluster distances and sum of all
         //for each cluster
         double distance;
@@ -93,7 +93,7 @@ public class CIndex<E extends Instance, C extends Cluster<E>> extends AbstractEv
         //distances within a cluster
         MinMaxPriorityQueue<Double> pqMax = MinMaxPriorityQueue.create();
         MinMaxPriorityQueue<Double> pqMin = MinMaxPriorityQueue.create();
-        for (Cluster clust : clusters) {
+        for (Cluster<E> clust : clusters) {
             for (int i = 0; i < clust.size(); i++) {
                 x = clust.instance(i);
                 for (int j = 0; j < i; j++) {
@@ -108,7 +108,7 @@ public class CIndex<E extends Instance, C extends Cluster<E>> extends AbstractEv
             }
         }
         //between distances
-        Cluster xc, yc;
+        Cluster<E> xc, yc;
         for (int i = 0; i < clusters.size(); i++) {
             xc = clusters.get(i);
             for (int m = 0; m < xc.size(); m++) {
