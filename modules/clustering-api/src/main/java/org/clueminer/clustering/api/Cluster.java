@@ -23,9 +23,13 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * Cluster is a set of data points (instances {@link Instance}). Current
+ * definition expect crisp clustering (each data point belong to a single cluster).
+ *
+ * @TODO fuzzy support
  *
  * @author Tomas Barton
- * @param <E>
+ * @param <E> data row element
  */
 public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Serializable, Set<E> {
 
@@ -102,7 +106,7 @@ public interface Cluster<E extends Instance> extends Dataset<E>, Cloneable, Seri
      * By default return false (density based algorithms label typically last
      * cluster as outliers)
      *
-     * @return true when cluster consists of outliers
+     * @return true when cluster consists of outliers (noisy data points)
      */
-    boolean isOutlier();
+    boolean isNoise();
 }

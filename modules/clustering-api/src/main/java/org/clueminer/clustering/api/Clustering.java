@@ -28,8 +28,8 @@ import org.openide.util.Lookup;
  * Dataset interface.
  *
  * @author Tomas Barton
- * @param <C>
- * @param <E>
+ * @param <E> row data representation
+ * @param <C> cluster structure type
  */
 public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cloneable, Serializable, Iterable<C>, Collection<C> {
 
@@ -331,4 +331,11 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
      * @return cluster containing noisy data points
      */
     C getNoise();
+
+    /**
+     * Check for presence of special noise cluster.
+     *
+     * @return true when contains special cluster with noise
+     */
+    boolean hasNoise();
 }

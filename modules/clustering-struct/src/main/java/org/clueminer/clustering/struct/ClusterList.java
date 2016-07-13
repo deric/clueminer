@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Clustering.class)
 public class ClusterList<E extends Instance, C extends Cluster<E>> implements Clustering<E, C> {
 
-    private static final long serialVersionUID = 5866077228917808995L;
+    private static final long serialVersionUID = 5866077228917808996L;
     private C[] data;
     private Props params;
     private final HashMap<String, Integer> name2id;
@@ -773,11 +773,16 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      */
     @Override
     public C getNoise() {
-        if (name2id.containsKey(Algorithm.OUTLIER_LABEL)) {
+        if (hasNoise()) {
             int idx = name2id.get(Algorithm.OUTLIER_LABEL);
             return data[idx];
         }
         return createCluster(size(), 10, Algorithm.OUTLIER_LABEL);
+    }
+
+    @Override
+    public boolean hasNoise() {
+        return name2id.containsKey(Algorithm.OUTLIER_LABEL);
     }
 
     class ClusterIterator<X extends Cluster<E>> implements Iterator<X> {

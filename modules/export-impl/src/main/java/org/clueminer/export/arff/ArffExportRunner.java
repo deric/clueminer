@@ -75,7 +75,7 @@ class ArffExportRunner<E extends Instance, C extends Cluster<E>> implements Runn
 
     private String instLabel(E inst, Clustering<E, C> clustering) {
         Cluster c = clustering.assignedCluster(inst);
-        if (c.isOutlier()) {
+        if (c.isNoise()) {
             return c.getName();
         }
         return String.valueOf(c.getClusterId());
@@ -86,7 +86,7 @@ class ArffExportRunner<E extends Instance, C extends Cluster<E>> implements Runn
         Cluster c;
         for (int i = 0; i < clustering.size(); i++) {
             c = clustering.get(i);
-            if (c.isOutlier()) {
+            if (c.isNoise()) {
                 res[i] = c.getName();
             } else {
                 res[i] = String.valueOf(c.getClusterId());

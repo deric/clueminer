@@ -619,7 +619,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
     }
 
     @Override
-    public boolean isOutlier() {
+    public boolean isNoise() {
         return getName().equals(Algorithm.OUTLIER_LABEL);
     }
 

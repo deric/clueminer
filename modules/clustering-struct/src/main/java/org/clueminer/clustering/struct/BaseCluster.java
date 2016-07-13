@@ -41,7 +41,7 @@ import org.clueminer.dataset.impl.DoubleArrayFactory;
  */
 public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements Cluster<E>, Set<E> {
 
-    private static final long serialVersionUID = -6931127664256794410L;
+    private static final long serialVersionUID = -6931127664256794411L;
     private int clusterId;
     private Color color;
     private E centroid;
@@ -199,7 +199,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
     }
 
     @Override
-    public boolean isOutlier() {
+    public boolean isNoise() {
         return getName().equals(Algorithm.OUTLIER_LABEL);
     }
 
