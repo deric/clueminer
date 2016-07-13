@@ -148,6 +148,14 @@ public interface Clustering<E extends Instance, C extends Cluster<E>> extends Cl
     Iterator<E> instancesIterator();
 
     /**
+     * Iterates over all clusters without noisy data points (typically without
+     * one cluster).
+     *
+     * @return iterator over standard clusters
+     */
+    Iterator<C> withoutNoise();
+
+    /**
      * Computes centroid for the whole dataset (clustering)
      *
      * @return centroid for all clusters

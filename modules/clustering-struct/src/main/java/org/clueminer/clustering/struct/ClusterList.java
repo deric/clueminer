@@ -785,6 +785,11 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         return name2id.containsKey(Algorithm.OUTLIER_LABEL);
     }
 
+    @Override
+    public Iterator<C> withoutNoise() {
+        return new ClusterNoNoiseIter<>();
+    }
+
     class ClusterIterator<X extends Cluster<E>> implements Iterator<X> {
 
         private int index = 0;
@@ -792,6 +797,38 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         @Override
         public boolean hasNext() {
             return index < size();
+        }
+
+        @Override
+        public X next() {
+            return (X) get(index++);
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Cannot remove from dataset using the iterator.");
+
+        }
+    }
+
+    /**
+     * Iterator that skips clusters marked as noise
+     *
+     * @param <X>
+     */
+    class ClusterNoNoiseIter<X extends Cluster<E>> implements Iterator<X> {
+
+        private int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            while (index < size()) {
+                if (!get(index).isNoise()) {
+                    return true;
+                }
+                index++;
+            }
+            return false;
         }
 
         @Override

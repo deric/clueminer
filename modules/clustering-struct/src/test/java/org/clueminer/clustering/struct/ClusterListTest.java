@@ -19,6 +19,7 @@ package org.clueminer.clustering.struct;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -41,16 +42,15 @@ import org.openide.util.Exceptions;
 /**
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public class ClusterListTest {
+public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
 
     private static ClusterList subject;
     private static final CommonFixture tf = new CommonFixture();
     private static final double DELTA = 1e-9;
     private static Dataset<? extends Instance> irisCache;
-
-    public ClusterListTest() {
-    }
 
     @Before
     public void setUp() {
@@ -112,8 +112,8 @@ public class ClusterListTest {
 
     @Test
     public void testPut_int_Cluster() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
-        Cluster clus = new BaseCluster(5);
+        Clustering<E, C> clusters = new ClusterList<>(5);
+        C clus = (C) new BaseCluster(5);
         clusters.put(3, clus);
         assertEquals(clus, clusters.get(3));
     }
@@ -139,13 +139,13 @@ public class ClusterListTest {
 
     @Test
     public void testInstancesCount() {
-        Clustering<Instance, Cluster<Instance>> clusters = createClusters();
+        Clustering<E, C> clusters = createClusters();
         assertEquals(12, clusters.instancesCount());
     }
 
     @Test
     public void testGetCentroid() {
-        Clustering<Instance, Cluster<Instance>> clusters = createClusters2();
+        Clustering<E, C> clusters = createClusters2();
         assertEquals(3, clusters.get(0).size());
         Instance centroid = clusters.getCentroid();
         System.out.println("centroid: " + centroid.toString());
@@ -155,13 +155,13 @@ public class ClusterListTest {
         assertEquals(1.0, centroid.get(1), DELTA);
     }
 
-    private Clustering<Instance, Cluster<Instance>> createEmptyClusters() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
+    private Clustering<E, C> createEmptyClusters() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
         return clusters;
     }
 
-    private Clustering<Instance, Cluster<Instance>> createClusters() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
+    private Clustering<E, C> createClusters() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
         assertEquals(0, clusters.size());
         instanceIter(clusters);
         int size = 4;
@@ -177,8 +177,8 @@ public class ClusterListTest {
         return clusters;
     }
 
-    private Clustering<Instance, Cluster<Instance>> createClustersOrdered() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
+    private Clustering<E, C> createClustersOrdered() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
         instanceIter(clusters);
         Cluster clust = clusters.createCluster();
         clust.attributeBuilder().create("x", "NUMERIC");
@@ -189,39 +189,121 @@ public class ClusterListTest {
         return clusters;
     }
 
-    private Clustering<Instance, Cluster<Instance>> createClustersDifferentOrder() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
+    private Clustering<E, C> createClustersDifferentOrder() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
         instanceIter(clusters);
-        Cluster clust = clusters.createCluster();
+        Cluster clust = createXYCluster(clusters);
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 1.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
         return clusters;
     }
 
-    private Clustering<Instance, Cluster<Instance>> createClusters2() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(5);
+    private Clustering<E, C> createClusters2() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
         instanceIter(clusters);
-        Cluster clust = clusters.createCluster();
-        clust.attributeBuilder().create("x", "NUMERIC");
-        clust.attributeBuilder().create("y", "NUMERIC");
+        Cluster clust = createXYCluster(clusters);
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 0.0}));
         clust.add(new DoubleArrayDataRow(new double[]{5.0, 1.0}));
         clust.add(new DoubleArrayDataRow(new double[]{1.0, 2.0}));
         return clusters;
     }
 
+    private C createXYCluster(Clustering<E, C> clusters) {
+        C clust = clusters.createCluster();
+        clust.attributeBuilder().create("x", "NUMERIC");
+        clust.attributeBuilder().create("y", "NUMERIC");
+        return clust;
+    }
+
+    private Clustering<E, C> createClustersWithNoise() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
+        assertEquals(0, clusters.size());
+        instanceIter(clusters);
+        int size = 4;
+        Cluster clust;
+        for (int i = 0; i < size; i++) {
+            clust = createXYCluster(clusters);
+            clust.builder().create(new double[]{1.0 * i, 2.0 * i});
+            clust.builder().create(new double[]{1.0 * i, i});
+            clust.builder().create(new double[]{1.0 * i + 1, 2 * i + 2});
+        }
+        clust = clusters.createCluster();
+        clust.setName(Algorithm.OUTLIER_LABEL);
+        for (int i = 0; i < 5; i++) {
+            clust.builder().create(new double[]{99.0 * i, 99.0 * i + 20});
+        }
+
+        return clusters;
+    }
+
+    /**
+     * Noisy cluster is created as the first one
+     *
+     * @return
+     */
+    private Clustering<E, C> createClustersWithNoise2() {
+        Clustering<E, C> clusters = new ClusterList<>(5);
+        assertEquals(0, clusters.size());
+        instanceIter(clusters);
+        int size = 4;
+        Cluster clust;
+        clust = createXYCluster(clusters);
+        clust.setName(Algorithm.OUTLIER_LABEL);
+        for (int i = 0; i < 5; i++) {
+            clust.builder().create(new double[]{99.0 * i, 99.0 * i + 20});
+        }
+        for (int i = 0; i < size; i++) {
+            clust = createXYCluster(clusters);
+            clust.builder().create(new double[]{1.0 * i, 2.0 * i});
+            clust.builder().create(new double[]{1.0 * i, i});
+            clust.builder().create(new double[]{1.0 * i + 1, 2 * i + 2});
+        }
+
+        return clusters;
+    }
+
+    @Test
+    public void testWithoutNoise() {
+        Clustering<E, C> clusters = createClustersWithNoise();
+        Iterator<C> iter = clusters.withoutNoise();
+        //including noisy cluster
+        assertEquals(5, clusters.size());
+        int i = 0;
+        while (iter.hasNext()) {
+            C clust = iter.next();
+            i++;
+            assertEquals(false, clust.isNoise());
+        }
+        assertEquals(4, i);
+    }
+
+    @Test
+    public void testWithoutNoise2() {
+        Clustering<E, C> clusters = createClustersWithNoise2();
+        Iterator<C> iter = clusters.withoutNoise();
+        //including noisy cluster
+        assertEquals(5, clusters.size());
+        int i = 0;
+        while (iter.hasNext()) {
+            C clust = iter.next();
+            i++;
+            assertEquals(false, clust.isNoise());
+        }
+        assertEquals(4, i);
+    }
+
     @Test
     public void testInstancesIterator() {
-        Clustering<Instance, Cluster<Instance>> clusters = createClustersOrdered();
+        Clustering<E, C> clusters = createClustersOrdered();
         Cluster clust = clusters.get(0);
         assertEquals(3, clust.size());
         assertEquals(3, clusters.instancesCount());
     }
 
-    private void instanceIter(Clustering<Instance, Cluster<Instance>> clusters) {
-        Iterator<Instance> iter = clusters.instancesIterator();
-        Instance elem;
+    private void instanceIter(Clustering<E, C> clusters) {
+        Iterator<E> iter = clusters.instancesIterator();
+        E elem;
         int i = 0;
         while (iter.hasNext()) {
             elem = iter.next();
@@ -241,22 +323,22 @@ public class ClusterListTest {
 
     @Test
     public void testAssignedCluster() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList<>(3);
+        Clustering<E, C> clusters = new ClusterList<>(3);
         instanceIter(clusters);
-        Cluster c1 = clusters.createCluster();
+        C c1 = clusters.createCluster();
         c1.attributeBuilder().create("x", "NUMERIC");
         c1.attributeBuilder().create("y", "NUMERIC");
-        Instance i1 = new DoubleArrayDataRow(new double[]{1.0, 0.0});
+        E i1 = (E) new DoubleArrayDataRow(new double[]{1.0, 0.0});
         i1.setIndex(0);
         c1.add(i1);
-        Cluster c2 = clusters.createCluster();
+        C c2 = clusters.createCluster();
         c2.setAttributes(c1.getAttributes());
-        Instance i2 = new DoubleArrayDataRow(new double[]{5.0, 1.0});
+        E i2 = (E) new DoubleArrayDataRow(new double[]{5.0, 1.0});
         i2.setIndex(1);
         c2.add(i2);
-        Cluster c3 = clusters.createCluster();
+        C c3 = clusters.createCluster();
         c3.setAttributes(c1.getAttributes());
-        Instance i3 = new DoubleArrayDataRow(new double[]{1.0, 2.0});
+        E i3 = (E) new DoubleArrayDataRow(new double[]{1.0, 2.0});
         i3.setIndex(2);
         c3.add(i3);
 
@@ -271,7 +353,7 @@ public class ClusterListTest {
 
     @Test
     public void testGet() {
-        Clustering<Instance, Cluster<Instance>> clusters = createClusters();
+        Clustering<E, C> clusters = createClusters();
         Cluster clust = clusters.get(3);
         assertEquals(3, clust.size());
     }
@@ -281,7 +363,7 @@ public class ClusterListTest {
      */
     @Test
     public void testIterator() {
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList(10);
+        Clustering<E, C> clusters = new ClusterList(10);
         //create 6 empty clusters
         for (int i = 0; i < 6; i++) {
             clusters.createCluster(i + 1);
@@ -294,7 +376,7 @@ public class ClusterListTest {
         }
         assertEquals(6, i);
 
-        Iterator<Cluster<Instance>> iter = clusters.iterator();
+        Iterator<C> iter = clusters.iterator();
         i = 0;
         while (iter.hasNext()) {
             iter.next();
@@ -305,8 +387,8 @@ public class ClusterListTest {
 
     @Test
     public void testShortForEach() {
-        Clustering<Instance, Cluster<Instance>> clust = createClusters();
-        for (Cluster elem : clust) {
+        Clustering<E, C> clust = createClusters();
+        for (C elem : clust) {
             assertNotNull(elem);
         }
     }
@@ -316,16 +398,16 @@ public class ClusterListTest {
         assertEquals(false, subject.isEmpty());
 
         //empty clusters
-        Clustering<Instance, Cluster<Instance>> clusters = new ClusterList(3);
+        Clustering<E, C> clusters = new ClusterList(3);
         assertEquals(true, clusters.isEmpty());
-        clusters.add(new BaseCluster(1));
+        clusters.add((C) new BaseCluster(1));
         assertEquals(false, clusters.isEmpty());
     }
 
     @Test
     public void testContains() {
-        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
-        Clustering<Instance, Cluster<Instance>> c2 = createClustersDifferentOrder();
+        Clustering<E, C> c1 = createClusters();
+        Clustering<E, C> c2 = createClustersDifferentOrder();
 
         for (int i = 0; i < c2.size(); i++) {
             assertEquals(true, c1.contains(c2.get(i)));
@@ -334,7 +416,7 @@ public class ClusterListTest {
 
     @Test
     public void testRemove() {
-        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        Clustering<E, C> c1 = createClusters();
         assertEquals(4, c1.size());
 
         c1.remove(c1.get(0));
@@ -345,7 +427,7 @@ public class ClusterListTest {
 
     @Test
     public void testRemoveInt() {
-        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
+        Clustering<E, C> c1 = createClusters();
         assertEquals(4, c1.size());
 
         assertTrue(c1.remove(0));
@@ -356,11 +438,11 @@ public class ClusterListTest {
 
     @Test
     public void testContainsAll() {
-        Clustering<Instance, Cluster<Instance>> c1 = createClusters();
-        Clustering<Instance, Cluster<Instance>> c2 = createClustersDifferentOrder();
+        Clustering<E, C> c1 = createClusters();
+        Clustering<E, C> c2 = createClustersDifferentOrder();
         assertEquals(true, c1.containsAll(c2));
 
-        Clustering<Instance, Cluster<Instance>> c3 = createClusters2();
+        Clustering<E, C> c3 = createClusters2();
         assertEquals(false, c1.containsAll(c3));
     }
 
@@ -567,7 +649,7 @@ public class ClusterListTest {
      * @return
      * @throws IOException
      */
-    public Clustering<Instance, Cluster<Instance>> irisClustering(int k) throws IOException {
+    public Clustering<E, C> irisClustering(int k) throws IOException {
         Dataset<? extends Instance> iris = loadIris();
         Clustering clust = new ClusterList(k);
         Cluster c = null;
@@ -632,8 +714,8 @@ public class ClusterListTest {
 
     @Test
     public void testGetNoise() {
-        Clustering<Instance, Cluster<Instance>> list = createClusters();
-        Cluster<Instance> noise = list.getNoise();
+        Clustering<E, C> list = createClusters();
+        C noise = list.getNoise();
         assertNotNull(noise);
         assertEquals(0, noise.size());
     }
