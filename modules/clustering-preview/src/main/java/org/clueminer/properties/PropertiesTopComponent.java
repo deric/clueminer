@@ -20,7 +20,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
 import java.util.logging.Logger;
-import javax.swing.JScrollPane;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -61,16 +60,12 @@ public final class PropertiesTopComponent extends TopComponent implements Lookup
     private Lookup.Result<AbstractNode> result = null;
     private static final Logger logger = Logger.getLogger(PropertiesTopComponent.class.getName());
     private final PropPanel panel;
-    private final JScrollPane scrollPane = null;
 
     public PropertiesTopComponent() {
         initComponents();
         setName(Bundle.CTL_PropertiesTopComponent());
         setToolTipText(Bundle.HINT_PropertiesTopComponent());
         panel = new PropPanel();
-        /*     scrollPane = new JScrollPane();
-         scrollPane.setLayout(new GridBagLayout());
-        scrollPane.getViewport().add(panel);*/
         add(panel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
     }
 

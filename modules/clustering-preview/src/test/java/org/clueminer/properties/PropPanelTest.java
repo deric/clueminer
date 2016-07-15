@@ -16,8 +16,10 @@
  */
 package org.clueminer.properties;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JFrame;
@@ -44,7 +46,9 @@ public class PropPanelTest<E extends Instance, C extends Cluster<E>> {
 
     protected JFrame showInFrame() {
         JFrame frame = new JFrame("test properties");
-        frame.getContentPane().add(subject, BorderLayout.CENTER);
+        frame.getContentPane().setLayout(new GridBagLayout());
+        frame.getContentPane().add(subject,
+                new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(800, 600));
         //frame.setSize(getPreferredSize());
@@ -64,7 +68,6 @@ public class PropPanelTest<E extends Instance, C extends Cluster<E>> {
 
     private Collection<? extends AbstractNode> createTestData() {
         Clustering clustering = FakeClustering.irisMostlyWrong();
-
 
         Collection<AbstractNode> res = new ArrayList<>();
         ClusterNode node = new ClusterNode(clustering);
