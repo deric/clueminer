@@ -16,26 +16,30 @@
  */
 package org.clueminer.gui;
 
-import java.awt.Dimension;
-import java.awt.Stroke;
-import javax.swing.JComboBox;
+import java.lang.reflect.InvocationTargetException;
+import org.openide.nodes.PropertySupport;
 
 /**
  *
  * @author Tomas Barton
  */
-public class StrokeComboBox extends JComboBox {
-    private static final long serialVersionUID = -6259450920839549519L;
+public class EvaluatorProperty extends PropertySupport.ReadOnly<String> {
 
-    public StrokeComboBox() { this(StrokeGenerator.getStrokes(), 100, 30); }
+    private String value;
 
-    public StrokeComboBox(Stroke[] strokes, int width, int height) {
-        super(strokes);
-        setRenderer(new StrokeComboBoxRenderer(width, height));
-        Dimension prefSize = getPreferredSize();
-        prefSize.height = height + getInsets().top + getInsets().bottom;
-        setPreferredSize(prefSize);
-        setMaximumRowCount(10);
+
+    public EvaluatorProperty(String name, double value) {
+        super(name, String.class, name, "");
+        this.value = String.format("%1$,.2f", value);
+    }
+
+    public EvaluatorProperty(String name, Class<String> type, String displayName, String shortDescription) {
+        super(name, type, displayName, shortDescription);
+    }
+
+    @Override
+    public String getValue() throws IllegalAccessException, InvocationTargetException {
+        return value;
     }
 
 }
