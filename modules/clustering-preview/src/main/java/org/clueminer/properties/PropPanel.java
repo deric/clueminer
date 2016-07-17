@@ -58,12 +58,12 @@ public class PropPanel extends JPanel {
         scrollPane = new JScrollPane(content);
         scrollPane.setLayout(new ScrollPaneLayout());
         scrollPane.setHorizontalScrollBarPolicy(scrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(scrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(scrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //scrollPane.getViewport().add(content);
         add(scrollPane, new GridBagConstraints(
                 0, 0, 1, 1, 1.0, 1.0,
                 GridBagConstraints.NORTHWEST,
-                GridBagConstraints.NONE,
+                GridBagConstraints.HORIZONTAL,
                 new Insets(0, 0, 0, 0),
                 0, 0)
         );
@@ -111,7 +111,7 @@ public class PropPanel extends JPanel {
         JLabel label = new JLabel("<html><b>" + set.getName() + "</b></html>");
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
-        c.fill = GridBagConstraints.BOTH;
+        c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
         c.gridy = i++;
         c.gridwidth = 1;
