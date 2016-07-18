@@ -33,6 +33,7 @@ import org.clueminer.clustering.api.ConfiguratorFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.clustering.order.MOLO;
@@ -143,19 +144,32 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
             clustering.lookupAdd(mapping);
         } else {
             //non-hierarchical method
-
+            boolean needsConfiguration = isEstimationNeeded(algorithm, params);
             Configurator config;
             if (params.containsKey(ConfiguratorFactory.CONFIG)) {
                 config = ConfiguratorFactory.getInstance().getProvider(params.get(ConfiguratorFactory.CONFIG));
             } else {
                 config = algorithm.getConfigurator();
             }
-            config.configure(dataset, params);
-            logger.log(Level.INFO, "estimated parameters: {0} for {1}", new Object[]{params.toJson(), algorithm.getName()});
+            if (needsConfiguration) {
+                config.configure(dataset, params);
+                logger.log(Level.INFO, "estimated parameters: {0} for {1}", new Object[]{params.toJson(), algorithm.getName()});
+            } else {
+                logger.info("skipping parameters estimation. all required parameters were specified");
+            }
 
             clustering = algorithm.cluster(dataset, params);
         }
         return clustering;
+    }
+
+    private boolean isEstimationNeeded(ClusteringAlgorithm alg, Props params) {
+        for (Parameter p : alg.getRequiredParameters()) {
+            if (p.isRequired() && !params.containsKey(p.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void findCutoff(HierarchicalResult result, Props params) {
