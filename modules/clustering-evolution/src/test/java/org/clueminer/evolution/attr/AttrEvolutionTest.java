@@ -106,7 +106,7 @@ public class AttrEvolutionTest {
         test.run();
     }
 
-    // @Test
+    @Test
     public void testInformed() {
         //test run with informed metric
         test = new AttrEvolution(irisDataset, 50);
@@ -121,7 +121,10 @@ public class AttrEvolutionTest {
         test.run();
     }
 
-    @Test
+    /**
+     * TODO: test takes too long and sometimes gets killed on travis
+     */
+    //@Test
     public void testVariousMeasuresAndDatasets() {
         InternalEvaluatorFactory<Instance, Cluster<Instance>> factory = InternalEvaluatorFactory.getInstance();
         ExternalEvaluator ext = new JaccardIndex();
