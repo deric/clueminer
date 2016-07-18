@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.gui.dlg;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -46,6 +47,7 @@ import org.openide.util.TaskListener;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Simple UI for {@link DBSCAN} configuration.
  *
  * @author deric
  */
@@ -60,7 +62,7 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
     private JComboBox comboDistance;
     private JButton btnEstimate;
     private JLabel info;
-    private static final String name = "DBSCAN";
+    private static final String NAME = "DBSCAN";
     private Dataset<E> dataset;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private Props params = new Props();
@@ -73,13 +75,13 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     private void initComponents() {
         setLayout(new GridBagLayout());
 
-        tfMinPts = new JTextField("4", 10);
+        tfMinPts = new JTextField("4", 5);
         sliderMinPts = new JSlider(1, 1000, 4);
         sliderMinPts.addChangeListener(new ChangeListener() {
 
@@ -165,6 +167,7 @@ public class DBSCANDialog<E extends Instance, C extends Cluster<E>> extends JPan
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
         add(comboDistance, c);
+        setMinimumSize(new Dimension(200, 200));
     }
 
     private void updateMinPtsSlider() {
