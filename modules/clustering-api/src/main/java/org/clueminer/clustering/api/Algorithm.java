@@ -100,13 +100,7 @@ public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implem
         this.ph = ph;
     }
 
-    /**
-     * Get all algorithm parameters that could be modified.
-     *
-     * @return all algorithm parameters
-     */
-    @Override
-    public Parameter[] getParameters() {
+    private Collection<Parameter> params() {
         Collection<Parameter> res = new LinkedList<>();
         Class<?> clazz = getClass();
         while (clazz != null) {
@@ -143,6 +137,7 @@ public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implem
                             }
                         }
                         Parameter out = new AlgParam(paramName, type, p.description(), p.factory());
+                        out.setRequired(p.required());
                         switch (type) {
                             case DOUBLE:
                             case INTEGER:
@@ -157,7 +152,29 @@ public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implem
             //go to parent class
             clazz = clazz.getSuperclass();
         }
+        return res;
+    }
+
+    /**
+     * Get all algorithm parameters that could be modified.
+     *
+     * @return all algorithm parameters
+     */
+    @Override
+    public Parameter[] getParameters() {
+        Collection<Parameter> res = params();
         return res.toArray(new Parameter[res.size()]);
+    }
+
+    @Override
+    public Parameter[] getRequiredParameters() {
+        LinkedList<Parameter> res = new LinkedList<>();
+        for (Parameter p : params()) {
+            if (p.isRequired()) {
+                res.add(p);
+            }
+        }
+        return res.toArray(new Parameter[0]);
     }
 
 }

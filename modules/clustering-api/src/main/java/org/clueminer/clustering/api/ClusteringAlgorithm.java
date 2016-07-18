@@ -101,4 +101,13 @@ public interface ClusteringAlgorithm<E extends Instance, C extends Cluster<E>> {
      * @return true when each run leads to same solution
      */
     boolean isDeterministic();
+
+    /**
+     * A set of parameters that are required for running the algorithm and
+     * can't be reliably estimated in an automatic way
+     * (different methods might exists for its estimation).
+     *
+     * @return necessary algorithm parameters
+     */
+    Parameter[] getRequiredParameters();
 }

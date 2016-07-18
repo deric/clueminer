@@ -19,6 +19,10 @@ package org.clueminer.clustering.params;
 import org.clueminer.clustering.api.config.Parameter;
 
 /**
+ * Parameter properties that are typically set from annotations, e.g. Param:
+ * {@link org.clueminer.clustering.api.config.annotation.Param}.
+ *
+ * See {@link org.clueminer.clustering.api.Algorithm}
  *
  * @author Tomas Barton
  * @param <T>
@@ -31,6 +35,7 @@ public class AlgParam<T> implements Parameter<T> {
     private String factory;
     private double min;
     private double max;
+    private boolean required;
 
     public AlgParam(String name, ParamType type) {
         this.name = name;
@@ -65,12 +70,12 @@ public class AlgParam<T> implements Parameter<T> {
 
     @Override
     public T getValue() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void setValue(T value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -96,6 +101,16 @@ public class AlgParam<T> implements Parameter<T> {
     @Override
     public void setMax(double max) {
         this.max = max;
+    }
+
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
+
+    @Override
+    public void setRequired(boolean b) {
+        this.required = b;
     }
 
 }

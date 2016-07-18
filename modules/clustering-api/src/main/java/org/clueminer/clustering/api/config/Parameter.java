@@ -19,6 +19,8 @@ package org.clueminer.clustering.api.config;
 import org.clueminer.clustering.params.ParamType;
 
 /**
+ * A parameter of an algorithm, that could be either used for influencing result
+ * quality or performance of an algorithm.
  *
  * @author Tomas Barton
  * @param <T>
@@ -63,7 +65,7 @@ public interface Parameter<T> {
 
     /**
      * case BOOLEAN: upperLimit[i] = 1; combinations *= 2;
-     * logger.log(Level.INFO, "possible values: {0}", 2); break;     * Factory for getting possible values
+     * logger.log(Level.INFO, "possible values: {0}", 2); break; * Factory for getting possible values
      *
      * @return String
      */
@@ -94,4 +96,19 @@ public interface Parameter<T> {
      * @param max
      */
     void setMax(double max);
+
+    /**
+     * An exception is typically thrown in case that required parameter is
+     * not given.
+     *
+     * @return true when parameter need to be specified
+     */
+    boolean isRequired();
+
+    /**
+     * Require parameter for each algorithm run?
+     *
+     * @param b
+     */
+    void setRequired(boolean b);
 }

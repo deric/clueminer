@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -10,9 +11,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class AbstractClusteringAlgorithmTest {
+public class AlgorithmTest {
 
-    public AbstractClusteringAlgorithmTest() {
+    public AlgorithmTest() {
     }
 
     @Test
@@ -52,6 +53,11 @@ public class AbstractClusteringAlgorithmTest {
         @Override
         public boolean isDeterministic() {
             return true;
+        }
+
+        @Override
+        public Parameter[] getRequiredParameters() {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
 
     }
