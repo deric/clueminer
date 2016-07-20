@@ -18,6 +18,8 @@ package org.clueminer.chameleon;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.chameleon.mo.PairMergerMO;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.algorithm.DBSCAN;
@@ -162,6 +164,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      */
     public static final String NUM_FRONTS = "pareto_fronts";
 
+    private static final Logger LOGGER = Logger.getLogger(Chameleon.class.getName());
+
     @Override
     public String getName() {
         return "Chameleon";
@@ -181,6 +185,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             System.out.println("Chameleon cannot cluster attributes");
             return null;
         }
+        int debug = pref.getInt("debug", 0);
 
         ArrayList<E> noise = null;
         if (pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
@@ -199,7 +204,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
         maxPartitionSize = pref.getInt(MAX_PARTITION);
-
 
         graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
@@ -224,6 +228,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         Partitioning partitioningAlg = PartitioningFactory.getInstance().getProvider(partitioning);
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g, pref);
+        if (debug > 0) {
+            LOGGER.log(Level.INFO, "num partitions {0}", partitioningResult.size());
+        }
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
@@ -250,7 +257,6 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         result.setNoise(noise);
         return result;
     }
-
 
     private ArrayList<E> findNoiseViaDBSCAN(Dataset<E> dataset, Props pref) {
         DBSCANParamEstim<E> estimation = DBSCANParamEstim.getInstance();
