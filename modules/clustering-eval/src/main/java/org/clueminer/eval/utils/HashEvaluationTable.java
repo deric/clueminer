@@ -19,8 +19,9 @@ package org.clueminer.eval.utils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +39,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
+ * Storage for evaluation metrics which are frequently very expensive to compute.
  *
  * @author Tomas Barton
  * @param <E>
@@ -48,7 +50,7 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     private Clustering<E, C> clustering;
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
-    private HashMap<String, Double> scores;
+    private TreeMap<String, Double> scores;
     private static final Logger LOGGER = Logger.getLogger(HashEvaluationTable.class.getName());
 
     public HashEvaluationTable(Clustering<E, C> clustering, Dataset<E> dataset) {
@@ -63,16 +65,16 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     }
 
     private void reset() {
-        scores = new HashMap<>(internalMap.size() + externalMap.size());
+        scores = new TreeMap<>();
     }
 
     @Override
-    public HashMap<String, Double> getAll() {
+    public SortedMap<String, Double> getAll() {
         return scores;
     }
 
     @Override
-    public HashMap<String, Double> countAll() {
+    public Map<String, Double> countAll() {
         for (ClusterEvaluation<E, C> eval : internalMap.values()) {
             getScore(eval);
         }
@@ -129,8 +131,8 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     }
 
     private Map<String, Double> evalToScoreMap(Object2ObjectMap<String, ClusterEvaluation> map) {
-        HashMap<String, Double> res = new HashMap<>(map.size());
-        for (ClusterEvaluation eval : map.values()) {
+        TreeMap<String, Double> res = new TreeMap<>();
+        for (ClusterEvaluation<E, C> eval : map.values()) {
             res.put(eval.getName(), getScore(eval));
         }
         return res;

@@ -16,7 +16,6 @@
  */
 package org.clueminer.clustering.api;
 
-import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -88,12 +87,12 @@ public interface EvaluationTable<E extends Instance, C extends Cluster<E>> {
      *
      * @return all currently computed scores
      */
-    HashMap<String, Double> getAll();
+    Map<String, Double> getAll();
 
     /**
      * Count score that have not been evaluated so far
      *
      * @return map with all scores
      */
-    HashMap<String, Double> countAll();
+    Map<String, Double> countAll();
 }

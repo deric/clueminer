@@ -57,8 +57,8 @@ public class PropPanel extends JPanel {
         content.setSize(new Dimension(800, 600));
         scrollPane = new JScrollPane(content);
         scrollPane.setLayout(new ScrollPaneLayout());
-        scrollPane.setHorizontalScrollBarPolicy(scrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(scrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         //scrollPane.getViewport().add(content);
         add(scrollPane, new GridBagConstraints(
                 0, 0, 1, 1, 1.0, 1.0,
