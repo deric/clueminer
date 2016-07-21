@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.evolution.attr;
 
 import org.clueminer.clustering.algorithm.KMeans;
@@ -11,7 +27,6 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -23,7 +38,7 @@ public class WeightsIndividualTest {
     private EvolutionSO evolution;
     private WeightsIndividual one;
     private Individual two;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public WeightsIndividualTest() {
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
@@ -32,10 +47,6 @@ public class WeightsIndividualTest {
         evolution.setAlgorithm(new KMeans());
         one = new WeightsIndividual(evolution);
         two = new WeightsIndividual(evolution);
-    }
-
-    @Before
-    public void setUp() {
     }
 
     /**
@@ -82,28 +93,7 @@ public class WeightsIndividualTest {
     public void testDeepCopy() {
         Individual<WeightsIndividual, Instance, Cluster<Instance>> other = one.deepCopy();
         assertNotNull(other.getFitness());
-        assertEquals(one.getFitness(), other.getFitness(), delta);
-    }
-
-    /**
-     * Test of isCompatible method, of class WeightsIndividual.
-     */
-    @Test
-    public void testIsCompatible() {
-    }
-
-    /**
-     * Test of duplicate method, of class WeightsIndividual.
-     */
-    @Test
-    public void testDuplicate() {
-    }
-
-    /**
-     * Test of toString method, of class WeightsIndividual.
-     */
-    @Test
-    public void testToString() {
+        assertEquals(one.getFitness(), other.getFitness(), DELTA);
     }
 
     @Test
