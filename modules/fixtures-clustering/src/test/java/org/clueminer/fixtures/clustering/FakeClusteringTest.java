@@ -2,6 +2,7 @@ package org.clueminer.fixtures.clustering;
 
 import org.clueminer.clustering.api.Clustering;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -101,7 +102,15 @@ public class FakeClusteringTest {
         assertEquals(2, clust.instance(0).size());
         assertEquals(2, clust.instance(1).size());
         assertEquals(2, clust.instance(2).size());
+    }
 
+    @Test
+    public void testSpirals() {
+        Clustering clust = FakeClustering.spirals();
+        assertNotNull(clust);
+        assertEquals(2, clust.size());
+        assertEquals(500, clust.get(0).size());
+        assertEquals(500, clust.get(1).size());
     }
 
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.fixtures.clustering;
 
 import java.io.File;
@@ -7,6 +23,7 @@ import java.util.Iterator;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.colors.RandomColorsGenerator;
@@ -16,6 +33,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.fixtures.ClustFixture;
+import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.io.CsvLoader;
 import org.openide.util.Exceptions;
 
@@ -36,6 +54,7 @@ public class FakeClustering {
     private static Clustering<Instance, Cluster<Instance>> ext100p2;
     private static Clustering<Instance, Cluster<Instance>> ext100p3;
     private static Clustering<Instance, Cluster<Instance>> int100p4;
+    private static Clustering<Instance, Cluster<Instance>> spirals;
     private static Dataset<Instance> wine;
 
     public static Clustering iris() {
@@ -525,6 +544,33 @@ public class FakeClustering {
             }
         }
         return int100p4;
+    }
+
+    public static Clustering spirals() {
+        if (spirals == null) {
+            MLearnFixture fixture = new MLearnFixture();
+            try {
+                Dataset<Instance> data = new ArrayDataset<>(1000, 2);
+                CsvLoader loader = new CsvLoader();
+                data.attributeBuilder().create("x", BasicAttrType.NUMERIC);
+                data.attributeBuilder().create("y", BasicAttrType.NUMERIC);
+                data.setName("spirals");
+                loader.setSeparator('\t');
+                loader.setHasHeader(false);
+
+                loader.load(fixture.spirals(), data);
+                spirals = (Clustering<Instance, Cluster<Instance>>) Clusterings.newList(2);
+                Cluster<Instance> c1 = spirals.createCluster(0, 500);
+                Cluster<Instance> c2 = spirals.createCluster(1, 500);
+                for (int i = 0; i < 500; i++) {
+                    c1.add(data.get(i));
+                    c2.add(data.get(500 + i));
+                }
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return spirals;
     }
 
 }
