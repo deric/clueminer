@@ -55,6 +55,7 @@ public class FakeClustering {
     private static Clustering<Instance, Cluster<Instance>> ext100p3;
     private static Clustering<Instance, Cluster<Instance>> int100p4;
     private static Clustering<Instance, Cluster<Instance>> spirals;
+    private static Clustering<Instance, Cluster<Instance>> kumar;
     private static Dataset<Instance> wine;
 
     public static Clustering iris() {
@@ -471,6 +472,7 @@ public class FakeClustering {
             c = clust.get(cls - 1);
             c.add(inst);
         }
+        clust.lookupAdd(data);
 
         return clust;
     }
@@ -571,6 +573,23 @@ public class FakeClustering {
             }
         }
         return spirals;
+    }
+
+    public static Clustering kumar() {
+        if (kumar == null) {
+            Dataset<? extends Instance> data = FakeDatasets.kumarData();
+            kumar = (Clustering<Instance, Cluster<Instance>>) Clusterings.newList(2);
+            kumar.lookupAdd(data);
+            Cluster<Instance> c1 = kumar.createCluster(0, 3);
+            c1.setAttributes(data.getAttributes());
+            Cluster<Instance> c2 = kumar.createCluster(1, 3);
+            c2.setAttributes(data.getAttributes());
+            for (int i = 0; i < data.size() / 2; i++) {
+                c1.add(data.get(i));
+                c2.add(data.get(data.size() / 2 + i));
+            }
+        }
+        return kumar;
     }
 
 }

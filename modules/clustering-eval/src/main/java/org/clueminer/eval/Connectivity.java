@@ -19,10 +19,8 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.neighbor.KNNSearch;
-import org.clueminer.neighbor.KnnFactory;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -45,33 +43,24 @@ import org.openide.util.lookup.ServiceProvider;
 public class Connectivity<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 5416705978468100914L;
-    private static final String name = "Connectivity";
+    private static final String NAME = "Connectivity";
     private static final String PARAM = "connectivity.L";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         double conn = 0.0;
-        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
-        if (dataset == null) {
-            throw new RuntimeException("missing dataset");
-        }
 
         //parameter specifing number of neighbours that contribute to connectivity
         // value 10 is suggested by Handl, Knowles
         int L = params.getInt(PARAM, 10);
-        KnnFactory<E> kf = KnnFactory.getInstance();
-        KNNSearch<E> nns = kf.getDefault();
-        if (nns == null) {
-            throw new RuntimeException("missing k-nn implementation");
-        }
         C c;
         Neighbor[] nn;
-        nns.setDataset(dataset);
+        KNNSearch<E> nns = getKnn(clusters, params);
         for (int i = 0; i < clusters.size(); i++) {
             c = clusters.get(i);
             for (int j = 0; j < c.size(); j++) {

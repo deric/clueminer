@@ -33,6 +33,8 @@ import org.clueminer.math.impl.DenseVector;
 import org.clueminer.math.impl.Stats;
 import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
+import org.clueminer.neighbor.KNNSearch;
+import org.clueminer.neighbor.KnnFactory;
 import org.clueminer.utils.Props;
 
 /**
@@ -383,6 +385,40 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         }
 
         return trace;
+    }
+
+    public KNNSearch<E> getKnn(Clustering<E, C> clusters, Props params) {
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing dataset");
+        }
+        String knnName = params.get("knn", "linear k-nn");
+        KnnFactory<E> kf = KnnFactory.getInstance();
+        KNNSearch<E> nns = kf.getProvider(knnName);
+        if (nns == null) {
+            throw new RuntimeException("missing k-nn implementation");
+        }
+        nns.setDataset(dataset);
+        return nns;
+    }
+
+    /**
+     * Return maximum from given arguments
+     *
+     * @param n
+     * @return
+     */
+    public static double max(double... n) {
+        int i = 0;
+        double max = n[i];
+
+        while (++i < n.length) {
+            if (n[i] > max) {
+                max = n[i];
+            }
+        }
+
+        return max;
     }
 
 }

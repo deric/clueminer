@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.fixtures.clustering;
 
 import org.clueminer.clustering.api.Clustering;
@@ -111,6 +127,16 @@ public class FakeClusteringTest {
         assertEquals(2, clust.size());
         assertEquals(500, clust.get(0).size());
         assertEquals(500, clust.get(1).size());
+    }
+
+    @Test
+    public void testKumar() {
+        Clustering clust = FakeClustering.kumar();
+        assertNotNull(clust);
+        assertEquals(2, clust.size());
+        assertEquals(3, clust.get(0).size());
+        assertEquals(3, clust.get(1).size());
+        assertEquals(6, clust.instancesCount());
     }
 
 }
