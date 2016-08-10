@@ -75,6 +75,7 @@ public class PairMergerMOH<E extends Instance, C extends GraphCluster<E>, P exte
         }
     }
 
+    @Override
     protected void initQueue(Props pref) {
         queue = new FrontHeapQueue<>(pref.getInt(Chameleon.NUM_FRONTS, 5), blacklist, objectives, pref);
     }
