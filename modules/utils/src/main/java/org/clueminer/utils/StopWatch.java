@@ -61,8 +61,8 @@ public class StopWatch {
      *
      * @return time in seconds
      */
-    public int timeInSec() {
-        return (int) (total() / BY_SECONDS);
+    public double timeInSec() {
+        return (total() / BY_SECONDS);
     }
 
     public String formatMs() {
