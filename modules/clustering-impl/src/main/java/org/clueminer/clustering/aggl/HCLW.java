@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.aggl;
 
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -76,7 +77,7 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             AbstractQueue<Element> pq, ClusterLinkage<E> linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb,
+            Int2DoubleMap cache, int leftId, int rightId, int ma, int mb,
             HashMap<Integer, E> centroids, Dataset<? extends E> dataset) {
         Element current;
         double distance;
@@ -105,14 +106,14 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
      * @param b       a cluster that is being merged
      * @param sim     similarity matrix
      * @param linkage cluster linkage method
-     * @param cache
+     * @param cache   computed distances
      * @param ma      size of cluster A
      * @param mb      size of cluster B
      * @param mq      size of cluster Q
      * @return
      */
     public double updateProximity(int r, int q, int a, int b, Matrix sim,
-            ClusterLinkage linkage, HashMap<Integer, Double> cache,
+            ClusterLinkage linkage, Int2DoubleMap cache,
             int ma, int mb, int mq) {
         double aq = fetchDist(a, q, sim, cache);
         double bq = fetchDist(b, q, sim, cache);
@@ -138,7 +139,7 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
      * @param cache
      * @return
      */
-    protected double fetchDist(int x, int y, Matrix sim, HashMap<Integer, Double> cache) {
+    protected double fetchDist(int x, int y, Matrix sim, Int2DoubleMap cache) {
         double res;
         if (!sim.has(x, y)) {
             int mapped = map(x, y);
@@ -186,7 +187,7 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
      * @param sim
      * @param cache
      */
-    protected void print(int n, Matrix sim, HashMap<Integer, Double> cache) {
+    protected void print(int n, Matrix sim, Int2DoubleMap cache) {
         int d = 2;
         int w = 5;
         DecimalFormat format = new DecimalFormat();
@@ -208,7 +209,7 @@ public class HCLW<E extends Instance, C extends Cluster<E>> extends HC<E, C> imp
      * @param sim
      * @param cache
      */
-    protected void print(PrintWriter output, NumberFormat format, int width, int n, Matrix sim, HashMap<Integer, Double> cache) {
+    protected void print(PrintWriter output, NumberFormat format, int width, int n, Matrix sim, Int2DoubleMap cache) {
         output.println();  // start on new line.
         int padding;
         String s;

@@ -16,7 +16,7 @@
  */
 package org.clueminer.clustering.aggl;
 
-import java.util.HashMap;
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -60,7 +60,7 @@ public class HacLwComplete<E extends Instance, C extends Cluster<E>> extends HCL
      */
     @Override
     public double updateProximity(int r, int q, int a, int b, Matrix sim,
-            ClusterLinkage linkage, HashMap<Integer, Double> cache,
+            ClusterLinkage linkage, Int2DoubleMap cache,
             int ma, int mb, int mq) {
         double dist = Math.max(fetchDist(a, q, sim, cache), fetchDist(b, q, sim, cache));
         cache.put(map(r, q), dist);

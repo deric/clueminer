@@ -16,6 +16,9 @@
  */
 package org.clueminer.clustering.aggl;
 
+import it.unimi.dsi.fastutil.ints.Int2DoubleMap;
+import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.AbstractQueue;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -75,7 +78,7 @@ import org.clueminer.utils.Props;
 public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String NAME = "HC";
-    private static final Logger logger = Logger.getLogger(HC.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HC.class.getName());
 
     @Param(name = AlgParams.LINKAGE,
            factory = "org.clueminer.clustering.api.factory.LinkageFactory",
@@ -125,7 +128,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     private HierarchicalResult hClust(Dataset<E> dataset, Matrix input, int n,
             Props pref, AlgParams params, HierarchicalResult result) {
-        logger.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
+        LOGGER.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
         AbstractQueue<Element> pq = initQueue(items, pref);
@@ -134,7 +137,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
         } else {
-            logger.log(Level.INFO, "matrix columns: {0}", input.columnsCount());
+            LOGGER.log(Level.INFO, "matrix columns: {0}", input.columnsCount());
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)
@@ -219,8 +222,11 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
         Map<Integer, Set<Integer>> assignments = initialAssignment(n, dataset, params, nodes);
 
         Element curr;
-        HashSet<Integer> blacklist = new HashSet<>();
-        HashMap<Integer, Double> cache = new HashMap<>();
+        //HashSet<Integer> blacklist = new HashSet<>();
+        final IntOpenHashSet blacklist = new IntOpenHashSet();
+        //HashMap<Integer, Double> cache = new HashMap<>();
+        Int2DoubleOpenHashMap cache = new Int2DoubleOpenHashMap();
+
         DendroNode node = null;
         Set<Integer> left, right;
         int nodeId = n;
@@ -304,7 +310,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     protected void updateDistances(int mergedId, Set<Integer> mergedCluster,
             Matrix similarityMatrix, Map<Integer, Set<Integer>> assignments,
             AbstractQueue<Element> pq, ClusterLinkage<E> linkage,
-            HashMap<Integer, Double> cache, int leftId, int rightId, int ma, int mb,
+            Int2DoubleMap cache, int leftId, int rightId, int ma, int mb,
             HashMap<Integer, E> centroids, Dataset<? extends E> dataset) {
         Element current;
         double distance;
