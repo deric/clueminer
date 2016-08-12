@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -46,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
-    public static final String name = "CLUTO";
+    public static final String NAME = "CLUTO";
     private final ExtBinHelper<E> helper;
 
     public static final String K = "k";
@@ -56,6 +58,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
     public static final String CRFUN = "crfun";
 
     private static final String space = " ";
+    private static final Logger LOGGER = Logger.getLogger(Cluto.class.getName());
 
     public Cluto() {
         helper = new ExtBinHelper();
@@ -63,7 +66,7 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -74,7 +77,12 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
         Clustering<E, C> clustering = null;
         try {
             long current = System.currentTimeMillis();
+            int debug = props.getInt("debug", 0);
             File dataFile = new File("data-" + ExtBinHelper.safeName(dataset.getName()) + "-" + current + ".mat");
+            if (debug > 0) {
+                LOGGER.log(Level.INFO, "writing to file: {0}", dataFile.getAbsolutePath());
+                LOGGER.log(Level.INFO, "dataset size: {0}", dataset.size());
+            }
             try {
                 helper.exportDataset(dataset, dataFile);
             } catch (FileNotFoundException ex) {
@@ -95,8 +103,10 @@ public class Cluto<E extends Instance, C extends Cluster<E>> extends Algorithm<E
             p = Runtime.getRuntime().exec(metisFile.getAbsolutePath() + params);
             p.waitFor();
             helper.readStdout(p);
-            dataFile.delete();
-            dataFile.deleteOnExit();
+            if (debug == 0) {
+                dataFile.delete();
+                dataFile.deleteOnExit();
+            }
 
             File output = new File(result);
             int repeat = 0;
