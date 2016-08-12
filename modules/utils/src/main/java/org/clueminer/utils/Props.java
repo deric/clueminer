@@ -230,6 +230,9 @@ public class Props implements Map<String, Object> {
         if (val instanceof Integer) {
             return (int) val;
         }
+        if (val == null) {
+            throw new RuntimeException("key '" + key + "' expected, but none given");
+        }
         int ret = Integer.parseInt((String) val);
         return ret;
     }
