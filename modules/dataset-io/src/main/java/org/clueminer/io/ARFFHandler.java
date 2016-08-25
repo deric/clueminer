@@ -68,15 +68,16 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      * "@attribute Mitoses integer [1,10]"
      *
      */
-
     public static final Pattern attrDef = Pattern.compile("^@attribute(.*)", Pattern.CASE_INSENSITIVE);
 
     private static final Logger LOG = Logger.getLogger(ARFFHandler.class.getName());
 
     /**
-     * Most common values of separators in data
+     * Most common values of separators in data (comma is the default)
      */
-    private static final String[] SEPARATORS = new String[]{"\t", "\\s+"};
+    private static final String[] SEPARATORS = new String[]{"\t", "\\s+", ","};
+
+    private boolean skipColumnsWithNaNs = true;
 
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
@@ -181,17 +182,26 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                         skip++;
                     } else {
                         double val;
+                        idx = i - skip;
                         if (!skippedIndexes.contains(i)) {
                             try {
                                 val = Double.parseDouble(arr[i]);
+                                setValue(values, idx, val, line);
                             } catch (NumberFormatException e) {
-                                val = Double.NaN;
+                                if (skipColumnsWithNaNs) {
+                                    LOG.log(Level.INFO, "skipping index {0} because column contains {1}: {2}", new Object[]{i, arr[i], e.getMessage()});
+                                    skippedIndexes.add(i);
+                                    skipSize++;
+                                    skip++;
+                                    double[] tmp = new double[arr.length - skipSize];
+                                    System.arraycopy(values, 0, tmp, 0, tmp.length);
+                                    values = tmp;
+                                    out.removeAttribute(i);
+                                } else {
+                                    val = Double.NaN;
+                                    setValue(values, idx, val, line);
+                                }
                             }
-                            idx = i - skip;
-                            if (idx < 0 || idx >= values.length) {
-                                throw new RuntimeException("expected at least " + skip + " columns, on line: '" + line + "', cols: " + values.length);
-                            }
-                            values[i - skip] = val;
                         } else {
                             skip++;
                         }
@@ -225,6 +235,13 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
             }
         }
         return true;
+    }
+
+    private void setValue(double[] values, int idx, double value, String line) {
+        if (idx < 0 || idx >= values.length) {
+            throw new RuntimeException("expected " + values.length + " columns, on line: '" + line + "', got " + idx);
+        }
+        values[idx] = value;
     }
 
     protected String convertType(String type) {

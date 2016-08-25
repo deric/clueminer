@@ -33,11 +33,13 @@ import org.junit.Test;
 /**
  *
  * @author deric
+ * @param <E>
  */
-public class ARFFHandlerTest {
+public class ARFFHandlerTest<E extends Instance> {
 
     private static ARFFHandler arff;
     private static CommonFixture tf;
+    private static double DELTA = 1e-9;
 
     @BeforeClass
     public static void setUpClass() {
@@ -97,7 +99,7 @@ public class ARFFHandlerTest {
 
     @Test
     public void testLoadYeast() throws FileNotFoundException, IOException, ParserError {
-        Dataset<? extends Instance> data = new ArrayDataset(1484, 8);
+        Dataset<E> data = new ArrayDataset(1484, 8);
         ArrayList<Integer> skippedIndexes = new ArrayList<>();
         skippedIndexes.add(0); //we skip instance name
         arff.load(new LineIterator(tf.yeastData()), data, 9, "\\s+", skippedIndexes);
@@ -105,14 +107,28 @@ public class ARFFHandlerTest {
         assertEquals(1484, data.size());
     }
 
+    /**
+     * auto-detect columns separator
+     *
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws ParserError
+     */
     @Test
     public void testLoadYeastAuto() throws FileNotFoundException, IOException, ParserError {
-        Dataset<? extends Instance> data = new ArrayDataset(1484, 8);
+        Dataset<E> data = new ArrayDataset(1484, 8);
         ArrayList<Integer> skippedIndexes = new ArrayList<>();
         skippedIndexes.add(0); //we skip instance name
         arff.load(tf.yeastData(), data);
-        assertEquals(9, data.attributeCount());
+        assertEquals(8, data.attributeCount());
         assertEquals(1484, data.size());
+        System.out.println("0: " + data.instance(0).toString());
+        assertEquals(8, data.instance(0).size());
+        assertEquals(8, data.instance(1).size());
+        //first line
+        assertEquals(0.58, data.get(0, 0), DELTA);
+        assertEquals(0.61, data.get(0, 1), DELTA);
+        assertEquals("MIT", data.get(0).classValue());
     }
 
     @Test
