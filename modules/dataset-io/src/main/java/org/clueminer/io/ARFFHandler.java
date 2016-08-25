@@ -1,9 +1,27 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
@@ -59,6 +77,13 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
 
     public static final Pattern attrDef = Pattern.compile("^@attribute(.*)", Pattern.CASE_INSENSITIVE);
 
+    private static final Logger LOG = Logger.getLogger(ARFFHandler.class.getName());
+
+    /**
+     * Most common values of separators in data
+     */
+    private static final String[] SEPARATORS = new String[]{"\t", "\\s+"};
+
     /**
      * Load a data set from an ARFF formatted file. Due to limitations in the
      * Java-ML design only numeric attributes can be read. This method does not
@@ -83,7 +108,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      * @param dataset
      * @param classIndex - the index of the class label
      * @return the data set represented in the provided file
-     * @throws FileNotFoundException - if the file can not be found
+     * @throws FileNotFoundException               - if the file can not be found
      * @throws org.clueminer.exception.ParserError
      */
     public boolean load(File file, Dataset dataset, int classIndex) throws FileNotFoundException, ParserError {
@@ -98,6 +123,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
     public boolean load(File file, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws ParserError {
         return load(new LineIterator(file), out, classIndex, separator, skippedIndexes);
     }
+
     /**
      *
      * @param it             line iterator
@@ -108,8 +134,8 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      * @param skippedIndexes - indexes of columns that won't be imported
      * @return
      * @throws org.clueminer.exception.ParserError
-     * @throws IllegalArgumentException when type is not convertible to Enum
-     *                                  IAttributeType
+     * @throws IllegalArgumentException            when type is not convertible to Enum
+     *                                             IAttributeType
      */
     public boolean load(LineIterator it, Dataset out, int classIndex, String separator, ArrayList<Integer> skippedIndexes) throws ParserError {
         it.setSkipBlanks(true);
@@ -130,6 +156,21 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
              */
             if (dataMode) {
                 String[] arr = line.split(separator);
+                //magic for separator detection
+                if (arr.length == 1) {
+                    LOG.log(Level.INFO, "failed to split line (using separator ''{0}''): {1}", new Object[]{separator, line});
+                    for (String s : SEPARATORS) {
+                        arr = line.split(s);
+                        if (arr.length > 1) {
+                            LOG.log(Level.INFO, "setting separator to ''{0}''", s);
+                            separator = s;
+                            break;
+                        }
+                    }
+                    if (arr.length == 1) {
+                        throw new RuntimeException("failed to find multiple columns in data row");
+                    }
+                }
                 double[] values;
                 int skipSize = skippedIndexes.size();
                 int skip = 0;
