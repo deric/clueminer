@@ -215,6 +215,14 @@ public interface Dataset<E extends Instance> extends Cloneable, Serializable, It
     Attribute getAttribute(int index);
 
     /**
+     * Remove attribute from the dataset
+     *
+     * @param index
+     * @return removed attribute
+     */
+    Attribute removeAttribute(int index);
+
+    /**
      * Add attributes after last attribute
      *
      * @param attr

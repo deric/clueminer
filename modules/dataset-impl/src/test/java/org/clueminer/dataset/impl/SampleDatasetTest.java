@@ -1,6 +1,21 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.dataset.impl;
 
-import org.clueminer.dataset.impl.SampleDataset;
 import java.util.Random;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.Attribute;
@@ -16,11 +31,12 @@ import org.junit.Test;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public class SampleDatasetTest {
+public class SampleDatasetTest<E extends Instance> {
 
     private static SampleDataset<Instance> dataset;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public SampleDatasetTest() {
     }
@@ -50,17 +66,11 @@ public class SampleDatasetTest {
         dataset.setName("test dataset");
     }
 
-    /**
-     * Test of getName method, of class SampleDataset.
-     */
     @Test
     public void testGetName() {
         assertEquals("test dataset", dataset.getName());
     }
 
-    /**
-     * Test of setName method, of class SampleDataset.
-     */
     @Test
     public void testSetName() {
         dataset.setName("test");
@@ -173,21 +183,27 @@ public class SampleDatasetTest {
     public void testGetClasses() {
     }
 
-    /**
-     * Test of attributeCount method, of class SampleDataset.
-     */
     @Test
     public void testAttributeCount() {
         assertEquals(3, dataset.attributeCount());
     }
 
-    /**
-     * Test of getAttribute method, of class SampleDataset.
-     */
     @Test
     public void testGetAttributeInt() {
         Attribute a = dataset.getAttribute(0);
         assertEquals("first", a.getName());
+    }
+
+    @Test
+    public void testRemoveAttributeInt() {
+        Dataset<E> d = new SampleDataset<>(2);
+        d.attributeBuilder().create("x", "NUMERIC");
+        d.attributeBuilder().create("y", "NUMERIC");
+        assertEquals(2, d.attributeCount());
+
+        Attribute a = d.removeAttribute(1);
+        assertEquals("y", a.getName());
+        assertEquals(1, d.attributeCount());
     }
 
     @Test
@@ -288,7 +304,7 @@ public class SampleDatasetTest {
     public void testSetAttributeValueIntInt() {
         double value = 1.23;
         dataset.set(0, 1, value);
-        assertEquals(value, dataset.get(0, 1), delta);
+        assertEquals(value, dataset.get(0, 1), DELTA);
     }
 
     @Test
@@ -300,7 +316,7 @@ public class SampleDatasetTest {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 test.set(i, j, data[i][j]);
-                assertEquals(data[i][j], test.get(i, j), delta);
+                assertEquals(data[i][j], test.get(i, j), DELTA);
             }
         }
     }

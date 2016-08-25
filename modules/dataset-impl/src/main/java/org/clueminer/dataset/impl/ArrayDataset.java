@@ -305,6 +305,32 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
         setAttribute(attributeCount(), attr);
     }
 
+    /**
+     * Remove attribute from the dataset.
+     *
+     * @TODO: should we update all data rows?
+     *
+     * @param index
+     * @return
+     */
+    @Override
+    public Attribute removeAttribute(int index) {
+        Attribute attr = attributes[index];
+        Attribute[] tmp = new Attribute[attributes.length];
+        if (index == 0) {
+            System.arraycopy(attributes, 1, tmp, 0, attrCnt - 1);
+        } else if (index == attributes.length - 1) {
+            System.arraycopy(attributes, 0, tmp, 0, attrCnt - 2);
+        } else {
+            System.arraycopy(attributes, 0, tmp, 0, index);
+            System.arraycopy(attributes, index, tmp, index, attrCnt - 1 - index);
+        }
+        attributes = tmp;
+        attrCnt--;
+
+        return attr;
+    }
+
     public final void ensureAttrSize(int reqAttrSize) {
         if (reqAttrSize >= attributes.length) {
             int capacity = (int) (reqAttrSize * 1.618); //golden ratio :)

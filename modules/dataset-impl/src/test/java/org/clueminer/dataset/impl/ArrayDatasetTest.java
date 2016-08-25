@@ -1,6 +1,21 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.dataset.impl;
 
-import org.clueminer.dataset.impl.ArrayDataset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -10,10 +25,10 @@ import org.clueminer.attributes.NumericalAttribute;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.dataset.std.DataScaler;
 import org.clueminer.math.Matrix;
-import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.std.Scaler;
 import org.junit.After;
 import org.junit.Assert;
@@ -27,14 +42,15 @@ import org.junit.Test;
 /**
  *
  * @author deric
+ * @param <E>
  */
-public class ArrayDatasetTest {
+public class ArrayDatasetTest<E extends Instance> {
 
     private static Dataset<Instance> dataset;
     private static final int dataCapacity = 10;
     private static final int attributesCnt = 2;
     private static Random rand;
-    private static final double delta = 1e-7;
+    private static final double DELTA = 1e-7;
     private final double[][] data2x5 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
 
     public ArrayDatasetTest() {
@@ -74,7 +90,7 @@ public class ArrayDatasetTest {
         for (int i = 0; i < data2x5.length; i++) {
             for (int j = 0; j < data2x5[0].length; j++) {
                 test.set(i, j, data2x5[i][j]);
-                assertEquals(data2x5[i][j], test.get(i, j), delta);
+                assertEquals(data2x5[i][j], test.get(i, j), DELTA);
             }
         }
     }
@@ -83,8 +99,8 @@ public class ArrayDatasetTest {
     public void testMinMax() {
         Dataset<? extends Instance> test = data2x5();
 
-        assertEquals(1, test.min(), delta);
-        assertEquals(10, test.max(), delta);
+        assertEquals(1, test.min(), DELTA);
+        assertEquals(10, test.max(), DELTA);
     }
 
     /**
@@ -202,23 +218,53 @@ public class ArrayDatasetTest {
         assertEquals(2, dataset.attributeCount());
     }
 
-    /**
-     * Test of getAttribute method, of class ArrayDataset.
-     */
     @Test
     public void testGetAttribute_int() {
+        Dataset<E> d = new ArrayDataset<>(2, 2);
+        d.attributeBuilder().create("x", "NUMERIC");
+        d.attributeBuilder().create("y", "NUMERIC");
+
+        Attribute attr = d.getAttribute(0);
+        assertNotNull(attr);
+        attr = d.getAttribute(1);
+        assertNotNull(attr);
     }
 
-    /**
-     * Test of getAttribute method, of class ArrayDataset.
-     */
+    @Test
+    public void testRemoveAttribute_int() {
+        Dataset<E> d = new ArrayDataset<>(2, 2);
+        d.attributeBuilder().create("x", "NUMERIC");
+        d.attributeBuilder().create("y", "NUMERIC");
+        assertEquals(2, d.attributeCount());
+        //remove first attribute
+        Attribute attr = d.removeAttribute(0);
+        assertEquals("x", attr.getName());
+        assertEquals(1, d.attributeCount());
+
+        attr = d.getAttribute(0);
+        assertEquals("y", attr.getName());
+
+        //add some new attributes
+        d.attributeBuilder().create("z", "NUMERIC");
+        d.attributeBuilder().create("w", "NUMERIC");
+        d.attributeBuilder().create("q", "NUMERIC");
+        assertEquals(4, d.attributeCount());
+
+        //remove last
+        attr = d.removeAttribute(3);
+        assertEquals("q", attr.getName());
+        assertEquals(3, d.attributeCount());
+
+        //remove middle attr
+        attr = d.removeAttribute(1);
+        assertEquals("z", attr.getName());
+        assertEquals(2, d.attributeCount());
+    }
+
     @Test
     public void testGetAttribute_String() {
     }
 
-    /**
-     * Test of setAttribute method, of class ArrayDataset.
-     */
     @Test
     public void testSetAttribute() {
         Attribute attr = new NumericalAttribute("b1");
@@ -242,7 +288,7 @@ public class ArrayDatasetTest {
     public void testSetAttributeValueIntInt() {
         double value = 1.23;
         dataset.set(0, 1, value);
-        assertEquals(value, dataset.get(0, 1), delta);
+        assertEquals(value, dataset.get(0, 1), DELTA);
     }
 
     /**
@@ -286,9 +332,6 @@ public class ArrayDatasetTest {
         // assertNotSame(attr[0].getIndex(), clone[0].getIndex());
     }
 
-    /**
-     * Test of copy method, of class ArrayDataset.
-     */
     @Test
     public void testCopy() {
         Dataset<? extends Instance> d1 = new ArrayDataset<>(data2x5);
@@ -307,16 +350,6 @@ public class ArrayDatasetTest {
 
     }
 
-    /**
-     * Test of toString method, of class ArrayDataset.
-     */
-    @Test
-    public void testToString() {
-    }
-
-    /**
-     * Test of arrayCopy method, of class ArrayDataset.
-     */
     @Test
     public void testArrayCopy() {
         Dataset<? extends Instance> data = data2x5();
@@ -356,7 +389,7 @@ public class ArrayDatasetTest {
         map.put(2, dataset.attributeBuilder().build("attr2", "NUMERIC"));
         assertEquals(true, map.get(0).getAllStatistics().hasNext());
 
-        assertEquals(0.0, map.get(0).statistics(StatsNum.AVG), delta);
+        assertEquals(0.0, map.get(0).statistics(StatsNum.AVG), DELTA);
 
         Dataset<? extends Instance> test = new ArrayDataset<>(5, 2);
         test.setAttributes(map);
@@ -448,7 +481,7 @@ public class ArrayDatasetTest {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 test.set(i, j, data[i][j]);
-                assertEquals(data[i][j], test.get(i, j), delta);
+                assertEquals(data[i][j], test.get(i, j), DELTA);
             }
         }
     }
@@ -460,7 +493,7 @@ public class ArrayDatasetTest {
         Instance tmp = test.get(0);
         test.set(0, test.get(1));
         test.set(1, tmp);
-        assertEquals(6.0, test.get(0, 0), delta);
+        assertEquals(6.0, test.get(0, 0), DELTA);
         assertEquals(2, test.size());
     }
 
@@ -658,8 +691,8 @@ public class ArrayDatasetTest {
 
         //max is one of methods that iterates over all attributes
         //we want to test that this won't throw null exception
-        assertEquals(5.0, test.max(), delta);
-        assertEquals(1.2, test.min(), delta);
+        assertEquals(5.0, test.max(), DELTA);
+        assertEquals(1.2, test.min(), DELTA);
 
     }
 }

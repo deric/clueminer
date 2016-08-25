@@ -439,6 +439,13 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
     }
 
     @Override
+    public Attribute removeAttribute(int index) {
+        Attribute attr = attributes.get(index);
+        lastAttr--;
+        return attr;
+    }
+
+    @Override
     public double min() {
         double min = Double.POSITIVE_INFINITY, curr;
         for (Attribute attribute : attributes.values()) {
