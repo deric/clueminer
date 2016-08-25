@@ -414,6 +414,11 @@ public class DraftContainer<E extends InstanceDraft> extends BaseDataset<E> impl
         return attributeList.get(index);
     }
 
+    @Override
+    public Attribute removeAttribute(int index) {
+        return attributeList.remove(index);
+    }
+
     /**
      * Check if we have an attribute for given column index
      *
