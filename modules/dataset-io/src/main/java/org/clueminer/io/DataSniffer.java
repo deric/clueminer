@@ -20,9 +20,9 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import org.clueminer.exception.ParserError;
-import static org.clueminer.io.ARFFHandler.relation;
 import org.clueminer.utils.DataFileInfo;
 import org.clueminer.utils.DatasetSniffer;
+import static org.clueminer.io.ARFFHandler.RELATION;
 
 /**
  * A set of heuristics to detect most common file types, right now it's not very
@@ -70,7 +70,7 @@ public class DataSniffer implements DatasetSniffer {
         int numAttr = 0;
         int i = 0;
         for (String line : it) {
-            if ((rmatch = relation.matcher(line)).matches()) {
+            if ((rmatch = RELATION.matcher(line)).matches()) {
                 df.name = rmatch.group(1);
                 relationFound = true;
             } else if (handler.isValidAttributeDefinition(line)) {

@@ -148,7 +148,7 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
         AttributeDraft attrd;
         while (reader.ready()) {
             line = reader.readLine();
-            if ((rmatch = ARFFHandler.relation.matcher(line)).matches()) {
+            if ((rmatch = ARFFHandler.RELATION.matcher(line)).matches()) {
                 loader.setName(rmatch.group(1));
             } else if (line.equalsIgnoreCase("@data")) {
                 return;

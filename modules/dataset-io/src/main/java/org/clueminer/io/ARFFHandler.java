@@ -42,15 +42,15 @@ import org.clueminer.utils.DatasetLoader;
  */
 public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
 
-    private Matcher match;
+    protected Matcher match;
     /**
      * matches eg. "
      *
      * @RELATION iris"
      */
-    public static final Pattern relation = Pattern.compile("^@relation\\s+(.*)", Pattern.CASE_INSENSITIVE);
-    public static final Pattern attrTypes = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
-    public static final Pattern singleWord = Pattern.compile("([\\w\\/-]+)(.*)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern RELATION = Pattern.compile("^@relation\\s+(.*)", Pattern.CASE_INSENSITIVE);
+    public static final Pattern ATTR_TYPES = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
+    public static final Pattern SINGLE_WORD = Pattern.compile("([\\w\\/-]+)(.*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * matches attribute definition which might simply contain attribute name
@@ -68,12 +68,6 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      * "@attribute Mitoses integer [1,10]"
      *
      */
-    //normal regexp: ^@attribute\s+['\"]?([\w._\\/-]*)['\"]?\s+([\w]+)(\{[\w+|'[-\w+ ]',]+\}){0,1}(\s\[[\w\s,]+\]){0,1}
-    //use rather isValidAttributeDefinition() method
-    @Deprecated
-    public static final Pattern attribute = Pattern.compile(
-            "^@attribute\\s+['\\\"]?([\\w._\\\\/-]*)['\\\"]?\\s+([\\w]+)?(\\{[\\w+|'[-\\w+ ]',]+\\}){0,1}(\\s\\[[\\w\\s,]+\\])?",
-            Pattern.CASE_INSENSITIVE);
 
     public static final Pattern attrDef = Pattern.compile("^@attribute(.*)", Pattern.CASE_INSENSITIVE);
 
@@ -204,7 +198,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                     }
                 }
                 out.builder().create(values, classValue);
-            } else if ((rmatch = relation.matcher(line)).matches()) {
+            } else if ((rmatch = RELATION.matcher(line)).matches()) {
                 out.setName(rmatch.group(1));
             } else if (isValidAttributeDefinition(line)) {
                 if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
@@ -234,7 +228,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
     }
 
     protected String convertType(String type) {
-        if ((match = attrTypes.matcher(type)).matches()) {
+        if ((match = ATTR_TYPES.matcher(type)).matches()) {
             return "REAL";
         }
         return type;
@@ -302,7 +296,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
             //suppose next string is the attribute's name
             Matcher m;
             String name;
-            if ((m = singleWord.matcher(line)).matches()) {
+            if ((m = SINGLE_WORD.matcher(line)).matches()) {
                 name = m.group(1);
                 attr.setName(name);
                 line = consume(line, name);
@@ -389,7 +383,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
         if (line.matches("^[A-Za-z](.*)")) {
             Matcher m;
             String type;
-            if ((m = singleWord.matcher(line)).matches()) {
+            if ((m = SINGLE_WORD.matcher(line)).matches()) {
                 type = m.group(1);
                 attr.setType(type);
                 line = consume(line, type);
