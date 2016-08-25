@@ -20,6 +20,7 @@ import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -63,13 +64,15 @@ public class XChartPanel extends JPanel {
         this.chart = chart;
         preferredSize = new Dimension(chart.getWidth(), chart.getHeight());
 
-        // Right-click listener for saving chart
-        this.addMouseListener(new PopUpMenuClickListener());
+        if (!GraphicsEnvironment.isHeadless()) {
+            // Right-click listener for saving chart
+            this.addMouseListener(new PopUpMenuClickListener());
 
-        // Control+S key listener for saving chart
-        KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
-        this.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(ctrlS, "save");
-        this.getActionMap().put("save", new SaveAction());
+            // Control+S key listener for saving chart
+            KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask());
+            this.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(ctrlS, "save");
+            this.getActionMap().put("save", new SaveAction());
+        }
     }
 
     /**
