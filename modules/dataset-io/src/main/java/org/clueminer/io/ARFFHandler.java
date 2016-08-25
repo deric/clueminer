@@ -209,7 +209,8 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                 }
                 out.builder().create(values, classValue);
             } else if ((rmatch = RELATION.matcher(line)).matches()) {
-                out.setName(rmatch.group(1));
+                //replace single quotes, if contains any
+                out.setName(rmatch.group(1).replaceAll("\'", ""));
             } else if (isValidAttributeDefinition(line)) {
                 if (headerLine != classIndex && !skippedIndexes.contains(headerLine)) {
                     AttrHolder ah;

@@ -129,6 +129,8 @@ public class ARFFHandlerTest<E extends Instance> {
         assertEquals(0.58, data.get(0, 0), DELTA);
         assertEquals(0.61, data.get(0, 1), DELTA);
         assertEquals("MIT", data.get(0).classValue());
+
+        assertEquals("Yeast", data.getName());
     }
 
     @Test
