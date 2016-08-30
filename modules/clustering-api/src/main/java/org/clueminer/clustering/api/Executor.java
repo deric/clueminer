@@ -17,6 +17,7 @@
 package org.clueminer.clustering.api;
 
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
@@ -68,5 +69,12 @@ public interface Executor<E extends Instance, C extends Cluster<E>> {
      * @return heatmap friendly structure
      */
     DendrogramMapping clusterAll(Dataset<E> dataset, Props params);
+
+    /**
+     * If present color generator is called after creating a new cluster
+     *
+     * @param cg
+     */
+    void setColorGenerator(ColorGenerator cg);
 
 }

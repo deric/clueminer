@@ -38,6 +38,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
 import org.clueminer.clustering.order.MOLO;
 import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.std.Scaler;
@@ -60,6 +61,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
     private Map<Dataset<E>, StdStorage<E>> storage;
     private OptimalTreeOrder treeOrder = new MOLO();
+    private ColorGenerator cg;
 
     public ClusteringExecutorCached() {
         algorithm = new HCLW<>();
@@ -126,6 +128,9 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
             }
             ClusteringFactory cf = ClusteringFactory.getInstance();
             this.algorithm = cf.getProvider(alg);
+            if (cg != null) {
+                this.algorithm.setColorGenerator(cg);
+            }
         }
     }
 
@@ -199,6 +204,11 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
         clustering.lookupAdd(columnsResult);
         clustering.mergeParams(params);
         return mapping;
+    }
+
+    @Override
+    public void setColorGenerator(ColorGenerator cg) {
+        this.cg = cg;
     }
 
 }
