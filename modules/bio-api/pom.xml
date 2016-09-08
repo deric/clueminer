@@ -39,6 +39,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.hts.api</publicPackage>
+                        <publicPackage>org.clueminer.r.api</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
