@@ -16,7 +16,6 @@
  */
 package org.clueminer.rserve;
 
-import org.clueminer.r.api.IRengine;
 import org.clueminer.r.api.RException;
 import org.clueminer.r.api.RExpr;
 import org.clueminer.r.api.ROperationNotSupported;
@@ -25,6 +24,7 @@ import org.rosuda.REngine.REXP;
 import org.rosuda.REngine.REXPMismatchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.clueminer.r.api.RBackend;
 
 /**
  * Wrapper around Rosuda expression
@@ -36,7 +36,7 @@ public class RosExpr implements RExpr {
     private Logger log = LoggerFactory.getLogger(getClass());
     private REXP r;
 
-    public RosExpr(REXP r, IRengine engine) throws RException {
+    public RosExpr(REXP r, RBackend engine) throws RException {
         this.r = r;
 
         if (r == null) {

@@ -94,3 +94,11 @@ jzy3d is using jogl library which has native bindings:
 
     sudo apt-get install libjogl-java
 
+## R support
+
+Currently there are two possibilities how to execute R code from Java:
+
+  * TCP connection to `RServe`
+  * load dynamic library `libjri.so`
+    * for Debian: `apt install r-cran-rjava`, make sure `R_HOME` is set
+    * update classpath `export CLASSPATH=.:/usr/lib/R/site-library/rJava/jri/`

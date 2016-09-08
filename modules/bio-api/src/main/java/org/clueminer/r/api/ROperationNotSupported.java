@@ -22,11 +22,11 @@ package org.clueminer.r.api;
  */
 public class ROperationNotSupported extends RException {
 
-    public ROperationNotSupported(IRengine engine, Throwable cause) {
+    public ROperationNotSupported(RBackend engine, Throwable cause) {
         super(engine, cause);
     }
 
-    public ROperationNotSupported(IRengine engine, String message) {
+    public ROperationNotSupported(RBackend engine, String message) {
         super(engine, message);
     }
 

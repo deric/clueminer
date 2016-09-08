@@ -21,7 +21,7 @@ package org.clueminer.r.api;
  *
  * @author deric
  */
-public interface IRengine {
+public interface RBackend {
 
     /**
      * This method tries to load the library with the given name.
@@ -44,7 +44,6 @@ public interface IRengine {
      * This method clears all variables stored in the session corresponding to
      * this Rengine.
      *
-     * @throws de.clusteval.api.r.RException
      * @throws InterruptedException
      */
     void clear() throws RException, InterruptedException;
@@ -55,7 +54,6 @@ public interface IRengine {
      * @param arg0 The variable name in R.
      * @param arg1 A two-dimensional double array which is assigned to the new
      *             variable.
-     * @throws de.clusteval.api.r.RException
      * @throws InterruptedException
      */
     void assign(String arg0, double[][] arg1) throws RException, InterruptedException;
@@ -66,7 +64,6 @@ public interface IRengine {
      * @param arg0 The variable name in R.
      * @param arg1 A two-dimensional integer array which is assigned to the new
      *             variable.
-     * @throws de.clusteval.api.r.RException
      * @throws InterruptedException
      */
     void assign(String arg0, int[][] arg1) throws RException, InterruptedException;

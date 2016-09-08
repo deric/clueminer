@@ -22,13 +22,13 @@ package org.clueminer.r.api;
  */
 public class RException extends Exception {
 
-    protected IRengine engine;
+    protected RBackend engine;
 
     public RException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
-    public RException(final IRengine rEngine, Throwable cause) {
+    public RException(final RBackend rEngine, Throwable cause) {
         super(cause);
         this.engine = rEngine;
     }
@@ -38,17 +38,17 @@ public class RException extends Exception {
      * @param rEngine
      * @param message
      */
-    public RException(final IRengine rEngine, final String message) {
+    public RException(final RBackend rEngine, final String message) {
         super(message);
         this.engine = rEngine;
     }
 
-    public RException(IRengine engine, String msg, Throwable cause) {
+    public RException(RBackend engine, String msg, Throwable cause) {
         super(msg, cause);
         this.engine = engine;
     }
 
-    public IRengine getEngine() {
+    public RBackend getEngine() {
         return engine;
     }
 

@@ -19,7 +19,6 @@ package org.clueminer.rserve;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import org.clueminer.r.api.IRengine;
 import org.clueminer.r.api.RException;
 import org.clueminer.r.api.RExpr;
 import org.clueminer.r.api.RLibraryNotLoadedException;
@@ -32,6 +31,7 @@ import org.rosuda.REngine.Rserve.RConnection;
 import org.rosuda.REngine.Rserve.RserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.clueminer.r.api.RBackend;
 
 /**
  * This class is used throughout the framework to provide access to the R
@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author deric
  *
  */
-public class RServe implements IRengine {
+public class RServe implements RBackend {
 
     protected RConnection connection;
 
