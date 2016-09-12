@@ -38,6 +38,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.AttributeCollection;
 import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
+import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -77,6 +78,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
     public LinkedList<GraphCluster<E>> offsprings;
 
     private int edgeCount;
+    private int biEdgeCount = 0;
 
     /**
      * Nodes belonging to the cluster
@@ -159,8 +161,12 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
             ACL = 0;
             return;
         }
+        biEdgeCount = 0;
         for (Edge e : graph.getEdges()) {
             sum += e.getWeight();
+            if (e.getDirection() == Direction.BOTH) {
+                biEdgeCount++;
+            }
         }
         ACL = sum / edgeCount;
     }
@@ -258,12 +264,19 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
      */
     public int getEdgeCount() {
         if (edgeCount == -1) {
-            /*Edgecount is usually needed together with ACL. In order to build graph
-             only once, we compute the ACL value (during witch graph is built
-             and edge count determined) here*/
+            /* Edgecount is usually needed together with ACL. In order to build graph
+             * only once, we compute the ACL value (during witch graph is built
+             * and edge count determined) here */
             computeAverageCloseness();
         }
         return edgeCount;
+    }
+
+    public int getBiEdgeCount() {
+        if (edgeCount == -1) {
+            computeAverageCloseness();
+        }
+        return biEdgeCount;
     }
 
     public void setEdgeCount(int count) {
@@ -441,7 +454,6 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
     public Attribute removeAttribute(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     @Override
     public Attribute getAttribute(String attributeName) {
