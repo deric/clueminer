@@ -17,42 +17,13 @@
 package org.clueminer.graph.api;
 
 /**
+ * Edge (see {@link Edge}) direction between source and target node (see {@link Node}).
  *
- * @author Tomas Barton
+ * @author deric
  */
-public interface Edge extends Element {
-
-    /**
-     * True when edge is directed
-     *
-     * @return
-     */
-    boolean isDirected();
-
-    /**
-     * By default all edges should be indirected (Direction.NONE)
-     *
-     * @return edge direction
-     */
-    Direction getDirection();
-
-    /**
-     * Edge's direction
-     *
-     * @param direction
-     */
-    void setDirection(Direction direction);
-
-    Node getSource();
-
-    Node getTarget();
-
-    double getWeight();
-
-    /**
-     * Set edge's weight
-     *
-     * @param weight
-     */
-    void setWeight(double weight);
+public enum Direction {
+    NONE,
+    FORWARD,
+    BACKWARD,
+    BOTH
 }

@@ -16,6 +16,7 @@
  */
 package org.clueminer.graph.fast;
 
+import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
 
@@ -28,14 +29,14 @@ public class EdgeImpl extends ElementImpl implements Edge {
     protected final Node source;
     protected final Node target;
     protected double weight;
-    protected boolean directed;
+    protected Direction direction;
 
     public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight) {
         super(id, graphStore);
         this.source = source;
         this.target = target;
         this.weight = weight;
-        this.directed = false;
+        this.direction = Direction.NONE;
     }
 
     public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight, boolean directed) {
@@ -43,12 +44,16 @@ public class EdgeImpl extends ElementImpl implements Edge {
         this.source = source;
         this.target = target;
         this.weight = weight;
-        this.directed = directed;
+        if (directed) {
+            this.direction = Direction.FORWARD;
+        } else {
+            this.direction = Direction.NONE;
+        }
     }
 
     @Override
     public boolean isDirected() {
-        return directed;
+        return direction != Direction.NONE;
     }
 
     @Override
@@ -69,6 +74,16 @@ public class EdgeImpl extends ElementImpl implements Edge {
     @Override
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return direction;
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
 }

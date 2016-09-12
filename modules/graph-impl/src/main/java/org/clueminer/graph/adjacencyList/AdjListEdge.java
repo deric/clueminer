@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.graph.adjacencyList;
 
+import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.impl.ElemImpl;
@@ -13,14 +30,14 @@ public class AdjListEdge extends ElemImpl implements Edge {
     private final Node source;
     private final Node target;
     private double weight;
-    private final boolean directed;
+    private Direction direction;
 
     AdjListEdge(long id, Node source, Node target) {
         super(id);
         this.source = source;
         this.target = target;
         this.weight = 1.0;
-        this.directed = false;
+        this.direction = Direction.NONE;
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed) {
@@ -28,7 +45,11 @@ public class AdjListEdge extends ElemImpl implements Edge {
         this.source = source;
         this.target = target;
         this.weight = 1.0;
-        this.directed = directed;
+        if (directed) {
+            this.direction = Direction.FORWARD;
+        } else {
+            this.direction = Direction.NONE;
+        }
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed, double weight) {
@@ -36,12 +57,16 @@ public class AdjListEdge extends ElemImpl implements Edge {
         this.source = source;
         this.target = target;
         this.weight = weight;
-        this.directed = directed;
+        if (directed) {
+            this.direction = Direction.FORWARD;
+        } else {
+            this.direction = Direction.NONE;
+        }
     }
 
     @Override
     public boolean isDirected() {
-        return directed;
+        return direction != Direction.NONE;
     }
 
     @Override
@@ -65,12 +90,23 @@ public class AdjListEdge extends ElemImpl implements Edge {
     }
 
     @Override
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return direction;
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    @Override
     public String toString() {
         return "e" + id + ": n" + source.getId() + " -(" + weight + ")-> n" + target.getId();
     }
 
-    @Override
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
 }
