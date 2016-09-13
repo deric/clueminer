@@ -107,6 +107,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     @Param(name = Chameleon.INTERCONNECTIVITY_PRIORITY, description = "Priority of merging close clusters")
     public double interconnectivityPriority;
 
+    public static final String SHARED_NN_FACTOR = "shared_nn_factor";
+    @Param(name = Chameleon.SHARED_NN_FACTOR, description = "Factor of multiplying shared neighbors")
+    public double sharedNNfactor;
+
     /**
      * Algorithm for merging clusters
      */

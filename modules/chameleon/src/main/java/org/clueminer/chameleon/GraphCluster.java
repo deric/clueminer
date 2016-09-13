@@ -78,7 +78,6 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
     public LinkedList<GraphCluster<E>> offsprings;
 
     private int edgeCount;
-    private int biEdgeCount = 0;
 
     /**
      * Nodes belonging to the cluster
@@ -133,14 +132,35 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
         ArrayList<ArrayList<Node>> result = bisection.bisect(graph, props);
         IIC = ICL = 0;
         int counter = 0;
-        for (Node node1 : result.get(0)) {
-            for (Node node2 : result.get(1)) {
-                if (graph.isAdjacent(node1, node2)) {
-                    IIC += graph.getEdge(node1, node2).getWeight();
-                    counter++;
+
+        double sharedFactor = props.getDouble(Chameleon.SHARED_NN_FACTOR, 1.0);
+        if (sharedFactor > 1.0) {
+            Edge edge;
+            //prefer shared nearest neighbors
+            for (Node node1 : result.get(0)) {
+                for (Node node2 : result.get(1)) {
+                    if (graph.isAdjacent(node1, node2)) {
+                        edge = graph.getEdge(node1, node2);
+                        if (edge.getDirection() == Direction.BOTH) {
+                            IIC += edge.getWeight() * sharedFactor;
+                        } else {
+                            IIC += edge.getWeight();
+                        }
+                        counter++;
+                    }
+                }
+            }
+        } else {
+            for (Node node1 : result.get(0)) {
+                for (Node node2 : result.get(1)) {
+                    if (graph.isAdjacent(node1, node2)) {
+                        IIC += graph.getEdge(node1, node2).getWeight();
+                        counter++;
+                    }
                 }
             }
         }
+
         if (counter > 0) {
             ICL = IIC / counter;
         } else {
@@ -161,13 +181,21 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
             ACL = 0;
             return;
         }
-        biEdgeCount = 0;
-        for (Edge e : graph.getEdges()) {
-            sum += e.getWeight();
-            if (e.getDirection() == Direction.BOTH) {
-                biEdgeCount++;
+        double sharedFactor = props.getDouble(Chameleon.SHARED_NN_FACTOR, 1.0);
+        if (sharedFactor > 1.0) {
+            for (Edge e : graph.getEdges()) {
+                if (e.getDirection() == Direction.BOTH) {
+                    sum += e.getWeight() * sharedFactor;
+                } else {
+                    sum += e.getWeight();
+                }
+            }
+        } else {
+            for (Edge e : graph.getEdges()) {
+                sum += e.getWeight();
             }
         }
+
         ACL = sum / edgeCount;
     }
 
@@ -270,13 +298,6 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
             computeAverageCloseness();
         }
         return edgeCount;
-    }
-
-    public int getBiEdgeCount() {
-        if (edgeCount == -1) {
-            computeAverageCloseness();
-        }
-        return biEdgeCount;
     }
 
     public void setEdgeCount(int count) {
