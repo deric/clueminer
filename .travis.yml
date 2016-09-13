@@ -7,14 +7,14 @@ jdk:
 before_install:
   - "sh -e /etc/init.d/xvfb start"
   - "mvn --version"
+  - "export CLASSPATH=.:/usr/lib/R/site-library/rJava/jri/"
+  - "export R_HOME=/usr/lib/R"
 addons:
   apt:
     packages:
-    - r-cran-rjava
+      - r-cran-rjava
 env:
   - DISPLAY=:99.0
-  - CLASSPATH=.:/usr/lib/R/site-library/rJava/jri/
-  - R_HOME=/usr/lib/R
 branches:
   only:
     - master
