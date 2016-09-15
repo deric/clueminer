@@ -69,7 +69,6 @@ public class GraphGenerator {
             }
         }
 
-        int c = 0;
         long cnt = 0;
         while (idSet.size() < edgeCount) {
             int sourceId = r.nextInt(nodeCount);
@@ -79,10 +78,10 @@ public class GraphGenerator {
             EdgeImpl edge = new EdgeImpl(cnt++, null, source, target, 1.0, directed);
             if (!leafs.contains(sourceId) && !leafs.contains(targetId) && (allowSelfLoops || (!allowSelfLoops && source != target)) && !idSet.contains(edge.getLongId())) {
                 edgeList.add(edge);
-                c++;
                 idSet.add(edge.getId());
             }
         }
+
         return edgeList.toArray(new EdgeImpl[0]);
     }
 

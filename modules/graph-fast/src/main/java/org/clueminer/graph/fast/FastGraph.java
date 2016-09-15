@@ -153,7 +153,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public int getNodeCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.size();
     }
 
     @Override

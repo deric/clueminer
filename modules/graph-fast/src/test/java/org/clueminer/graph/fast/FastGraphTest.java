@@ -155,6 +155,7 @@ public class FastGraphTest<E extends Instance> {
         FastGraph graphStore = new FastGraph();
         NodeImpl[] nodes = GraphGenerator.generateSmallNodeList();
         graphStore.addAllNodes(Arrays.asList(nodes));
+        assertEquals(100, graphStore.getNodeCount());
 
         EdgeImpl[] edges = GraphGenerator.generateEdgeList(graphStore.nodeStore, 100, 0, true, true);
         graphStore.addAllEdges(Arrays.asList(edges));
@@ -172,13 +173,12 @@ public class FastGraphTest<E extends Instance> {
             }
 
             nodeIterator.remove();
-
-            assertEquals(graphStore.getEdgeCount(), edgeCount - degree);
+            assertEquals(graphStore.getEdgeCount(), edgeCount);
             edgeCount -= degree;
         }
 
-        Assert.assertEquals(edgeCount, 0);
-        Assert.assertEquals(graphStore.getNodeCount(), 0);
+        assertEquals(edgeCount, 0);
+        assertEquals(graphStore.getNodeCount(), 0);
     }
 
 }
