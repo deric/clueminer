@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.clueminer.graph.api.Node;
 
 /**
  *
@@ -41,9 +42,10 @@ public class GraphGenerator {
 
     public static NodeStore generateNodeStore(int nodeCount) {
         final NodeStore nodeStore = new NodeStore();
-
+        Node n;
+        GraphFactoryImpl factory = GraphFactoryImpl.getInstance();
         for (int i = 0; i < nodeCount; i++) {
-            NodeImpl n = new NodeImpl(String.valueOf(i));
+            n = factory.newNode(String.valueOf(i));
             nodeStore.add(n);
         }
         return nodeStore;
@@ -68,20 +70,38 @@ public class GraphGenerator {
         }
 
         int c = 0;
-        //TODO: fully implement dependent classes
-        /*  while (idSet.size() < edgeCount) {
-         int sourceId = r.nextInt(nodeCount);
-         int targetId = r.nextInt(nodeCount);
-         NodeImpl source = nodeStore.get(sourceId);
-         NodeImpl target = nodeStore.get(targetId);
-         EdgeImpl edge = new EdgeImpl(String.valueOf(c), source, target, type, 1.0, directed);
-         if (!leafs.contains(sourceId) && !leafs.contains(targetId) && (allowSelfLoops || (!allowSelfLoops && source != target)) && !idSet.contains(edge.getLongId())) {
-         edgeList.add(edge);
-         c++;
-         idSet.add(edge.getId());
-         }
-         }*/
+        long cnt = 0;
+        while (idSet.size() < edgeCount) {
+            int sourceId = r.nextInt(nodeCount);
+            int targetId = r.nextInt(nodeCount);
+            Node source = nodeStore.get(sourceId);
+            Node target = nodeStore.get(targetId);
+            EdgeImpl edge = new EdgeImpl(cnt++, null, source, target, 1.0, directed);
+            if (!leafs.contains(sourceId) && !leafs.contains(targetId) && (allowSelfLoops || (!allowSelfLoops && source != target)) && !idSet.contains(edge.getLongId())) {
+                edgeList.add(edge);
+                c++;
+                idSet.add(edge.getId());
+            }
+        }
         return edgeList.toArray(new EdgeImpl[0]);
+    }
+
+    public static NodeImpl[] generateNodeList(int nodeCount) {
+        NodeImpl[] nodes = new NodeImpl[nodeCount];
+        long cnt = 0;
+        for (int i = 0; i < nodeCount; i++) {
+            NodeImpl node = new NodeImpl(cnt++, null);
+            nodes[i] = node;
+        }
+        return nodes;
+    }
+
+    public static NodeImpl[] generateSmallNodeList() {
+        return generateNodeList(100);
+    }
+
+    public static NodeImpl[] generateLargeNodeList() {
+        return generateNodeList(FastGraphConfig.NODESTORE_BLOCK_SIZE * 3 + (int) (FastGraphConfig.NODESTORE_BLOCK_SIZE / 3.0));
     }
 
 }

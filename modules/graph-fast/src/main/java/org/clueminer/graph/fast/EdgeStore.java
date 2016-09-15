@@ -17,6 +17,8 @@
 package org.clueminer.graph.fast;
 
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.graph.api.Edge;
@@ -29,22 +31,99 @@ import org.clueminer.graph.api.Node;
  */
 public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
+    //Const
     protected final static int NULL_ID = -1;
-
-    private int size;
-    private Long2IntOpenHashMap idMap;
-    private EdgeImpl[] store;
+    protected final static int NODE_BITS = 31;
+    //Data
+    protected int size;
+    protected int garbageSize;
+    protected int blocksCount;
+    protected int currentBlockIndex;
+    protected EdgeBlock blocks[];
+    protected EdgeBlock currentBlock;
+    protected Long2IntOpenHashMap dictionary;
+    //Stats
+    protected int undirectedSize;
+    protected int mutualEdgesSize;
+    //Version
+    protected final GraphVersion version;
 
     public EdgeStore() {
-        initialize();
+        initStore();
+        this.version = null;
     }
 
-    private void initialize() {
-        size = 0;
-        int capacity = 10;
-        //initial capacity
-        idMap = new Long2IntOpenHashMap(capacity);
-        store = new EdgeImpl[capacity];
+    private void initStore() {
+        this.size = 0;
+        this.garbageSize = 0;
+        this.blocksCount = 1;
+        this.currentBlockIndex = 0;
+        this.blocks = new EdgeBlock[FastGraphConfig.EDGESTORE_DEFAULT_BLOCKS];
+        this.blocks[0] = new EdgeBlock(0);
+        this.currentBlock = blocks[currentBlockIndex];
+        this.dictionary = new Long2IntOpenHashMap(FastGraphConfig.EDGESTORE_BLOCK_SIZE);
+        this.dictionary.defaultReturnValue(NULL_ID);
+    }
+
+    public EdgeImpl get(int id) {
+        checkValidId(id);
+
+        return blocks[id / FastGraphConfig.EDGESTORE_BLOCK_SIZE].get(id);
+    }
+
+    public EdgeImpl get(final Object id) {
+        checkNonNullObject(id);
+
+        int index = dictionary.get(id);
+        if (index != EdgeStore.NULL_ID) {
+            return get(index);
+        }
+        return null;
+    }
+
+    protected static long getLongId(NodeImpl source, NodeImpl target, boolean directed) {
+        if (directed) {
+            long edgeId = ((long) source.storeId) << NODE_BITS;
+            edgeId = edgeId | (long) (target.storeId);
+            return edgeId;
+        } else {
+            long edgeId = ((long) (source.storeId > target.storeId ? source.storeId : target.storeId)) << NODE_BITS;
+            edgeId = edgeId | (long) (source.storeId > target.storeId ? target.storeId : source.storeId);
+            return edgeId;
+        }
+    }
+
+    private void ensureCapacity(final int capacity) {
+        assert capacity > 0;
+
+        int blockCapacity = currentBlock.getCapacity();
+        while (capacity > blockCapacity) {
+            if (currentBlockIndex == blocksCount - 1) {
+                int blocksNeeded = (int) Math.ceil((capacity - blockCapacity) / (double) FastGraphConfig.EDGESTORE_BLOCK_SIZE);
+                for (int i = 0; i < blocksNeeded; i++) {
+                    if (blocksCount == blocks.length) {
+                        EdgeBlock[] newBlocks = new EdgeBlock[blocksCount + 1];
+                        System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
+                        blocks = newBlocks;
+                    }
+                    EdgeBlock block = blocks[blocksCount];
+                    if (block == null) {
+                        block = new EdgeBlock(blocksCount);
+                        blocks[blocksCount] = block;
+                    }
+                    if (blockCapacity == 0 && i == 0) {
+                        currentBlockIndex = blocksCount;
+                        currentBlock = block;
+                    }
+                    blocksCount++;
+                }
+                break;
+            } else {
+                currentBlockIndex++;
+                currentBlock = blocks[currentBlockIndex];
+                blockCapacity = currentBlock.getCapacity();
+            }
+        }
     }
 
     @Override
@@ -57,26 +136,18 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         return size == 0;
     }
 
-    public final void ensureCapacity(int requested) {
-        if (requested >= store.length) {
-            int capacity = (int) (requested * 1.618); //golden ratio :)
-            if (capacity <= size()) {
-                capacity = size() * 3; // for small numbers due to int rounding we wouldn't increase the size
-            }
-            if (capacity > store.length) {
-                EdgeImpl[] tmp = new EdgeImpl[capacity];
-                System.arraycopy(store, 0, store, 0, store.length);
-                store = tmp;
-            }
-        }
-    }
-
     @Override
     public boolean contains(Object o) {
-        if (!(o instanceof EdgeImpl)) {
-            return false;
+        checkNonNullEdgeObject(o);
+
+        EdgeImpl edge = (EdgeImpl) o;
+        int id = edge.getStoreId();
+        if (id != EdgeStore.NULL_ID) {
+            if (get(id) == edge) {
+                return true;
+            }
         }
-        return idMap.containsKey(o);
+        return false;
     }
 
     @Override
@@ -90,56 +161,239 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     }
 
     @Override
-    public boolean add(Edge e) {
+    public boolean add(final Edge e) {
         checkNonNullEdgeObject(e);
 
         EdgeImpl edge = (EdgeImpl) e;
+        if (edge.storeId == EdgeStore.NULL_ID) {
+            checkIdDoesntExist(e.getId());
+            checkSourceTargets(edge);
 
-        checkSourceTargets(edge);
+            boolean directed = edge.isDirected();
+            NodeImpl source = edge.source;
+            NodeImpl target = edge.target;
 
-        NodeImpl source = (NodeImpl) edge.source;
-        NodeImpl target = (NodeImpl) edge.target;
+            incrementVersion();
 
-        ensureCapacity(size() + 1);
-        store[size] = edge;
-        idMap.put(edge.getId(), size);
+            if (garbageSize > 0) {
+                for (int i = 0; i < blocksCount; i++) {
+                    EdgeBlock edgeBlock = blocks[i];
+                    if (edgeBlock.hasGarbage()) {
+                        edgeBlock.set(edge);
+                        garbageSize--;
+                        dictionary.put(edge.getId(), edge.storeId);
+                        break;
+                    }
+                }
+            } else {
+                ensureCapacity(1);
+                currentBlock.add(edge);
+                dictionary.put(edge.getId(), edge.storeId);
+            }
 
-        source.outDegree++;
-        target.inDegree++;
+            source.outDegree++;
+            target.inDegree++;
 
-        size++;
-        return true;
+            if (directed && !edge.isSelfLoop()) {
+                EdgeImpl mutual = getMutual(edge);
+                if (mutual != null) {
+                    edge.setMutual(true);
+                    mutual.setMutual(true);
+                    source.mutualDegree++;
+                    target.mutualDegree++;
+                    mutualEdgesSize++;
+                }
+            }
 
+            if (!directed) {
+                undirectedSize++;
+            }
+
+            size++;
+            return true;
+        } else if (isValidIndex(edge.storeId) && get(edge.storeId) == edge) {
+            return false;
+        } else {
+            throw new IllegalArgumentException("The edge already belongs to another store");
+        }
+    }
+
+    private EdgeImpl getMutual(final EdgeImpl edge) {
+        return get(edge.target, edge.source);
+    }
+
+    public EdgeImpl get(final Node source, final Node target) {
+        checkNonNullObject(source);
+        checkNonNullObject(target);
+        NodeImpl sourceImpl = (NodeImpl) source;
+        NodeImpl targetImpl = (NodeImpl) target;
+
+        int index = dictionary.get(getLongId(sourceImpl, targetImpl, false));
+        if (index != NULL_ID) {
+            return get(index);
+        }
+
+        return null;
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkNonNullEdgeObject(o);
+
+        EdgeImpl edge = (EdgeImpl) o;
+        int id = edge.storeId;
+        if (id != EdgeStore.NULL_ID) {
+            checkEdgeExists(edge);
+
+            incrementVersion();
+
+            edge.clearAttributes();
+
+            int storeIndex = id / FastGraphConfig.EDGESTORE_BLOCK_SIZE;
+            EdgeBlock block = blocks[storeIndex];
+            block.remove(edge);
+
+            boolean directed = edge.isDirected();
+            NodeImpl source = edge.source;
+            NodeImpl target = edge.target;
+
+            source.outDegree--;
+            target.inDegree--;
+
+            size--;
+            garbageSize++;
+            dictionary.remove(edge.getId());
+            trimDictionary();
+
+            for (int i = storeIndex; i == (blocksCount - 1) && block.garbageLength == block.nodeLength && i >= 0;) {
+                if (i != 0) {
+                    blocks[i] = null;
+                    blocksCount--;
+                    garbageSize -= block.nodeLength;
+                    block = blocks[--i];
+                    currentBlock = block;
+                    currentBlockIndex--;
+                } else {
+                    currentBlock.clear();
+                    garbageSize = 0;
+                    break;
+                }
+            }
+
+            if (directed && !edge.isSelfLoop()) {
+                EdgeImpl mutual = getMutual(edge);
+                if (mutual != null) {
+                    edge.setMutual(false);
+                    mutual.setMutual(false);
+                    source.mutualDegree--;
+                    target.mutualDegree--;
+                    mutualEdgesSize--;
+                }
+            }
+
+            if (!directed) {
+                undirectedSize--;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkCollection(c);
+
+        if (!c.isEmpty()) {
+            int found = 0;
+            for (Object o : c) {
+                if (contains((EdgeImpl) o)) {
+                    found++;
+                }
+            }
+            return found == c.size();
+        }
+        return false;
     }
 
     @Override
     public boolean addAll(Collection<? extends Edge> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkCollection(c);
+
+        if (!c.isEmpty()) {
+            int capacityNeeded = c.size() - garbageSize;
+            if (capacityNeeded > 0) {
+                ensureCapacity(capacityNeeded);
+            }
+            boolean changed = false;
+            Iterator<? extends Edge> itr = c.iterator();
+            while (itr.hasNext()) {
+                Edge e = itr.next();
+                if (add(e)) {
+                    changed = true;
+                }
+            }
+            return changed;
+        }
+        return false;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkCollection(c);
+
+        if (!c.isEmpty()) {
+            boolean changed = false;
+            Iterator itr = c.iterator();
+            while (itr.hasNext()) {
+                Object o = itr.next();
+                if (remove(o)) {
+                    changed = true;
+                }
+            }
+            return changed;
+        }
+        return false;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkCollection(c);
+
+        if (!c.isEmpty()) {
+            ObjectSet<EdgeImpl> set = new ObjectOpenHashSet(c.size());
+            for (Object o : c) {
+                checkNonNullObject(o);
+                checkEdgeExists((EdgeImpl) o);
+                set.add((EdgeImpl) o);
+            }
+
+            boolean changed = false;
+            Iterator<Edge> itr = iterator();
+            while (itr.hasNext()) {
+                EdgeImpl e = (EdgeImpl) itr.next();
+                if (!set.contains(e)) {
+                    itr.remove();
+                    changed = true;
+                }
+            }
+            return changed;
+        } else {
+            clear();
+        }
+        return false;
     }
 
     @Override
     public void clear() {
-        initialize();
+        if (!isEmpty()) {
+            incrementVersion();
+        }
+
+        for (EdgeStoreIterator itr = new EdgeStoreIterator(); itr.hasNext();) {
+            EdgeImpl edge = itr.next();
+            edge.setStoreId(EdgeStore.NULL_ID);
+        }
+        initStore();
     }
 
     @Override
@@ -208,16 +462,22 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         protected EdgeImpl pointer;
 
         public EdgeStoreIterator() {
-
+            this.backingArray = blocks[blockIndex].backingArray;
+            this.blockLength = blocks[blockIndex].nodeLength;
         }
 
         @Override
         public boolean hasNext() {
             pointer = null;
-            while (cursor >= store.length) {
-                pointer = store[cursor++];
-                if (cursor >= store.length || pointer == null) {
-                    break;
+            while (cursor == blockLength || ((pointer = backingArray[cursor++]) == null)) {
+                if (cursor == blockLength) {
+                    if (++blockIndex < blocksCount) {
+                        backingArray = blocks[blockIndex].backingArray;
+                        blockLength = blocks[blockIndex].nodeLength;
+                        cursor = 0;
+                    } else {
+                        break;
+                    }
                 }
             }
             return pointer != null;
@@ -268,6 +528,107 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         if (e.source == null || e.target == null) {
             throw new NullPointerException();
         }
+    }
+
+    protected static class EdgeBlock {
+
+        protected final int offset;
+        protected final short[] garbageArray;
+        protected final EdgeImpl[] backingArray;
+        protected int nodeLength;
+        protected int garbageLength;
+
+        public EdgeBlock(int index) {
+            this.offset = index * FastGraphConfig.EDGESTORE_BLOCK_SIZE;
+            if (FastGraphConfig.EDGESTORE_BLOCK_SIZE >= Short.MAX_VALUE - Short.MIN_VALUE) {
+                throw new RuntimeException("BLOCK SIZE can't exceed 65535");
+            }
+            this.garbageArray = new short[FastGraphConfig.EDGESTORE_BLOCK_SIZE];
+            this.backingArray = new EdgeImpl[FastGraphConfig.EDGESTORE_BLOCK_SIZE];
+        }
+
+        public boolean hasGarbage() {
+            return garbageLength > 0;
+        }
+
+        public int getCapacity() {
+            return FastGraphConfig.EDGESTORE_BLOCK_SIZE - nodeLength - garbageLength;
+        }
+
+        public void add(EdgeImpl k) {
+            int i = nodeLength++;
+            backingArray[i] = k;
+            k.setStoreId(i + offset);
+        }
+
+        public void set(EdgeImpl k) {
+            int i = garbageArray[--garbageLength] - Short.MIN_VALUE;
+            backingArray[i] = k;
+            k.setStoreId(i + offset);
+        }
+
+        public EdgeImpl get(int id) {
+            return backingArray[id - offset];
+        }
+
+        public void remove(EdgeImpl k) {
+            int i = k.getStoreId() - offset;
+            backingArray[i] = null;
+            garbageArray[garbageLength++] = (short) (i + Short.MIN_VALUE);
+            k.setStoreId(NULL_ID);
+        }
+
+        public void clear() {
+            nodeLength = 0;
+            garbageLength = 0;
+        }
+    }
+
+    void checkIdDoesntExist(Object id) {
+        if (dictionary.containsKey(id)) {
+            throw new IllegalArgumentException("The node id already exist");
+        }
+    }
+
+    private void incrementVersion() {
+        if (version != null) {
+            version.incrementAndGetEdgeVersion();
+        }
+    }
+
+    private void trimDictionary() {
+        dictionary.trim(Math.max(FastGraphConfig.EDGESTORE_BLOCK_SIZE, size * 2));
+    }
+
+    boolean isValidIndex(int id) {
+        return id >= 0 && id < currentBlock.offset + currentBlock.nodeLength;
+    }
+
+    void checkEdgeExists(final EdgeImpl edge) {
+        if (get(edge.storeId) != edge) {
+            throw new IllegalArgumentException("The edge is invalid");
+        }
+    }
+
+    public boolean isAdjacent(Node node1, Node node2) {
+        checkValidNodeObject(node1);
+        checkValidNodeObject(node2);
+
+        int typeLength = dictionary.size();
+        for (int i = 0; i < typeLength; i++) {
+            if (contains((NodeImpl) node1, (NodeImpl) node2)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean contains(NodeImpl source, NodeImpl target) {
+        checkNonNullObject(source);
+        checkNonNullObject(target);
+
+        return dictionary.containsKey(getLongId(source, target, true));
     }
 
 }

@@ -25,9 +25,8 @@ import org.clueminer.graph.api.Element;
 public abstract class ElementImpl implements Element {
 
     protected final FastGraph graphStore;
+    //numeric ID
     protected Long id;
-    protected Object label;
-
     protected Object[] attributes;
 
     public ElementImpl(Long id, FastGraph graphStore) {
@@ -35,7 +34,18 @@ public abstract class ElementImpl implements Element {
             throw new NullPointerException();
         }
         this.graphStore = graphStore;
+        this.attributes = new Object[FastGraphConfig.ELEMENT_LABEL_INDEX + 1];
         this.id = id;
+    }
+
+    public ElementImpl(Object id, FastGraph graphStore) {
+        if (id == null) {
+            throw new NullPointerException();
+        }
+        this.graphStore = graphStore;
+        this.attributes = new Object[FastGraphConfig.ELEMENT_LABEL_INDEX + 1];
+        //using any type
+        this.attributes[FastGraphConfig.ELEMENT_ID_INDEX] = id;
     }
 
     @Override
@@ -44,8 +54,23 @@ public abstract class ElementImpl implements Element {
     }
 
     @Override
-    public Object getLabel() {
-        return label;
+    public String getLabel() {
+        if (attributes.length > FastGraphConfig.ELEMENT_LABEL_INDEX) {
+            return (String) attributes[FastGraphConfig.ELEMENT_LABEL_INDEX];
+        }
+        return null;
+    }
+
+    public final void setLabel(Object label) {
+        int index = FastGraphConfig.ELEMENT_LABEL_INDEX;
+        synchronized (this) {
+            if (index >= attributes.length) {
+                Object[] newArray = new Object[index + 1];
+                System.arraycopy(attributes, 0, newArray, 0, attributes.length);
+                attributes = newArray;
+            }
+            attributes[index] = label;
+        }
     }
 
     @Override
@@ -65,7 +90,9 @@ public abstract class ElementImpl implements Element {
 
     @Override
     public void clearAttributes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object[] newAttributes = new Object[FastGraphConfig.ELEMENT_ID_INDEX + 1];
+        newAttributes[FastGraphConfig.ELEMENT_ID_INDEX] = attributes[FastGraphConfig.ELEMENT_ID_INDEX];
+        attributes = newAttributes;
     }
 
 }

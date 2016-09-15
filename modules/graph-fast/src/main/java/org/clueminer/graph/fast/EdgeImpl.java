@@ -26,29 +26,63 @@ import org.clueminer.graph.api.Node;
  */
 public class EdgeImpl extends ElementImpl implements Edge {
 
-    protected final Node source;
-    protected final Node target;
+    protected static final byte DIRECTED_BYTE = 1;
+    protected static final byte MUTUAL_BYTE = 1 << 1;
+
+    protected final NodeImpl source;
+    protected final NodeImpl target;
     protected double weight;
     protected Direction direction;
+    protected int storeId = EdgeStore.NULL_ID;
 
-    public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight) {
+    protected byte flags;
+
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight) {
         super(id, graphStore);
-        this.source = source;
-        this.target = target;
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
         this.weight = weight;
         this.direction = Direction.NONE;
     }
 
-    public EdgeImpl(Long id, FastGraph graphStore, Node source, Node target, double weight, boolean directed) {
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight, Direction dir) {
         super(id, graphStore);
-        this.source = source;
-        this.target = target;
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
+        this.weight = weight;
+        this.direction = dir;
+    }
+
+    public EdgeImpl(long id, Node source, Node target, double weight, boolean directed) {
+        super(id, null);
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
         this.weight = weight;
         if (directed) {
             this.direction = Direction.FORWARD;
         } else {
             this.direction = Direction.NONE;
         }
+    }
+
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight, boolean directed) {
+        super(id, graphStore);
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
+        this.weight = weight;
+        if (directed) {
+            this.direction = Direction.FORWARD;
+        } else {
+            this.direction = Direction.NONE;
+        }
+    }
+
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int id) {
+        this.storeId = id;
     }
 
     @Override
@@ -84,6 +118,28 @@ public class EdgeImpl extends ElementImpl implements Edge {
     @Override
     public void setDirection(Direction direction) {
         this.direction = direction;
+    }
+
+    public boolean isSelfLoop() {
+        return source == target;
+    }
+
+    protected void setMutual(boolean mutual) {
+        if (isDirected()) {
+            if (mutual) {
+                flags |= MUTUAL_BYTE;
+            } else {
+                flags &= ~MUTUAL_BYTE;
+            }
+        }
+    }
+
+    protected boolean isMutual() {
+        return (flags & MUTUAL_BYTE) == MUTUAL_BYTE;
+    }
+
+    public long getLongId() {
+        return EdgeStore.getLongId(source, target, isDirected());
     }
 
 }

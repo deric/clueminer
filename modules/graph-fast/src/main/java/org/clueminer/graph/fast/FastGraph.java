@@ -22,12 +22,12 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.clueminer.graph.api.GraphBuilder;
 
 /**
  *
@@ -35,46 +35,50 @@ import org.clueminer.graph.api.GraphBuilder;
  */
 public class FastGraph<E extends Instance> implements Graph<E> {
 
-    private static final String name = "Fast Graph";
+    private static final String NAME = "Fast Graph";
 
     //Lookup
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
 
+    protected final NodeStore nodeStore;
+    protected final EdgeStore edgeStore;
+
     public FastGraph() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
+        nodeStore = new NodeStore();
+        edgeStore = new EdgeStore();
     }
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public boolean addEdge(Edge edge) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.add(edge);
     }
 
     @Override
     public boolean addNode(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.add(node);
     }
 
     @Override
     public boolean addAllEdges(Collection<? extends Edge> edges) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.addAll(edges);
     }
-
 
     @Override
     public boolean removeEdge(Edge edge) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.remove(edge);
     }
 
     @Override
     public boolean removeNode(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.remove(node);
     }
 
     @Override
@@ -84,42 +88,42 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean contains(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.contains(node);
     }
 
     @Override
     public boolean contains(Edge edge) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.contains(edge);
     }
 
     @Override
     public Node getNode(long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.get(id);
     }
 
     @Override
     public Edge getEdge(long id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.get(id);
     }
 
     @Override
     public Edge getEdge(Node node1, Node node2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.get(node1, node2);
     }
 
     @Override
     public Edge getEdge(Node node1, Node node2, int type) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.get(node1, node2);
     }
 
     @Override
     public NodeIterable getNodes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return nodeStore.iterator();
     }
 
     @Override
     public EdgeIterable getEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (EdgeIterable) edgeStore.iterator();
     }
 
     @Override
@@ -154,7 +158,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public int getEdgeCount() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.size();
     }
 
     @Override
@@ -184,7 +188,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean isAdjacent(Node node1, Node node2) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edgeStore.isAdjacent(node1, node2);
     }
 
     @Override
@@ -214,7 +218,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     @Override
@@ -284,12 +288,24 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean addAllNodes(Collection<? extends Node<E>> nodes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean success = true;
+        for (Node node : nodes) {
+            if (!addNode(node)) {
+                success = false;
+            }
+        }
+        return success;
     }
 
     @Override
     public boolean removeAllNodes(Collection<? extends Node<E>> nodes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean removed = false;
+        for (Node node : nodes) {
+            if (removeNode(node)) {
+                removed = true;
+            }
+        }
+        return removed;
     }
 
 }

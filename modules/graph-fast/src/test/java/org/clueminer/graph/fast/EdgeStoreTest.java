@@ -17,8 +17,7 @@
 package org.clueminer.graph.fast;
 
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -32,14 +31,6 @@ public class EdgeStoreTest {
     public EdgeStoreTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
     @Test
     public void testDefaultSize() {
         subject = new EdgeStore();
@@ -48,6 +39,22 @@ public class EdgeStoreTest {
 
         assertEquals(isEmpty, true);
         assertEquals(size, 0);
+    }
+
+    @Test
+    public void testSize() {
+        EdgeStore edgeStore = new EdgeStore();
+        EdgeImpl[] edges = GraphGenerator.generateEdgeList(2);
+        EdgeImpl e1 = edges[0];
+        EdgeImpl e2 = edges[1];
+        edgeStore.add(e1);
+        edgeStore.add(e2);
+        assertEquals(edgeStore.size(), 2);
+        edgeStore.remove(e1);
+        assertEquals(edgeStore.size(), 1);
+        edgeStore.remove(e2);
+        assertEquals(edgeStore.size(), 0);
+        assertTrue(edgeStore.isEmpty());
     }
 
     @Test

@@ -25,24 +25,32 @@ import org.clueminer.graph.api.Node;
  */
 public class NodeImpl extends ElementImpl implements Node {
 
+    protected EdgeImpl[] headOut = new EdgeImpl[FastGraphConfig.EDGESTORE_DEFAULT_TYPE_COUNT];
+    protected EdgeImpl[] headIn = new EdgeImpl[FastGraphConfig.EDGESTORE_DEFAULT_TYPE_COUNT];
+
     private Instance instance;
 
     protected int inDegree;
     protected int outDegree;
     protected int mutualDegree;
+    protected int storeId = NodeStore.NULL_ID;
 
     public NodeImpl(Long id, FastGraph graphStore) {
         super(id, graphStore);
         this.attributes = new Object[1];
     }
 
-    public NodeImpl(Object id) {
-        this((long) id, null);
+    public NodeImpl(Long id, FastGraph graphStore, Object label) {
+        super(id, graphStore);
+        setLabel(label);
     }
 
-    @Override
-    public Object getLabel() {
-        return attributes[FastGraphConfig.ELEMENT_LABEL_INDEX];
+    public int getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(int id) {
+        this.storeId = id;
     }
 
     @Override

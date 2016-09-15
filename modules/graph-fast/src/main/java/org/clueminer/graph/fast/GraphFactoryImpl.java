@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
@@ -34,10 +35,23 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
     protected final AtomicLong NODE_IDS = new AtomicLong();
     protected final AtomicLong EDGE_IDS = new AtomicLong();
     protected final FastGraph store;
+    private static GraphFactoryImpl instance;
 
     public GraphFactoryImpl(FastGraph graph) {
         this.store = graph;
     }
+
+    public GraphFactoryImpl() {
+        store = new FastGraph();
+    }
+
+    public static GraphFactoryImpl getInstance() {
+        if (instance == null) {
+            instance = new GraphFactoryImpl();
+        }
+        return instance;
+    }
+
 
     @Override
     public String getName() {
@@ -46,17 +60,19 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Edge newEdge(Node source, Node target) {
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0, true);
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, boolean directed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Direction dir = directed ? Direction.FORWARD : Direction.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0, dir);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, boolean directed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Direction dir = directed ? Direction.FORWARD : Direction.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0, dir);
     }
 
     @Override
@@ -71,17 +87,19 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Node newNode() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new NodeImpl(NODE_IDS.getAndIncrement(), store);
     }
 
     @Override
     public Node newNode(Object label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new NodeImpl(NODE_IDS.getAndIncrement(), store, label);
     }
 
     @Override
     public Node newNode(Instance i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Node n = new NodeImpl(NODE_IDS.getAndIncrement(), store);
+        n.setInstance(i);
+        return n;
     }
 
     @Override

@@ -22,7 +22,19 @@ package org.clueminer.graph.fast;
  */
 public class FastGraphConfig {
 
-    public static final int ELEMENT_ID_INDEX = -1;
-    public static final int ELEMENT_LABEL_INDEX = 0;
+    public static final int ELEMENT_ID_INDEX = 0;
+    public static final int ELEMENT_LABEL_INDEX = 1;
+
+    public static final int EDGESTORE_BLOCK_SIZE = 8192;
+    public static final int EDGESTORE_DEFAULT_BLOCKS = 10;
+    public static final int EDGESTORE_DEFAULT_TYPE_COUNT = 1;
+    public static final int EDGESTORE_DEFAULT_DICTIONARY_SIZE = 1000;
+    public static final float EDGESTORE_DICTIONARY_LOAD_FACTOR = .7f;
+
+    public final static int NODESTORE_DEFAULT_BLOCKS = 10;
+    public static final int NODESTORE_DEFAULT_DICTIONARY_SIZE = 1000;
+    public final static int NODESTORE_BLOCK_SIZE = 5000;
+    public final static float NODESTORE_DICTIONARY_LOAD_FACTOR = .7f;
+
 
 }
