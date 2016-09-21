@@ -19,6 +19,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -43,6 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merger<E> {
 
     public static final String name = "k-NN merger";
+    private static final Logger LOGGER = Logger.getLogger(KnnMerger.class.getName());
 
     @Override
     public String getName() {
@@ -70,7 +72,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
-        System.out.println("original clusters " + clusters.size() + " nodes " + nodes.length);
+        LOGGER.info("original clusters " + clusters.size() + " nodes " + nodes.length);
 
         if (nodes[nodes.length - 1] == null) {
             System.out.println("no noisy tree node, adding " + noise.size());
@@ -81,8 +83,8 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         }
         List<E> treeNoise = ((DClusterLeaf) nodes[nodes.length - 1]).getInstances();
         System.out.println("noise in tree: " + treeNoise.size());
-        int k = 0;
-        int m = 0;
+        //int k = 0;
+        //int m = 0;
         //int numClusters = clusters.size();
         while (!pq.isEmpty()) {
             curr = pq.poll();
@@ -96,12 +98,12 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
                 }
                 addToNoise(noise, treeNoise, curr.A);
                 addToNoise(noise, treeNoise, curr.B);
-                k += 2;
+                //k += 2;
             }
-            m++;
+            //m++;
         }
         if (nodes.length > clusters.size()) {
-            System.out.println("shrink from " + nodes.length + " -> " + clusters.size());
+            LOGGER.info("shrink from " + nodes.length + " -> " + clusters.size());
             DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
             System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
@@ -109,7 +111,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         }
 
         if (noise.isEmpty()) {
-            System.out.println("noise empty, removin' treenode");
+            LOGGER.info("noise empty, removin' treenode");
             nodes[nodes.length - 1] = null;
         }
 
@@ -117,8 +119,8 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         for (int l = 0; l < nodes.length; l++) {
             System.out.println("node " + l + ": " + nodes[l]);
         }*/
-        System.out.println("root: " + nodes[nodes.length - 2]);
-        System.out.println("cluster size: " + clusters.size());
+        LOGGER.info("root: " + nodes[nodes.length - 2]);
+        LOGGER.info("cluster size: " + clusters.size());
 
     }
 
@@ -145,15 +147,18 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             i = curr.A.getClusterId();
             j = curr.B.getClusterId();
         }
+        merge(i, j, curr, pref, newClusterId);
 
-        double sigmaA = curr.A.getSigma(pref);
-        double sigmaB = curr.B.getSigma(pref);
+        /* double sigmaA = curr.A.getSigma(pref);
+           double sigmaB = curr.B.getSigma(pref);
         //System.out.println("sigma(A)= " + sigmaA + ", sigma(B)= " + sigmaB);
         //double sim = clusterDist(curr.A, curr.B, pref);
         double sim = curr.getValue();
-        //System.out.println("dist between clusters = " + dist);
-        int l1 = nodes[i].level();
-        int l2 = nodes[j].level();
+
+
+           //System.out.println("dist between clusters = " + dist);
+         * int l1 = nodes[i].level();
+           int l2 = nodes[j].level();
 
         if (l1 > 0 && l2 > 0) {
             merge(i, j, curr, pref, newClusterId);
@@ -179,7 +184,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             }
 
             System.out.println("noise size " + noise.size());
-        }
+        } */
     }
 
     private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {

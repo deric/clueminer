@@ -156,7 +156,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                         } else {
                             sim = closeness.score(a, b, pref);
                             if (sim > 0) {
-                                System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
+                                //System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
                                 pq.add(new PairValue<>(a, b, sim));
                             }
                             //System.out.println("excluding pair " + a + ", " + b);

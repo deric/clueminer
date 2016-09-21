@@ -35,8 +35,11 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.report.NanoBench;
 import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -83,9 +86,11 @@ public class KnnMergerTest {
         DendroTreeData tree = result.getTreeData();
         System.out.println("tree: ");
         tree.print();
+        Clustering c = result.getClustering();
+        assertEquals(dataset.size(), c.instancesCount());
     }
 
-    // @Test
+    @Test
     public void testVehicle() {
         Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
         KNNGraphBuilder knn = new KNNGraphBuilder();
@@ -108,7 +113,54 @@ public class KnnMergerTest {
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
+        Clustering c = result.getClustering();
+        System.out.println("clusters: " + c.size());
+        assertEquals(dataset.size(), c.instancesCount());
         //tree.print();
+    }
+
+    @Test
+    public void testMemory() {
+        final Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
+        final KNNGraphBuilder knn = new KNNGraphBuilder();
+        final int k = 3;
+        final int maxPartitionSize = 20;
+        final Props props = new Props();
+        final Bisection bisection = new FiducciaMattheyses(20);
+
+
+        merger = new KnnMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
+        merger.setMergeEvaluation(new ShatovskaSimilarity());
+
+        //measure clustering run
+        NanoBench.create().measurements(3).measure(
+                "chameleon - knn",
+                new Runnable() {
+
+            @Override
+                    public void run() {
+                Props pref = new Props();
+                Graph g = new AdjMatrixGraph();
+                g.ensureCapacity(dataset.size());
+                g = knn.getNeighborGraph(dataset, g, k);
+                        Partitioning partitioning = new RecursiveBisection(bisection);
+                        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+                merger.initialize(partitioningResult, g, bisection, props);
+                HierarchicalResult result = merger.getHierarchy(dataset, pref);
+            }
+
+        }
+        );
+        // Get the Java runtime
+        Runtime runtime = Runtime.getRuntime();
+        // Run the garbage collector
+        runtime.gc();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
 }

@@ -24,6 +24,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
@@ -33,9 +34,11 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
+import org.clueminer.report.NanoBench;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -98,7 +101,49 @@ public class PairMergerTest {
         assertEquals(3, clusters.get(0).size());
         assertEquals(13, clusters.get(1).size());
         assertEquals(13, clusters.get(2).size());
+    }
 
+    @Test
+    public void testMemory() {
+        final Dataset<? extends Instance> dataset = FakeDatasets.vehicleDataset();
+        final KNNGraphBuilder knn = new KNNGraphBuilder();
+        final int k = 3;
+        final int maxPartitionSize = 20;
+        final Props props = new Props();
+        final Bisection bisection = new FiducciaMattheyses(20);
+
+        merger = new PairMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
+        merger.setMergeEvaluation(new ShatovskaSimilarity());
+
+        //measure clustering run
+        NanoBench.create().measurements(3).measure(
+                "chameleon - pairm",
+                new Runnable() {
+
+            @Override
+            public void run() {
+                Props pref = new Props();
+                Graph g = new AdjMatrixGraph();
+                g.ensureCapacity(dataset.size());
+                g = knn.getNeighborGraph(dataset, g, k);
+                Partitioning partitioning = new RecursiveBisection(bisection);
+                ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+                merger.initialize(partitioningResult, g, bisection, props);
+                HierarchicalResult result = merger.getHierarchy(dataset, pref);
+            }
+
+        }
+        );
+        // Get the Java runtime
+        Runtime runtime = Runtime.getRuntime();
+        // Run the garbage collector
+        runtime.gc();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
 }
