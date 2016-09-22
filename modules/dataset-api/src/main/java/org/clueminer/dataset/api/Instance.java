@@ -168,7 +168,7 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
     double[] arrayCopy();
 
     /**
-     * Shallow copy if possible
+     * Reference to data or shallow copy if possible
      *
      * @return reference to double data
      */

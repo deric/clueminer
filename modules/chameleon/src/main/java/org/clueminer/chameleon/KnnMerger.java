@@ -19,6 +19,7 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -58,7 +59,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         kdTree = new KDTree<>(clusters.get(0).attributeCount());
         for (GraphCluster<E> a : clusters) {
             try {
-                kdTree.insert(a.getCentroid().arrayCopy(), a);
+                kdTree.insert(a.getCentroid().asArray(), a);
             } catch (KeySizeException | KeyDuplicateException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -71,7 +72,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
-        LOGGER.info("original clusters " + clusters.size() + " nodes " + nodes.length);
+        LOGGER.log(Level.INFO, "original clusters {0} nodes {1}", new Object[]{clusters.size(), nodes.length});
 
         if (nodes[nodes.length - 1] == null) {
             System.out.println("no noisy tree node, adding " + noise.size());
@@ -102,7 +103,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             //m++;
         }
         if (nodes.length > clusters.size()) {
-            LOGGER.info("shrink from " + nodes.length + " -> " + clusters.size());
+            LOGGER.log(Level.INFO, "shrink from {0} -> {1}", new Object[]{nodes.length, clusters.size()});
             DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
             System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];

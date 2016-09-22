@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.chameleon.similarity.AbstractSimilarity;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.clueminer.chameleon.similarity.CLS;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -48,6 +49,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     public static final String name = "fast merger";
     protected KDTree<GraphCluster<E>> kdTree;
+    private static final Logger LOGGER = Logger.getLogger(FastMerger.class.getName());
 
     @Override
     public String getName() {
@@ -82,23 +84,23 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 if (a.size() == 1) {
                     tiny.add(a);
                 } else {
-                    kdTree.insert(a.getCentroid().arrayCopy(), a);
+                    kdTree.insert(a.getCentroid().asArray(), a);
                 }
             } catch (KeySizeException | KeyDuplicateException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
         //get rid of tiny clusters
-        System.out.println("found " + tiny.size() + " tiny cluster");
+        LOGGER.log(Level.INFO, "found {0} tiny cluster", tiny.size());
         GraphCluster<E> closest;
         for (GraphCluster<E> t : tiny) {
             try {
                 E inst = t.get(0); //there's just one instance
-                List<GraphCluster<E>> nn = kdTree.nearest(inst.arrayCopy(), 1);
+                List<GraphCluster<E>> nn = kdTree.nearest(inst.asArray(), 1);
                 //TODO: check constrains
                 //merge with closest cluster
                 closest = nn.get(0);
-                System.out.println("t = " + t.getClusterId() + " nn = " + closest.getClusterId());
+                LOGGER.log(Level.INFO, "t = {0} nn = {1}", new Object[]{t.getClusterId(), closest.getClusterId()});
                 //blacklist.add(t.getClusterId());
                 //blacklist.add(nn.get(0).getClusterId());
                 //TODO: this is quite inefficient, though it reduces number of compared similarities
@@ -109,7 +111,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 Exceptions.printStackTrace(ex);
             }
         }
-        System.out.println("after filtering: " + clusters.size() + ", noise: " + noise.size());
+        LOGGER.log(Level.INFO, "after filtering: {0}, noise: {1}", new Object[]{clusters.size(), noise.size()});
         renumberClusters(clusters, noise);
     }
 
@@ -123,20 +125,16 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
      */
     @Override
     protected int buildQueue(int numClusters, Props pref) {
-        int k = 15;
+        int k = pref.getInt("k", 5);
         int capacity = k * numClusters;
-        System.out.println("pq capacity = " + capacity);
         pq = initQueue(capacity);
         double sim;
         //number of nearest clusters that we evaluate
 
-        AbstractSimilarity as = (AbstractSimilarity) evaluation;
-        GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
+        //AbstractSimilarity as = (AbstractSimilarity) evaluation;
+        //GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
         int maxClusterId = clusters.size();
         CLS<E> closeness = new CLS<>();
-
-        System.out.println("clusters " + numClusters);
-        System.out.println("gps capacity = " + gps.getCapacity());
 
         E centroid;
         for (GraphCluster<E> a : clusters) {
@@ -146,7 +144,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 if (centroid == null) {
                     throw new RuntimeException("no centroid of cluster " + a.toString());
                 }
-                List<GraphCluster<E>> nn = kdTree.nearest(centroid.arrayCopy(), k);
+                List<GraphCluster<E>> nn = kdTree.nearest(centroid.asArray(), k);
                 //for each NN compute their similarities
                 for (GraphCluster<E> b : nn) {
                     if (a.getClusterId() != b.getClusterId()) {
@@ -168,7 +166,6 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 Exceptions.printStackTrace(ex);
             }
         }
-        System.out.println("pq built " + pq.size());
         return maxClusterId;
     }
 
@@ -215,8 +212,8 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //   addIntoTree(curr, pref);
                 updateExternalProperties(newCluster, small, large);
 
-                kdTree.delete(large.getCentroid().arrayCopy());
-                kdTree.insert(newCluster.getCentroid().arrayCopy(), newCluster);
+                kdTree.delete(large.getCentroid().asArray());
+                kdTree.insert(newCluster.getCentroid().asArray(), newCluster);
                 //addIntoQueue(newCluster, pref);
                 return newCluster;
             } catch (KeySizeException | KeyMissingException | KeyDuplicateException ex) {
@@ -278,9 +275,10 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     @Override
     protected void merged(PairValue<GraphCluster<E>> curr) {
         try {
-            kdTree.delete(curr.A.getCentroid().arrayCopy());
-            kdTree.delete(curr.B.getCentroid().arrayCopy());
+            kdTree.delete(curr.A.getCentroid().asArray(), true);
+            kdTree.delete(curr.B.getCentroid().asArray(), true);
         } catch (KeySizeException | KeyMissingException ex) {
+            //missing key ex should not be thrown with 'true' arg
             Exceptions.printStackTrace(ex);
         }
     }
@@ -289,7 +287,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
 
         try {
-            List<GraphCluster<E>> nn = kdTree.nearest(cluster.getCentroid().arrayCopy(), 10);
+            List<GraphCluster<E>> nn = kdTree.nearest(cluster.getCentroid().asArray(), 10);
             for (GraphCluster<E> b : nn) {
                 computeSimilarity(cluster, b, pref);
             }
@@ -299,7 +297,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
         try {
             //insert newly created cluster to kd-tree
-            kdTree.insert(cluster.getCentroid().arrayCopy(), cluster);
+            kdTree.insert(cluster.getCentroid().asArray(), cluster);
         } catch (KeySizeException | KeyDuplicateException ex) {
             Exceptions.printStackTrace(ex);
         }
