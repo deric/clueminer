@@ -70,7 +70,7 @@ public class GraphPropertyStore {
         //height of a binary tree with {capacity} nodes
         double h = FastMath.log(2, leaves);
         //total number of inner nodes of a binary tree
-        return (int) Math.floor(FastMath.pow(2, h) - 1);
+        return (int) Math.floor(Math.pow(2, h) - 1);
     }
 
     /**

@@ -16,12 +16,13 @@
  */
 package org.clueminer.distance;
 
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Vector;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Apache FastMath.pow generates too many Split objects on heap. Standard Java seems
+ * to be performing better in this case.
  *
  * @author Tomas Barton
  */
@@ -65,8 +66,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            //should be faster
-            sum += FastMath.pow(y.get(i) - x.get(i), power);
+            sum += Math.pow(y.get(i) - x.get(i), power);
         }
         if (sqrt) {
             return Math.sqrt(sum);
@@ -79,7 +79,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
             //should be faster
-            sum += FastMath.pow(y.get(i) - x.get(i), power);
+            sum += Math.pow(y.get(i) - x.get(i), power);
         }
         return sum;
     }
@@ -89,7 +89,7 @@ public class EuclideanDistance extends MinkowskiDistance {
         checkInput(x, y);
         double sum = 0;
         for (int i = 0; i < x.size(); i++) {
-            sum += FastMath.pow(weights[i] * y.get(i) - weights[i] * x.get(i), power);
+            sum += Math.pow(weights[i] * y.get(i) - weights[i] * x.get(i), power);
         }
 
         if (sqrt) {
@@ -102,7 +102,7 @@ public class EuclideanDistance extends MinkowskiDistance {
     public double measure(double[] x, double[] y) {
         double sum = 0;
         for (int i = 0; i < x.length; i++) {
-            sum += FastMath.pow(y[i] - x[i], power);
+            sum += Math.pow(y[i] - x[i], power);
         }
 
         if (sqrt) {

@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -49,7 +48,7 @@ public class PartitionCoeffcient<E extends Instance, C extends Cluster<E>> exten
             double sum = 0.0;
             for (Instance inst : c) {
                 mu = 1.0; //TODO instace membership
-                sum += FastMath.pow(mu, 2);
+                sum += Math.pow(mu, 2);
             }
             pc = sum / (double) c.size();
         }

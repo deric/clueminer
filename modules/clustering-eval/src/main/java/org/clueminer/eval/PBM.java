@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -81,7 +80,7 @@ public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
             }
         }
         score = (et * db) / (ew * clusters.size());
-        return FastMath.pow(score, 2);
+        return Math.pow(score, 2);
     }
 
     @Override

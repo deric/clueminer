@@ -17,7 +17,6 @@
 package org.clueminer.rank;
 
 import java.util.HashMap;
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
 import org.openide.util.lookup.ServiceProvider;
@@ -57,7 +56,7 @@ public class Spearman implements Rank {
         for (int i = 0; i < size; i++) {
             //difference between reference and current ranking
             diff = i - map.get(curr[i].getId());
-            corr += FastMath.pow(diff, 2);
+            corr += Math.pow(diff, 2);
         }
 
         return 1 - (6 * corr / (Math.pow(size, 3) - size));

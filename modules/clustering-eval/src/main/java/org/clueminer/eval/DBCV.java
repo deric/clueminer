@@ -17,7 +17,6 @@
 package org.clueminer.eval;
 
 import java.util.Iterator;
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ScoreException;
@@ -113,7 +112,7 @@ public class DBCV<E extends Instance, C extends Cluster<E>> extends AbstractEval
         Neighbor[] nn = nns.knn(cluster.get(i), cluster.size());
 
         for (int j = 1; j < cluster.size(); j++) {
-            dist += FastMath.pow(1.0 / nn[i].distance, d);
+            dist += Math.pow(1.0 / nn[i].distance, d);
         }
         core = Math.pow(dist / (cluster.size() - 1), -1.0 / d);
         if (Double.isInfinite(core)) {

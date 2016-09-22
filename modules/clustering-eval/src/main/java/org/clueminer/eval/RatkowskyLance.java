@@ -16,7 +16,6 @@
  */
 package org.clueminer.eval;
 
-import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -89,7 +88,7 @@ public class RatkowskyLance<E extends Instance, C extends Cluster<E>> extends Ab
                 avg += clust.get(j).get(d);
             }
             avg /= clust.size();
-            bgss += clust.size() * FastMath.pow(mu - avg, 2);
+            bgss += clust.size() * Math.pow(mu - avg, 2);
 
         }
         return bgss;
