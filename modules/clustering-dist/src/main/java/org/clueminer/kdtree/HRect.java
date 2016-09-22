@@ -1,6 +1,8 @@
 // Hyper-Rectangle class supporting KDTree class
 package org.clueminer.kdtree;
 
+import org.clueminer.math.Vector;
+
 class HRect {
 
     protected HPoint min;
@@ -18,17 +20,17 @@ class HRect {
     }
 
     // from Moore's eqn. 6.6
-    protected HPoint closest(HPoint t) {
+    protected Vector<Double> closest(Vector<Double> t) {
 
-        HPoint p = new HPoint(t.coord.length);
+        HPoint p = new HPoint(t.size());
 
-        for (int i = 0; i < t.coord.length; ++i) {
-            if (t.coord[i] <= min.coord[i]) {
-                p.coord[i] = min.coord[i];
-            } else if (t.coord[i] >= max.coord[i]) {
+        for (int i = 0; i < t.size(); ++i) {
+            if (t.get(i) <= min.coord[i]) {
+                p.set(i, min.coord[i]);
+            } else if (t.get(i) >= max.coord[i]) {
                 p.coord[i] = max.coord[i];
             } else {
-                p.coord[i] = t.coord[i];
+                p.coord[i] = t.get(i);
             }
         }
 

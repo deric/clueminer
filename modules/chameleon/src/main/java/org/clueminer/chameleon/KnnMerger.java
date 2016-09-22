@@ -59,7 +59,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         kdTree = new KDTree<>(clusters.get(0).attributeCount());
         for (GraphCluster<E> a : clusters) {
             try {
-                kdTree.insert(a.getCentroid().asArray(), a);
+                kdTree.insert(a.getCentroid(), a);
             } catch (KeySizeException | KeyDuplicateException ex) {
                 Exceptions.printStackTrace(ex);
             }

@@ -1,18 +1,20 @@
 package org.clueminer.kdtree;
 
 import java.util.List;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.math.Vector;
 
 // K-D Tree node class
 class KDNode<T> {
 
     // these are seen by KDTree
-    protected HPoint k;
+    protected Vector<Double> k;
     T v;
     protected KDNode<T> left, right;
     protected boolean deleted;
 
     // Method ins translated from 352.ins.c of Gonnet & Baeza-Yates
-    protected static <T> int edit(HPoint key, Editor<T> editor, KDNode<T> t, int lev, int K)
+    protected static <T> int edit(Vector<Double> key, Editor<T> editor, KDNode<T> t, int lev, int K)
             throws KeyDuplicateException {
         KDNode<T> next_node;
         int next_lev = (lev + 1) % K;
@@ -28,7 +30,7 @@ class KDNode<T> {
                     return -1;
                 }
                 return 1;
-            } else if (key.coord[lev] > t.k.coord[lev]) {
+            } else if (key.get(lev) > t.k.get(lev)) {
                 next_node = t.right;
                 if (next_node == null) {
                     t.right = create(key, editor);
@@ -46,9 +48,9 @@ class KDNode<T> {
         return edit(key, editor, next_node, next_lev, K);
     }
 
-    protected static <T> KDNode<T> create(HPoint key, Editor<T> editor)
+    protected static <T> KDNode<T> create(Vector<Double> key, Editor<T> editor)
             throws KeyDuplicateException {
-        KDNode<T> t = new KDNode<>(key, editor.edit(null));
+        KDNode<T> t = new KDNode<T>(key, editor.edit(null));
         if (t.v == null) {
             t.deleted = true;
         }
@@ -66,13 +68,13 @@ class KDNode<T> {
     }
 
     // Method srch translated from 352.srch.c of Gonnet & Baeza-Yates
-    protected static <T> KDNode<T> srch(HPoint key, KDNode<T> t, int K) {
+    protected static <T> KDNode<T> srch(Vector<Double> key, KDNode<T> t, int K) {
 
         for (int lev = 0; t != null; lev = (lev + 1) % K) {
 
             if (!t.deleted && key.equals(t.k)) {
                 return t;
-            } else if (key.coord[lev] > t.k.coord[lev]) {
+            } else if (key.get(lev) > t.k.get(lev)) {
                 t = t.right;
             } else {
                 t = t.left;
@@ -83,26 +85,26 @@ class KDNode<T> {
     }
 
     // Method rsearch translated from 352.range.c of Gonnet & Baeza-Yates
-    protected static <T> void rsearch(HPoint lowk, HPoint uppk, KDNode<T> t, int lev,
+    protected static <T> void rsearch(Vector<Double> lowk, HPoint uppk, KDNode<T> t, int lev,
             int K, List<KDNode<T>> v) {
 
         if (t == null) {
             return;
         }
-        if (lowk.coord[lev] <= t.k.coord[lev]) {
+        if (lowk.get(lev) <= t.k.get(lev)) {
             rsearch(lowk, uppk, t.left, (lev + 1) % K, K, v);
         }
         if (!t.deleted) {
             int j = 0;
-            while (j < K && lowk.coord[j] <= t.k.coord[j]
-                    && uppk.coord[j] >= t.k.coord[j]) {
+            while (j < K && lowk.get(j) <= t.k.get(j)
+                    && uppk.coord[j] >= t.k.get(j)) {
                 j++;
             }
             if (j == K) {
                 v.add(t);
             }
         }
-        if (uppk.coord[lev] > t.k.coord[lev]) {
+        if (uppk.coord[lev] > t.k.get(lev)) {
             rsearch(lowk, uppk, t.right, (lev + 1) % K, K, v);
         }
     }
@@ -110,11 +112,13 @@ class KDNode<T> {
     // Method Nearest Neighbor from Andrew Moore's thesis. Numbered
     // comments are direct quotes from there.   NearestNeighborList solution
     // courtesy of Bjoern Heckel.
-    protected static <T> void nnbr(KDNode<T> kd, HPoint target, HRect hr,
+    protected static <T> void nnbr(KDNode<T> kd, Vector<Double> target, HRect hr,
             double max_dist_sqd, int lev, int K,
             NearestNeighborList<KDNode<T>> nnl,
             Checker<T> checker,
             long timeout) {
+
+        EuclideanDistance dist = EuclideanDistance.getInstance();
 
         // 1. if kd is empty then set dist-sqd to infinity and exit.
         if (kd == null) {
@@ -128,19 +132,19 @@ class KDNode<T> {
         int s = lev % K;
 
         // 3. pivot := dom-elt field of kd
-        HPoint pivot = kd.k;
-        double pivot_to_target = HPoint.sqrdist(pivot, target);
+        Vector<Double> pivot = kd.k;
+        double pivot_to_target = dist.measure(pivot, target);
 
         // 4. Cut hr into to sub-hyperrectangles left-hr and right-hr.
         //    The cut plane is through pivot and perpendicular to the s
         //    dimension.
         HRect left_hr = hr; // optimize by not cloning
         HRect right_hr = (HRect) hr.clone();
-        left_hr.max.coord[s] = pivot.coord[s];
-        right_hr.min.coord[s] = pivot.coord[s];
+        left_hr.max.coord[s] = pivot.get(s);
+        right_hr.min.coord[s] = pivot.get(s);
 
         // 5. target-in-left := target_s <= pivot_s
-        boolean target_in_left = target.coord[s] < pivot.coord[s];
+        boolean target_in_left = target.get(s) < pivot.get(s);
 
         KDNode<T> nearer_kd;
         HRect nearer_hr;
@@ -186,8 +190,8 @@ class KDNode<T> {
         // 10. A nearer point could only lie in further-kd if there were some
         //     part of further-hr within distance max-dist-sqd of
         //     target.
-        HPoint closest = further_hr.closest(target);
-        if (HPoint.sqrdist(closest, target) < max_dist_sqd) {
+        Vector<Double> closest = further_hr.closest(target);
+        if (dist.measure(closest, target) < max_dist_sqd) {
 
             // 10.1 if (pivot-target)^2 < dist-sqd then
             if (pivot_to_target < dist_sqd) {
@@ -220,7 +224,7 @@ class KDNode<T> {
     }
 
     // constructor is used only by class; other methods are static
-    private KDNode(HPoint key, T val) {
+    private KDNode(Vector<Double> key, T val) {
         k = key;
         v = val;
         left = null;

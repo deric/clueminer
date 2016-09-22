@@ -133,18 +133,16 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         clustering = new ClusterList<>();
         C cluster;
         C nn;
-        double[] key;
         for (E instance : dataset) {
             cluster = createCluster(dataset);
             cluster.rep.add(instance);
             cluster.add(instance);
-            key = instance.arrayCopy();
             try {
-                kdtree.insert(key, cluster);
+                kdtree.insert(instance, cluster);
                 clustering.add(cluster);
             } catch (KeyDuplicateException ex) {
                 //exactly same instances, put them both to the same cluster
-                cluster = kdtree.search(key);
+                cluster = (C) kdtree.search(instance);
                 cluster.add(instance);
             }
         }
@@ -172,7 +170,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         C nearest = null;
         int upBound = 1;
         try {
-            nn = kdtree.nearest(needle.arrayCopy(), k + upBound);
+            nn = kdtree.nearest(needle, k + upBound);
             if (nn.isEmpty()) {
                 return null;
             }
@@ -189,7 +187,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private C nearest(E needle, double maxDist, int excludeClusterId) {
         List<C> nn;
         try {
-            nn = kdtree.nearestEuclidean(needle.arrayCopy(), maxDist);
+            nn = kdtree.nearestEuclidean(needle, maxDist);
             if (nn.isEmpty()) {
                 return null;
             }
@@ -370,10 +368,9 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      */
     public void insertRep(C cluster) throws KeySizeException, KeyDuplicateException {
         for (E point : cluster.rep) {
-            double[] key = point.arrayCopy();
-            C res = kdtree.search(key);
+            C res = (C) kdtree.search(point);
             if (res == null) {
-                kdtree.insert(key, cluster);
+                kdtree.insert(point, cluster);
             }
         }
     }
@@ -386,7 +383,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     public void deleteRep(CureCluster<E> cluster) {
         for (E point : cluster.rep) {
             try {
-                kdtree.delete(point.arrayCopy());
+                kdtree.delete(point);
             } catch (KeySizeException | KeyMissingException ex) {
                 //nothing to do
             }

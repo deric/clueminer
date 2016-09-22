@@ -17,6 +17,10 @@
 package org.clueminer.kdtree;
 
 import java.util.List;
+import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.distance.EuclideanDistance;
+import org.clueminer.distance.api.Distance;
+import org.clueminer.math.Vector;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,19 +32,10 @@ public class KDTreeTest {
 
     static java.util.Random rand = new java.util.Random();
 
-    static double[] makeSample(int dims) {
-        double[] rv = new double[dims];
+    static Vector<Double> makeSample(int dims) {
+        DoubleArrayDataRow rv = new DoubleArrayDataRow(dims);
         for (int j = 0; j < dims; ++j) {
-            rv[j] = rand.nextDouble();
-        }
-        return rv;
-    }
-
-    static double distSquared(double[] p0, double[] p1) {
-        double rv = 0;
-        for (int i = 0; i < p0.length; i++) {
-            double diff = p0[i] - p1[i];
-            rv += (diff * diff);
+            rv.set(j, rand.nextDouble());
         }
         return rv;
     }
@@ -65,19 +60,20 @@ public class KDTreeTest {
         int dims = 3;
         int samples = 300;
         KDTree<Integer> kt = new KDTree<>(dims);
-        double[] targ = makeSample(dims);
+        Vector<Double> targ = makeSample(dims);
 
         int min_index = 0;
+        Distance dst = EuclideanDistance.getInstance();
         double min_value = Double.MAX_VALUE;
         for (int i = 0; i < samples; ++i) {
-            double[] keys = makeSample(dims);
+            Vector<Double> keys = makeSample(dims);
             kt.insert(keys, i);
 
             /*
              for the purposes of test, we want the nearest EVEN-NUMBERED point
              */
             if ((i % 2) == 0) {
-                double dist = distSquared(targ, keys);
+                double dist = dst.measure(targ, keys);
                 if (dist < min_value) {
                     min_value = dist;
                     min_index = i;
@@ -101,9 +97,9 @@ public class KDTreeTest {
     public void testRange() throws KDException {
         int dims = 2;
         KDTree<Object> kt = new KDTree<>(dims);
-        double[] p0 = {0.5, 0.5};
-        double[] p1 = {0.65, 0.5};
-        double[] p2 = {0.75, 0.5};
+        Vector<Double> p0 = new DoubleArrayDataRow(new double[]{0.5, 0.5});
+        Vector<Double> p1 = new DoubleArrayDataRow(new double[]{0.65, 0.5});
+        Vector<Double> p2 = new DoubleArrayDataRow(new double[]{0.75, 0.5});
 
         kt.insert(p0, new Object());
         kt.insert(p1, new Object());
@@ -125,12 +121,12 @@ public class KDTreeTest {
         int dims = 3;
         int samples = 300;
         KDTree<Object> kt = new KDTree<>(dims);
-        double[] targ = makeSample(dims);
+        Vector<Double> targ = makeSample(dims);
         Object treasure = new Object();
         kt.insert(targ, treasure);
 
         for (int i = 0; i < samples; ++i) {
-            double[] keys = makeSample(dims);
+            Vector<Double> keys = makeSample(dims);
             kt.insert(keys, i);
         }
 
@@ -147,7 +143,7 @@ public class KDTreeTest {
     public void testDelete() throws KDException {
         int dims = 3;
         KDTree<Object> kt = new KDTree<>(dims);
-        double[] targ = makeSample(dims);
+        Vector<Double> targ = makeSample(dims);
         kt.insert(targ, new Object());
         kt.delete(targ);
         try {
@@ -164,7 +160,7 @@ public class KDTreeTest {
     public void testEditing() throws KDException {
         int dims = 3;
         KDTree<Object> kt = new KDTree<>(dims);
-        double[] targ = makeSample(dims);
+        Vector<Double> targ = makeSample(dims);
 
         Object p1 = "p1";
         Object p2 = "p2";

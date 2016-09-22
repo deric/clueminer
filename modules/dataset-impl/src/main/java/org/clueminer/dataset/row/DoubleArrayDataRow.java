@@ -151,9 +151,15 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         data[index] = value;
     }
 
-    public final void set(double[] data) {
-        this.data = data;
-        last = data.length;
+    /**
+     * Deep data copy
+     *
+     * @param values
+     */
+    public final void set(double[] values) {
+        data = new double[values.length];
+        System.arraycopy(values, 0, data, 0, values.length);
+        last = values.length;
     }
 
     @Override
@@ -165,7 +171,6 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
     public void setObject(int index, Object value) {
         set(index, (double) value);
     }
-
 
     /**
      * Sets the given data for the given index.
@@ -401,9 +406,6 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (obj == null) {
             return false;
         }
@@ -414,7 +416,13 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         if (this.getIndex() != other.getIndex()) {
             return false;
         }
-        return Arrays.equals(data, other.data);
+        // seems faster than java.util.Arrays.equals(), which is not
+        for (int i = 0; i < data.length; ++i) {
+            if (data[i] != other.data[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -428,6 +436,10 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
 
     public void setUnknown(double unknown) {
         this.unknown = unknown;
+    }
+
+    protected Object clone() {
+        return new DoubleArrayDataRow(data);
     }
 
     /**

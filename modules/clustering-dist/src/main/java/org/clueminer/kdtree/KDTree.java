@@ -6,6 +6,7 @@ import java.util.Stack;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.HammingDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.math.Vector;
 
 /**
  * KDTree is a class supporting KD-tree insertion, deletion, equality search,
@@ -84,13 +85,13 @@ public class KDTree<T> {
      *   }
      * </PRE>
      *
-     * @param key key for KD-tree node
+     * @param key   key for KD-tree node
      * @param value value at that key
      *
-     * @throws KeySizeException if key.length mismatches K
+     * @throws KeySizeException      if key.length mismatches K
      * @throws KeyDuplicateException if key already in tree
      */
-    public void insert(double[] key, T value)
+    public void insert(Vector<Double> key, T value)
             throws KeySizeException, KeyDuplicateException {
         this.edit(key, new Editor.Inserter<>(value));
     }
@@ -98,29 +99,29 @@ public class KDTree<T> {
     /**
      * Edit a node in a KD-tree
      *
-     * @param key key for KD-tree node
+     * @param key    key for KD-tree node
      * @param editor object to edit the value at that key
      *
-     * @throws KeySizeException if key.length mismatches K
+     * @throws KeySizeException      if key.length mismatches K
      * @throws KeyDuplicateException if key already in tree
      */
-    public void edit(double[] key, Editor<T> editor)
+    public void edit(Vector<Double> key, Editor<T> editor)
             throws KeySizeException, KeyDuplicateException {
 
-        if (key.length != m_K) {
+        if (key.size() != m_K) {
             throw new KeySizeException();
         }
 
         synchronized (this) {
             // the first insert has to be synchronized
             if (null == m_root) {
-                m_root = KDNode.create(new HPoint(key), editor);
+                m_root = KDNode.create(key, editor);
                 m_count = m_root.deleted ? 0 : 1;
                 return;
             }
         }
 
-        m_count += KDNode.edit(new HPoint(key), editor, m_root, 0, m_K);
+        m_count += KDNode.edit(key, editor, m_root, 0, m_K);
     }
 
     /**
@@ -143,7 +144,17 @@ public class KDTree<T> {
         return (kd == null ? null : kd.v);
     }
 
-    public void delete(double[] key)
+    public T search(Vector<Double> key) throws KeySizeException {
+        if (key.size() != m_K) {
+            throw new KeySizeException();
+        }
+
+        KDNode<T> kd = KDNode.srch(key, m_root, m_K);
+
+        return (kd == null ? null : kd.v);
+    }
+
+    public void delete(Vector<Double> key)
             throws KeySizeException, KeyMissingException {
         delete(key, false);
     }
@@ -153,27 +164,25 @@ public class KDTree<T> {
      * rebuilding tree, marks node as deleted. Hence, it is up to the caller to
      * rebuild the tree as needed for efficiency.
      *
-     * @param key key for KD-tree node
+     * @param key      key for KD-tree node
      * @param optional if false and node not found, throw an exception
      *
-     * @throws KeySizeException if key.length mismatches K
+     * @throws KeySizeException    if key.length mismatches K
      * @throws KeyMissingException if no node in tree has key
      */
-    public void delete(double[] key, boolean optional)
+    public void delete(Vector<Double> key, boolean optional)
             throws KeySizeException, KeyMissingException {
 
-        if (key.length != m_K) {
+        if (key.size() != m_K) {
             throw new KeySizeException();
         }
-        KDNode<T> t = KDNode.srch(new HPoint(key), m_root, m_K);
+        KDNode<T> t = KDNode.srch(key, m_root, m_K);
         if (t == null) {
             if (optional == false) {
                 throw new KeyMissingException();
             }
-        } else {
-            if (KDNode.del(t)) {
-                m_count--;
-            }
+        } else if (KDNode.del(t)) {
+            m_count--;
         }
     }
 
@@ -187,7 +196,7 @@ public class KDTree<T> {
      * @throws KeySizeException if key.length mismatches K
      *
      */
-    public T nearest(double[] key) throws KeySizeException {
+    public T nearest(Vector<Double> key) throws KeySizeException {
         List<T> nbrs = nearest(key, 1, null);
         return nbrs.get(0);
     }
@@ -196,14 +205,14 @@ public class KDTree<T> {
      * Find KD-tree nodes whose keys are <i>n</i> nearest neighbors to key.
      *
      * @param key key for KD-tree node
-     * @param n number of nodes to return
+     * @param n   number of nodes to return
      *
      * @return objects at nodes nearest to key, or null on failure
      *
      * @throws KeySizeException if key.length mismatches K
      *
      */
-    public List<T> nearest(double[] key, int n)
+    public List<T> nearest(Vector<Double> key, int n)
             throws KeySizeException, IllegalArgumentException {
         return nearest(key, n, null);
     }
@@ -212,7 +221,7 @@ public class KDTree<T> {
      * Find KD-tree nodes whose keys are within a given Euclidean distance of a
      * given key.
      *
-     * @param key key for KD-tree node
+     * @param key  key for KD-tree node
      * @param dist Euclidean distance
      *
      * @return objects at nodes with distance of key, or null on failure
@@ -220,7 +229,7 @@ public class KDTree<T> {
      * @throws KeySizeException if key.length mismatches K
      *
      */
-    public List<T> nearestEuclidean(double[] key, double dist) throws KeySizeException {
+    public List<T> nearestEuclidean(Vector<Double> key, double dist) throws KeySizeException {
         return nearestDistance(key, dist, EuclideanDistance.getInstance());
     }
 
@@ -228,7 +237,7 @@ public class KDTree<T> {
      * Find KD-tree nodes whose keys are within a given Hamming distance of a
      * given key.
      *
-     * @param key key for KD-tree node
+     * @param key  key for KD-tree node
      * @param dist Hamming distance
      *
      * @return objects at nodes with distance of key, or null on failure
@@ -236,7 +245,7 @@ public class KDTree<T> {
      * @throws KeySizeException if key.length mismatches K
      *
      */
-    public List<T> nearestHamming(double[] key, double dist) throws KeySizeException {
+    public List<T> nearestHamming(Vector<Double> key, double dist) throws KeySizeException {
 
         return nearestDistance(key, dist, HammingDistance.getInstance());
     }
@@ -246,17 +255,17 @@ public class KDTree<T> {
      * algorithm above. Neighbors are returned in ascending order of distance to
      * key.
      *
-     * @param key key for KD-tree node
-     * @param n how many neighbors to find
+     * @param key     key for KD-tree node
+     * @param n       how many neighbors to find
      * @param checker an optional object to filter matches
      *
      * @return objects at node nearest to key, or null on failure
      *
-     * @throws KeySizeException if key.length mismatches K
+     * @throws KeySizeException         if key.length mismatches K
      * @throws IllegalArgumentException if <I>n</I> is negative or exceeds tree
-     * size
+     *                                  size
      */
-    public List<T> nearest(double[] key, int n, Checker<T> checker)
+    public List<T> nearest(Vector<Double> key, int n, Checker<T> checker)
             throws KeySizeException, IllegalArgumentException {
 
         if (n <= 0) {
@@ -310,22 +319,22 @@ public class KDTree<T> {
         return m_count;
     }
 
-    private NearestNeighborList<KDNode<T>> getnbrs(double[] key)
+    private NearestNeighborList<KDNode<T>> getnbrs(Vector<Double> key)
             throws KeySizeException {
         return getnbrs(key, m_count, null);
     }
 
-    private NearestNeighborList<KDNode<T>> getnbrs(double[] key, int n,
+    private NearestNeighborList<KDNode<T>> getnbrs(Vector<Double> key, int n,
             Checker<T> checker) throws KeySizeException {
 
-        if (key.length != m_K) {
+        if (key.size() != m_K) {
             throw new KeySizeException();
         }
 
         NearestNeighborList<KDNode<T>> nnl = new NearestNeighborList<>(n);
 
         // initial call is with infinite hyper-rectangle and max distance
-        HRect hr = HRect.infiniteHRect(key.length);
+        HRect hr = HRect.infiniteHRect(key.size());
         double max_dist_sqd = Double.MAX_VALUE;
         HPoint keyp = new HPoint(key);
 
@@ -340,15 +349,15 @@ public class KDTree<T> {
 
     }
 
-    private List<T> nearestDistance(double[] key, double dist, Distance metric) throws KeySizeException {
+    private List<T> nearestDistance(Vector<Double> key, double dist, Distance metric) throws KeySizeException {
         NearestNeighborList<KDNode<T>> nnl = getnbrs(key);
         int n = nnl.getSize();
         Stack<T> nbrs = new Stack<>();
 
         for (int i = 0; i < n; ++i) {
             KDNode<T> kd = nnl.removeHighest();
-            HPoint p = kd.k;
-            if (metric.measure(kd.k.coord, key) < dist) {
+            //Vector<Double> p = kd.k;
+            if (metric.measure(kd.k, key) < dist) {
                 nbrs.push(kd.v);
             }
         }
