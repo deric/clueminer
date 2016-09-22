@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.dataset.row;
 
 import org.clueminer.math.Vector;
@@ -20,7 +36,7 @@ public class DoubleArrayDataRowTest {
     private DoubleArrayDataRow t1;
     private DoubleArrayDataRow t2;
     //precision for comparing
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
     private static final double[] t1array = new double[]{1, 2, 3, 4, 5};
 
     public DoubleArrayDataRowTest() {
@@ -63,11 +79,11 @@ public class DoubleArrayDataRowTest {
         Vector<Double> vec = new DoubleArrayDataRow(new double[]{10.5, 24.5, 30.5, 10.0, 50.4});
         Vector<Double> res = t2.add(vec);
 
-        assertEquals(21, res.getValue(0), delta);
-        assertEquals(49, res.getValue(1), delta);
-        assertEquals(61, res.getValue(2), delta);
-        assertEquals(20, res.getValue(3), delta);
-        assertEquals(100.8, res.getValue(4), delta);
+        assertEquals(21, res.getValue(0), DELTA);
+        assertEquals(49, res.getValue(1), DELTA);
+        assertEquals(61, res.getValue(2), DELTA);
+        assertEquals(20, res.getValue(3), DELTA);
+        assertEquals(100.8, res.getValue(4), DELTA);
     }
 
     /**
@@ -76,7 +92,7 @@ public class DoubleArrayDataRowTest {
     @Test
     public void testGet_int() {
         //get first item in test instance
-        assertEquals(10.5, t2.value(0), delta);
+        assertEquals(10.5, t2.value(0), DELTA);
     }
 
     /**
@@ -85,8 +101,8 @@ public class DoubleArrayDataRowTest {
     @Test
     public void testGet_int_double() {
         //if index is not in t1array, return default value
-        assertEquals(100, t2.getValue(-1, 100), delta);
-        assertEquals(100, t2.getValue(t2.size(), 100), delta);
+        assertEquals(100, t2.getValue(-1, 100), DELTA);
+        assertEquals(100, t2.getValue(t2.size(), 100), DELTA);
     }
 
     /**
@@ -98,7 +114,7 @@ public class DoubleArrayDataRowTest {
         int idx = 1;
         assertNotSame(value, t1.get(idx));
         t1.set(idx, value);
-        assertEquals(value, t1.get(idx), delta);
+        assertEquals(value, t1.get(idx), DELTA);
     }
 
     @Test
@@ -106,7 +122,7 @@ public class DoubleArrayDataRowTest {
         double value = 789.123456789123123456456789;
         int idx = 3;
         t1.set(idx, value);
-        assertEquals(value, t1.get(idx), delta);
+        assertEquals(value, t1.get(idx), DELTA);
     }
 
     /**
@@ -118,7 +134,7 @@ public class DoubleArrayDataRowTest {
         int idx = 6;
         assertNotSame(value, t1.get(idx));
         t1.set(idx, value);
-        assertEquals(value, t1.get(idx), delta);
+        assertEquals(value, t1.get(idx), DELTA);
     }
 
     /**
@@ -129,50 +145,52 @@ public class DoubleArrayDataRowTest {
         DoubleArrayDataRow test = new DoubleArrayDataRow(3);
         for (int i = 0; i < 3; i++) {
             test.set(i, i);
-            assertEquals(i, test.get(i), delta);
+            assertEquals(i, test.get(i), DELTA);
         }
     }
 
-    /**
-     * Test of ensureCapacity method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testEnsureCapacity() {
     }
 
-    /**
-     * Test of trim method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testTrim() {
     }
 
-    /**
-     * Test of toString method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testToString() {
     }
 
-    /**
-     * Test of getType method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testGetType() {
     }
 
-    /**
-     * Test of size method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testSize() {
         assertEquals(5, t1.size());
         assertEquals(5, t2.size());
     }
 
-    /**
-     * Test of copy method, of class DoubleArrayDataRow.
-     */
+    @Test
+    public void testAsArray() {
+        DoubleArrayDataRow data = (DoubleArrayDataRow) t1.copy();
+        double[] ary = data.asArray();
+        assertEquals(1, ary[0], DELTA);
+        //we should get reference to data
+        ary[0] = 0;
+        assertEquals(0, data.get(0), DELTA);
+    }
+
+    @Test
+    public void testArrayCopy() {
+        DoubleArrayDataRow data = (DoubleArrayDataRow) t1.copy();
+        double[] ary = data.arrayCopy();
+        assertEquals(1, ary[0], DELTA);
+        ary[0] = 0;
+        //we're getting a copy of data
+        assertEquals(1, data.get(0), DELTA);
+    }
+
     @Test
     public void testCopy() {
         DoubleArrayDataRow copy = (DoubleArrayDataRow) t1.copy();
@@ -181,9 +199,6 @@ public class DoubleArrayDataRowTest {
         assertFalse(t1.equals(copy));
     }
 
-    /**
-     * Test of iterator method, of class DoubleArrayDataRow.
-     */
     @Test
     public void testIterator() {
         int i = 0;
@@ -337,13 +352,6 @@ public class DoubleArrayDataRowTest {
     }
 
     /**
-     * Test of arrayCopy method, of class DoubleArrayDataRow.
-     */
-    @Test
-    public void testArrayCopy() {
-    }
-
-    /**
      * Test of getPlotter method, of class DoubleArrayDataRow.
      */
     @Test
@@ -417,9 +425,9 @@ public class DoubleArrayDataRowTest {
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
-            assertEquals(0.0, orig.get(i), delta);
+            assertEquals(0.0, orig.get(i), DELTA);
             //new one should be updated
-            assertEquals(1.0, upd.get(i), delta);
+            assertEquals(1.0, upd.get(i), DELTA);
         }
     }
 
@@ -430,9 +438,9 @@ public class DoubleArrayDataRowTest {
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
-            assertEquals(5.0, orig.get(i), delta);
+            assertEquals(5.0, orig.get(i), DELTA);
             //new one should be updated
-            assertEquals(4.0, upd.get(i), delta);
+            assertEquals(4.0, upd.get(i), DELTA);
         }
     }
 
@@ -477,9 +485,9 @@ public class DoubleArrayDataRowTest {
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
-            assertEquals(5.0, orig.get(i), delta);
+            assertEquals(5.0, orig.get(i), DELTA);
             //new one should be updated
-            assertEquals(4.0, upd.get(i), delta);
+            assertEquals(4.0, upd.get(i), DELTA);
         }
     }
 
@@ -490,9 +498,9 @@ public class DoubleArrayDataRowTest {
 
         for (int i = 0; i < orig.size(); i++) {
             //original shoud not change
-            assertEquals(2.0, orig.get(i), delta);
+            assertEquals(2.0, orig.get(i), DELTA);
             //new one should be updated
-            assertEquals(4.0, upd.get(i), delta);
+            assertEquals(4.0, upd.get(i), DELTA);
         }
     }
 }

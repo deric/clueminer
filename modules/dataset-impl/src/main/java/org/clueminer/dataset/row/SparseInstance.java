@@ -339,6 +339,11 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
         return res;
     }
 
+    @Override
+    public double[] asArray() {
+        return arrayCopy();
+    }
+
     private void checkIndexInterval(int index) {
         if (index < minKey) {
             minKey = index;

@@ -10,6 +10,7 @@ import org.clueminer.dataset.api.IStats;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Statistics;
+import org.clueminer.dataset.api.Stats;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.math.Interpolator;
@@ -210,5 +211,10 @@ public class PosturomedInstance extends IntegerDataRow implements Instance<Integ
             val = (int) value(i);
             updateStatistics(val);
         }
+    }
+
+    @Override
+    public double statistics(Stats name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

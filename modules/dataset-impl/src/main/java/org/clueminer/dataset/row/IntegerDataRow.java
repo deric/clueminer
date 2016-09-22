@@ -239,6 +239,11 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     }
 
     @Override
+    public double[] asArray() {
+        return arrayCopy();
+    }
+
+    @Override
     public Plotter getPlotter() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

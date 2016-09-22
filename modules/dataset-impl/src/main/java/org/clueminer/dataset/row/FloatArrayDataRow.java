@@ -189,6 +189,16 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         return res;
     }
 
+    /**
+     * there's no better way than deep copy
+     *
+     * @return
+     */
+    @Override
+    public double[] asArray() {
+        return arrayCopy();
+    }
+
     @Override
     public Plotter getPlotter() {
         throw new UnsupportedOperationException("Not supported yet.");

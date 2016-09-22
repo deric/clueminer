@@ -166,7 +166,16 @@ public class LongDataRow extends DataRow<Long> implements Iterable<Long>, Vector
 
     @Override
     public double[] arrayCopy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double[] res = new double[size()];
+        for (int i = 0; i < size(); i++) {
+            res[i] = value(i);
+        }
+        return res;
+    }
+
+    @Override
+    public double[] asArray() {
+        return arrayCopy();
     }
 
     @Override

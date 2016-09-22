@@ -104,6 +104,11 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
         return res;
     }
 
+    @Override
+    public double[] asArray() {
+        return arrayCopy();
+    }
+
     /**
      * {@inheritDoc}
      */

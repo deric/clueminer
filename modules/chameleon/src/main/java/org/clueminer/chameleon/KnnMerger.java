@@ -54,7 +54,6 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
 
     @Override
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props pref) {
-        System.out.println("input clusters: " + clusters.size());
         //build kd-tree for fast search
         kdTree = new KDTree<>(clusters.get(0).attributeCount());
         for (GraphCluster<E> a : clusters) {

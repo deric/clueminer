@@ -45,15 +45,14 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     /**
      * Contains all attribute statistics calculation algorithms.
      */
-    protected List<Statistics> statistics = new LinkedList<Statistics>();
-    /**
-     * Mapping of attributes to its providers
-     */
-    protected HashMap<Stats, Statistics> statisticsProviders = new HashMap<Stats, Statistics>();
+    protected List<Statistics> statistics = new LinkedList<>();
+
+    protected HashMap<Stats, Statistics> statisticsProviders;
     protected int last;
     protected Instance ancestor;
 
     public XYInstance(int capacity) {
+        this.statisticsProviders = new HashMap<>();
         x = new double[capacity];
         y = new double[capacity];
         last = 0; //index of next value
@@ -384,6 +383,11 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public double[] asArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

@@ -271,4 +271,9 @@ public class GenomeSequence extends AbstractInstance<Double> {
         }
     }
 
+    @Override
+    public double[] asArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

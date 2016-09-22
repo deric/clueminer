@@ -278,6 +278,10 @@ public class DoubleArrayDataRow extends DataRow<Double> implements Iterable<Doub
         return data.clone();
     }
 
+    public double[] asArray() {
+        return data;
+    }
+
     @Override
     public Plotter getPlotter() {
         //TODO: allow using prefered chart provider

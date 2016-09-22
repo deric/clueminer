@@ -220,6 +220,11 @@ public class InstanceDraftImpl implements InstanceDraft {
     }
 
     @Override
+    public double[] asArray() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public String toString(String separator) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
