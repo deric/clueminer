@@ -21,7 +21,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.AbsGraphConvertor;
 import static org.clueminer.graph.api.AbsGraphConvertor.DIST_TO_EDGE;
 import org.clueminer.graph.api.DIST2EDGE;
-import org.clueminer.graph.api.Direction;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
@@ -87,7 +87,7 @@ public class DirectedKnnBuilder<E extends Instance> extends AbsGraphConvertor<E>
                 //check if inverse edge already exits
                 edge = graph.getEdge(target, node);
                 if (edge != null) {
-                    edge.setDirection(Direction.BOTH);
+                    edge.setDirection(EdgeType.BOTH);
                 } else {
                     edge = factory.newEdge(node, target, 1, convertDistance(neighbor.distance, methd), true);
                     graph.addEdge(edge);

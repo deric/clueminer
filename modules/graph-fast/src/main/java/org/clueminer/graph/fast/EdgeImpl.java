@@ -16,8 +16,8 @@
  */
 package org.clueminer.graph.fast;
 
-import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Node;
 
 /**
@@ -32,25 +32,58 @@ public class EdgeImpl extends ElementImpl implements Edge {
     protected final NodeImpl source;
     protected final NodeImpl target;
     protected double weight;
-    protected Direction direction;
+    protected int type;
+
     protected int storeId = EdgeStore.NULL_ID;
+    protected int nextOutEdge = EdgeStore.NULL_ID;
+    protected int nextInEdge = EdgeStore.NULL_ID;
+    protected int previousOutEdge = EdgeStore.NULL_ID;
+    protected int previousInEdge = EdgeStore.NULL_ID;
 
     protected byte flags;
 
-    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight) {
-        super(id, graphStore);
+    public EdgeImpl(long id, Node source, Node target) {
+        super(id, null);
         this.source = (NodeImpl) source;
         this.target = (NodeImpl) target;
-        this.weight = weight;
-        this.direction = Direction.NONE;
+        this.weight = 1.0;
+        this.type = EdgeType.NONE.getValue();
     }
 
-    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight, Direction dir) {
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target) {
+        super(id, graphStore);
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
+        this.weight = 1.0;
+        this.type = EdgeType.NONE.getValue();
+    }
+
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, int type) {
+        super(id, graphStore);
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
+        this.weight = 1.0;
+        this.type = type;
+    }
+
+    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, int type, double weight) {
         super(id, graphStore);
         this.source = (NodeImpl) source;
         this.target = (NodeImpl) target;
         this.weight = weight;
-        this.direction = dir;
+        this.type = type;
+    }
+
+    public EdgeImpl(long id, Node source, Node target, int type, double weight, boolean directed) {
+        super(id, null);
+        this.source = (NodeImpl) source;
+        this.target = (NodeImpl) target;
+        this.weight = weight;
+        if (directed) {
+            this.type = EdgeType.FORWARD.getValue();
+        } else {
+            this.type = EdgeType.NONE.getValue();
+        }
     }
 
     public EdgeImpl(long id, Node source, Node target, double weight, boolean directed) {
@@ -58,23 +91,7 @@ public class EdgeImpl extends ElementImpl implements Edge {
         this.source = (NodeImpl) source;
         this.target = (NodeImpl) target;
         this.weight = weight;
-        if (directed) {
-            this.direction = Direction.FORWARD;
-        } else {
-            this.direction = Direction.NONE;
-        }
-    }
-
-    public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, double weight, boolean directed) {
-        super(id, graphStore);
-        this.source = (NodeImpl) source;
-        this.target = (NodeImpl) target;
-        this.weight = weight;
-        if (directed) {
-            this.direction = Direction.FORWARD;
-        } else {
-            this.direction = Direction.NONE;
-        }
+        this.type = EdgeType.NONE.getValue();
     }
 
     public int getStoreId() {
@@ -87,7 +104,7 @@ public class EdgeImpl extends ElementImpl implements Edge {
 
     @Override
     public boolean isDirected() {
-        return direction != Direction.NONE;
+        return type != EdgeType.NONE.getValue();
     }
 
     @Override
@@ -111,13 +128,13 @@ public class EdgeImpl extends ElementImpl implements Edge {
     }
 
     @Override
-    public Direction getDirection() {
-        return direction;
+    public EdgeType getDirection() {
+        return EdgeType.values()[type];
     }
 
     @Override
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setDirection(EdgeType direction) {
+        this.type = direction.getValue();
     }
 
     public boolean isSelfLoop() {

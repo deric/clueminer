@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.graph.api.Direction;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
@@ -52,7 +52,6 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
         return instance;
     }
 
-
     @Override
     public String getName() {
         return "graph-fast";
@@ -60,29 +59,31 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Edge newEdge(Node source, Node target) {
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0);
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, EdgeType.NONE.getValue(), 1.0);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, boolean directed) {
-        Direction dir = directed ? Direction.FORWARD : Direction.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0, dir);
+        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), 1.0);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, boolean directed) {
-        Direction dir = directed ? Direction.FORWARD : Direction.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, 1.0, dir);
+        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), 1.0);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), weight);
     }
 
     @Override
     public Edge newEdge(Object id, Node source, Node target, int type, double weight, boolean directed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), weight);
     }
 
     @Override

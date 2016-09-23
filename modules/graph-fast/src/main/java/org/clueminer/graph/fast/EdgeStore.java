@@ -19,8 +19,10 @@ package org.clueminer.graph.fast;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Node;
@@ -151,7 +153,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     }
 
     @Override
-    public Iterator<Edge> iterator() {
+    public EdgeStoreIterator iterator() {
         return new EdgeStoreIterator();
     }
 
@@ -190,6 +192,9 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
                 currentBlock.add(edge);
                 dictionary.put(edge.getId(), edge.storeId);
             }
+
+            insertOutEdge(edge);
+            insertInEdge(edge);
 
             source.outDegree++;
             target.inDegree++;
@@ -253,6 +258,9 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
             EdgeBlock block = blocks[storeIndex];
             block.remove(edge);
 
+            removeOutEdge(edge);
+            removeInEdge(edge);
+
             boolean directed = edge.isDirected();
             NodeImpl source = edge.source;
             NodeImpl target = edge.target;
@@ -297,6 +305,92 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
             return true;
         }
         return false;
+    }
+
+    private void insertOutEdge(EdgeImpl edge) {
+        NodeImpl source = edge.source;
+        int type = edge.type;
+
+        ensureHeadOutCapacity(source, type);
+
+        int edgeId = edge.getStoreId();
+        EdgeImpl[] headOutArray = source.headOut;
+        EdgeImpl headOutEdge = headOutArray[type];
+        if (headOutEdge != null) {
+            headOutEdge.previousOutEdge = edgeId;
+            edge.nextOutEdge = headOutEdge.storeId;
+        }
+        headOutArray[type] = edge;
+    }
+
+    private void insertInEdge(EdgeImpl edge) {
+        NodeImpl target = edge.target;
+        int type = edge.type;
+
+        ensureHeadInCapacity(target, type);
+
+        int edgeId = edge.getStoreId();
+        EdgeImpl[] headInArray = target.headIn;
+        EdgeImpl headInEdge = headInArray[type];
+        if (headInEdge != null) {
+            headInEdge.previousInEdge = edgeId;
+            edge.nextInEdge = headInEdge.storeId;
+        }
+        headInArray[type] = edge;
+    }
+
+    private void removeOutEdge(EdgeImpl edge) {
+        int previousOutEdgeId = edge.previousOutEdge;
+        int nextOutEdgeId = edge.nextOutEdge;
+        int type = edge.type;
+
+        EdgeImpl nextOutEdge = null;
+        if (nextOutEdgeId != EdgeStore.NULL_ID) {
+            nextOutEdge = get(nextOutEdgeId);
+            nextOutEdge.previousOutEdge = previousOutEdgeId;
+        }
+
+        if (previousOutEdgeId == EdgeStore.NULL_ID) {
+            NodeImpl source = edge.source;
+            EdgeImpl[] headOutArray = source.headOut;
+            headOutArray[type] = nextOutEdge;
+            if (nextOutEdge == null && type > FastGraphConfig.EDGESTORE_DEFAULT_TYPE_COUNT - 1 && type == headOutArray.length - 1) {
+                trimHeadOutCapacity(source, type - 1);
+            }
+        } else {
+            EdgeImpl previousOutEdge = get(previousOutEdgeId);
+            previousOutEdge.nextOutEdge = nextOutEdgeId;
+        }
+
+        edge.nextOutEdge = EdgeStore.NULL_ID;
+        edge.previousOutEdge = EdgeStore.NULL_ID;
+    }
+
+    private void removeInEdge(EdgeImpl edge) {
+        int previousInEdgeId = edge.previousInEdge;
+        int nextInEdgeId = edge.nextInEdge;
+        int type = edge.type;
+
+        EdgeImpl nextInEdge = null;
+        if (nextInEdgeId != EdgeStore.NULL_ID) {
+            nextInEdge = get(nextInEdgeId);
+            nextInEdge.previousInEdge = previousInEdgeId;
+        }
+
+        if (previousInEdgeId == EdgeStore.NULL_ID) {
+            NodeImpl target = edge.target;
+            EdgeImpl[] headInArray = target.headIn;
+            headInArray[type] = nextInEdge;
+            if (nextInEdge == null && type > FastGraphConfig.EDGESTORE_DEFAULT_TYPE_COUNT - 1 && type == headInArray.length - 1) {
+                trimHeadInCapacity(target, type - 1);
+            }
+        } else {
+            EdgeImpl previousInEdge = get(previousInEdgeId);
+            previousInEdge.nextInEdge = nextInEdgeId;
+        }
+
+        edge.nextInEdge = EdgeStore.NULL_ID;
+        edge.previousInEdge = EdgeStore.NULL_ID;
     }
 
     @Override
@@ -403,7 +497,14 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     @Override
     public Collection<Edge> toCollection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Edge> list = new ArrayList<Edge>(size);
+        EdgeStoreIterator itr = iterator();
+        while (itr.hasNext()) {
+            EdgeImpl n = itr.next();
+            list.add(n);
+        }
+
+        return list;
     }
 
     @Override
@@ -584,10 +685,59 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         }
     }
 
+    public EdgeInOutIterator edgeIterator(final Node node) {
+        checkValidNodeObject(node);
+        return new EdgeInOutIterator((NodeImpl) node);
+    }
+
+    private void ensureHeadOutCapacity(final NodeImpl node, final int type) {
+        EdgeImpl[] out = node.headOut;
+        int outLength = out.length;
+        if (type >= outLength) {
+            EdgeImpl[] newArray = new EdgeImpl[type + 1];
+            System.arraycopy(out, 0, newArray, 0, outLength);
+            node.headOut = newArray;
+        }
+    }
+
+    private void ensureHeadInCapacity(NodeImpl node, final int type) {
+        EdgeImpl[] in = node.headIn;
+        int inLength = in.length;
+        if (type >= inLength) {
+            EdgeImpl[] newArray = new EdgeImpl[type + 1];
+            System.arraycopy(in, 0, newArray, 0, inLength);
+            node.headIn = newArray;
+        }
+    }
+
+    private void trimHeadOutCapacity(NodeImpl node, int length) {
+        EdgeImpl[] out = node.headOut;
+        int outLength = out.length;
+        if (length < outLength) {
+            EdgeImpl[] newArray = new EdgeImpl[length];
+            System.arraycopy(out, 0, newArray, 0, length);
+            node.headOut = newArray;
+        }
+    }
+
+    private void trimHeadInCapacity(NodeImpl node, int length) {
+        EdgeImpl[] in = node.headIn;
+        int inLength = in.length;
+        if (length < inLength) {
+            EdgeImpl[] newArray = new EdgeImpl[length];
+            System.arraycopy(in, 0, newArray, 0, length);
+            node.headIn = newArray;
+        }
+    }
+
     void checkIdDoesntExist(Object id) {
         if (dictionary.containsKey(id)) {
             throw new IllegalArgumentException("The node id already exist");
         }
+    }
+
+    boolean isUndirectedToIgnore(EdgeImpl edge) {
+        return edge.isMutual() && edge.source.storeId < edge.target.storeId;
     }
 
     private void incrementVersion() {
@@ -629,6 +779,272 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         checkNonNullObject(target);
 
         return dictionary.containsKey(getLongId(source, target, true));
+    }
+
+    public NeighborsIterator neighborIterator(Node node) {
+        checkValidNodeObject(node);
+        return new NeighborsUndirectedIterator((NodeImpl) node, new EdgeInOutIterator((NodeImpl) node));
+    }
+
+    protected final class EdgeInOutIterator implements Iterator<Edge> {
+
+        protected final int outTypeLength;
+        protected final int inTypeLength;
+        protected EdgeImpl[] outArray;
+        protected EdgeImpl[] inArray;
+        protected int typeIndex = 0;
+        protected EdgeImpl pointer;
+        protected EdgeImpl lastEdge;
+        protected boolean out = true;
+
+        public EdgeInOutIterator(NodeImpl node) {
+            outArray = node.headOut;
+            outTypeLength = outArray.length;
+            inArray = node.headIn;
+            inTypeLength = inArray.length;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (pointer == null) {
+                if (out) {
+                    while (pointer == null && typeIndex < outTypeLength) {
+                        pointer = outArray[typeIndex++];
+                    }
+                    if (pointer == null) {
+                        out = false;
+                        typeIndex = 0;
+                    }
+                }
+                if (!out) {
+                    while (pointer == null && typeIndex < inTypeLength) {
+                        pointer = inArray[typeIndex++];
+                        while (pointer != null && pointer.isSelfLoop()) {
+                            int id = pointer.nextInEdge;
+                            if (id != EdgeStore.NULL_ID) {
+                                pointer = get(id);
+                            } else {
+                                pointer = null;
+                            }
+                        }
+                    }
+                }
+
+                if (pointer == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public EdgeImpl next() {
+            lastEdge = pointer;
+            if (out) {
+                int id = lastEdge.nextOutEdge;
+                if (id != EdgeStore.NULL_ID) {
+                    pointer = get(id);
+                } else {
+                    pointer = null;
+                }
+            } else {
+                int id = EdgeStore.NULL_ID;
+                while (id == EdgeStore.NULL_ID) {
+                    id = pointer.nextInEdge;
+                    if (id != EdgeStore.NULL_ID) {
+                        pointer = get(id);
+                        if (pointer.isSelfLoop()) {
+                            id = EdgeStore.NULL_ID;
+                        }
+                    } else {
+                        pointer = null;
+                        break;
+                    }
+                }
+            }
+            return lastEdge;
+        }
+
+        @Override
+        public void remove() {
+            EdgeStore.this.remove(lastEdge);
+        }
+    }
+
+    protected final class EdgeOutIterator implements Iterator<Edge> {
+
+        protected final int typeLength;
+        protected EdgeImpl[] outArray;
+        protected int typeIndex = 0;
+        protected EdgeImpl pointer;
+        protected EdgeImpl lastEdge;
+
+        public EdgeOutIterator(NodeImpl node) {
+            outArray = node.headOut;
+            typeLength = outArray.length;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (pointer == null) {
+                while (pointer == null && typeIndex < typeLength) {
+                    pointer = outArray[typeIndex++];
+                }
+                if (pointer == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public EdgeImpl next() {
+            lastEdge = pointer;
+            int id = lastEdge.nextOutEdge;
+            if (id != EdgeStore.NULL_ID) {
+                pointer = get(id);
+            } else {
+                pointer = null;
+            }
+            return lastEdge;
+        }
+
+        @Override
+        public void remove() {
+            EdgeStore.this.remove(lastEdge);
+        }
+    }
+
+    protected final class EdgeInIterator implements Iterator<Edge> {
+
+        protected final int typeLength;
+        protected EdgeImpl[] inArray;
+        protected int typeIndex = 0;
+        protected EdgeImpl pointer;
+        protected EdgeImpl lastEdge;
+
+        public EdgeInIterator(NodeImpl node) {
+            inArray = node.headIn;
+            typeLength = inArray.length;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (pointer == null) {
+                while (pointer == null && typeIndex < typeLength) {
+                    pointer = inArray[typeIndex++];
+                }
+                if (pointer == null) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public EdgeImpl next() {
+            lastEdge = pointer;
+            int id = lastEdge.nextInEdge;
+            if (id != EdgeStore.NULL_ID) {
+                pointer = get(id);
+            } else {
+                pointer = null;
+            }
+            return lastEdge;
+        }
+
+        @Override
+        public void remove() {
+            EdgeStore.this.remove(lastEdge);
+        }
+    }
+
+    protected class NeighborsIterator implements Iterator<Node> {
+
+        protected final NodeImpl node;
+        protected final Iterator<Edge> itr;
+
+        public NeighborsIterator(NodeImpl node, Iterator<Edge> itr) {
+            this.node = node;
+            this.itr = itr;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return itr.hasNext();
+        }
+
+        @Override
+        public Node next() {
+            Edge e = itr.next();
+            return e.getSource() == node ? e.getTarget() : e.getSource();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Remove not supported for this iterator");
+        }
+    }
+
+    protected final class NeighborsUndirectedIterator extends NeighborsIterator {
+
+        protected EdgeImpl pointer;
+
+        public NeighborsUndirectedIterator(NodeImpl node, Iterator<Edge> itr) {
+            super(node, itr);
+        }
+
+        @Override
+        public boolean hasNext() {
+            pointer = null;
+            while (pointer == null || isUndirectedToIgnore(pointer)) {
+                if (!itr.hasNext()) {
+                    return false;
+                }
+                pointer = (EdgeImpl) itr.next();
+            }
+            return true;
+        }
+
+        @Override
+        public Node next() {
+            return pointer.getSource() == node ? pointer.getTarget() : pointer.getSource();
+        }
+    }
+
+    protected final class UndirectedIterator implements Iterator<Edge> {
+
+        protected final Iterator<Edge> itr;
+        protected EdgeImpl pointer;
+
+        public UndirectedIterator(Iterator<Edge> itr) {
+            this.itr = itr;
+        }
+
+        @Override
+        public boolean hasNext() {
+            pointer = null;
+            while (pointer == null || isUndirectedToIgnore(pointer)) {
+                if (!itr.hasNext()) {
+                    return false;
+                }
+                pointer = (EdgeImpl) itr.next();
+            }
+            return true;
+        }
+
+        @Override
+        public EdgeImpl next() {
+            return pointer;
+        }
+
+        @Override
+        public void remove() {
+            if (pointer.isMutual()) {
+                throw new UnsupportedOperationException("Removing directed edges from undirected iterator is not supported");
+            }
+            EdgeStore.this.remove(pointer);
+        }
     }
 
 }

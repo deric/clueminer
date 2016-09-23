@@ -16,7 +16,7 @@
  */
 package org.clueminer.graph.adjacencyList;
 
-import org.clueminer.graph.api.Direction;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.impl.ElemImpl;
@@ -30,14 +30,14 @@ public class AdjListEdge extends ElemImpl implements Edge {
     private final Node source;
     private final Node target;
     private double weight;
-    private Direction direction;
+    private EdgeType direction;
 
     AdjListEdge(long id, Node source, Node target) {
         super(id);
         this.source = source;
         this.target = target;
         this.weight = 1.0;
-        this.direction = Direction.NONE;
+        this.direction = EdgeType.NONE;
     }
 
     AdjListEdge(long id, Node source, Node target, boolean directed) {
@@ -46,9 +46,9 @@ public class AdjListEdge extends ElemImpl implements Edge {
         this.target = target;
         this.weight = 1.0;
         if (directed) {
-            this.direction = Direction.FORWARD;
+            this.direction = EdgeType.FORWARD;
         } else {
-            this.direction = Direction.NONE;
+            this.direction = EdgeType.NONE;
         }
     }
 
@@ -58,15 +58,15 @@ public class AdjListEdge extends ElemImpl implements Edge {
         this.target = target;
         this.weight = weight;
         if (directed) {
-            this.direction = Direction.FORWARD;
+            this.direction = EdgeType.FORWARD;
         } else {
-            this.direction = Direction.NONE;
+            this.direction = EdgeType.NONE;
         }
     }
 
     @Override
     public boolean isDirected() {
-        return direction != Direction.NONE;
+        return direction != EdgeType.NONE;
     }
 
     @Override
@@ -95,12 +95,12 @@ public class AdjListEdge extends ElemImpl implements Edge {
     }
 
     @Override
-    public Direction getDirection() {
+    public EdgeType getDirection() {
         return direction;
     }
 
     @Override
-    public void setDirection(Direction direction) {
+    public void setDirection(EdgeType direction) {
         this.direction = direction;
     }
 

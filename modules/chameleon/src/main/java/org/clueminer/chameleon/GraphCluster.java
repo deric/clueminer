@@ -38,7 +38,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.AttributeCollection;
 import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
-import org.clueminer.graph.api.Direction;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -141,7 +141,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
                 for (Node node2 : result.get(1)) {
                     if (graph.isAdjacent(node1, node2)) {
                         edge = graph.getEdge(node1, node2);
-                        if (edge.getDirection() == Direction.BOTH) {
+                        if (edge.getDirection() == EdgeType.BOTH) {
                             IIC += edge.getWeight() * sharedFactor;
                         } else {
                             IIC += edge.getWeight();
@@ -184,7 +184,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
         double sharedFactor = props.getDouble(Chameleon.SHARED_NN_FACTOR, 1.0);
         if (sharedFactor > 1.0) {
             for (Edge e : graph.getEdges()) {
-                if (e.getDirection() == Direction.BOTH) {
+                if (e.getDirection() == EdgeType.BOTH) {
                     sum += e.getWeight() * sharedFactor;
                 } else {
                     sum += e.getWeight();

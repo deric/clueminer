@@ -18,6 +18,7 @@ package org.clueminer.graph.fast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
@@ -47,6 +48,7 @@ public class FastGraphTest<E extends Instance> {
     private Edge e2;
     private Edge e3;
     private Graph g;
+    private GraphFactoryImpl f;
     private static final double DELTA = 1e-4;
 
     @BeforeClass
@@ -138,7 +140,7 @@ public class FastGraphTest<E extends Instance> {
         NodeImpl[] nodes = GraphGenerator.generateNodeList(2);
         graphStore.addAllNodes(Arrays.asList(nodes));
 
-        EdgeImpl edge = new EdgeImpl(0l, nodes[0], nodes[1], 1.0, true);
+        EdgeImpl edge = new EdgeImpl(0l, nodes[0], nodes[1]);
         boolean a = graphStore.addEdge(edge);
         boolean b = graphStore.addEdge(edge);
 
@@ -179,6 +181,52 @@ public class FastGraphTest<E extends Instance> {
 
         assertEquals(edgeCount, 0);
         assertEquals(graphStore.getNodeCount(), 0);
+    }
+
+    private void buildSimpleGraph() {
+        f = GraphFactoryImpl.getInstance();
+        double[] coordinates = {2, 1};
+        n1 = f.newNode(coordinates);
+        n2 = f.newNode(2);
+        n3 = f.newNode(2);
+        e1 = f.newEdge(n1, n2, 1, 2, false);
+        e2 = f.newEdge(n3, n2, 1, 3, false);
+        g = new FastGraph(3);
+        g.addNode(n1);
+        g.addNode(n2);
+        g.addNode(n3);
+        g.addEdge(e1);
+        g.addEdge(e2);
+    }
+
+
+    @Test
+    public void testIterables() {
+        buildSimpleGraph();
+        Collection<Node> nodes = g.getNodes().toCollection();
+        assertEquals(3, nodes.size());
+
+        nodes = g.getNeighbors(n3).toCollection();
+        assertEquals(1, nodes.size());
+
+        nodes = g.getNeighbors(n1).toCollection();
+        assertEquals(1, nodes.size());
+
+        nodes = g.getNeighbors(n2).toCollection();
+        assertEquals(2, nodes.size());
+
+        Collection<Edge> edges = g.getEdges().toCollection();
+        assertEquals(2, edges.size());
+
+        edges = g.getEdges(n1).toCollection();
+        assertEquals(1, edges.size());
+
+        edges = g.getEdges(n2).toCollection();
+        assertEquals(2, edges.size());
+
+        edges = g.getEdges(n3).toCollection();
+        assertEquals(1, edges.size());
+
     }
 
 }

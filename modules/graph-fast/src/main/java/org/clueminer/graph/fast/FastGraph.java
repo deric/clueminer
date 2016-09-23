@@ -17,7 +17,10 @@
 package org.clueminer.graph.fast;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
@@ -49,6 +52,11 @@ public class FastGraph<E extends Instance> implements Graph<E> {
         lookup = new AbstractLookup(instanceContent);
         nodeStore = new NodeStore();
         edgeStore = new EdgeStore();
+    }
+
+    public FastGraph(int size) {
+        this();
+        ensureCapacity(size);
     }
 
     @Override
@@ -118,12 +126,12 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public NodeIterable getNodes() {
-        return nodeStore.iterator();
+        return nodeStore;
     }
 
     @Override
     public EdgeIterable getEdges() {
-        return (EdgeIterable) edgeStore.iterator();
+        return edgeStore;
     }
 
     @Override
@@ -133,7 +141,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new NodeIterableWrapper(edgeStore.neighborIterator(node));
     }
 
     @Override
@@ -143,7 +151,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public EdgeIterable getEdges(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new EdgeIterableWrapper(edgeStore.edgeIterator(node));
     }
 
     @Override
@@ -243,7 +251,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public GraphBuilder getFactory() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return GraphFactoryImpl.getInstance();
     }
 
     @Override
@@ -258,7 +266,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public void ensureCapacity(int size) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO: initialize store?
     }
 
     @Override
@@ -306,6 +314,90 @@ public class FastGraph<E extends Instance> implements Graph<E> {
             }
         }
         return removed;
+    }
+
+    protected class NodeIterableWrapper implements NodeIterable {
+
+        protected final Iterator<Node> iterator;
+
+        public NodeIterableWrapper(Iterator<Node> iterator) {
+            this.iterator = iterator;
+        }
+
+        @Override
+        public Iterator<Node> iterator() {
+            return iterator;
+        }
+
+        @Override
+        public Node[] toArray() {
+            List<Node> list = new ArrayList<>();
+            for (; iterator.hasNext();) {
+                list.add(iterator.next());
+            }
+            return list.toArray(new Node[0]);
+        }
+
+        @Override
+        public Collection<Node> toCollection() {
+            List<Node> list = new ArrayList<>();
+            for (; iterator.hasNext();) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+
+        @Override
+        public void doBreak() {
+
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
+    }
+
+    protected class EdgeIterableWrapper implements EdgeIterable {
+
+        protected final Iterator<Edge> iterator;
+
+        public EdgeIterableWrapper(Iterator<Edge> iterator) {
+            this.iterator = iterator;
+        }
+
+        @Override
+        public Iterator<Edge> iterator() {
+            return iterator;
+        }
+
+        @Override
+        public Edge[] toArray() {
+            List<Edge> list = new ArrayList<>();
+            for (; iterator.hasNext();) {
+                list.add(iterator.next());
+            }
+            return list.toArray(new Edge[0]);
+        }
+
+        @Override
+        public Collection<Edge> toCollection() {
+            List<Edge> list = new ArrayList<>();
+            for (; iterator.hasNext();) {
+                list.add(iterator.next());
+            }
+            return list;
+        }
+
+        @Override
+        public void doBreak() {
+
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
     }
 
 }

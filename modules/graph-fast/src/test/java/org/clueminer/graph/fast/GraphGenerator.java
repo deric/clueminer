@@ -75,7 +75,7 @@ public class GraphGenerator {
             int targetId = r.nextInt(nodeCount);
             Node source = nodeStore.get(sourceId);
             Node target = nodeStore.get(targetId);
-            EdgeImpl edge = new EdgeImpl(cnt++, null, source, target, 1.0, directed);
+            EdgeImpl edge = new EdgeImpl(cnt++, source, target, 1.0, directed);
             if (!leafs.contains(sourceId) && !leafs.contains(targetId) && (allowSelfLoops || (!allowSelfLoops && source != target)) && !idSet.contains(edge.getLongId())) {
                 edgeList.add(edge);
                 idSet.add(edge.getId());

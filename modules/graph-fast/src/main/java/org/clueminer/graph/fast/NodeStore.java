@@ -375,7 +375,7 @@ public class NodeStore implements Collection<Node>, NodeIterable {
         //
     }
 
-    protected final class NodeStoreIterator implements Iterator<Node>, NodeIterable {
+    protected final class NodeStoreIterator implements Iterator<Node> {
 
         protected int cursor;
         protected NodeImpl pointer;
@@ -410,30 +410,6 @@ public class NodeStore implements Collection<Node>, NodeIterable {
             return pointer;
         }
 
-        @Override
-        public Iterator<Node> iterator() {
-            return this;
-        }
-
-        @Override
-        public Node[] toArray() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public Collection<Node> toCollection() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public int size() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
-
-        @Override
-        public void doBreak() {
-            //
-        }
 
         @Override
         public void remove() {

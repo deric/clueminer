@@ -16,7 +16,7 @@
  */
 package org.clueminer.graph.adjacencyMatrix;
 
-import org.clueminer.graph.api.Direction;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.impl.ElemImpl;
@@ -30,7 +30,7 @@ public class AdjMatrixEdge extends ElemImpl implements Edge {
     private final Node source;
     private final Node target;
     private double weight;
-    private Direction direction;
+    private EdgeType direction;
 
     AdjMatrixEdge(long id, Node source, Node target, double weight) {
         super(id);
@@ -41,7 +41,7 @@ public class AdjMatrixEdge extends ElemImpl implements Edge {
 
     @Override
     public boolean isDirected() {
-        return direction != Direction.NONE;
+        return direction != EdgeType.NONE;
     }
 
     @Override
@@ -65,12 +65,12 @@ public class AdjMatrixEdge extends ElemImpl implements Edge {
     }
 
     @Override
-    public Direction getDirection() {
+    public EdgeType getDirection() {
         return direction;
     }
 
     @Override
-    public void setDirection(Direction direction) {
+    public void setDirection(EdgeType direction) {
         this.direction = direction;
     }
 }
