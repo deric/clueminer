@@ -21,9 +21,19 @@ package org.clueminer.graph.api;
  *
  * @author deric
  */
-public enum Direction {
-    NONE,
-    FORWARD,
-    BACKWARD,
-    BOTH
+public enum EdgeType {
+    NONE(0), /* no direction */
+    FORWARD(1),
+    BACKWARD(2),
+    BOTH(3);
+
+    private final int value;
+
+    private EdgeType(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
+        return value;
+    }
 }

@@ -34,14 +34,14 @@ public interface Edge extends Element {
      *
      * @return edge direction
      */
-    Direction getDirection();
+    EdgeType getDirection();
 
     /**
      * Edge's direction
      *
      * @param direction
      */
-    void setDirection(Direction direction);
+    void setDirection(EdgeType direction);
 
     Node getSource();
 
