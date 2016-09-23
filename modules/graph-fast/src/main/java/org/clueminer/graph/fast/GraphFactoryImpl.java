@@ -76,8 +76,7 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), weight);
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, type, weight);
     }
 
     @Override

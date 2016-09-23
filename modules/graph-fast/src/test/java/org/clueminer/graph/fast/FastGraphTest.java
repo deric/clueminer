@@ -27,6 +27,8 @@ import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -144,12 +146,12 @@ public class FastGraphTest<E extends Instance> {
         boolean a = graphStore.addEdge(edge);
         boolean b = graphStore.addEdge(edge);
 
-        Assert.assertTrue(a);
-        Assert.assertFalse(b);
+        assertTrue(a);
+        assertFalse(b);
 
         boolean c = graphStore.contains(edge);
 
-        Assert.assertTrue(c);
+        assertTrue(c);
     }
 
     //@Test
@@ -183,6 +185,21 @@ public class FastGraphTest<E extends Instance> {
         assertEquals(graphStore.getNodeCount(), 0);
     }
 
+    @Test
+    public void testRemoveEdges() {
+        FastGraph graphStore = GraphGenerator.generateSmallGraphStore();
+        Edge[] edges = graphStore.getEdges().toArray();
+
+        int edgeCount = edges.length;
+        for (Edge e : edges) {
+            boolean b = graphStore.removeEdge(e);
+            assertTrue(b);
+
+            assertEquals(graphStore.getEdgeCount(), --edgeCount);
+        }
+        assertEquals(graphStore.getEdgeCount(), 0);
+    }
+
     private void buildSimpleGraph() {
         f = GraphFactoryImpl.getInstance();
         double[] coordinates = {2, 1};
@@ -198,7 +215,6 @@ public class FastGraphTest<E extends Instance> {
         g.addEdge(e1);
         g.addEdge(e2);
     }
-
 
     @Test
     public void testIterables() {
@@ -226,7 +242,55 @@ public class FastGraphTest<E extends Instance> {
 
         edges = g.getEdges(n3).toCollection();
         assertEquals(1, edges.size());
+    }
 
+    @Test
+    public void buildGraphTest2() {
+        n1 = factory.newNode(1);
+        n2 = factory.newNode(2);
+        n3 = factory.newNode(2);
+        Node n4 = factory.newNode();
+        e1 = factory.newEdge(n1, n2, 0, 2, false);
+        e2 = factory.newEdge(n3, n2, 0, 3, false);
+        e3 = factory.newEdge(n2, n3, 0, 3, false);
+        g = new FastGraph();
+        g.addNode(n1);
+        g.addNode(n2);
+        g.addNode(n3);
+        assertTrue(g.addEdge(e1));
+        assertTrue(g.addEdge(e2));
+        assertTrue(g.addEdge(e3));
+        assertEquals(0, g.getIndex(n1));
+        assertEquals(1, g.getIndex(n2));
+        assertEquals(2, g.getIndex(n3));
+        Edge e = g.getEdge(n1, n2);
+        /* assertNotNull(e);
+         * assertEquals(2, e.getWeight(), DELTA);
+         * assertEquals(3, g.getEdge(n2, n3).getWeight(), DELTA);
+         * assertEquals(true, g.contains(n1));
+         * assertEquals(false, g.contains(n4));
+         * assertEquals(true, g.contains(e1));
+         * assertEquals(1, g.getDegree(n1));
+         * assertEquals(2, g.getDegree(n2)); */
+        //  assertEquals(2, g.getEdgeCount());
+    }
+
+    @Test
+    public void addSameEdge() {
+        n1 = factory.newNode(1);
+        n2 = factory.newNode(2);
+        n3 = factory.newNode(2);
+        e1 = factory.newEdge(n1, n2, 0, 2, false);
+        e2 = factory.newEdge(n3, n2, 0, 3, false);
+        e3 = factory.newEdge(n2, n3, 0, 3, false);
+        g = new FastGraph();
+        g.addNode(n1);
+        g.addNode(n2);
+        g.addNode(n3);
+        assertTrue(g.addEdge(e1));
+        //can't add same edge twice
+        assertFalse(g.addEdge(e1));
+        assertEquals(1, g.getEdgeCount());
     }
 
 }

@@ -261,7 +261,8 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public int getIndex(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        NodeImpl n = (NodeImpl) node;
+        return n.getStoreId();
     }
 
     @Override

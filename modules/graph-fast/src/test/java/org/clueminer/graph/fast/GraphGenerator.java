@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.clueminer.graph.api.Node;
@@ -101,6 +102,16 @@ public class GraphGenerator {
 
     public static NodeImpl[] generateLargeNodeList() {
         return generateNodeList(FastGraphConfig.NODESTORE_BLOCK_SIZE * 3 + (int) (FastGraphConfig.NODESTORE_BLOCK_SIZE / 3.0));
+    }
+
+    public static FastGraph generateSmallGraphStore() {
+        int edgeCount = 100;
+        FastGraph graphStore = new FastGraph();
+        NodeImpl[] nodes = generateNodeList(Math.max((int) Math.ceil(Math.sqrt(edgeCount * 2)), (int) (edgeCount / 10.0)));
+        graphStore.addAllNodes(Arrays.asList(nodes));
+        EdgeImpl[] edges = generateEdgeList(graphStore.nodeStore, edgeCount, 0, true, true);
+        graphStore.addAllEdges(Arrays.asList(edges));
+        return graphStore;
     }
 
 }

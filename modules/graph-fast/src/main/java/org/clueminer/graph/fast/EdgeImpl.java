@@ -74,16 +74,12 @@ public class EdgeImpl extends ElementImpl implements Edge {
         this.type = type;
     }
 
-    public EdgeImpl(long id, Node source, Node target, int type, double weight, boolean directed) {
+    public EdgeImpl(long id, Node source, Node target, int type, double weight) {
         super(id, null);
         this.source = (NodeImpl) source;
         this.target = (NodeImpl) target;
         this.weight = weight;
-        if (directed) {
-            this.type = EdgeType.FORWARD.getValue();
-        } else {
-            this.type = EdgeType.NONE.getValue();
-        }
+        this.type = type;
     }
 
     public EdgeImpl(long id, Node source, Node target, double weight, boolean directed) {

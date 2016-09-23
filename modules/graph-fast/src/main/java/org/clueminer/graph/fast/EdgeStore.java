@@ -76,7 +76,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     public EdgeImpl get(final Object id) {
         checkNonNullObject(id);
 
-        int index = dictionary.get(id);
+        int index = dictionary.getOrDefault(id, NodeStore.NULL_ID);
         if (index != EdgeStore.NULL_ID) {
             return get(index);
         }
@@ -492,7 +492,22 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     @Override
     public Edge[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EdgeImpl[] array = new EdgeImpl[size];
+        if (garbageSize == 0) {
+            for (int i = 0; i < blocksCount; i++) {
+                EdgeBlock block = blocks[i];
+                System.arraycopy(block.backingArray, 0, array, block.offset, block.nodeLength);
+            }
+        } else {
+            EdgeStoreIterator itr = iterator();
+            int offset = 0;
+            while (itr.hasNext()) {
+                EdgeImpl n = itr.next();
+                array[offset++] = n;
+            }
+        }
+
+        return array;
     }
 
     @Override

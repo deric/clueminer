@@ -35,6 +35,11 @@ public class NodeImpl extends ElementImpl implements Node {
     protected int mutualDegree;
     protected int storeId = NodeStore.NULL_ID;
 
+    public NodeImpl(Long id) {
+        super(id, null);
+        this.attributes = new Object[1];
+    }
+
     public NodeImpl(Long id, FastGraph graphStore) {
         super(id, graphStore);
         this.attributes = new Object[1];
@@ -78,5 +83,33 @@ public class NodeImpl extends ElementImpl implements Node {
     public int getUndirectedDegree() {
         return inDegree + outDegree - mutualDegree;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Long.hashCode(getId());
+        if (instance != null) {
+            hash = 53 * hash + instance.hashCode();
+        }
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final NodeImpl other = (NodeImpl) obj;
+        if (getId() != other.getId()) {
+            return false;
+        }
+        return true;
+    }
+
 
 }

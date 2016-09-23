@@ -76,7 +76,7 @@ public class NodeStore implements Collection<Node>, NodeIterable {
     }
 
     public NodeImpl get(final Object id) {
-        int index = dictionary.get(id);
+        int index = dictionary.getOrDefault(id, NodeStore.NULL_ID);
         if (index != NodeStore.NULL_ID) {
             return get(index);
         }
@@ -409,7 +409,6 @@ public class NodeStore implements Collection<Node>, NodeIterable {
         public NodeImpl next() {
             return pointer;
         }
-
 
         @Override
         public void remove() {
