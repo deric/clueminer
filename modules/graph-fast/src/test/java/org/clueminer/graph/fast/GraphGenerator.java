@@ -114,4 +114,11 @@ public class GraphGenerator {
         return graphStore;
     }
 
+    public static EdgeImpl generateSingleEdge() {
+        return generateEdgeList(1, 0, true, false)[0];
+    }
+
+    public static EdgeImpl[] generateLargeEdgeList() {
+        return generateEdgeList(FastGraphConfig.EDGESTORE_BLOCK_SIZE * 3 + (int) (FastGraphConfig.EDGESTORE_BLOCK_SIZE / 3.0), 0, true, true);
+    }
 }

@@ -155,4 +155,8 @@ public class EdgeImpl extends ElementImpl implements Edge {
         return EdgeStore.getLongId(source, target, isDirected());
     }
 
+    public int getType() {
+        return type;
+    }
+
 }

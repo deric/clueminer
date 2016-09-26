@@ -512,7 +512,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     @Override
     public Collection<Edge> toCollection() {
-        List<Edge> list = new ArrayList<Edge>(size);
+        List<Edge> list = new ArrayList<>(size);
         EdgeStoreIterator itr = iterator();
         while (itr.hasNext()) {
             EdgeImpl n = itr.next();
@@ -528,7 +528,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     }
 
     void checkValidId(final int id) {
-        if (id < 0) {
+        if (id < 0 || !isValidIndex(id)) {
             throw new IllegalArgumentException("Edge id=" + id + " is invalid");
         }
     }

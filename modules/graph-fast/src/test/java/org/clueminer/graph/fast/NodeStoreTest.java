@@ -200,6 +200,117 @@ public class NodeStoreTest {
         assertFalse(nodeStore.contains(new NodeImpl(2l)));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testRemoveAllNull() {
+        NodeStore nodeStore = new NodeStore();
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+        nodes[0] = null;
+        nodeStore.removeAll(Arrays.asList(nodes));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRemoveAllSelf() {
+        NodeStore nodeStore = new NodeStore();
+        nodeStore.removeAll(nodeStore);
+    }
+
+    @Test
+    public void testRetainAll() {
+        NodeStore nodeStore = new NodeStore();
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+
+        NodeImpl[] r = new NodeImpl[]{nodes[0]};
+        boolean a = nodeStore.retainAll(Arrays.asList(r));
+        boolean b = nodeStore.retainAll(Arrays.asList(r));
+
+        Assert.assertTrue(a);
+        Assert.assertFalse(b);
+
+        Assert.assertEquals(nodeStore.size(), 1);
+        Assert.assertTrue(nodeStore.contains(nodes[0]));
+
+        nodeStore.retainAll(new ArrayList());
+        Assert.assertTrue(nodeStore.isEmpty());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRetainAllNull() {
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+        nodes[0] = null;
+        nodeStore.retainAll(Arrays.asList(nodes));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testRetainAllSelf() {
+        nodeStore.retainAll(nodeStore);
+    }
+
+    @Test
+    public void testContainsAll() {
+        NodeStore nodeStore = new NodeStore();
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+
+        nodeStore.addAll(Arrays.asList(nodes));
+        Assert.assertTrue(nodeStore.containsAll(Arrays.asList(nodes)));
+    }
+
+    @Test
+    public void testIterator() {
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+
+        NodeStore.NodeStoreIterator itr = nodeStore.iterator();
+        int index = 0;
+        while (itr.hasNext()) {
+            NodeImpl n = itr.next();
+            Assert.assertSame(n, nodes[index++]);
+        }
+        Assert.assertEquals(index, nodes.length);
+    }
+
+    @Test
+    public void testIteratorRemove() {
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+
+        NodeStore.NodeStoreIterator itr = nodeStore.iterator();
+        int index = 0;
+        while (itr.hasNext()) {
+            NodeImpl n = itr.next();
+            itr.remove();
+            Assert.assertEquals(nodeStore.size(), nodes.length - ++index);
+        }
+        Assert.assertEquals(index, nodes.length);
+        testContainsNone(nodeStore, Arrays.asList(nodes));
+    }
+
+    @Test
+    public void testIteratorEmpty() {
+        NodeStore.NodeStoreIterator itr = nodeStore.iterator();
+        Assert.assertFalse(itr.hasNext());
+    }
+
+    @Test
+    public void testIteratorAfterRemove() {
+        NodeStore nodeStore = new NodeStore();
+        NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
+        nodeStore.addAll(Arrays.asList(nodes));
+        nodeStore.remove(nodes[1]);
+        NodeStore.NodeStoreIterator itr = nodeStore.iterator();
+
+        int index = 0;
+        while (itr.hasNext()) {
+            NodeImpl n = itr.next();
+            Assert.assertTrue(nodeStore.contains(n));
+            index++;
+        }
+        Assert.assertEquals(index, nodes.length - 1);
+
+    }
+
     @Test
     public void testEqualsAndHashCode() {
         NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
