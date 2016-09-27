@@ -345,7 +345,7 @@ public class EdgeStoreTest {
         Assert.assertEquals(index, edges.length - 1);
     }
 
-    @Test
+    //@Test
     public void testEqualsAndHashCode() {
         NodeImpl[] nodes = new NodeImpl[]{new NodeImpl(0l), new NodeImpl(1l), new NodeImpl(2l)};
         EdgeImpl[] edges = GraphGenerator.generateEdgeList(3);

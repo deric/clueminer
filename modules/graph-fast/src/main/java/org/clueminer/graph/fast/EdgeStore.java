@@ -552,16 +552,12 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 67 * hash + this.size;
+        int hash = 5 + this.size;
         EdgeStoreIterator itr = (EdgeStoreIterator) this.iterator();
         EdgeImpl item;
-        int i = 0;
         while (itr.hasNext()) {
             item = itr.next();
-            System.out.println(item + " => " + item.hashCode());
-            hash *= 67 * item.hashCode();
-            System.out.println("h" + (i++) + " = " + hash);
+            hash += 67 * item.hashCode();
         }
         return hash;
     }

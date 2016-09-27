@@ -87,7 +87,7 @@ public class NodeImpl extends ElementImpl implements Node {
     @Override
     public int hashCode() {
         int hash = 3 + storeId;
-        hash *= id + 7;
+        hash *= id + 7 * 37;
         if (instance != null) {
             hash = 53 * hash + instance.hashCode();
         }
