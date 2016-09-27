@@ -89,6 +89,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
             edgeId = edgeId | (long) (target.storeId);
             return edgeId;
         } else {
+            //long edgeId = ((long) (source.storeId > target.storeId ? source.storeId : target.storeId));
             long edgeId = ((long) (source.storeId > target.storeId ? source.storeId : target.storeId)) << NODE_BITS;
             edgeId = edgeId | (long) (source.storeId > target.storeId ? target.storeId : source.storeId);
             return edgeId;
@@ -159,7 +160,21 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     @Override
     public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        EdgeImpl[] array = new EdgeImpl[size];
+        if (garbageSize == 0) {
+            for (int i = 0; i < blocksCount; i++) {
+                EdgeBlock block = blocks[i];
+                System.arraycopy(block.backingArray, 0, array, block.offset, block.nodeLength);
+            }
+        } else {
+            EdgeStoreIterator itr = iterator();
+            int offset = 0;
+            while (itr.hasNext()) {
+                EdgeImpl n = itr.next();
+                array[offset++] = n;
+            }
+        }
+        return (T[]) array;
     }
 
     @Override
@@ -233,6 +248,8 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         NodeImpl sourceImpl = (NodeImpl) source;
         NodeImpl targetImpl = (NodeImpl) target;
 
+        System.out.println("[" + source + ", " + target + "] -> " + getLongId(sourceImpl, targetImpl, false));
+        System.out.println("dict: " + dictionary.toString());
         int index = dictionary.get(getLongId(sourceImpl, targetImpl, false));
         if (index != NULL_ID) {
             return get(index);
@@ -538,8 +555,13 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         int hash = 7;
         hash = 67 * hash + this.size;
         EdgeStoreIterator itr = (EdgeStoreIterator) this.iterator();
+        EdgeImpl item;
+        int i = 0;
         while (itr.hasNext()) {
-            hash = 67 * hash + itr.next().hashCode();
+            item = itr.next();
+            System.out.println(item + " => " + item.hashCode());
+            hash *= 67 * item.hashCode();
+            System.out.println("h" + (i++) + " = " + hash);
         }
         return hash;
     }

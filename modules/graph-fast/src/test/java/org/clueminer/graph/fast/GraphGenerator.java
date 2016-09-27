@@ -36,6 +36,10 @@ public class GraphGenerator {
         return generateEdgeList(edgeCount, 0, true, true);
     }
 
+    public static EdgeImpl[] generateSmallEdgeList() {
+        return generateEdgeList(100, 0, true, true);
+    }
+
     public static EdgeImpl[] generateEdgeList(int edgeCount, int type, boolean directed, boolean allowSelfLoops) {
         int nodeCount = Math.max((int) Math.ceil(Math.sqrt(edgeCount * 2)), (int) (edgeCount / 10.0));
         return generateEdgeList(generateNodeStore(nodeCount), edgeCount, type, directed, allowSelfLoops);

@@ -440,10 +440,10 @@ public class NodeStore implements Collection<Node>, NodeIterable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + this.size;
+        hash = 5 * hash + this.size;
         Iterator<Node> itr = this.iterator();
         while (itr.hasNext()) {
-            hash = 67 * hash + itr.next().hashCode();
+            hash += 67 * itr.next().hashCode();
         }
         return hash;
     }

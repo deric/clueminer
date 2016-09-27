@@ -47,6 +47,11 @@ public class FastGraph<E extends Instance> implements Graph<E> {
     protected final NodeStore nodeStore;
     protected final EdgeStore edgeStore;
 
+    /**
+     * Whether multiple edges can exist between two vertices
+     */
+    private boolean parallelEdges = false;
+
     public FastGraph() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);

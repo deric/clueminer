@@ -159,4 +159,33 @@ public class EdgeImpl extends ElementImpl implements Edge {
         return type;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 13 + storeId;
+        hash += 29 * source.hashCode();
+        hash += 967 * target.hashCode();
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EdgeImpl other = (EdgeImpl) obj;
+        return this.hashCode() == other.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("EdgeIml{").append(storeId).append("} ")
+                .append(source).append(" -> ").append(target);
+        return sb.toString();
+    }
+
 }

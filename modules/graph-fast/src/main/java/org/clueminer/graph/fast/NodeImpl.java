@@ -86,8 +86,8 @@ public class NodeImpl extends ElementImpl implements Node {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Long.hashCode(getId());
+        int hash = 3 + storeId;
+        hash *= id + 7;
         if (instance != null) {
             hash = 53 * hash + instance.hashCode();
         }
@@ -109,6 +109,12 @@ public class NodeImpl extends ElementImpl implements Node {
             return false;
         }
         return true;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("NodelImpl [").append(storeId).append("]");
+        return sb.toString();
     }
 
 

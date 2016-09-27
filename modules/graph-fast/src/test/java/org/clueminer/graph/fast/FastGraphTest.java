@@ -257,22 +257,26 @@ public class FastGraphTest<E extends Instance> {
         g.addNode(n1);
         g.addNode(n2);
         g.addNode(n3);
+        assertEquals(3, g.getNodeCount());
         assertTrue(g.addEdge(e1));
         assertTrue(g.addEdge(e2));
         assertTrue(g.addEdge(e3));
+        assertEquals(3, g.getEdgeCount());
         assertEquals(0, g.getIndex(n1));
         assertEquals(1, g.getIndex(n2));
         assertEquals(2, g.getIndex(n3));
-        Edge e = g.getEdge(n1, n2);
-        /* assertNotNull(e);
-         * assertEquals(2, e.getWeight(), DELTA);
-         * assertEquals(3, g.getEdge(n2, n3).getWeight(), DELTA);
-         * assertEquals(true, g.contains(n1));
-         * assertEquals(false, g.contains(n4));
-         * assertEquals(true, g.contains(e1));
-         * assertEquals(1, g.getDegree(n1));
-         * assertEquals(2, g.getDegree(n2)); */
-        //  assertEquals(2, g.getEdgeCount());
+        System.out.println("n1: " + ((NodeImpl) n1).storeId);
+        System.out.println("n2: " + ((NodeImpl) n2).storeId);
+        //Edge e = g.getEdge(n1, n2);
+        //assertNotNull(e);
+        /* assertEquals(2, e.getWeight(), DELTA);
+           assertEquals(3, g.getEdge(n2, n3).getWeight(), DELTA);
+        assertEquals(true, g.contains(n1));
+        assertEquals(false, g.contains(n4));
+        assertEquals(true, g.contains(e1));
+        assertEquals(1, g.getDegree(n1));
+        assertEquals(2, g.getDegree(n2));
+        assertEquals(2, g.getEdgeCount()); */
     }
 
     @Test
