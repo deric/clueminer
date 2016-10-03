@@ -100,20 +100,17 @@
             <groupId>org.clueminer</groupId>
             <artifactId>math-api</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>math-impl</artifactId>
             <version>${project.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>fixtures-clustering</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -132,6 +129,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-lib-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
