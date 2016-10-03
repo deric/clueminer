@@ -89,10 +89,9 @@ public class RecursiveBisection implements Partitioning {
         return output;
     }
 
-    private Graph buildGraphFromCluster(Graph graph, ArrayList<Node> n) {
+    private Graph buildGraphFromCluster(Graph graph, ArrayList<Node> nodes) {
         Graph newGraph = null;
         try {
-            ArrayList<Node> nodes = new ArrayList<>(n);
             newGraph = graph.getClass().newInstance();
             newGraph.ensureCapacity(nodes.size());
 
