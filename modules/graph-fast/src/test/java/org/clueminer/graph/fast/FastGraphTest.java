@@ -264,7 +264,6 @@ public class FastGraphTest<E extends Instance> {
         //order of nodes doesn't matter
         assertEquals(EdgeStore.getLongId((NodeImpl) n3, (NodeImpl) n2, false), EdgeStore.getLongId((NodeImpl) n2, (NodeImpl) n3, false));
 
-
         assertEquals(3, g.getNodeCount());
         assertTrue(g.addEdge(e1));
         assertTrue(g.addEdge(e2));
@@ -301,6 +300,77 @@ public class FastGraphTest<E extends Instance> {
         //can't add same edge twice
         assertFalse(g.addEdge(e1));
         assertEquals(1, g.getEdgeCount());
+    }
+
+    @Test
+    public void addEdgesTest() {
+        g = new FastGraph();
+        n1 = factory.newNode(2);
+        n2 = factory.newNode(2);
+        e1 = factory.newEdge(n1, n2, 1, 2, false);
+        e2 = factory.newEdge(n2, n1, 1, 3, false);
+        Edge e3 = factory.newEdge(n1, n2, 1, 4, false);
+
+        g.addNode(n1);
+        g.addNode(n2);
+
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e2);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.addEdge(e3);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+    }
+
+    @Test
+    public void removeEdgeTest2() {
+        g = new FastGraph();
+        n1 = factory.newNode(2);
+        n2 = factory.newNode(2);
+        e1 = factory.newEdge(n1, n2, 1, 2, false);
+
+        g.addNode(n1);
+        g.addNode(n2);
+
+        g.addEdge(e1);
+        assertEquals(1, g.getNeighbors(n1).toCollection().size());
+        assertEquals(1, g.getNeighbors(n2).toCollection().size());
+        g.removeEdge(e1);
+        assertEquals(0, g.getNeighbors(n1).toCollection().size());
+        assertEquals(0, g.getNeighbors(n2).toCollection().size());
+    }
+
+    @Test
+    public void metisExportTest() {
+        Graph gr = new FastGraph();
+        gr = buildSmallGraph(gr, factory);
+        metisExportTest(gr, "7 11\n2 3 7 \n" + "1 6 \n" + "1 4 5 \n" + "3 5 6 7 \n" + "3 4 7 \n" + "2 4 7 \n" + "1 4 5 6 \n");
+    }
+
+    public void metisExportTest(Graph g, String result) {
+        String metis = g.metisExport(false);
+        System.out.println(metis);
+        String[] lines = metis.split("\n");
+        String sortedResult = lines[0] + "\n";
+        for (int i = 1; i <= g.getNodeCount(); i++) {
+            String[] numbers = lines[i].split(" ");
+            int[] neighbors = new int[numbers.length];
+            for (int j = 0; j < numbers.length; j++) {
+                neighbors[j] = Integer.parseInt(numbers[j]);
+            }
+            Arrays.sort(neighbors);
+            for (int j = 0; j < neighbors.length; j++) {
+                sortedResult += String.valueOf(neighbors[j]) + " ";
+            }
+            sortedResult += "\n";
+        }
+        assertEquals(result, sortedResult);
     }
 
 }

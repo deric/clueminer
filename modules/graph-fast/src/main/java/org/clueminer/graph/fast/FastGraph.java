@@ -278,7 +278,19 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public String metisExport(boolean weighted) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        StringBuilder sb = new StringBuilder();
+        sb.append(getNodeCount()).append(" ").append(getEdgeCount()).append("\n");
+        //for (int i = 0; i < getNodeCount(); i++) {
+        for (Node node : getNodes()) {
+            String space = "";
+            for (Node neighbor : getNeighbors(node)) {
+                NodeImpl nn = (NodeImpl) neighbor;
+                sb.append(space).append(nn.storeId + 1);
+                space = " ";
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     @Override
