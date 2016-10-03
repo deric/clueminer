@@ -17,6 +17,9 @@
 package org.clueminer.graph.fast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,14 +31,17 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.clueminer.graph.api.NodeIterable;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
  */
+@ServiceProvider(service = Graph.class)
 public class FastGraph<E extends Instance> implements Graph<E> {
 
     private static final String NAME = "Fast Graph";
@@ -232,12 +238,13 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public void clear() {
-
+        edgeStore.clear();
+        nodeStore.clear();
     }
 
     @Override
     public void clearEdges() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        edgeStore.clear();
     }
 
     @Override
@@ -316,9 +323,38 @@ public class FastGraph<E extends Instance> implements Graph<E> {
         instanceContent.remove(instance);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * {hyperedge cnt} {node cnt}
+     *
+     * //list of hyperedges goes here
+     *
+     * @param weighted
+     */
     @Override
-    public void hMetisExport(File target, boolean weighted) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void hMetisExport(File target, boolean weighted) throws FileNotFoundException {
+        StringBuilder sb;
+        try (PrintWriter writer = new PrintWriter(target, "UTF-8")) {
+            sb = new StringBuilder();
+            //same number of nodes as hyperedges - a hyperedge is formed by node's neighbourhood
+            sb.append(getNodeCount()).append(" ").append(getNodeCount()).append("\n");
+            String space = " ";
+            //for (int i = 0; i < getNodeCount(); i++) {
+            for (Node node : getNodes()) {
+                //append self
+                NodeImpl n = (NodeImpl) node;
+                sb.append(n.storeId + 1);
+                for (Node neighbor : getNeighbors(node)) {
+                    NodeImpl nn = (NodeImpl) neighbor;
+                    sb.append(space).append(nn.storeId + 1);
+                }
+                sb.append("\n");
+            }
+            writer.write(sb.toString());
+        } catch (UnsupportedEncodingException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     @Override
