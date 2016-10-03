@@ -59,33 +59,24 @@ public class EdgeImpl extends ElementImpl implements Edge {
     }
 
     public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, int type) {
-        super(id, graphStore);
-        this.source = (NodeImpl) source;
-        this.target = (NodeImpl) target;
-        this.weight = 1.0;
+        this(id, graphStore, source, target);
         this.type = type;
     }
 
     public EdgeImpl(long id, FastGraph graphStore, Node source, Node target, int type, double weight) {
-        super(id, graphStore);
-        this.source = (NodeImpl) source;
-        this.target = (NodeImpl) target;
+        this(id, graphStore, source, target);
         this.weight = weight;
         this.type = type;
     }
 
     public EdgeImpl(long id, Node source, Node target, int type, double weight) {
-        super(id, null);
-        this.source = (NodeImpl) source;
-        this.target = (NodeImpl) target;
+        this(id, null, source, target);
         this.weight = weight;
         this.type = type;
     }
 
     public EdgeImpl(long id, Node source, Node target, double weight, boolean directed) {
-        super(id, null);
-        this.source = (NodeImpl) source;
-        this.target = (NodeImpl) target;
+        this(id, null, source, target);
         this.weight = weight;
         this.type = EdgeType.NONE.getValue();
     }

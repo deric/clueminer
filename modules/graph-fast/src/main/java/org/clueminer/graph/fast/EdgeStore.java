@@ -198,14 +198,14 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
                     if (edgeBlock.hasGarbage()) {
                         edgeBlock.set(edge);
                         garbageSize--;
-                        dictionary.put(edge.getId(), edge.storeId);
+                        dictionary.put(edge.getLongId(), edge.storeId);
                         break;
                     }
                 }
             } else {
                 ensureCapacity(1);
                 currentBlock.add(edge);
-                dictionary.put(edge.getId(), edge.storeId);
+                dictionary.put(edge.getLongId(), edge.storeId);
             }
 
             insertOutEdge(edge);

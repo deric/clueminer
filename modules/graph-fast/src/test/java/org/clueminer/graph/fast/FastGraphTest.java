@@ -28,6 +28,7 @@ import org.clueminer.graph.api.Node;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -265,18 +266,16 @@ public class FastGraphTest<E extends Instance> {
         assertEquals(0, g.getIndex(n1));
         assertEquals(1, g.getIndex(n2));
         assertEquals(2, g.getIndex(n3));
-        System.out.println("n1: " + ((NodeImpl) n1).storeId);
-        System.out.println("n2: " + ((NodeImpl) n2).storeId);
-        //Edge e = g.getEdge(n1, n2);
-        //assertNotNull(e);
-        /* assertEquals(2, e.getWeight(), DELTA);
-           assertEquals(3, g.getEdge(n2, n3).getWeight(), DELTA);
+        Edge e = g.getEdge(n1, n2);
+        assertNotNull(e);
+        assertEquals(2, e.getWeight(), DELTA);
+        assertEquals(3, g.getEdge(n2, n3).getWeight(), DELTA);
         assertEquals(true, g.contains(n1));
         assertEquals(false, g.contains(n4));
         assertEquals(true, g.contains(e1));
         assertEquals(1, g.getDegree(n1));
-        assertEquals(2, g.getDegree(n2));
-        assertEquals(2, g.getEdgeCount()); */
+        //assertEquals(2, g.getDegree(n2));
+        //assertEquals(2, g.getEdgeCount());
     }
 
     @Test

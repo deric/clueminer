@@ -186,7 +186,8 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public int getDegree(Node node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        nodeStore.checkNonNullNodeObject(node);
+        return ((NodeImpl) node).getDegree();
     }
 
     @Override
