@@ -198,7 +198,7 @@ public class P2PPartitioning implements Partitioning {
 
     @Override
     public void setBisection(Bisection bisection) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //nothing to do
     }
 
     public class Vertex implements Comparable<Vertex> {

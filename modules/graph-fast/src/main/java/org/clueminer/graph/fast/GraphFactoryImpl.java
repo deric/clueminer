@@ -120,7 +120,14 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Long[] mapping = new Long[input.size()];
+        for (E inst : input) {
+            Node node = this.newNode();
+            mapping[inst.getIndex()] = node.getId();
+            node.setInstance(inst);
+            graph.addNode(node);
+        }
+        return mapping;
     }
 
 }

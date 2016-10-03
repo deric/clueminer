@@ -121,7 +121,7 @@ public class AdjListFactory<E extends Instance> implements GraphBuilder<E> {
         nodeIdCounter = 0;
         edgeIdCounter = 0;
         Long[] mapping = new Long[input.size()];
-        for (Instance inst : input) {
+        for (E inst : input) {
             Node node = this.newNode();
             mapping[inst.getIndex()] = node.getId();
             node.setInstance(inst);
