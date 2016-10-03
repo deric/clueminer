@@ -83,7 +83,7 @@ public class GraphGenerator {
             EdgeImpl edge = new EdgeImpl(cnt++, source, target, 1.0, directed);
             if (!leafs.contains(sourceId) && !leafs.contains(targetId) && (allowSelfLoops || (!allowSelfLoops && source != target)) && !idSet.contains(edge.getLongId())) {
                 edgeList.add(edge);
-                idSet.add(edge.getId());
+                idSet.add(edge.getLongId());
             }
         }
 
@@ -111,6 +111,7 @@ public class GraphGenerator {
     public static FastGraph generateSmallGraphStore() {
         int edgeCount = 100;
         FastGraph graphStore = new FastGraph();
+        graphStore.setAllowParallelEdges(true);
         NodeImpl[] nodes = generateNodeList(Math.max((int) Math.ceil(Math.sqrt(edgeCount * 2)), (int) (edgeCount / 10.0)));
         graphStore.addAllNodes(Arrays.asList(nodes));
         EdgeImpl[] edges = generateEdgeList(graphStore.nodeStore, edgeCount, 0, true, true);

@@ -192,12 +192,12 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean isSelfLoop(Edge edge) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ((EdgeImpl) edge).isSelfLoop();
     }
 
     @Override
     public boolean isDirected(Edge edge) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return edge.isDirected();
     }
 
     @Override
@@ -284,6 +284,14 @@ public class FastGraph<E extends Instance> implements Graph<E> {
     @Override
     public Lookup getLookup() {
         return lookup;
+    }
+
+    public boolean allowParallelEdges() {
+        return parallelEdges;
+    }
+
+    public void setAllowParallelEdges(boolean b) {
+        this.parallelEdges = b;
     }
 
     @Override

@@ -251,18 +251,25 @@ public class FastGraphTest<E extends Instance> {
         n2 = factory.newNode(2);
         n3 = factory.newNode(2);
         Node n4 = factory.newNode();
-        e1 = factory.newEdge(n1, n2, 0, 2, false);
-        e2 = factory.newEdge(n3, n2, 0, 3, false);
-        e3 = factory.newEdge(n2, n3, 0, 3, false);
+
         g = new FastGraph();
         g.addNode(n1);
         g.addNode(n2);
         g.addNode(n3);
+
+        e1 = factory.newEdge(n1, n2, 0, 2, false);
+        e2 = factory.newEdge(n3, n2, 0, 3, false);
+        e3 = factory.newEdge(n2, n3, 0, 3, false);
+
+        //order of nodes doesn't matter
+        assertEquals(EdgeStore.getLongId((NodeImpl) n3, (NodeImpl) n2, false), EdgeStore.getLongId((NodeImpl) n2, (NodeImpl) n3, false));
+
+
         assertEquals(3, g.getNodeCount());
         assertTrue(g.addEdge(e1));
         assertTrue(g.addEdge(e2));
-        assertTrue(g.addEdge(e3));
-        assertEquals(3, g.getEdgeCount());
+        assertFalse(g.addEdge(e3));
+        assertEquals(2, g.getEdgeCount());
         assertEquals(0, g.getIndex(n1));
         assertEquals(1, g.getIndex(n2));
         assertEquals(2, g.getIndex(n3));
@@ -274,8 +281,8 @@ public class FastGraphTest<E extends Instance> {
         assertEquals(false, g.contains(n4));
         assertEquals(true, g.contains(e1));
         assertEquals(1, g.getDegree(n1));
-        //assertEquals(2, g.getDegree(n2));
-        //assertEquals(2, g.getEdgeCount());
+        assertEquals(2, g.getDegree(n2));
+        assertEquals(2, g.getEdgeCount());
     }
 
     @Test

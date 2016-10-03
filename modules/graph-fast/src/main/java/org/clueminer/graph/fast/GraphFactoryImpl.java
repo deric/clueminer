@@ -59,30 +59,41 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public Edge newEdge(Node source, Node target) {
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, EdgeType.NONE.getValue(), 1.0);
+        return newEdge(source, target, EdgeType.NONE.getValue(), 1.0, false);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, boolean directed) {
         EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), 1.0);
+        return newEdge(source, target, dir.getValue(), 1.0, directed);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, boolean directed) {
-        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), 1.0);
+        return newEdge(source, target, type, 1.0, directed);
     }
 
     @Override
     public Edge newEdge(Node source, Node target, int type, double weight, boolean directed) {
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, type, weight);
+        if (!store.allowParallelEdges()) {
+            //return existing edge, in case that parallel edges aren't allowed
+            Edge edge = store.getEdge(source, target);
+            if (edge == null) {
+                edge = store.getEdge(target, source);
+            }
+            if (edge != null) {
+                return edge;
+            }
+        }
+        EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
+        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), weight);
     }
 
     @Override
     public Edge newEdge(Object id, Node source, Node target, int type, double weight, boolean directed) {
+        long idx = (long) id;
         EdgeType dir = directed ? EdgeType.FORWARD : EdgeType.NONE;
-        return new EdgeImpl(EDGE_IDS.getAndIncrement(), store, source, target, dir.getValue(), weight);
+        return new EdgeImpl(idx, store, source, target, dir.getValue(), weight);
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.clueminer.graph.api.DuplicateObjectException;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Node;
@@ -183,7 +184,10 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
         EdgeImpl edge = (EdgeImpl) e;
         if (edge.storeId == EdgeStore.NULL_ID) {
-            checkIdDoesntExist(e.getId());
+            //checkIdDoesntExist(edge.getLongId());
+            if (dictionary.containsKey(edge.getLongId())) {
+                return false;
+            }
             checkSourceTargets(edge);
 
             boolean directed = edge.isDirected();
@@ -248,8 +252,6 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         NodeImpl sourceImpl = (NodeImpl) source;
         NodeImpl targetImpl = (NodeImpl) target;
 
-        System.out.println("[" + source + ", " + target + "] -> " + getLongId(sourceImpl, targetImpl, false));
-        System.out.println("dict: " + dictionary.toString());
         int index = dictionary.get(getLongId(sourceImpl, targetImpl, false));
         if (index != NULL_ID) {
             return get(index);
@@ -287,7 +289,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
             size--;
             garbageSize++;
-            dictionary.remove(edge.getId());
+            dictionary.remove(edge.getLongId());
             trimDictionary();
 
             for (int i = storeIndex; i == (blocksCount - 1) && block.garbageLength == block.nodeLength && i >= 0;) {
@@ -765,7 +767,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
 
     void checkIdDoesntExist(Object id) {
         if (dictionary.containsKey(id)) {
-            throw new IllegalArgumentException("The node id already exist");
+            throw new DuplicateObjectException("The node id already exist");
         }
     }
 
