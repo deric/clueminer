@@ -18,6 +18,7 @@ package org.clueminer.partitioning.impl;
 
 import java.util.ArrayList;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Partitioning;
@@ -60,6 +61,8 @@ public class RecursiveBisection implements Partitioning {
         maxNodesInCluster = max;
         int expectedSize = g.getNodeCount() / max;
         ArrayList<ArrayList<Node>> clusters;
+        Graph clusteredGraph;
+
         if (g.getNodeCount() < maxNodesInCluster) {
             ArrayList<ArrayList<Node>> nodes = new ArrayList<>(expectedSize);
             nodes.add(new ArrayList<>(g.getNodes().toCollection()));
@@ -67,7 +70,12 @@ public class RecursiveBisection implements Partitioning {
         } else {
             clusters = recursivePartition(g, params, expectedSize);
         }
-        Graph clusteredGraph = new EdgeRemover().removeEdges(g, clusters);
+        if (g.suppportReferences()) {
+            clusteredGraph = EdgeRemover.removeEdges(g, clusters);
+        } else {
+            clusteredGraph = EdgeRemover.safeRemoveEdges(g, clusters);
+        }
+
         FloodFill f = new FloodFill();
         return f.findSubgraphs(clusteredGraph, max);
     }
@@ -76,16 +84,32 @@ public class RecursiveBisection implements Partitioning {
         ArrayList<ArrayList<Node>> output = new ArrayList<>(expectedSize);
         ArrayList<ArrayList<Node>> result = bisection.bisect(g, params);
         int i = 0;
+        Graph newGraph;
 
-        while (i < 2) {
-            if (result.get(i).size() <= maxNodesInCluster) {
-                output.add(result.get(i));
-            } else {
-                Graph newGraph = buildGraphFromCluster(g, result.get(i));
-                output.addAll(recursivePartition(newGraph, params, expectedSize));
+        if (g.suppportReferences()) {
+            while (i < 2) {
+                if (result.get(i).size() <= maxNodesInCluster) {
+                    output.add(result.get(i));
+                } else {
+                    newGraph = buildGraphFromCluster(g, result.get(i));
+                    //System.out.println("new graph nodes: " + newGraph.getNodeCount() + " edges: " + newGraph.getEdgeCount());
+                    output.addAll(recursivePartition(newGraph, params, expectedSize));
+                }
+                i++;
             }
-            i++;
+        } else {
+            while (i < 2) {
+                if (result.get(i).size() <= maxNodesInCluster) {
+                    output.add(result.get(i));
+                } else {
+                    newGraph = copyGraphFromCluster(g, result.get(i));
+                    //System.out.println("new graph nodes: " + newGraph.getNodeCount() + " edges: " + newGraph.getEdgeCount());
+                    output.addAll(recursivePartition(newGraph, params, expectedSize));
+                }
+                i++;
+            }
         }
+
         return output;
     }
 
@@ -102,6 +126,34 @@ public class RecursiveBisection implements Partitioning {
                 for (int j = i + 1; j < nodes.size(); j++) {
                     if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
                         newGraph.addEdge(graph.getEdge(nodes.get(i), nodes.get(j)));
+                    }
+                }
+            }
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return newGraph;
+    }
+
+    private Graph copyGraphFromCluster(Graph graph, ArrayList<Node> nodes) {
+        Graph newGraph = null;
+        try {
+            newGraph = graph.getClass().newInstance();
+            newGraph.ensureCapacity(nodes.size());
+
+            GraphBuilder f = newGraph.getFactory();
+            Node[] nn = new Node[nodes.size()];
+            int k = 0;
+            for (Node node : nodes) {
+                nn[k] = f.newNode(node.getInstance());
+                //System.out.println(nn[k].getInstance().getIndex() + " ->" + k);
+                newGraph.addNode(nn[k++]);
+            }
+            for (int i = 0; i < nodes.size(); i++) {
+                for (int j = i + 1; j < nodes.size(); j++) {
+                    if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
+                        //System.out.println(nodes.get(i).getInstance().getIndex() + " -> " + nodes.get(j).getInstance().getIndex());
+                        newGraph.addEdge(f.newEdge(nn[i], nn[j]));
                     }
                 }
             }

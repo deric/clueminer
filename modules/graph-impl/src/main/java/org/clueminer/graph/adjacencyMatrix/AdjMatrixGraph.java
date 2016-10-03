@@ -308,6 +308,11 @@ public class AdjMatrixGraph<E extends Instance> implements Graph<E> {
         instanceContent.remove(instance);
     }
 
+    @Override
+    public boolean suppportReferences() {
+        return true;
+    }
+
     private class EdgeCollectionIterator implements EdgeIterable {
 
         private final LinkedList<Edge> edges;

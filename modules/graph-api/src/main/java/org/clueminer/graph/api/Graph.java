@@ -382,7 +382,7 @@ public interface Graph<E extends Instance> {
      * @param weighted whether the edge weights should be exported
      * @return
      */
-    public String metisExport(boolean weighted);
+    String metisExport(boolean weighted);
 
     /**
      * Export a (hyper)graph into hmetis format. Each line is a hyperedge
@@ -391,7 +391,7 @@ public interface Graph<E extends Instance> {
      * @param weighted
      * @throws java.io.FileNotFoundException
      */
-    public void hMetisExport(File target, boolean weighted) throws FileNotFoundException;
+    void hMetisExport(File target, boolean weighted) throws FileNotFoundException;
 
     /**
      * Lookup is used for retrieving objects associated with this graph
@@ -415,5 +415,12 @@ public interface Graph<E extends Instance> {
      * @param instance
      */
     void lookupRemove(Object instance);
+
+    /**
+     * Whether graph allows having same objects in different graphs.
+     *
+     * @return
+     */
+    boolean suppportReferences();
 
 }

@@ -799,11 +799,11 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         checkValidNodeObject(node1);
         checkValidNodeObject(node2);
 
-        int typeLength = dictionary.size();
-        for (int i = 0; i < typeLength; i++) {
-            if (contains((NodeImpl) node1, (NodeImpl) node2)) {
-                return true;
-            }
+        NodeImpl n1 = (NodeImpl) node1;
+        NodeImpl n2 = (NodeImpl) node2;
+
+        if (contains(n1, n2) || contains(n2, n1)) {
+            return true;
         }
 
         return false;
@@ -813,7 +813,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         checkNonNullObject(source);
         checkNonNullObject(target);
 
-        return dictionary.containsKey(getLongId(source, target, true));
+        return dictionary.containsKey(getLongId(source, target, false));
     }
 
     public NeighborsIterator neighborIterator(Node node) {

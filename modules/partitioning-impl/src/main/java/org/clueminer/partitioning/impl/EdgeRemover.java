@@ -16,8 +16,10 @@
  */
 package org.clueminer.partitioning.impl;
 
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import java.util.ArrayList;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.openide.util.Exceptions;
 
@@ -35,7 +37,7 @@ public class EdgeRemover {
      * @param partitions
      * @return new graph without edges crossing different partitions
      */
-    public Graph removeEdges(Graph originalGraph, ArrayList<ArrayList<Node>> partitions) {
+    public static Graph removeEdges(Graph originalGraph, ArrayList<ArrayList<Node>> partitions) {
         Graph result = null;
         try {
             //create instance of same graph storage implementation
@@ -51,6 +53,43 @@ public class EdgeRemover {
                     for (int j = i + 1; j < partition.size(); j++) {
                         if (originalGraph.isAdjacent(partition.get(i), partition.get(j))) {
                             result.addEdge(originalGraph.getEdge(partition.get(i), partition.get(j)));
+                        }
+                    }
+                }
+            }
+
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+        return result;
+    }
+
+    public static Graph safeRemoveEdges(Graph originalGraph, ArrayList<ArrayList<Node>> partitions) {
+        Graph result = null;
+        try {
+            //create instance of same graph storage implementation
+            int nodeCnt = originalGraph.getNodeCount();
+            result = originalGraph.getClass().newInstance();
+            result.ensureCapacity(nodeCnt);
+
+            GraphBuilder f = result.getFactory();
+            Int2LongOpenHashMap mapping = new Int2LongOpenHashMap(nodeCnt);
+            Node nn;
+            for (Node node : originalGraph.getNodes()) {
+                nn = f.newNode(node.getInstance());
+                mapping.put(node.getInstance().getIndex(), nn.getId());
+                result.addNode(nn);
+            }
+
+            long ida, idb;
+            for (ArrayList<Node> partition : partitions) {
+                for (int i = 0; i < partition.size(); i++) {
+                    for (int j = i + 1; j < partition.size(); j++) {
+                        if (originalGraph.isAdjacent(partition.get(i), partition.get(j))) {
+                            ida = mapping.get(partition.get(i).getInstance().getIndex());
+                            idb = mapping.get(partition.get(j).getInstance().getIndex());
+                            result.addEdge(f.newEdge(result.getNode(ida), result.getNode(idb)));
                         }
                     }
                 }

@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
+import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeIterable;
 import org.clueminer.graph.api.Graph;
@@ -58,6 +60,9 @@ public class FastGraph<E extends Instance> implements Graph<E> {
      */
     private boolean parallelEdges = false;
 
+    private Distance dm;
+    private final double EPS = 1e-6;
+
     public FastGraph() {
         instanceContent = new InstanceContent();
         lookup = new AbstractLookup(instanceContent);
@@ -68,6 +73,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
     public FastGraph(int size) {
         this();
         ensureCapacity(size);
+        dm = DistanceFactory.getInstance().getProvider("Euclidean");
     }
 
     @Override
@@ -268,8 +274,21 @@ public class FastGraph<E extends Instance> implements Graph<E> {
     }
 
     @Override
-    public boolean addEdgesFromNeigborArray(int[][] nearests, int k) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean addEdgesFromNeigborArray(int[][] neighbors, int k) {
+        if (k > nodeStore.size()) {
+            return false;
+        }
+        GraphBuilder f = getFactory();
+        for (int i = 0; i < nodeStore.size(); i++) {
+            for (int j = 0; j < k; j++) {
+                double distance = dm.measure(nodeStore.get(i).getInstance(), nodeStore.get(neighbors[i][j]).getInstance());
+                if (distance < EPS) {
+                    distance = EPS;
+                }
+                addEdge(f.newEdge(nodeStore.get(i), nodeStore.get(neighbors[i][j]), 1, 1 / distance, false)); //max val
+            }
+        }
+        return true;
     }
 
     @Override
@@ -377,6 +396,11 @@ public class FastGraph<E extends Instance> implements Graph<E> {
             }
         }
         return removed;
+    }
+
+    @Override
+    public boolean suppportReferences() {
+        return false;
     }
 
     protected class NodeIterableWrapper implements NodeIterable {

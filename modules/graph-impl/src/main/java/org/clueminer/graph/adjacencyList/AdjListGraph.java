@@ -516,6 +516,11 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
         instanceContent.remove(instance);
     }
 
+    @Override
+    public boolean suppportReferences() {
+        return true;
+    }
+
     private class Neighbor implements Comparable<Neighbor> {
 
         Edge edge;

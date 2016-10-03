@@ -115,7 +115,11 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
 
     @Override
     public ArrayList<Node<E>> createNodesFromInput(Dataset<E> input) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Node<E>> nodes = new ArrayList<>(input.size());
+        for (E ins : input) {
+            nodes.add(newNode(ins));
+        }
+        return nodes;
     }
 
     @Override
