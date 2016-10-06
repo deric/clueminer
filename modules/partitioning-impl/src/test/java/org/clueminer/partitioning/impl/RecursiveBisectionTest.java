@@ -64,8 +64,9 @@ public class RecursiveBisectionTest extends PartitioningTest {
         RecursiveBisection rb = new RecursiveBisection(new FiducciaMattheyses());
 
         ArrayList<ArrayList<Node>> result = rb.partition(5, g, new Props());
-        //System.out.println("partitions:" + result);
+        System.out.println("partitions:" + result.size());
         //assertEquals(36, result.size());
+        assertEquals(510, g.getEdgeCount());
     }
 
 }

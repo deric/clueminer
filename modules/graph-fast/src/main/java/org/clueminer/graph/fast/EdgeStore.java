@@ -90,7 +90,6 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
             edgeId = edgeId | (long) (target.storeId);
             return edgeId;
         } else {
-            //long edgeId = ((long) (source.storeId > target.storeId ? source.storeId : target.storeId));
             long edgeId = ((long) (source.storeId > target.storeId ? source.storeId : target.storeId)) << NODE_BITS;
             edgeId = edgeId | (long) (source.storeId > target.storeId ? target.storeId : source.storeId);
             return edgeId;

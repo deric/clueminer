@@ -16,6 +16,7 @@
  */
 package org.clueminer.partitioning.impl;
 
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import java.util.ArrayList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
@@ -136,31 +137,40 @@ public class RecursiveBisection implements Partitioning {
     }
 
     private Graph copyGraphFromCluster(Graph graph, ArrayList<Node> nodes) {
-        Graph newGraph = null;
+        Graph ng = null;
         try {
-            newGraph = graph.getClass().newInstance();
-            newGraph.ensureCapacity(nodes.size());
+            ng = graph.getClass().newInstance();
+            ng.ensureCapacity(nodes.size());
 
-            GraphBuilder f = newGraph.getFactory();
-            Node[] nn = new Node[nodes.size()];
-            int k = 0;
+            GraphBuilder f = ng.getFactory();
+            Int2LongOpenHashMap mapping = new Int2LongOpenHashMap(nodes.size());
+            Node neighbor;
             for (Node node : nodes) {
-                nn[k] = f.newNode(node.getInstance());
+                neighbor = f.newNode(node.getInstance());
+                //nn[k] = f.newNode(node.getInstance());
+                mapping.put(node.getInstance().getIndex(), neighbor.getId());
                 //System.out.println(nn[k].getInstance().getIndex() + " ->" + k);
-                newGraph.addNode(nn[k++]);
+                ng.addNode(neighbor);
             }
+
+            long ida, idb;
+            Node na, nb;
             for (int i = 0; i < nodes.size(); i++) {
+                na = nodes.get(i);
+                ida = mapping.get(na.getInstance().getIndex());
                 for (int j = i + 1; j < nodes.size(); j++) {
-                    if (graph.isAdjacent(nodes.get(i), nodes.get(j))) {
+                    nb = nodes.get(j);
+                    if (graph.isAdjacent(na, nb)) {
+                        idb = mapping.get(nb.getInstance().getIndex());
                         //System.out.println(nodes.get(i).getInstance().getIndex() + " -> " + nodes.get(j).getInstance().getIndex());
-                        newGraph.addEdge(f.newEdge(nn[i], nn[j]));
+                        ng.addEdge(f.newEdge(ng.getNode(ida), ng.getNode(idb)));
                     }
                 }
             }
         } catch (InstantiationException | IllegalAccessException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return newGraph;
+        return ng;
     }
 
 }
