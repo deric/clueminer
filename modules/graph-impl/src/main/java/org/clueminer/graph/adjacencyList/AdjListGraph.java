@@ -256,11 +256,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        LinkedList<Node> neighbors = new LinkedList<>();
-        for (Neighbor n : adjList.get(node)) {
-            neighbors.add(n.node);
-        }
-        return new AdjListNodeIterable(neighbors);
+        return new NeighborIterable(adjList.get(node));
     }
 
     @Override
@@ -520,38 +516,4 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
     public boolean suppportReferences() {
         return true;
     }
-
-    private class Neighbor implements Comparable<Neighbor> {
-
-        Edge edge;
-        Node node;
-
-        public Neighbor(Edge e, Node n) {
-            edge = e;
-            node = n;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (!(o.getClass().equals(Neighbor.class))) {
-                return false;
-            }
-            Neighbor other = (Neighbor) o;
-            return node.getId() == other.node.getId();
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 47 * hash + Objects.hashCode(this.node);
-            return hash;
-        }
-
-        @Override
-        public int compareTo(Neighbor o) {
-            return (int) (node.getId() - o.node.getId());
-        }
-
-    }
-
 }
