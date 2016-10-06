@@ -50,10 +50,17 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     protected int mutualEdgesSize;
     //Version
     protected final GraphVersion version;
+    private boolean allowReferences = true;
 
     public EdgeStore() {
         initStore();
         this.version = null;
+    }
+
+    public EdgeStore(boolean allowRef) {
+        initStore();
+        this.version = null;
+        this.allowReferences = allowRef;
     }
 
     private void initStore() {
@@ -182,7 +189,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         checkNonNullEdgeObject(e);
 
         EdgeImpl edge = (EdgeImpl) e;
-        if (edge.storeId == EdgeStore.NULL_ID) {
+        if (allowReferences || edge.storeId == EdgeStore.NULL_ID) {
             //checkIdDoesntExist(edge.getLongId());
             if (dictionary.containsKey(edge.getLongId())) {
                 return false;

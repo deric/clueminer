@@ -70,6 +70,13 @@ public class FastGraph<E extends Instance> implements Graph<E> {
         edgeStore = new EdgeStore();
     }
 
+    public FastGraph(boolean allowRef) {
+        instanceContent = new InstanceContent();
+        lookup = new AbstractLookup(instanceContent);
+        nodeStore = new NodeStore(allowRef);
+        edgeStore = new EdgeStore(allowRef);
+    }
+
     public FastGraph(int size) {
         this();
         ensureCapacity(size);
@@ -400,7 +407,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean suppportReferences() {
-        return false;
+        return true;
     }
 
     protected class NodeIterableWrapper implements NodeIterable {

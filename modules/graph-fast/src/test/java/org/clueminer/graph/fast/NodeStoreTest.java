@@ -46,7 +46,7 @@ public class NodeStoreTest {
 
     @Before
     public void reset() {
-        nodeStore = new NodeStore();
+        nodeStore = new NodeStore(false);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class NodeStoreTest {
         NodeImpl node = new NodeImpl(0l);
         nodeStore.add(node);
 
-        NodeStore nodeStore2 = new NodeStore();
+        NodeStore nodeStore2 = new NodeStore(false);
         nodeStore2.add(node);
     }
 

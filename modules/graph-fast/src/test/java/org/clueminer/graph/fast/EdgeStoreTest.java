@@ -41,7 +41,7 @@ public class EdgeStoreTest {
 
     @Before
     public void reset() {
-        edgeStore = new EdgeStore();
+        edgeStore = new EdgeStore(false);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class EdgeStoreTest {
         EdgeImpl edge = GraphGenerator.generateSingleEdge();
         edgeStore.add(edge);
 
-        EdgeStore edgeStore2 = new EdgeStore();
+        EdgeStore edgeStore2 = new EdgeStore(false);
         edgeStore2.add(edge);
     }
 

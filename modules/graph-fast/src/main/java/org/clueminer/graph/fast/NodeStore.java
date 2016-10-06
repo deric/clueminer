@@ -41,10 +41,17 @@ public class NodeStore implements Collection<Node>, NodeIterable {
     protected NodeBlock currentBlock;
     protected Long2IntOpenHashMap dictionary;
     protected final GraphVersion version;
+    private boolean allowReferences = true;
 
     public NodeStore() {
         initStore();
         this.version = null;
+    }
+
+    public NodeStore(boolean allowRef) {
+        initStore();
+        this.version = null;
+        this.allowReferences = allowRef;
     }
 
     private void initStore() {
@@ -165,7 +172,7 @@ public class NodeStore implements Collection<Node>, NodeIterable {
         checkNonNullNodeObject(n);
 
         NodeImpl node = (NodeImpl) n;
-        if (node.storeId == NodeStore.NULL_ID) {
+        if (allowReferences || node.storeId == NodeStore.NULL_ID) {
             checkIdDoesntExist(n.getId());
 
             incrementVersion();

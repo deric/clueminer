@@ -78,7 +78,7 @@ public class FastGraphTest<E extends Instance> {
 
     @Test
     public void testAddNode() {
-        FastGraph graphStore = new FastGraph();
+        FastGraph graphStore = new FastGraph(false);
         NodeImpl[] nodes = GraphGenerator.generateNodeList(1);
 
         boolean a = graphStore.addNode(nodes[0]);
