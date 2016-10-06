@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chameleon;
 
 import edu.umn.metis.HMetisBisector;
@@ -248,12 +264,22 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     }
 
     /**
+     * In order to free memory.
+     *
+     * @param clust
+     */
+    public void removeGraphPropertyStore(GraphCluster<E> clust) {
+        Graph g = clust.getGraph();
+        g.lookupRemove(GraphPropertyStore.class);
+    }
+
+    /**
      * Computes external properties of the merged cluster and adds them to the
      * end of the external properties matrix.
      *
      * @param cluster new cluster
-     * @param c1 clustering that are being merged
-     * @param c2 clustering that are being merged
+     * @param c1      clustering that are being merged
+     * @param c2      clustering that are being merged
      */
     protected void updateExternalProperties(GraphCluster<E> cluster, GraphCluster<E> c1, GraphCluster<E> c2) {
         double eic1, eic2, cnt1, cnt2, eic, ecl, cnt;
@@ -278,6 +304,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
             }
             gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
         }
+        removeGraphPropertyStore(c1);
+        removeGraphPropertyStore(c2);
     }
 
     /**
@@ -303,8 +331,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         newNode.setLeft(left);
         newNode.setRight(right);
         /* if (sim > 10) {
-         sim = 10;
-         }*/
+         * sim = 10;
+         * } */
         if (Double.isNaN(sim) || sim < 0.005) {
             sim = 0.005;
         }

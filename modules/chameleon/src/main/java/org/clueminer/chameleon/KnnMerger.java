@@ -115,12 +115,8 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             nodes[nodes.length - 1] = null;
         }
 
-        /* System.out.println("nodes:");
-        for (int l = 0; l < nodes.length; l++) {
-            System.out.println("node " + l + ": " + nodes[l]);
-        }*/
-        LOGGER.info("root: " + nodes[nodes.length - 2]);
-        LOGGER.info("cluster size: " + clusters.size());
+        LOGGER.log(Level.INFO, "root: {0}", nodes[nodes.length - 2]);
+        LOGGER.log(Level.INFO, "cluster size: {0}", clusters.size());
 
     }
 
