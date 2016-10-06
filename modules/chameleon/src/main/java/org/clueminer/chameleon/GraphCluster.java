@@ -38,9 +38,10 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.AttributeCollection;
 import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
-import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
@@ -173,7 +174,11 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
      */
     protected void computeAverageCloseness() {
         if (graph == null) {
-            graph = buildGraphFromCluster(graphNodes, parentGraph);
+            if (parentGraph.suppportReferences()) {
+                graph = buildGraphFromCluster(graphNodes, parentGraph);
+            } else {
+                graph = copyGraphFromCluster(graphNodes, parentGraph);
+            }
         }
 
         double sum = 0;
@@ -197,6 +202,54 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
         }
 
         ACL = sum / edgeCount;
+    }
+
+    /**
+     * Builds graph from list of nodes and parent graph. Deep copy of each graph
+     * node is created.
+     *
+     * @param nodes List of nodes
+     * @param g     Parent graph
+     * @return Graph representing this cluster
+     */
+    private Graph copyGraphFromCluster(ArrayList<Node<E>> nodes, Graph parentGraph) {
+        Graph ng = null;
+        try {
+            ng = parentGraph.getClass().newInstance();
+            ng.ensureCapacity(nodes.size());
+            GraphBuilder f = ng.getFactory();
+            E inst;
+            Node nn;
+            long[] ids = new long[nodes.size()];
+            int l = 0;
+            for (Node<E> node : nodes) {
+                inst = node.getInstance();
+                //create new node referencing to the same instance
+                nn = f.newNode(inst);
+                ng.addNode(nn);
+                ids[l++] = nn.getId();
+
+                //update attribute's statistics
+                for (int i = 0; i < attributeCount(); i++) {
+                    attributes[i].updateStatistics(inst.get(i));
+                }
+            }
+            Node na, nb;
+            for (int i = 0; i < ids.length; i++) {
+                na = ng.getNode(ids[i]);
+                for (int j = i + 1; j < ids.length; j++) {
+                    nb = ng.getNode(ids[j]);
+                    if (parentGraph.isAdjacent(na, nb)) {
+                        ng.addEdge(f.newEdge(na, nb));
+                    }
+                }
+            }
+            ids = null;
+            edgeCount = ng.getEdgeCount();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return ng;
     }
 
     /**

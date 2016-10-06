@@ -801,11 +801,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
         NodeImpl n1 = (NodeImpl) node1;
         NodeImpl n2 = (NodeImpl) node2;
 
-        if (contains(n1, n2) || contains(n2, n1)) {
-            return true;
-        }
-
-        return false;
+        return contains(n1, n2) || contains(n2, n1);
     }
 
     public boolean contains(NodeImpl source, NodeImpl target) {
