@@ -83,12 +83,15 @@ public class EdgeRemover {
             }
 
             long ida, idb;
+            Node na, nb;
             for (ArrayList<Node> partition : partitions) {
                 for (int i = 0; i < partition.size(); i++) {
+                    na = partition.get(i);
+                    ida = mapping.get(na.getInstance().getIndex());
                     for (int j = i + 1; j < partition.size(); j++) {
-                        if (originalGraph.isAdjacent(partition.get(i), partition.get(j))) {
-                            ida = mapping.get(partition.get(i).getInstance().getIndex());
-                            idb = mapping.get(partition.get(j).getInstance().getIndex());
+                        nb = partition.get(j);
+                        if (originalGraph.isAdjacent(na, nb)) {
+                            idb = mapping.get(nb.getInstance().getIndex());
                             result.addEdge(f.newEdge(result.getNode(ida), result.getNode(idb)));
                         }
                     }

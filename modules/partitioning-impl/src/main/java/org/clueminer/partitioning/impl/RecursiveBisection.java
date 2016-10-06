@@ -16,7 +16,6 @@
  */
 package org.clueminer.partitioning.impl;
 
-import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 import java.util.ArrayList;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
@@ -143,27 +142,19 @@ public class RecursiveBisection implements Partitioning {
             ng.ensureCapacity(nodes.size());
 
             GraphBuilder f = ng.getFactory();
-            Int2LongOpenHashMap mapping = new Int2LongOpenHashMap(nodes.size());
             Node neighbor;
             for (Node node : nodes) {
                 neighbor = f.newNode(node.getInstance());
-                //nn[k] = f.newNode(node.getInstance());
-                mapping.put(node.getInstance().getIndex(), neighbor.getId());
-                //System.out.println(nn[k].getInstance().getIndex() + " ->" + k);
                 ng.addNode(neighbor);
             }
 
-            long ida, idb;
             Node na, nb;
             for (int i = 0; i < nodes.size(); i++) {
                 na = nodes.get(i);
-                ida = mapping.get(na.getInstance().getIndex());
                 for (int j = i + 1; j < nodes.size(); j++) {
                     nb = nodes.get(j);
                     if (graph.isAdjacent(na, nb)) {
-                        idb = mapping.get(nb.getInstance().getIndex());
-                        //System.out.println(nodes.get(i).getInstance().getIndex() + " -> " + nodes.get(j).getInstance().getIndex());
-                        ng.addEdge(f.newEdge(ng.getNode(ida), ng.getNode(idb)));
+                        ng.addEdge(f.newEdge(na, nb));
                     }
                 }
             }
