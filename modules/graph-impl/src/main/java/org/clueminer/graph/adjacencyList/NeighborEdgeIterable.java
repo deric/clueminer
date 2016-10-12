@@ -20,24 +20,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import org.clueminer.graph.api.Node;
-import org.clueminer.graph.api.NodeIterable;
+import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.EdgeIterable;
 
 /**
  *
  * @author deric
  */
-public class NeighborIterable implements NodeIterable {
+public class NeighborEdgeIterable implements EdgeIterable {
 
     private final Set<Neighbor> neighbors;
 
-    public NeighborIterable(Set<Neighbor> set) {
+    public NeighborEdgeIterable(Set<Neighbor> set) {
         this.neighbors = set;
     }
 
     @Override
-    public Iterator<Node> iterator() {
-        return new Iterator<Node>() {
+    public Iterator<Edge> iterator() {
+        return new Iterator<Edge>() {
 
             private Iterator<Neighbor> it = neighbors.iterator();
 
@@ -47,29 +47,29 @@ public class NeighborIterable implements NodeIterable {
             }
 
             @Override
-            public Node next() {
+            public Edge next() {
                 Neighbor n = it.next();
-                return n.node;
+                return n.edge;
             }
 
         };
     }
 
     @Override
-    public Node[] toArray() {
-        Node[] res = new Node[neighbors.size()];
+    public Edge[] toArray() {
+        Edge[] res = new Edge[neighbors.size()];
         int i = 0;
         for (Neighbor n : neighbors) {
-            res[i++] = n.node;
+            res[i++] = n.edge;
         }
         return res;
     }
 
     @Override
-    public Collection<Node> toCollection() {
-        ArrayList<Node> res = new ArrayList<>(neighbors.size());
+    public Collection<Edge> toCollection() {
+        ArrayList<Edge> res = new ArrayList<>(neighbors.size());
         for (Neighbor n : neighbors) {
-            res.add(n.node);
+            res.add(n.edge);
         }
         return res;
     }

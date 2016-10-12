@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -256,7 +255,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        return new NeighborIterable(adjList.get(node));
+        return new NeighborNodeIterable(adjList.get(node));
     }
 
     @Override
@@ -266,11 +265,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public EdgeIterable getEdges(Node node) {
-        LinkedList<Edge> adjEdges = new LinkedList<>();
-        for (Neighbor n : adjList.get(node)) {
-            adjEdges.add(n.edge);
-        }
-        return new AdjListEdgeIterable(adjEdges);
+        return new NeighborEdgeIterable(adjList.get(node));
     }
 
     @Override
