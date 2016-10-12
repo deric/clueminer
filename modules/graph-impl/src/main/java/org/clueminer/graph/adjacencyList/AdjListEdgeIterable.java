@@ -18,7 +18,6 @@ package org.clueminer.graph.adjacencyList;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.clueminer.graph.api.Edge;
@@ -30,10 +29,10 @@ import org.clueminer.graph.api.EdgeIterable;
  */
 public class AdjListEdgeIterable implements EdgeIterable {
 
-    private final List<Edge> edges;
+    private final Collection<Edge> edges;
 
     public AdjListEdgeIterable(Map<Long, Edge> edges) {
-        this.edges = new LinkedList<>(edges.values());
+        this.edges = edges.values();
     }
 
     public AdjListEdgeIterable(List<Edge> edges) {
