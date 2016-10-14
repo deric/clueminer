@@ -19,15 +19,18 @@ package org.clueminer.colors;
 import java.awt.Color;
 import java.util.Random;
 import org.clueminer.dataset.api.ColorGenerator;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A pseudo random generator
  *
  * @author Tomas Barton
  */
+@ServiceProvider(service = ColorGenerator.class)
 public class RandomColorsGenerator implements ColorGenerator {
 
     private final Random rand;
+    private static final String NAME = "random";
 
     /**
      * Constructor for objects of class RandomColor initializes the
@@ -35,6 +38,11 @@ public class RandomColorsGenerator implements ColorGenerator {
      */
     public RandomColorsGenerator() {
         rand = new Random();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     /**
@@ -55,8 +63,8 @@ public class RandomColorsGenerator implements ColorGenerator {
     @Override
     public Color next() {
         return (new Color(rand.nextInt(256),
-                          rand.nextInt(256),
-                          rand.nextInt(256)));
+                rand.nextInt(256),
+                rand.nextInt(256)));
     }
 
     @Override
