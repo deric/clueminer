@@ -220,7 +220,8 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 u = heap.remove();
                 v = (C) u.closest;
                 if (u.equals(v)) {
-                    System.out.println("merging same clusters!!! " + u.getClusterId());
+                    // merging same clusters!!!
+                    continue;
                 }
                 heap.remove(v);
                 w = merge(u, v);

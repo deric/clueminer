@@ -16,7 +16,7 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Level;
@@ -94,7 +94,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     private int reduceFactor;
 
     private static int currentRepAdditionCount;
-    private HashSet<Integer> blacklist;
+    private IntOpenHashSet blacklist;
 
     /**
      * Whether allow sub-sampling or not. If true clustering is performed on
@@ -129,7 +129,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
         reduceFactor = props.getInt(REDUCE_FACTOR, 3);
 
         currentRepAdditionCount = n;
-        blacklist = new HashSet<>();
+        blacklist = new IntOpenHashSet(dataset.size());
         CureCluster<E> outliers = new CureCluster<>(dataset);
         clusterCnt = 0;
         if (colorGenerator != null) {
