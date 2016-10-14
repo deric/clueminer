@@ -108,6 +108,7 @@ public class CURETest<E extends Instance, C extends CureCluster<E>> {
         params.putInt(CURE.K, 3);
         Clustering<E, C> clustering = subject.cluster(dataset, params);
         assertEquals(3, clustering.size());
+        System.out.println(clustering.toString());
         assertEquals(150, clustering.instancesCount());
         printClustering(clustering);
     }

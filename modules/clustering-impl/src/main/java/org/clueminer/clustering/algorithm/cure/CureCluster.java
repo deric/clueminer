@@ -17,7 +17,6 @@
 package org.clueminer.clustering.algorithm.cure;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.struct.BaseCluster;
 import org.clueminer.dataset.api.Dataset;
@@ -80,16 +79,16 @@ public class CureCluster<E extends Instance> extends BaseCluster<E> implements C
     public String toString() {
         StringBuilder sb = new StringBuilder("CureCluster ").append("#").append(getClusterId());
         sb.append("(").append(size()).append(") ");
-        sb.append("centroid:").append(Arrays.toString(getCentroid().arrayCopy()));
+        //sb.append("centroid:").append(Arrays.toString(getCentroid().arrayCopy()));
         sb.append(" rep: {").append(rep.size()).append("} ");
         sb.append(" [ ");
         E elem;
-        for (int i = 0; i < this.rep.size(); i++) {
+        for (int i = 0; i < this.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            elem = this.rep.get(i);
-            sb.append(elem.toString());
+            elem = this.get(i);
+            sb.append(elem.getIndex());
         }
         sb.append(" ]");
         return sb.toString();
