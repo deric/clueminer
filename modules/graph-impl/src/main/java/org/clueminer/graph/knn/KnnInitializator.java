@@ -61,7 +61,7 @@ public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> i
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         KnnFactory<E> kf = KnnFactory.getInstance();
         if (!params.containsKey(KNN_SEARCH)) {
-            params.put(KNN_SEARCH, "caching k-nn");
+            params.put(KNN_SEARCH, "linear k-nn");
         }
         KNNSearch<E> alg = kf.getProvider(params.get(KNN_SEARCH));
         if (alg == null) {
