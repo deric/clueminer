@@ -25,23 +25,25 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
+import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Connect data points when points are located within EPS distance from each other.
  *
  * @author deric
- * @param <E>
+ * @param <E> base data row type
  */
 @ServiceProvider(service = GraphConvertor.class)
-public class ThresholdInitializator<E extends Instance> implements GraphConvertor<E> {
+public class EpsNN<E extends Instance> implements GraphConvertor<E> {
 
     private Distance dm;
-    private static final String name = "distance threshold";
+    private static final String NAME = "eps NN";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -54,6 +56,8 @@ public class ThresholdInitializator<E extends Instance> implements GraphConverto
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
         double dist;
         double edgeThreshold = params.getDouble(EDGE_THRESHOLD, 1.0);
+        RNNSearch<E> rnn;
+
         Node<E> source, target;
         Edge edge;
         for (int i = 0; i < dataset.size(); i++) {
