@@ -16,6 +16,8 @@
  */
 package org.clueminer.chinesewhispers;
 
+import java.util.ArrayList;
+import java.util.List;
 import static org.clueminer.chinesewhispers.ChineseWhispers.EDGE_THRESHOLD;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -25,7 +27,9 @@ import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
 import org.clueminer.graph.api.Node;
+import org.clueminer.neighbor.Neighbor;
 import org.clueminer.neighbor.RNNSearch;
+import org.clueminer.neighbor.RnnFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -54,24 +58,25 @@ public class EpsNN<E extends Instance> implements GraphConvertor<E> {
      */
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
-        double dist;
-        double edgeThreshold = params.getDouble(EDGE_THRESHOLD, 1.0);
-        RNNSearch<E> rnn;
+        double eps = params.getDouble(EDGE_THRESHOLD, 1.0);
+        RnnFactory rnnf = RnnFactory.getInstance();
+        RNNSearch<E> rnn = rnnf.getProvider(params.get("RNN", "KD-tree"));
+        rnn.setDataset(dataset);
+        rnn.setDistanceMeasure(dm);
 
         Node<E> source, target;
         Edge edge;
+        List<Neighbor<E>> nn = new ArrayList<>();
         for (int i = 0; i < dataset.size(); i++) {
             source = graph.getNode(mapping[i]);
             E curr = dataset.get(i);
-            for (int j = 0; j < i; j++) {
-                if (i != j) {
-                    dist = dm.measure(curr, dataset.get(j));
-                    if (dm.compare(dist, edgeThreshold)) {
-                        target = graph.getNode(mapping[j]);
-                        edge = graph.getFactory().newEdge(source, target);
-                        graph.addEdge(edge);
-                    }
-                }
+
+            nn.clear();
+            rnn.range(curr, eps, nn);
+            for (Neighbor neighbor : nn) {
+                target = graph.getNode(mapping[neighbor.index]);
+                edge = graph.getFactory().newEdge(source, target);
+                graph.addEdge(edge);
             }
         }
     }

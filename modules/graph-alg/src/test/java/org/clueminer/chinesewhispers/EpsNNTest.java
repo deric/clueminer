@@ -23,6 +23,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Graph;
+import org.clueminer.report.NanoBench;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -35,23 +36,76 @@ import org.junit.Test;
 public class EpsNNTest<E extends Instance> {
 
     private final EpsNN subject;
+    private final Dataset<E> iris;
 
     public EpsNNTest() {
         subject = new EpsNN();
         subject.setDistanceMeasure(EuclideanDistance.getInstance());
+        iris = (Dataset<E>) FakeDatasets.irisDataset();
     }
 
     @Test
     public void testIris() {
-        Dataset<E> data = (Dataset<E>) FakeDatasets.irisDataset();
-        Props params = new Props();
-        params.putDouble(EDGE_THRESHOLD, 4);
-        Graph g = new AdjListGraph(data.size());
+        NanoBench.create().measurements(3).measure("linear",
+                new Runnable() {
+            @Override
+            public void run() {
+                Props params = new Props();
+                params.put("RNN", "linear RNN");
+                //params.put("RNN", "LSH");
+                params.putDouble(EDGE_THRESHOLD, 4);
+                Graph g = new AdjListGraph(iris.size());
 
-        subject.buildGraph(g, data, params);
+                subject.buildGraph(g, iris, params);
 
-        assertEquals(data.size(), g.getNodeCount());
-        assertEquals(8640, g.getEdgeCount());
+                assertEquals(iris.size(), g.getNodeCount());
+                assertEquals(8640, g.getEdgeCount());
+
+            }
+        });
+    }
+
+    @Test
+    public void testIrisKDTree() {
+        NanoBench.create().measurements(3).measure("KD-tree",
+                new Runnable() {
+            @Override
+            public void run() {
+                Props params = new Props();
+                params.put("RNN", "KD-tree");
+                params.putDouble(EDGE_THRESHOLD, 1);
+                Graph g = new AdjListGraph(iris.size());
+
+                subject.buildGraph(g, iris, params);
+                assertEquals(iris.size(), g.getNodeCount());
+                assertEquals(2627, g.getEdgeCount());
+            }
+        }
+        );
+
+    }
+
+    @Test
+    public void testIrisLSH() {
+        NanoBench.create().measurements(3).measure("LSH",
+                new Runnable() {
+            @Override
+            public void run() {
+                Dataset<E> data = (Dataset<E>) FakeDatasets.irisDataset();
+                Props params = new Props();
+                params.put("RNN", "LSH");
+                params.putDouble(EDGE_THRESHOLD, 1);
+                Graph g = new AdjListGraph(data.size());
+
+                subject.buildGraph(g, data, params);
+
+                assertEquals(data.size(), g.getNodeCount());
+                assertEquals(2627, g.getEdgeCount());
+
+            }
+
+        }
+        );
     }
 
 }

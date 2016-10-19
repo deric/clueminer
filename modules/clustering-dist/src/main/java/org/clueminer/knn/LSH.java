@@ -32,6 +32,7 @@ import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.sort.MaxHeapInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 import smile.math.IntArrayList;
 import smile.stat.distribution.GaussianDistribution;
 
@@ -69,7 +70,10 @@ import smile.stat.distribution.GaussianDistribution;
  *
  * @author Haifeng Li
  */
-@ServiceProvider(service = KNNSearch.class)
+@ServiceProviders(value = {
+    @ServiceProvider(service = KNNSearch.class),
+    @ServiceProvider(service = RNNSearch.class)
+})
 public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
 
     public static final String NAME = "LSH";
@@ -595,8 +599,8 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
                 //System.out.println("=== HIT");
             }
             ///System.out.println("dist: " + distance + " max: " + heap.peekLast().distance);
-            /* for (int i = 0; i < k; i++) {                System.out.println(i + ": " + heap.get(i));
-            } */
+            /* for (int i = 0; i < k; i++) { System.out.println(i + ": " + heap.get(i));
+             * } */
         }
 
         heap.sort();

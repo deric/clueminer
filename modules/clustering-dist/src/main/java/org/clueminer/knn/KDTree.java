@@ -28,6 +28,7 @@ import org.clueminer.neighbor.RNNSearch;
 import org.clueminer.sort.MaxHeapInv;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
 
 /**
  * KD-tree is an efficient structure for search in low-dimensional space. With
@@ -36,7 +37,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  * @param <E>
  */
-@ServiceProvider(service = KNNSearch.class)
+@ServiceProviders(value = {
+    @ServiceProvider(service = KNNSearch.class),
+    @ServiceProvider(service = RNNSearch.class),})
 public class KDTree<E extends Instance> extends AbstractKNN<E> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
 
     public static final String NAME = "KD-tree";
