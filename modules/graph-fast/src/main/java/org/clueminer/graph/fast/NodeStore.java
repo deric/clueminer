@@ -41,7 +41,7 @@ public class NodeStore implements Collection<Node>, NodeIterable {
     protected NodeBlock currentBlock;
     protected Long2IntOpenHashMap dictionary;
     protected final GraphVersion version;
-    private boolean allowReferences = true;
+    private boolean allowReferences = false;
 
     public NodeStore() {
         initStore();

@@ -50,7 +50,7 @@ public class EdgeStore implements Collection<Edge>, EdgeIterable {
     protected int mutualEdgesSize;
     //Version
     protected final GraphVersion version;
-    private boolean allowReferences = true;
+    private boolean allowReferences = false;
 
     public EdgeStore() {
         initStore();

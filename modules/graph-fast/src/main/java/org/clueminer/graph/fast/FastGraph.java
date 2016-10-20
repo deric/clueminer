@@ -407,7 +407,7 @@ public class FastGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public boolean suppportReferences() {
-        return true;
+        return false;
     }
 
     protected class NodeIterableWrapper implements NodeIterable {
