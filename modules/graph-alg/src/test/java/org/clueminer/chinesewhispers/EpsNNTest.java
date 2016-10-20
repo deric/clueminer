@@ -16,7 +16,7 @@
  */
 package org.clueminer.chinesewhispers;
 
-import static org.clueminer.chinesewhispers.ChineseWhispers.EDGE_THRESHOLD;
+import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -53,7 +53,7 @@ public class EpsNNTest<E extends Instance> {
                 Props params = new Props();
                 params.put("RNN", "linear RNN");
                 //params.put("RNN", "LSH");
-                params.putDouble(EDGE_THRESHOLD, 4);
+                params.putDouble(DBSCAN.EPS, 4);
                 Graph g = new AdjListGraph(iris.size());
 
                 subject.buildGraph(g, iris, params);
@@ -73,7 +73,7 @@ public class EpsNNTest<E extends Instance> {
             public void run() {
                 Props params = new Props();
                 params.put("RNN", "KD-tree");
-                params.putDouble(EDGE_THRESHOLD, 1);
+                params.putDouble(DBSCAN.EPS, 1);
                 Graph g = new AdjListGraph(iris.size());
 
                 subject.buildGraph(g, iris, params);
@@ -94,7 +94,7 @@ public class EpsNNTest<E extends Instance> {
                 Dataset<E> data = (Dataset<E>) FakeDatasets.irisDataset();
                 Props params = new Props();
                 params.put("RNN", "LSH");
-                params.putDouble(EDGE_THRESHOLD, 1);
+                params.putDouble(DBSCAN.EPS, 1);
                 Graph g = new AdjListGraph(data.size());
 
                 subject.buildGraph(g, data, params);

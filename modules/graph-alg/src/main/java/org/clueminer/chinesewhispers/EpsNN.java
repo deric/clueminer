@@ -18,7 +18,8 @@ package org.clueminer.chinesewhispers;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.clueminer.chinesewhispers.ChineseWhispers.EDGE_THRESHOLD;
+import org.clueminer.clustering.algorithm.DBSCAN;
+import org.clueminer.clustering.algorithm.DBSCANParamEstim;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -58,7 +59,14 @@ public class EpsNN<E extends Instance> implements GraphConvertor<E> {
      */
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
-        double eps = params.getDouble(EDGE_THRESHOLD, 1.0);
+        // the semantic is same as in case of DBSCAN
+        double eps;
+        if (!params.containsKey(DBSCAN.EPS)) {
+            DBSCANParamEstim<E> estimation = DBSCANParamEstim.getInstance();
+            estimation.estimate(dataset, params);
+        }
+        eps = params.getDouble(DBSCAN.EPS);
+
         RnnFactory rnnf = RnnFactory.getInstance();
         RNNSearch<E> rnn = rnnf.getProvider(params.get("RNN", "KD-tree"));
         rnn.setDataset(dataset);
