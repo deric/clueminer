@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chameleon;
 
+import static org.clueminer.chameleon.Chameleon.GRAPH_STORAGE;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.chameleon.similarity.RiRcSimilarity;
 import org.clueminer.clustering.api.AlgParams;
@@ -39,21 +56,23 @@ public class ChameleonTest {
         pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
+        //TODO: graph storage influences dendrogram height?
+        pref.put(GRAPH_STORAGE, "Adjacency matrix graph");
 
         //measure clustering run
         NanoBench.create().measurements(3).measure(
                 "chameleon - glass (std)",
                 new Runnable() {
 
-                    @Override
-                    public void run() {
-                        HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
-                        DendroTreeData tree = result.getTreeData();
-                        DendroNode root = tree.getRoot();
-                        assertEquals(891.8865411798738, root.getHeight(), delta);
-                    }
+            @Override
+            public void run() {
+                HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
+                DendroTreeData tree = result.getTreeData();
+                DendroNode root = tree.getRoot();
+                assertEquals(891.8865411798738, root.getHeight(), delta);
+            }
 
-                }
+        }
         );
         // Get the Java runtime
         Runtime runtime = Runtime.getRuntime();
@@ -66,6 +85,26 @@ public class ChameleonTest {
         }
     }
 
+    /**
+     * TODO: fix bisecting graph
+     */
+    public void testGlassFast() {
+        final Props pref = new Props();
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        final Chameleon ch = new Chameleon();
+        pref.putInt(Chameleon.K, 5);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
+        pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
+        pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
+        //TODO: graph storage influences dendrogram height?
+        pref.put(GRAPH_STORAGE, "Fast Graph");
+
+        HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
+        DendroTreeData tree = result.getTreeData();
+        DendroNode root = tree.getRoot();
+        assertEquals(891.8865411798738, root.getHeight(), delta);
+    }
+
     @Test
     public void testIrisStandard() {
         Props pref = new Props();
@@ -76,6 +115,7 @@ public class ChameleonTest {
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         //putting 1 disable this optimization
         pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
+        pref.put(GRAPH_STORAGE, "Adjacency matrix graph");
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();

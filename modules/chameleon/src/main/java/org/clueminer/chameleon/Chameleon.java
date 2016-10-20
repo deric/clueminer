@@ -211,7 +211,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         k = pref.getInt(K, -1);
         maxPartitionSize = pref.getInt(MAX_PARTITION);
 
-        graphStorage = pref.get(GRAPH_STORAGE, "Adjacency matrix graph");
+        graphStorage = pref.get(GRAPH_STORAGE, "Adjacency list graph");
         GraphStorageFactory gsf = GraphStorageFactory.getInstance();
         Graph g = gsf.newInstance(graphStorage);
         g.ensureCapacity(dataset.size());
