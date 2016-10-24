@@ -76,8 +76,12 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
     private int determineK(Dataset<E> dataset, Props params) {
         String kEstim = params.get(K_ESTIMATOR, "log2");
         switch (kEstim) {
+            case "cln2":
+                return (int) Math.ceil(Math.log(dataset.size())) * 2;
             case "cln":
                 return (int) (Math.ceil(2 * Math.log(dataset.size())));
+            case "fln":
+                return (int) (Math.floor(2 * Math.log(dataset.size())));
 
             case "log10":
                 if (dataset.size() < 500) {
@@ -93,13 +97,14 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
                 } else {
                     return (int) Math.ceil(Math.log(dataset.size())) * 2;
                 }
-            default:
             case "log2":
                 if (dataset.size() < 500) {
                     return (int) (Math.log(dataset.size()) / Math.log(2));
                 } else {
                     return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
                 }
+            default:
+                throw new RuntimeException("unknown method " + kEstim);
         }
     }
 
