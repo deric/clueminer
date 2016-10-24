@@ -34,6 +34,8 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
 
     private static ChameleonConfig instance;
 
+    public static String K_ESTIMATOR = "k-estim";
+
     private ChameleonConfig() {
 
     }
@@ -57,18 +59,47 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
             params.putInt(MAX_PARTITION, determineMaxPartitionSize(dataset));
         }
         if (!params.containsKey(K)) {
-            params.putInt(K, determineK(dataset));
+            params.putInt(K, determineK(dataset, params));
         }
         putndef(params, AlgParams.CUTOFF_SCORE, "SD index");
         putndef(params, AlgParams.CUTOFF_STRATEGY, "FirstJump");
         putndef(params, AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
     }
 
-    private int determineK(Dataset<E> dataset) {
-        if (dataset.size() < 500) {
-            return (int) (Math.log(dataset.size()) / Math.log(2));
-        } else {
-            return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
+    /**
+     * Estimate parameter k based on logarithm of data size
+     *
+     * @param dataset
+     * @param params
+     * @return
+     */
+    private int determineK(Dataset<E> dataset, Props params) {
+        String kEstim = params.get(K_ESTIMATOR, "log2");
+        switch (kEstim) {
+            case "cln":
+                return (int) (Math.ceil(2 * Math.log(dataset.size())));
+
+            case "log10":
+                if (dataset.size() < 500) {
+                    return (int) (Math.log(dataset.size()) / Math.log(10));
+                } else {
+                    return (int) (Math.log(dataset.size()) / Math.log(10)) * 2;
+                }
+
+            case "ln":
+
+                if (dataset.size() < 500) {
+                    return (int) Math.ceil(Math.log(dataset.size()));
+                } else {
+                    return (int) Math.ceil(Math.log(dataset.size())) * 2;
+                }
+            default:
+            case "log2":
+                if (dataset.size() < 500) {
+                    return (int) (Math.log(dataset.size()) / Math.log(2));
+                } else {
+                    return (int) (Math.log(dataset.size()) / Math.log(2)) * 2;
+                }
         }
     }
 
