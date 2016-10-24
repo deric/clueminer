@@ -74,7 +74,7 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
      * @return
      */
     private int determineK(Dataset<E> dataset, Props params) {
-        String kEstim = params.get(K_ESTIMATOR, "log2");
+        String kEstim = params.get(K_ESTIMATOR, "ln");
         switch (kEstim) {
             case "cln2":
                 return (int) Math.ceil(Math.log(dataset.size())) * 2;
