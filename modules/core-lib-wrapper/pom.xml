@@ -27,6 +27,8 @@
                         <publicPackage>com.google.gson.stream</publicPackage>
                         <publicPackage>com.google.gson</publicPackage>
                         <publicPackage>org.apache.logging.log4j.*</publicPackage>
+                        <publicPackage>org.slf4j.impl.*</publicPackage>
+                        <publicPackage>org.slf4j.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
