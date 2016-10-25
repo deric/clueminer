@@ -50,7 +50,8 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      */
     public static final Pattern RELATION = Pattern.compile("^@relation\\s+(.*)", Pattern.CASE_INSENSITIVE);
     public static final Pattern ATTR_TYPES = Pattern.compile("\\{(\\d+,)+(\\d+)\\}", Pattern.CASE_INSENSITIVE);
-    public static final Pattern SINGLE_WORD = Pattern.compile("([\\w\\/-]+)(.*)", Pattern.CASE_INSENSITIVE);
+    //allow all characters except whitespace
+    public static final Pattern SINGLE_WORD = Pattern.compile("(\\S+)(.*)", Pattern.CASE_INSENSITIVE);
 
     /**
      * matches attribute definition which might simply contain attribute name
@@ -189,14 +190,16 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                                 setValue(values, idx, val, line);
                             } catch (NumberFormatException e) {
                                 if (skipColumnsWithNaNs) {
-                                    LOG.log(Level.INFO, "skipping index {0} because column contains {1}: {2}", new Object[]{i, arr[i], e.getMessage()});
+                                    LOG.log(Level.INFO, "skipping column {0} because can't be parsed as number {1}: {2}", new Object[]{i, arr[i], e.getMessage()});
                                     skippedIndexes.add(i);
                                     skipSize++;
                                     skip++;
                                     double[] tmp = new double[arr.length - skipSize];
                                     System.arraycopy(values, 0, tmp, 0, tmp.length);
                                     values = tmp;
-                                    out.removeAttribute(i);
+                                    if (out.attributeCount() >= i) {
+                                        out.removeAttribute(i);
+                                    }
                                 } else {
                                     val = Double.NaN;
                                     setValue(values, idx, val, line);
@@ -263,12 +266,13 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
         try {
             attrParse(line);
         } catch (ParserError e) {
+            LOG.warning(e.getMessage());
             return false;
         }
         return true;
     }
 
-    private AttrHolder attrParse(String line) throws ParserError {
+    protected AttrHolder attrParse(String line) throws ParserError {
         AttrHolder attr;
         if (attrDef.matcher(line).matches()) {
             //remove @attribute

@@ -24,6 +24,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.exception.ParserError;
+import org.clueminer.fixtures.BioFixture;
 import org.clueminer.fixtures.CommonFixture;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -147,6 +148,9 @@ public class ARFFHandlerTest<E extends Instance> {
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build-wind }"));
         assertTrue(arff.isValidAttributeDefinition("@attribute 'Type' { build_wind }"));
         assertTrue(arff.isValidAttributeDefinition("@attribute HAIR integer [0, 1]"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute CD45RA(La139)Di numeric"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute some{crazy}attr numeric"));
+        assertTrue(arff.isValidAttributeDefinition("@attribute [foo'+] numeric"));
     }
 
     @Test
@@ -196,6 +200,25 @@ public class ARFFHandlerTest<E extends Instance> {
         a = arff.parseAttribute("@attribute erythema {0,1,2,3}");
         assertEquals("erythema", a.getName());
         assertEquals("0,1,2,3", a.getAllowed());
+
+        a.setAllowed("");
+        a = arff.parseAttribute("@attribute class {'Basophils','CD16+ NK cells','CD16- NK cells','CD34+CD38+CD123+ HSPCs','CD34+CD38+CD123- HSPCs','CD34+CD38lo HSCs','CD4 T cells','CD8 T cells','Mature B cells','Monocytes','Plasma B cells','Pre B cells','Pro B cells','pDCs'}");
+        assertEquals("class", a.getName());
+        assertEquals("'Basophils','CD16+ NK cells','CD16- NK cells','CD34+CD38+CD123+ HSPCs','CD34+CD38+CD123- HSPCs','CD34+CD38lo HSCs','CD4 T cells','CD8 T cells','Mature B cells','Monocytes','Plasma B cells','Pre B cells','Pro B cells','pDCs'", a.getAllowed());
+    }
+
+    @Test
+    public void testAttrDefinitionWithUnusualChars() throws ParserError {
+        AttrHolder a = arff.parseAttribute("@attribute CD45RA(La139)Di numeric");
+        assertEquals("CD45RA(La139)Di", a.getName());
+    }
+
+    @Test
+    public void testAttrParse() throws ParserError {
+        AttrHolder a = arff.attrParse("@attribute class {'Basophils','CD16+ NK cells','CD16- NK cells','CD34+CD38+CD123+ HSPCs','CD34+CD38+CD123- HSPCs','CD34+CD38lo HSCs','CD4 T cells','CD8 T cells','Mature B cells','Monocytes','Plasma B cells','Pre B cells','Pro B cells','pDCs'}");
+
+        assertEquals("class", a.getName());
+        assertEquals("'Basophils','CD16+ NK cells','CD16- NK cells','CD34+CD38+CD123+ HSPCs','CD34+CD38+CD123- HSPCs','CD34+CD38lo HSCs','CD4 T cells','CD8 T cells','Mature B cells','Monocytes','Plasma B cells','Pre B cells','Pro B cells','pDCs'", a.getAllowed());
     }
 
     @Test
@@ -243,6 +266,19 @@ public class ARFFHandlerTest<E extends Instance> {
         arff.load(tf.ds577(), data, 2);
         assertEquals(2, data.attributeCount());
         assertEquals(577, data.size());
+        assertEquals(datasetName, data.getName());
+    }
+
+    @Test
+    public void testH1() throws ParserError, FileNotFoundException, IOException {
+        Dataset<Instance> data = new ArrayDataset<>(100, 33);
+        BioFixture bf = new BioFixture();
+
+        String datasetName = "cytof.benchmark.h1";
+        arff.load(bf.h1Test(), data);
+        assertEquals(32, data.attributeCount());
+        assertEquals(114, data.size());
+        assertEquals("'Basophils'", data.get(0).classValue());
         assertEquals(datasetName, data.getName());
     }
 
