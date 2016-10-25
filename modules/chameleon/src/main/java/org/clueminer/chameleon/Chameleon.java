@@ -49,7 +49,9 @@ import org.clueminer.partitioning.api.MergerFactory;
 import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.api.PartitioningFactory;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.StopWatch;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -218,9 +220,13 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             throw new RuntimeException("failed to initialize graph: " + graphStorage);
         }
 
+        StopWatch time = new StopWatch();
         knn.buildGraph(g, dataset, pref);
+        time.endMeasure();
+        LOGGER.log(Level.INFO, "building graph took {0} ms", time.formatMs());
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");
+        time.startMeasure();
         bisection = pref.get(BISECTION, "Fiduccia-Mattheyses");
         Bisection bisectionAlg = BisectionFactory.getInstance().getProvider(bisection);
         if (bisectionAlg instanceof FiducciaMattheyses) {
@@ -259,6 +265,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
         HierarchicalResult result = m.getHierarchy(dataset, pref);
         result.setNoise(noise);
+        time.endMeasure();
+        LOGGER.log(Level.INFO, "ch2 clustering (without graph construction) took {0} ms", time.formatMs());
+        pref.put(PropType.PERFORMANCE, "time", time.timeInSec());
         return result;
     }
 
