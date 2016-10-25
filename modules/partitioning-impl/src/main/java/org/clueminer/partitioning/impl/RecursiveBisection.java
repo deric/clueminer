@@ -70,14 +70,18 @@ public class RecursiveBisection implements Partitioning {
         } else {
             clusters = recursivePartition(g, params, expectedSize);
         }
-        if (g.suppportReferences()) {
-            clusteredGraph = EdgeRemover.removeEdges(g, clusters);
-        } else {
-            clusteredGraph = EdgeRemover.safeRemoveEdges(g, clusters);
-        }
+        boolean runFloodFill = params.getBoolean("flood-fill", true);
+        if (runFloodFill) {
+            if (g.suppportReferences()) {
+                clusteredGraph = EdgeRemover.removeEdges(g, clusters);
+            } else {
+                clusteredGraph = EdgeRemover.safeRemoveEdges(g, clusters);
+            }
 
-        FloodFill f = new FloodFill();
-        return f.findSubgraphs(clusteredGraph, max);
+            FloodFill f = new FloodFill();
+            return f.findSubgraphs(clusteredGraph, max);
+        }
+        return clusters;
     }
 
     public ArrayList<ArrayList<Node>> recursivePartition(Graph g, Props params, int expectedSize) {
