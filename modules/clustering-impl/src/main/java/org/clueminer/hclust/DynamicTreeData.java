@@ -410,6 +410,9 @@ public class DynamicTreeData implements DendroTreeData {
      */
     @Override
     public double updatePositions(DendroNode node) {
+        if (node == null) {
+            return Double.NaN;
+        }
         if (node.isLeaf()) {
             return node.getPosition();
         }

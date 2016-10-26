@@ -34,6 +34,8 @@ import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class merges two clusters in one merge. Two most similar clusters among
@@ -48,6 +50,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     protected PriorityQueue<PairValue<GraphCluster<E>>> pq;
 
     protected MergeEvaluation evaluation;
+    private static Logger LOG = LoggerFactory.getLogger(PairMerger.class);
 
     public static final String name = "pair merger";
 
@@ -70,6 +73,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         }
         int numClusters = clusters.size();
         int clusterId = buildQueue(clusters.size(), pref);
+        LOG.debug("built merging queue, last ID: {}", clusterId);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
 
@@ -84,6 +88,7 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         }
 
         finalize(clusters, pq);
+        LOG.debug("creating tree with {} nodes", nodes.length);
 
         //getGraphPropertyStore(clusters.get(0)).dump();
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[nodes.length - 2]);

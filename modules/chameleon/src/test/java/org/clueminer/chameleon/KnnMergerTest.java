@@ -181,6 +181,7 @@ public class KnnMergerTest<E extends Instance> {
         props.put("k-estim", "log10");
         HierarchicalResult res = ch.hierarchy(dataset, props);
         DendroTreeData tree = res.getTreeData();
+        assertEquals(dataset.size(), tree.numLeaves());
         assertEquals(dataset.size(), tree.getMapping().length);
         Clustering<E, Cluster<E>> clust = res.getClustering();
         LOG.info("res: {}", clust.fingerprint());

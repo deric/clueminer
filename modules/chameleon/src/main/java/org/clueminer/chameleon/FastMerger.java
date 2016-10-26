@@ -68,6 +68,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             noise = new ArrayList<>();
         }
         prefilter(clusters, noise, params);
+        LOG.debug("creating tree with {} clusters and {} noisy points ", clusters.size(), noise.size());
         nodes = initiateTree(clusters, noise);
         return noise;
     }
@@ -267,9 +268,9 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         addIntoTree(curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue(newCluster, pref);
-        /*      } else {
-         System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
-         }*/
+        /* } else {
+         * System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
+         * } */
     }
 
     @Override
@@ -283,14 +284,34 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
     }
 
+    /**
+     * For each cluster we would like to find at least one nearest neighbor, that
+     * wasn't merged yet.
+     *
+     * @param cluster
+     * @param pref
+     */
     @Override
     protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
-
         try {
-            List<GraphCluster<E>> nn = kdTree.nearest(cluster.getCentroid(), 10);
-            for (GraphCluster<E> b : nn) {
-                computeSimilarity(cluster, b, pref);
+            int k = pref.getInt("k", 15);
+            List<GraphCluster<E>> nn;
+            int added = 0;
+            do {
+                nn = kdTree.nearest(cluster.getCentroid(), k);
+                for (GraphCluster<E> b : nn) {
+                    added += computeSimilarity(cluster, b, pref);
+                }
+                //check that some neighbors were found
+                if (added == 0) {
+                    k = 2 * (k + 1);
+                    LOG.trace("failed to find neighbors for cluster {}, increasing k = {}", cluster.getClusterId(), k);
+                }
+            } while (added == 0 && k < kdTree.size());
+            if (k > kdTree.size()) {
+                LOG.warn("could not find nearest neighbors for cluster {}, tried k = {}", cluster.getClusterId(), k);
             }
+            //LOG.info("added {} nn", added);
 
         } catch (KeySizeException | IllegalArgumentException ex) {
             Exceptions.printStackTrace(ex);
@@ -303,7 +324,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         }
     }
 
-    protected void computeSimilarity(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
+    protected int computeSimilarity(GraphCluster<E> a, GraphCluster<E> b, Props pref) {
         double sim;
         int i = a.getClusterId();
         int j = b.getClusterId();
@@ -313,8 +334,10 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //if (sim > 0) {
                 pq.add(new PairValue<>(a, b, sim));
                 //}
+                return 1;
             }
         }
+        return 0;
     }
 
     @Override

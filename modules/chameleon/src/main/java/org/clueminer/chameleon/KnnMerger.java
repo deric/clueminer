@@ -45,13 +45,12 @@ import org.slf4j.LoggerFactory;
 public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merger<E> {
 
     public static final String NAME = "k-NN merger";
-    private static final Logger LOGGER = LoggerFactory.getLogger(KnnMerger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KnnMerger.class);
 
     @Override
     public String getName() {
         return NAME;
     }
-
 
     @Override
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props pref) {
@@ -72,10 +71,11 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
-        LOGGER.debug("original clusters {} nodes {}", clusters.size(), nodes.length);
+        LOG.debug("merging queue size: {}", pq.size());
+        LOG.debug("original clusters {} nodes {}", clusters.size(), nodes.length);
 
         if (nodes[nodes.length - 1] == null) {
-            LOGGER.debug("no noisy tree node, adding {}", noise.size());
+            LOG.debug("no noisy tree node, adding {}", noise.size());
             List<E> n = new ArrayList<>(noise.size());
             nodes[nodes.length - 1] = new DClusterLeaf(noise.size() + 10, n);
             nodes[nodes.length - 1].setHeight(0.0);
@@ -85,24 +85,30 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         //int k = 0;
         //int m = 0;
         //int numClusters = clusters.size();
-        while (!pq.isEmpty()) {
-            curr = pq.poll();
-            i = curr.A.getClusterId();
-            j = curr.B.getClusterId();
-            if (!blacklist.contains(i) && !blacklist.contains(j)) {
-                blacklist.add(i);
-                blacklist.add(j);
-                if (i == j) {
-                    throw new RuntimeException("Cannot merge two same clusters");
+
+        if (!pq.isEmpty()) {
+            LOG.warn("not all clusters were merged. consider increasing k value");
+
+            while (!pq.isEmpty()) {
+                curr = pq.poll();
+                i = curr.A.getClusterId();
+                j = curr.B.getClusterId();
+                if (!blacklist.contains(i) && !blacklist.contains(j)) {
+                    blacklist.add(i);
+                    blacklist.add(j);
+                    if (i == j) {
+                        throw new RuntimeException("Cannot merge two same clusters");
+                    }
+                    addToNoise(noise, treeNoise, curr.A);
+                    addToNoise(noise, treeNoise, curr.B);
+                    //k += 2;
                 }
-                addToNoise(noise, treeNoise, curr.A);
-                addToNoise(noise, treeNoise, curr.B);
-                //k += 2;
+                //m++;
             }
-            //m++;
         }
+        LOG.info("node size: {}, clusters: {}", nodes.length, clusters.size());
         if (nodes.length > clusters.size()) {
-            LOGGER.info("shrink from {} -> {}", nodes.length, clusters.size());
+            LOG.info("shrink from {} -> {}", nodes.length, clusters.size());
             DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
             System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
@@ -110,15 +116,14 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         }
 
         if (noise.isEmpty()) {
-            LOGGER.info("noise empty, removin' treenode");
+            LOG.info("noise empty, removin' treenode");
             nodes[nodes.length - 1] = null;
         } else {
-            LOGGER.info("noise size: {}", noise.size());
+            LOG.info("noise size: {}", noise.size());
         }
 
-
-        LOGGER.info("root: {}", nodes[nodes.length - 2]);
-        LOGGER.info("cluster size: {}", clusters.size());
+        LOG.info("root: {}", nodes[nodes.length - 2]);
+        LOG.info("cluster size: {}", clusters.size());
 
     }
 
@@ -147,42 +152,6 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         }
         merge(i, j, curr, pref, newClusterId);
 
-        /* double sigmaA = curr.A.getSigma(pref);
-           double sigmaB = curr.B.getSigma(pref);
-        //System.out.println("sigma(A)= " + sigmaA + ", sigma(B)= " + sigmaB);
-        //double sim = clusterDist(curr.A, curr.B, pref);
-        double sim = curr.getValue();
-
-
-           //System.out.println("dist between clusters = " + dist);
-         * int l1 = nodes[i].level();
-           int l2 = nodes[j].level();
-
-        if (l1 > 0 && l2 > 0) {
-            merge(i, j, curr, pref, newClusterId);
-        } else if (sim > sigmaA && sim > sigmaB) {
-            merge(i, j, curr, pref, newClusterId);
-        } else {
-            System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " sim= " + sim);
-            Cluster<E> noise = clusters.getNoise();
-            if (l1 == 0) {
-                System.out.println("l1 at level 0, cluster = " + i);
-                blacklist.add(i);
-                for (E node : curr.A) {
-                    noise.add(node);
-                }
-            }
-
-            if (l2 == 0) {
-                System.out.println("l2 at level 0, cluster = " + j);
-                blacklist.add(j);
-                for (E node : curr.B) {
-                    noise.add(node);
-                }
-            }
-
-            System.out.println("noise size " + noise.size());
-        } */
     }
 
     private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
