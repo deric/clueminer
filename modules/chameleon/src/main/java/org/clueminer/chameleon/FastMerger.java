@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.chameleon.similarity.CLS;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -37,6 +35,8 @@ import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An experimental merger without necessity of merging O(n^2) items
@@ -47,13 +47,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class FastMerger<E extends Instance> extends PairMerger<E> implements Merger<E> {
 
-    public static final String name = "fast merger";
+    private static final String NAME = "fast merger";
     protected KDTree<GraphCluster<E>> kdTree;
-    private static final Logger LOGGER = Logger.getLogger(FastMerger.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastMerger.class);
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -91,7 +91,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             }
         }
         //get rid of tiny clusters
-        LOGGER.log(Level.INFO, "found {0} tiny cluster", tiny.size());
+        LOGGER.info("found {0} tiny cluster", tiny.size());
         GraphCluster<E> closest;
         for (GraphCluster<E> t : tiny) {
             try {
@@ -100,7 +100,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //TODO: check constrains
                 //merge with closest cluster
                 closest = nn.get(0);
-                LOGGER.log(Level.INFO, "t = {0} nn = {1}", new Object[]{t.getClusterId(), closest.getClusterId()});
+                LOGGER.info("t = {0} nn = {1}", t.getClusterId(), closest.getClusterId());
                 //blacklist.add(t.getClusterId());
                 //blacklist.add(nn.get(0).getClusterId());
                 //TODO: this is quite inefficient, though it reduces number of compared similarities
@@ -111,7 +111,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 Exceptions.printStackTrace(ex);
             }
         }
-        LOGGER.log(Level.INFO, "after filtering: {0}, noise: {1}", new Object[]{clusters.size(), noise.size()});
+        LOGGER.info("after filtering: {0}, noise: {1}", clusters.size(), noise.size());
         renumberClusters(clusters, noise);
     }
 

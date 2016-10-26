@@ -48,7 +48,7 @@ import org.clueminer.dataset.api.Instance;
  */
 public class CountingPairs<E extends Instance, C extends Cluster<E>> {
 
-    private static final String unknownLabel = "unknown";
+    private static final String UNKNOWN_LABEL = "unknown";
     private static CountingPairs instance;
 
     private CountingPairs() {
@@ -99,7 +99,7 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
                 if (klass != null) {
                     label = klass.toString();
                 } else {
-                    label = unknownLabel;
+                    label = UNKNOWN_LABEL;
                 }
 
                 if (table.contains(cluster, label)) {
@@ -429,7 +429,7 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
             cx2 = clust.assignedCluster(x);
             if (cx2 == null) {
                 throw new InvalidClustering("instance " + x.getIndex()
-                        + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+                        + " from dataset " + dataset.getName() + " is not assigned to any cluster: " + clust.getParams().toString());
             }
             cx1 = x.classValue();
             for (int j = i + 1; j < dataset.size(); j++) {
@@ -437,9 +437,8 @@ public class CountingPairs<E extends Instance, C extends Cluster<E>> {
                 cy1 = y.classValue();
                 cy2 = clust.assignedCluster(y);
                 if (cy2 == null) {
-                    System.out.println("params: " + clust.getParams().toString());
                     throw new InvalidClustering("instance " + y.getIndex()
-                            + " from dataset " + dataset.getName() + " is not assigned to any cluster");
+                            + " from dataset " + dataset.getName() + " is not assigned to any cluster, " + clust.getParams().toString());
                 }
                 //in both instances have the same label
                 if (cx1.equals(cy1)) {

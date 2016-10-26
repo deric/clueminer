@@ -19,8 +19,6 @@ package org.clueminer.chameleon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -35,6 +33,8 @@ import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -44,12 +44,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Merger.class)
 public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merger<E> {
 
-    public static final String name = "k-NN merger";
-    private static final Logger LOGGER = Logger.getLogger(KnnMerger.class.getName());
+    public static final String NAME = "k-NN merger";
+    private static final Logger LOGGER = LoggerFactory.getLogger(KnnMerger.class);
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
 
@@ -72,7 +72,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
-        LOGGER.log(Level.INFO, "original clusters {0} nodes {1}", new Object[]{clusters.size(), nodes.length});
+        LOGGER.info("original clusters {0} nodes {1}", clusters.size(), nodes.length);
 
         if (nodes[nodes.length - 1] == null) {
             System.out.println("no noisy tree node, adding " + noise.size());
@@ -103,7 +103,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             //m++;
         }
         if (nodes.length > clusters.size()) {
-            LOGGER.log(Level.INFO, "shrink from {0} -> {1}", new Object[]{nodes.length, clusters.size()});
+            LOGGER.info("shrink from {0} -> {1}", nodes.length, clusters.size());
             DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
             System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
@@ -115,8 +115,8 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             nodes[nodes.length - 1] = null;
         }
 
-        LOGGER.log(Level.INFO, "root: {0}", nodes[nodes.length - 2]);
-        LOGGER.log(Level.INFO, "cluster size: {0}", clusters.size());
+        LOGGER.info("root: {0}", nodes[nodes.length - 2]);
+        LOGGER.info("cluster size: {0}", clusters.size());
 
     }
 
