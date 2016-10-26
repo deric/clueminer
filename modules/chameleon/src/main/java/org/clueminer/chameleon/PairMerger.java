@@ -88,10 +88,10 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         }
 
         finalize(clusters, pq);
-        LOG.debug("creating tree with {} nodes", nodes.length);
+        LOG.debug("creating tree with {} leaves", nodes.length);
 
         //getGraphPropertyStore(clusters.get(0)).dump();
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[nodes.length - 2]);
+        DendroTreeData treeData = new DynamicClusterTreeData(nodes[nodes.length - 2], dataset.size());
         treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[nodes.length - 1]);
         result.setTreeData(treeData);
         return result;

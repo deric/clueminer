@@ -184,7 +184,29 @@ public class KnnMergerTest<E extends Instance> {
         assertEquals(dataset.size(), tree.numLeaves());
         assertEquals(dataset.size(), tree.getMapping().length);
         Clustering<E, Cluster<E>> clust = res.getClustering();
+        LOG.info("|clustering| = {}", clust.size());
         LOG.info("res: {}", clust.fingerprint());
+        Assert.assertNotEquals(-1, clust.assignedCluster(0));
+        Assert.assertNotEquals(-1, clust.assignedCluster(1));
+    }
+
+    @Test
+    public void testLsunSmallK() {
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.lsun();
+        Chameleon ch = new Chameleon();
+        Props props = new Props();
+        props.put("merger", "k-NN merger");
+        props.putInt("k", 3);
+        props.putInt("max_partition_size:", 5);
+        HierarchicalResult res = ch.hierarchy(dataset, props);
+        DendroTreeData tree = res.getTreeData();
+        assertEquals(dataset.size(), tree.numLeaves());
+        assertEquals(dataset.size(), tree.getMapping().length);
+        Clustering<E, Cluster<E>> clust = res.getClustering();
+        LOG.info("|clustering| = {}", clust.size());
+        LOG.info("res: {}", clust.fingerprint());
+        Assert.assertNotEquals(-1, clust.assignedCluster(0));
+        Assert.assertNotEquals(-1, clust.assignedCluster(1));
     }
 
     @Test
