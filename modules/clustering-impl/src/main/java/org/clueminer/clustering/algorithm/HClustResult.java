@@ -16,9 +16,7 @@
  */
 package org.clueminer.clustering.algorithm;
 
-import com.google.common.primitives.Ints;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -485,20 +483,11 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         //treeData.set
     }
 
-    private void updateMapping() {
-        //we need a guarantee of ordered items
-        LinkedHashSet<Integer> samples = new LinkedHashSet<>();
-        for (Merge m : getMerges()) {
-            samples.add(m.mergedCluster()); //this should be unique
-            if (!samples.contains(m.remainingCluster())) {
-                //linked sample (on higher levels cluster is marked with lowest number in the cluster)
-                samples.add(m.remainingCluster());
-            }
-        }
-        //convert List<Integer> to int[]
-        mapping = Ints.toArray(samples);
-    }
-
+    /**
+     * Return leaves mapping to indexes in dataset
+     *
+     * @return
+     */
     @Override
     public int[] getMapping() {
         /* if (mapping == null && merges != null) {
@@ -515,13 +504,6 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     @Override
     public List<Merge> getMerges() {
         return merges;
-    }
-
-    @Override
-    public void setMerges(List<Merge> merges) {
-        this.merges = merges;
-        updateMapping();
-        constructTree();
     }
 
     /**

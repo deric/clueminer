@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.fixtures.clustering;
 
 import java.io.IOException;
@@ -28,6 +44,7 @@ public class FakeDatasets {
     private static Dataset<? extends Instance> ds577;
     private static Dataset<? extends Instance> blobs;
     private static Dataset<? extends Instance> gaussians1;
+    private static Dataset<? extends Instance> lsun;
     private static final CommonFixture fixture = new CommonFixture();
 
     public static Dataset<? extends Instance> schoolData() {
@@ -177,5 +194,19 @@ public class FakeDatasets {
             }
         }
         return gaussians1;
+    }
+
+    public static Dataset<? extends Instance> lsun() {
+        if (lsun == null) {
+            lsun = new ArrayDataset(400, 2);
+            lsun.setName("lsun");
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(fixture.lsun(), lsun, 2);
+            } catch (IOException | ParserError ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return lsun;
     }
 }

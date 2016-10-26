@@ -229,13 +229,6 @@ public interface HierarchicalResult<E extends Instance, C extends Cluster<E>> ex
     List<Merge> getMerges();
 
     /**
-     * Use e.g. DendrogramBuilder to generate merge list
-     *
-     * @param merges
-     */
-    void setMerges(List<Merge> merges);
-
-    /**
      * Return ID of cluster to which was item at given position in input dataset
      * assigned. In case that assignment to clusters is unknown, all items will
      * be in one cluster (cluster 0)

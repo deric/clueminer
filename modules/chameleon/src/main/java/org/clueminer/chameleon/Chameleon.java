@@ -170,7 +170,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      */
     public static final String NUM_FRONTS = "pareto_fronts";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Chameleon.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Chameleon.class);
 
     @Override
     public String getName() {
@@ -188,7 +188,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         AlgParams params = new AlgParams(pref);
         if (params.clusterColumns()) {
             // throw new RuntimeException("Chameleon cannot cluster attributes");
-            LOGGER.warn("Chameleon cannot cluster attributes");
+            LOG.warn("Chameleon cannot cluster attributes");
             return null;
         }
         int debug = pref.getInt("debug", 0);
@@ -209,6 +209,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         knn = GraphConvertorFactory.getInstance().getProvider(graphConv);
         knn.setDistanceMeasure(params.getDistanceMeasure());
         k = pref.getInt(K, -1);
+        LOG.debug("using k = {}", k);
         maxPartitionSize = pref.getInt(MAX_PARTITION);
 
         graphStorage = pref.get(GRAPH_STORAGE, "Adjacency list graph");
@@ -223,7 +224,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         StopWatch time = new StopWatch();
         knn.buildGraph(g, dataset, pref);
         time.endMeasure();
-        LOGGER.info("building graph took {} ms", time.formatMs());
+        LOG.info("building graph took {} ms", time.formatMs());
 
         //bisection = pref.get(BISECTION, "Kernighan-Lin");
         time.startMeasure();
@@ -239,7 +240,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         partitioningAlg.setBisection(bisectionAlg);
         ArrayList<LinkedList<Node>> partitioningResult = partitioningAlg.partition(maxPartitionSize, g, pref);
 
-        LOGGER.debug("num partitions {}", partitioningResult.size());
+        LOG.debug("num partitions {}", partitioningResult.size());
 
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
@@ -265,7 +266,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         HierarchicalResult result = m.getHierarchy(dataset, pref);
         result.setNoise(noise);
         time.endMeasure();
-        LOGGER.info("ch2 clustering (without graph construction) took {} ms", time.formatMs());
+        LOG.info("ch2 clustering (without graph construction) took {} ms", time.formatMs());
         pref.put(PropType.PERFORMANCE, "time", time.timeInSec());
         return result;
     }

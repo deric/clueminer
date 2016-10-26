@@ -17,6 +17,7 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.chameleon.similarity.ShatovskaSimilarity;
 import org.clueminer.chameleon.similarity.Standard;
 import org.clueminer.clustering.api.Cluster;
@@ -27,6 +28,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.adjacencyMatrix.AdjMatrixGraph;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -52,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public class KnnMergerTest<E extends Instance> {
 
     private KnnMerger merger;
-    private Logger LOG = LoggerFactory.getLogger(KnnMergerTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KnnMergerTest.class);
 
     @Test
     public void testUsArrest() {
@@ -167,6 +169,64 @@ public class KnnMergerTest<E extends Instance> {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+        }
+    }
+
+    @Test
+    public void testLsunFull() {
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.lsun();
+        Chameleon ch = new Chameleon();
+        Props props = new Props();
+        props.put("merger", "k-NN merger");
+        props.put("k-estim", "log10");
+        HierarchicalResult res = ch.hierarchy(dataset, props);
+        DendroTreeData tree = res.getTreeData();
+        assertEquals(dataset.size(), tree.getMapping().length);
+        Clustering<E, Cluster<E>> clust = res.getClustering();
+        LOG.info("res: {}", clust.fingerprint());
+    }
+
+    @Test
+    public void testLsun() {
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.lsun();
+        KNNGraphBuilder knn = new KNNGraphBuilder();
+        int k = 2;
+        int maxPartitionSize = 5;
+        Graph g = new AdjListGraph();
+        Props props = new Props();
+        Bisection bisection = new FiducciaMattheyses(20);
+        g.ensureCapacity(dataset.size());
+        g = knn.getNeighborGraph(dataset, g, k);
+
+        Partitioning partitioning = new RecursiveBisection(bisection);
+        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+
+        merger = new KnnMerger();
+        merger.setDistanceMeasure(EuclideanDistance.getInstance());
+        merger.setMergeEvaluation(new BBK1());
+        merger.initialize(partitioningResult, g, bisection, props);
+
+        Props pref = new Props();
+        HierarchicalResult result = merger.getHierarchy(dataset, pref);
+        Clustering<E, Cluster<E>> clust = result.getClustering();
+
+        int sum = 0;
+        for (Cluster c : clust) {
+            if (c != null) {
+                sum += c.size();
+            }
+        }
+        LOG.info("instances = " + sum);
+        // assertEquals(dataset.size(), clust.instancesCount());
+        DendroTreeData tree = result.getTreeData();
+        assertEquals(dataset.size(), tree.getMapping().length);
+        //LOG.debug("tree: ");
+        //tree.print();
+        Clustering<E, Cluster<E>> c = result.getClustering();
+        assertEquals(dataset.size(), c.instancesCount());
+        //we don't want empty clusters
+        for (Cluster<E> a : c) {
+            Assert.assertNotEquals(0, a.size());
         }
     }
 
