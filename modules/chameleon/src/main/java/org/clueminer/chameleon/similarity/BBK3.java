@@ -25,6 +25,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -33,11 +35,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeEvaluation.class)
 public class BBK3<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "BBK3";
+    public static final String NAME = "BBK3";
+    private static final Logger LOG = LoggerFactory.getLogger(BBK3.class);
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -62,18 +65,18 @@ public class BBK3<E extends Instance> extends AbstractSimilarity<E> implements M
                 * Math.pow(ics, interconnectivityPriority);
 
         if (Double.isNaN(val)) {
-            System.out.println("==== NaN !!!!");
-            System.out.println("gamma = " + gamma);
-            System.out.println("ics = " + ics);
-            System.out.println("cls = " + cls);
-            System.out.println("cnt = " + gps.getCnt(i, j));
-            System.out.println("ec1 = " + ec1);
-            System.out.println("ec2 = " + ec2);
-            System.out.println("ECL = " + gps.getECL(i, j));
-            System.out.println("ACL1 = " + x.getACL());
-            System.out.println("ACL2 = " + y.getACL());
-            System.out.println("a = " + a.size());
-            System.out.println("b = " + b.size());
+            LOG.debug("==== NaN !!!!");
+            LOG.debug("gamma = " + gamma);
+            LOG.debug("ics = " + ics);
+            LOG.debug("cls = " + cls);
+            LOG.debug("cnt = " + gps.getCnt(i, j));
+            LOG.debug("ec1 = " + ec1);
+            LOG.debug("ec2 = " + ec2);
+            LOG.debug("ECL = " + gps.getECL(i, j));
+            LOG.debug("ACL1 = " + x.getACL());
+            LOG.debug("ACL2 = " + y.getACL());
+            LOG.debug("a = " + a.size());
+            LOG.debug("b = " + b.size());
         }
 
         return val;

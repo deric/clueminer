@@ -37,21 +37,26 @@ import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.report.NanoBench;
 import org.clueminer.utils.Props;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author deric
  */
-public class KnnMergerTest {
+public class KnnMergerTest<E extends Instance> {
 
     private KnnMerger merger;
+    private Logger LOG = LoggerFactory.getLogger(KnnMergerTest.class);
 
     @Test
     public void testUsArrest() {
-        Dataset<? extends Instance> dataset = FakeDatasets.usArrestData();
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.usArrestData();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
         int maxPartitionSize = 20;
@@ -71,23 +76,25 @@ public class KnnMergerTest {
 
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
-        Clustering<Instance, Cluster<Instance>> clust = result.getClustering();
-        int i = 0;
+        Clustering<E, Cluster<E>> clust = result.getClustering();
+
         int sum = 0;
         for (Cluster c : clust) {
-            //System.out.println(i + ": " + c);
             if (c != null) {
                 sum += c.size();
             }
-            i++;
         }
-        System.out.println("instances = " + sum);
+        LOG.info("instances = " + sum);
         // assertEquals(dataset.size(), clust.instancesCount());
         DendroTreeData tree = result.getTreeData();
-        System.out.println("tree: ");
+        LOG.debug("tree: ");
         tree.print();
-        Clustering c = result.getClustering();
+        Clustering<E, Cluster<E>> c = result.getClustering();
         assertEquals(dataset.size(), c.instancesCount());
+        //we don't want empty clusters
+        for (Cluster<E> a : c) {
+            Assert.assertNotEquals(0, a.size());
+        }
     }
 
     @Test
@@ -113,8 +120,9 @@ public class KnnMergerTest {
         Props pref = new Props();
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
         DendroTreeData tree = result.getTreeData();
+        assertNotNull(tree);
         Clustering c = result.getClustering();
-        System.out.println("clusters: " + c.size());
+        LOG.info("clusters: {}", c.size());
         assertEquals(dataset.size(), c.instancesCount());
         //tree.print();
     }
@@ -127,7 +135,6 @@ public class KnnMergerTest {
         final int maxPartitionSize = 20;
         final Props props = new Props();
         final Bisection bisection = new FiducciaMattheyses(20);
-
 
         merger = new KnnMerger();
         merger.setDistanceMeasure(EuclideanDistance.getInstance());
@@ -144,8 +151,8 @@ public class KnnMergerTest {
                 Graph g = new AdjMatrixGraph();
                 g.ensureCapacity(dataset.size());
                 g = knn.getNeighborGraph(dataset, g, k);
-                        Partitioning partitioning = new RecursiveBisection(bisection);
-                        ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
+                Partitioning partitioning = new RecursiveBisection(bisection);
+                ArrayList<ArrayList<Node>> partitioningResult = partitioning.partition(maxPartitionSize, g, props);
                 merger.initialize(partitioningResult, g, bisection, props);
                 HierarchicalResult result = merger.getHierarchy(dataset, pref);
             }

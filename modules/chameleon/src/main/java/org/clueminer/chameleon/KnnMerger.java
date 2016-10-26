@@ -72,17 +72,16 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
-        LOGGER.info("original clusters {0} nodes {1}", clusters.size(), nodes.length);
+        LOGGER.debug("original clusters {} nodes {}", clusters.size(), nodes.length);
 
         if (nodes[nodes.length - 1] == null) {
-            System.out.println("no noisy tree node, adding " + noise.size());
+            LOGGER.debug("no noisy tree node, adding {}", noise.size());
             List<E> n = new ArrayList<>(noise.size());
             nodes[nodes.length - 1] = new DClusterLeaf(noise.size() + 10, n);
             nodes[nodes.length - 1].setHeight(0.0);
             nodes[nodes.length - 1].setLevel(0);
         }
         List<E> treeNoise = ((DClusterLeaf) nodes[nodes.length - 1]).getInstances();
-        System.out.println("noise in tree: " + treeNoise.size());
         //int k = 0;
         //int m = 0;
         //int numClusters = clusters.size();
@@ -103,7 +102,7 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             //m++;
         }
         if (nodes.length > clusters.size()) {
-            LOGGER.info("shrink from {0} -> {1}", nodes.length, clusters.size());
+            LOGGER.info("shrink from {} -> {}", nodes.length, clusters.size());
             DendroNode[] shrinkNodes = new DendroNode[clusters.size()];
             System.arraycopy(nodes, 0, shrinkNodes, 0, clusters.size());
             shrinkNodes[shrinkNodes.length - 1] = nodes[nodes.length - 1];
@@ -113,10 +112,13 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
         if (noise.isEmpty()) {
             LOGGER.info("noise empty, removin' treenode");
             nodes[nodes.length - 1] = null;
+        } else {
+            LOGGER.info("noise size: {}", noise.size());
         }
 
-        LOGGER.info("root: {0}", nodes[nodes.length - 2]);
-        LOGGER.info("cluster size: {0}", clusters.size());
+
+        LOGGER.info("root: {}", nodes[nodes.length - 2]);
+        LOGGER.info("cluster size: {}", clusters.size());
 
     }
 

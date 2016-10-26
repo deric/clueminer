@@ -61,11 +61,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboCutoffMethod.setSelectedItem("FirstJump");
         comboCutoff.setSelectedItem("SD index");
         comboGraphStorage.setSelectedItem(AdjListGraph.NAME);
-        comboSimilarity.setSelectedItem(BBK1.name);
+        comboSimilarity.setSelectedItem(BBK1.NAME);
         comboMerger.setSelectedItem(PairMerger.name);
         comboMoObjective.setEnabled(false);
         combo3rdSort.setEnabled(false);
-        combo3rdSort.setSelectedItem(BBK1.name);
+        combo3rdSort.setSelectedItem(BBK1.NAME);
         comboGraphConvertor.setSelectedItem(KnnInitializator.NAME);
         comboKnn.setSelectedItem("linear k-nn");
     }

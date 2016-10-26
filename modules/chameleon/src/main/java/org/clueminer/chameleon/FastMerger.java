@@ -49,7 +49,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     private static final String NAME = "fast merger";
     protected KDTree<GraphCluster<E>> kdTree;
-    private static final Logger LOGGER = LoggerFactory.getLogger(FastMerger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FastMerger.class);
 
     @Override
     public String getName() {
@@ -74,7 +74,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
 
     @Override
     public void prefilter(Clustering<E, GraphCluster<E>> clusters, ArrayList<E> noise, Props pref) {
-        System.out.println("input clusters: " + clusters.size());
+        LOG.info("input clusters: {}", clusters.size());
         //build kd-tree for fast search
         kdTree = new KDTree<>(clusters.get(0).attributeCount());
         List<GraphCluster<E>> tiny = new LinkedList<>();
@@ -91,7 +91,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
             }
         }
         //get rid of tiny clusters
-        LOGGER.info("found {0} tiny cluster", tiny.size());
+        LOG.info("found {} tiny cluster", tiny.size());
         GraphCluster<E> closest;
         for (GraphCluster<E> t : tiny) {
             try {
@@ -100,7 +100,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //TODO: check constrains
                 //merge with closest cluster
                 closest = nn.get(0);
-                LOGGER.info("t = {0} nn = {1}", t.getClusterId(), closest.getClusterId());
+                LOG.info("t = {} nn = {}", t.getClusterId(), closest.getClusterId());
                 //blacklist.add(t.getClusterId());
                 //blacklist.add(nn.get(0).getClusterId());
                 //TODO: this is quite inefficient, though it reduces number of compared similarities
@@ -111,7 +111,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 Exceptions.printStackTrace(ex);
             }
         }
-        LOGGER.info("after filtering: {0}, noise: {1}", clusters.size(), noise.size());
+        LOG.info("after filtering: {}, noise: {}", clusters.size(), noise.size());
         renumberClusters(clusters, noise);
     }
 

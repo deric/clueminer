@@ -129,7 +129,7 @@ public class ChameleonTest {
         pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, BBK1.name);
+        pref.put(Chameleon.SIM_MEASURE, BBK1.NAME);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();

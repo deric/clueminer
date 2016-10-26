@@ -33,11 +33,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeEvaluation.class)
 public class BBK1<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "BBK1";
+    public static final String NAME = "BBK1";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

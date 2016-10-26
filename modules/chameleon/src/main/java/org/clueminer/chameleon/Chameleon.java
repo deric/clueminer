@@ -188,7 +188,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         AlgParams params = new AlgParams(pref);
         if (params.clusterColumns()) {
             // throw new RuntimeException("Chameleon cannot cluster attributes");
-            System.out.println("Chameleon cannot cluster attributes");
+            LOGGER.warn("Chameleon cannot cluster attributes");
             return null;
         }
         int debug = pref.getInt("debug", 0);
@@ -252,7 +252,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (!m.isMultiObjective()) {
-            similarityMeasure = pref.get(SIM_MEASURE, BBK1.name);
+            similarityMeasure = pref.get(SIM_MEASURE, BBK1.NAME);
             MergeEvaluation me = mef.getProvider(similarityMeasure);
             ((PairMerger) m).setMergeEvaluation(me);
         } else {
