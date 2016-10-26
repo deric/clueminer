@@ -92,11 +92,6 @@
             <artifactId>org-openide-util-lookup</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${clueminer.slf4j.version}</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
             <version>${project.version}</version>
@@ -131,11 +126,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${clueminer.slf4j.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.rosuda.REngine</groupId>
             <artifactId>Rserve</artifactId>
             <version>1.8.1</version>
@@ -144,6 +134,11 @@
             <groupId>com.github.lucarosellini.rJava</groupId>
             <artifactId>JRIEngine</artifactId>
             <version>0.9-7</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core-lib-wrapper</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>
