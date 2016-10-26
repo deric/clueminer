@@ -19,6 +19,7 @@ package org.clueminer.chameleon.ui;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
+import org.clueminer.chameleon.ChameleonConfig;
 import org.clueminer.chameleon.PairMerger;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.api.AlgParams;
@@ -153,6 +154,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboEdge = new javax.swing.JComboBox<>();
         lbSharedNN = new javax.swing.JLabel();
         tfSharedNN = new javax.swing.JTextField();
+        cbKestim = new javax.swing.JComboBox<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbDistance, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.text")); // NOI18N
         lbDistance.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.toolTipText")); // NOI18N
@@ -476,6 +478,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         tfSharedNN.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfSharedNN.text")); // NOI18N
 
+        cbKestim.setModel(new DefaultComboBoxModel(initKEstim()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -582,12 +586,14 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(sliderK, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(sliderMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(137, 137, 137)
+                        .addGap(54, 54, 54)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(tfK, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(chkBoxAutoK))
+                                .addComponent(chkBoxAutoK)
+                                .addGap(18, 18, 18)
+                                .addComponent(cbKestim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(tfMaxPSize, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
@@ -603,8 +609,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                     .addComponent(tfK, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sliderK, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(chkBoxAutoK)
-                        .addGap(2, 2, 2)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(chkBoxAutoK)
+                            .addComponent(cbKestim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(1, 1, 1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -705,9 +713,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         if (chkBoxAutoK.isSelected()) {
             sliderK.setEnabled(false);
             tfK.setEnabled(false);
+            cbKestim.setEnabled(true);
         } else {
             sliderK.setEnabled(true);
             tfK.setEnabled(true);
+            cbKestim.setEnabled(false);
         }
     }//GEN-LAST:event_chkBoxAutoKActionPerformed
 
@@ -817,6 +827,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.ButtonGroup buttonGroup5;
     private javax.swing.JComboBox cbCoarsening;
+    private javax.swing.JComboBox<String> cbKestim;
     private javax.swing.JComboBox cbObjective;
     private javax.swing.JComboBox cbRefinement;
     private javax.swing.ButtonGroup chckHmetisType;
@@ -914,6 +925,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         if (!chkBoxAutoK.isSelected()) {
             params.putInt(Chameleon.K, sliderK.getValue());
+        }else{
+            params.put(ChameleonConfig.K_ESTIMATOR, cbKestim.getSelectedItem());
         }
         if (!chkBoxAutoMaxPSize.isSelected()) {
             params.putInt(Chameleon.MAX_PARTITION, sliderMaxPSize.getValue());
@@ -1015,5 +1028,9 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
     private Object[] initKnn() {
         return KnnFactory.getInstance().getProvidersArray();
+    }
+
+    private Object[] initKEstim() {
+        return ChameleonConfig.METHODS;
     }
 }

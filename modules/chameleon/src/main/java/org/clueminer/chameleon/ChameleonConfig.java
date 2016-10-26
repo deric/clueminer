@@ -36,6 +36,8 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
 
     public static String K_ESTIMATOR = "k-estim";
 
+    public static String[] METHODS = new String[]{"ln", "log2", "log10", "cln", "fln", "4ln", "8ln", "10ln"};
+
     private ChameleonConfig() {
 
     }
