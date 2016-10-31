@@ -52,11 +52,11 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
     protected MergeEvaluation evaluation;
     private static Logger LOG = LoggerFactory.getLogger(PairMerger.class);
 
-    public static final String name = "pair merger";
+    public static final String NAME = "pair merger";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**

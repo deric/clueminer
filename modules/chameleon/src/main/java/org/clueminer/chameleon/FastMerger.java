@@ -126,7 +126,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
      */
     @Override
     protected int buildQueue(int numClusters, Props pref) {
-        int k = pref.getInt("k", 5);
+        int k = getK(pref);
         int capacity = k * numClusters;
         pq = initQueue(capacity);
         double sim;
@@ -285,6 +285,16 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     }
 
     /**
+     * Using only k would cause problems on some datasets, e.g. 3-spiral
+     *
+     * @param pref
+     * @return
+     */
+    private int getK(Props pref) {
+        return 2 * pref.getInt("k", 15);
+    }
+
+    /**
      * For each cluster we would like to find at least one nearest neighbor, that
      * wasn't merged yet.
      *
@@ -294,7 +304,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     @Override
     protected void addIntoQueue(GraphCluster<E> cluster, Props pref) {
         try {
-            int k = pref.getInt("k", 15);
+            int k = getK(pref);
             List<GraphCluster<E>> nn;
             int added = 0;
             do {

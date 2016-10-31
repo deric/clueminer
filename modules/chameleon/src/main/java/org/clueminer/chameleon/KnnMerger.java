@@ -37,6 +37,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Faster merger that does not compute full similarity matrix. Only k nearest clusters
+ * are considered as candidates for merging.
  *
  * @author deric
  * @param <E>

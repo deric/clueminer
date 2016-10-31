@@ -20,7 +20,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import org.clueminer.chameleon.Chameleon;
 import org.clueminer.chameleon.ChameleonConfig;
-import org.clueminer.chameleon.PairMerger;
+import org.clueminer.chameleon.KnnMerger;
 import org.clueminer.chameleon.similarity.BBK1;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -63,7 +63,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboCutoff.setSelectedItem("SD index");
         comboGraphStorage.setSelectedItem(AdjListGraph.NAME);
         comboSimilarity.setSelectedItem(BBK1.NAME);
-        comboMerger.setSelectedItem(PairMerger.name);
+        comboMerger.setSelectedItem(KnnMerger.NAME);
         comboMoObjective.setEnabled(false);
         combo3rdSort.setEnabled(false);
         combo3rdSort.setSelectedItem(BBK1.NAME);
