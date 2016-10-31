@@ -124,7 +124,6 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
 
         LOG.info("root: {}", nodes[nodes.length - 2]);
         LOG.info("cluster size: {}", clusters.size());
-
     }
 
     private void addToNoise(Cluster<E> noise, List<E> treeNoise, GraphCluster<E> cluster) {

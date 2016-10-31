@@ -305,7 +305,15 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 //check that some neighbors were found
                 if (added == 0) {
                     k = 2 * (k + 1);
-                    LOG.trace("failed to find neighbors for cluster {}, increasing k = {}", cluster.getClusterId(), k);
+                    /**
+                     * In case that k was set to low value, we might end up in a state
+                     * with incomplete binary tree. Setting k = c * ln(n) avoids such situation
+                     * in most/all cases.
+                     *
+                     * For the other cases we initiate a queue rebuild.
+                     */
+                    rebuildQueue(pref);
+                    LOG.debug("failed to find neighbors for cluster {}, increasing k = {}", cluster.getClusterId(), k);
                 }
             } while (added == 0 && k < kdTree.size());
             if (k > kdTree.size()) {
@@ -343,6 +351,32 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
     @Override
     public boolean isMultiObjective() {
         return false;
+    }
+
+    /**
+     * Queue rebuild due to low number of neighbors
+     *
+     * @param pref
+     */
+    private void rebuildQueue(Props pref) {
+        double sim;
+        GraphCluster a, b;
+        int l = 0;
+        for (int i = 0; i < clusters.size(); i++) {
+            if (!blacklist.contains(i)) {
+                a = clusters.get(i);
+                for (int j = 0; j < i; j++) {
+                    if (!blacklist.contains(j)) {
+                        b = clusters.get(j);
+                        sim = evaluation.score(a, b, pref);
+                        //any similarity value is valid in this context
+                        pq.add(new PairValue<GraphCluster<E>>(a, b, sim));
+                        l++;
+                    }
+                }
+            }
+        }
+        LOG.debug("computed {} pair similarities", l);
     }
 
 }
