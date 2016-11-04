@@ -26,8 +26,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
@@ -50,6 +48,8 @@ import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -78,7 +78,7 @@ import org.clueminer.utils.Props;
 public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String NAME = "HC";
-    private static final Logger LOGGER = Logger.getLogger(HC.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HC.class);
 
     @Param(name = AlgParams.LINKAGE,
            factory = "org.clueminer.clustering.api.factory.LinkageFactory",
@@ -128,7 +128,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     private HierarchicalResult hClust(Dataset<E> dataset, Matrix input, int n,
             Props pref, AlgParams params, HierarchicalResult result) {
-        LOGGER.log(Level.FINE, "{0} clustering: {1}", new Object[]{getName(), pref.toString()});
+        LOG.debug("{} clustering: {}", getName(), pref.toString());
         int items = triangleSize(n);
         //TODO: we might track clustering by estimated time (instead of counters)
         AbstractQueue<Element> pq = initQueue(items, pref);
@@ -137,7 +137,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
         if (params.clusterRows()) {
             similarityMatrix = AgglClustering.rowSimilarityMatrix(input, distanceFunction, pq);
         } else {
-            LOGGER.log(Level.INFO, "matrix columns: {0}", input.columnsCount());
+            LOG.info("matrix columns: {}", input.columnsCount());
             similarityMatrix = AgglClustering.columnSimilarityMatrix(input, distanceFunction, pq);
         }
         //whether to keep reference to proximity matrix (could be memory exhausting)

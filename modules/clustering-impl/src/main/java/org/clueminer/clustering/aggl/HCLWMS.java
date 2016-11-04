@@ -19,8 +19,6 @@ package org.clueminer.clustering.aggl;
 import java.util.AbstractQueue;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -34,6 +32,8 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hierarchical clustering - updating distances using Lance-Williams update
@@ -59,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> implements AgglomerativeClustering<E, C> {
 
     private final static String NAME = "HC-LW";
-    private static final Logger LOGGER = Logger.getLogger(HCLWMS.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(HCLWMS.class);
 
     @Override
     public String getName() {
@@ -118,7 +118,7 @@ public class HCLWMS<E extends Instance, C extends Cluster<E>> extends HC<E, C> i
                 assignments.put(curr.getRow(), left);
             }
         }
-        LOGGER.log(Level.INFO, "{0} pq size: {1}", new Object[]{getName(), pq.size()});
+        LOGGER.info("{} pq size: {}", getName(), pq.size());
         //last node is the root
         DendroTreeData treeData = new DynamicTreeData(node);
         return treeData;

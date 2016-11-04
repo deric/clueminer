@@ -18,8 +18,6 @@ package org.clueminer.clustering;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
@@ -43,6 +41,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Executor should be responsible of converting dataset into appropriate input
@@ -58,7 +58,7 @@ import org.clueminer.utils.Props;
  */
 public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> extends AbstractExecutor<E, C> implements Executor<E, C> {
 
-    private static final Logger logger = Logger.getLogger(ClusteringExecutorCached.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusteringExecutorCached.class);
     private Map<Dataset<E>, StdStorage<E>> storage;
     private OptimalTreeOrder treeOrder = new MOLO();
     private ColorGenerator cg;
@@ -74,10 +74,12 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     @Override
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         StdStorage store = getStorage(dataset);
-        logger.log(Level.FINER, "normalizing data {0}, logscale: {1}", new Object[]{params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false)});
+        LOG.info("normalizing data {}, logscale: {}",
+                params.get(AlgParams.STD, Scaler.NONE),
+                params.getBoolean(AlgParams.LOG, false));
         Dataset<E> norm = store.get(params.get(AlgParams.STD, Scaler.NONE), params.getBoolean(AlgParams.LOG, false));
         params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
-        logger.log(Level.FINER, "clustering {0}", params.toString());
+        LOG.info("clustering {}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         HierarchicalResult rowsResult = aggl.hierarchy(norm, params);
         //TODO: tree ordering might break assigning items to clusters
@@ -158,9 +160,9 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
             }
             if (needsConfiguration) {
                 config.configure(dataset, params);
-                logger.log(Level.INFO, "estimated parameters: {0} for {1}", new Object[]{params.toJson(), algorithm.getName()});
+                LOG.info("estimated parameters: {} for {}", params.toJson(), algorithm.getName());
             } else {
-                logger.info("skipping parameters estimation. all required parameters were specified");
+                LOG.info("skipping parameters estimation. all required parameters were specified");
             }
 
             clustering = algorithm.cluster(dataset, params);
@@ -179,9 +181,9 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
 
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
-        logger.log(Level.FINER, "cutting dendrogram with {0}", strategy.getName());
+        LOG.info("cutting dendrogram with {}", strategy.getName());
         double cut = result.findCutoff(strategy);
-        logger.log(Level.FINER, "found cutoff {0}, resulting clusters {1}", new Object[]{cut, result.getClustering().size()});
+        LOG.debug("found cutoff {}, resulting clusters {}", cut, result.getClustering().size());
     }
 
     /**
