@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.logging.Level;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.ColorGenerator;
@@ -214,7 +213,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private void startClustering() {
         C u, v, w;
         while (heap.size() > k) {
-            CURE.LOGGER.log(Level.FINEST, "heap size = {0}", heap.size());
+            CURE.LOG.debug("heap size = {}", heap.size());
             try {
                 //extract_min(Q)
                 u = heap.remove();
@@ -225,7 +224,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 }
                 heap.remove(v);
                 w = merge(u, v);
-                CURE.LOGGER.log(Level.FINEST, "merged {0} with {1}", new Object[]{u.getClusterId(), v.getClusterId()});
+                CURE.LOG.debug("merged {} with {}", u.getClusterId(), v.getClusterId());
 
                 deleteRep(u);
                 deleteRep(v);
@@ -239,7 +238,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 Exceptions.printStackTrace(ex);
             }
         }
-        CURE.LOGGER.log(Level.INFO, "finished, heap size = {0}, k = {1}", new Object[]{heap.size(), k});
+        CURE.LOG.info("finished, heap size = {}, k = {}", heap.size(), k);
     }
 
     private void updateHeap(C u, C v, C w) {

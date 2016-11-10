@@ -16,18 +16,15 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
-import java.util.logging.Logger;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.colors.RandomColorsGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.log.ClmLog;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -41,11 +38,6 @@ public class CURETest<E extends Instance, C extends CureCluster<E>> {
     @Before
     public void setUp() {
         subject = new CURE();
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-        ClmLog.setup(Logger.getLogger(CURE.class.getName()));
     }
 
     private void printClustering(Clustering<E, C> clustering) {

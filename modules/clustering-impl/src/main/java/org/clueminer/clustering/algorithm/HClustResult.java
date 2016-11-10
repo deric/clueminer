@@ -19,8 +19,6 @@ package org.clueminer.clustering.algorithm;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -45,6 +43,8 @@ import org.clueminer.hclust.DTreeNode;
 import org.clueminer.hclust.DynamicTreeData;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hierarchical clustering result containing information about tree structure
@@ -63,7 +63,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     private DendroTreeData treeData;
     private double cutoff = Double.NaN;
     private Dataset<E> dataset;
-    private static final Logger logger = Logger.getLogger(HClustResult.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HClustResult.class);
     private int numNodes = 0;
     private Clustering clustering = null;
     private CutoffStrategy cutoffStrategy;
@@ -237,7 +237,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
             if (clusters.size() > 0) {
                 mapping = assign;
             } else {
-                logger.log(Level.SEVERE, "failed to cutoff dendrogram, cut = {0}", cutoff);
+                LOG.info("failed to cutoff dendrogram, cut = {}", cutoff);
             }
         }
         //add input dataset to clustering lookup
@@ -461,7 +461,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
     @Override
     public double getMaxTreeHeight() {
         if (treeData == null) {
-            logger.log(Level.INFO, "constructing tree");
+            LOG.info("constructing tree");
             constructTree();
         }
         return treeData.getRoot().getHeight();
@@ -536,7 +536,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         if (merges == null) {
             throw new RuntimeException("merges empty!");
         }
-        logger.log(Level.INFO, "constructing tree, merge size:{0}", merges.size());
+        LOG.info("constructing tree, merge size:{}", merges.size());
         treeData = new DynamicTreeData();
 
         DendroNode[] nodes = new DendroNode[merges.size() + 1];
@@ -567,7 +567,7 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
 
         treeData.setRoot(current);
         treeData.setLeaves(nodes);
-        logger.log(Level.INFO, "max tree height: {0}", current.getHeight());
+        LOG.info("max tree height: {}", current.getHeight());
     }
 
     /**

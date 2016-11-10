@@ -19,8 +19,6 @@ package org.clueminer.clustering.algorithm.cure;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Algorithm;
@@ -38,6 +36,8 @@ import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * CURE - CLustering Using REpresentatives
@@ -108,7 +108,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     private int clusterCnt;
     protected DendroNode[] nodes;
 
-    static final Logger LOGGER = Logger.getLogger(CURE.class.getName());
+    static final Logger LOG = LoggerFactory.getLogger(CURE.class);
 
     public CURE() {
 
@@ -147,7 +147,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
             clusterPartition(dataset, clustering, outliers, props);
         }
 
-        LOGGER.log(Level.INFO, "left {0} outliers", outliers.size());
+        LOG.info("left {} outliers", outliers.size());
 
         if (!outliers.isEmpty()) {
             outliers.setName(Algorithm.OUTLIER_LABEL);
@@ -163,7 +163,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
     private void sampleData(Dataset<E> dataset, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
         int sampleSize = calculateSampleSize();
-        LOGGER.log(Level.INFO, "using sample size {0}", sampleSize);
+        LOG.info("using sample size {}", sampleSize);
         random = ClusterHelper.initSeed(props);
         Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
         Dataset<E> partition;
@@ -177,7 +177,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
                 partition.add(iter.next());
                 pointIndex++;
             }
-            LOGGER.log(Level.INFO, "partition {0} size = {1}", new Object[]{i, partition.size()});
+            LOG.info("partition {} size = {}", i, partition.size());
             clusterPartition(partition, clustering, outliers, props);
         }
 
@@ -261,7 +261,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      *                 cluster
      */
     private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CureCluster<E> outliers) {
-        LOGGER.log(Level.INFO, "cluster set with {0} clusters", clusterSet.size());
+        LOG.info("cluster set with {} clusters", clusterSet.size());
         C cluster;
         while (clusterSet.hasClusters()) {
             cluster = clusterSet.remove();
