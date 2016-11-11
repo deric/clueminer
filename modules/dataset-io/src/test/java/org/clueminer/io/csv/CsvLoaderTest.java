@@ -21,6 +21,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.fixtures.CommonFixture;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,15 +35,21 @@ public class CsvLoaderTest<E extends Instance> {
     private Dataset<E> dataset;
     private CsvLoader subject;
 
-    public CsvLoaderTest() {
+    @Before
+    public void setUp() {
         subject = new CsvLoader();
+    }
+
+    public CsvLoaderTest() {
+        dataset = new ArrayDataset(50, 5);
     }
 
     @Test
     public void testLoad_File_Dataset() throws Exception {
-        dataset = new ArrayDataset(102, 10);
-        subject.load(tf.zooCsv(), dataset);
-        assertEquals(102, dataset.size());
-        assertEquals(18, dataset.attributeCount());
+        subject.setHasHeader(true);
+        subject.setClassIndex(0);
+        subject.load(tf.usArrestsCsv(), dataset);
+        assertEquals(50, dataset.size());
+        assertEquals(4, dataset.attributeCount());
     }
 }
