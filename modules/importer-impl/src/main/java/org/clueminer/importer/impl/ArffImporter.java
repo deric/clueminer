@@ -29,7 +29,7 @@ import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.io.AttrHolder;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;

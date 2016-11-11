@@ -1,6 +1,6 @@
 package org.clueminer.gnuplot;
 
-import org.clueminer.csv.CSVWriter;
+import org.clueminer.io.csv.CSVWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

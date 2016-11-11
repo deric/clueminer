@@ -16,13 +16,14 @@
  */
 package org.clueminer.io;
 
+import org.clueminer.io.arff.ARFFHandler;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import org.clueminer.exception.ParserError;
 import org.clueminer.utils.DataFileInfo;
 import org.clueminer.utils.DatasetSniffer;
-import static org.clueminer.io.ARFFHandler.RELATION;
+import static org.clueminer.io.arff.ARFFHandler.RELATION;
 
 /**
  * A set of heuristics to detect most common file types, right now it's not very

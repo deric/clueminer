@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.io;
+package org.clueminer.io.arff;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.exception.ParserError;
+import org.clueminer.io.AttrHolder;
+import org.clueminer.io.LineIterator;
 import org.clueminer.utils.DatasetLoader;
 
 /**

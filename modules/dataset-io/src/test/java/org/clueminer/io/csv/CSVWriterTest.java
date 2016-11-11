@@ -1,4 +1,4 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
 /**
  * Copyright 2005 Bytecode Pty Ltd.
@@ -15,6 +15,7 @@ package org.clueminer.csv;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+import org.clueminer.io.csv.CSVWriter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;

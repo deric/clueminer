@@ -1,5 +1,6 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
+import org.clueminer.io.csv.CSVWriter;
 import java.io.IOException;
 import java.io.Writer;
 

@@ -1,5 +1,8 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
+import org.clueminer.io.csv.CSVWriter;
+import org.clueminer.io.csv.CSVParser;
+import org.clueminer.io.csv.CSVReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

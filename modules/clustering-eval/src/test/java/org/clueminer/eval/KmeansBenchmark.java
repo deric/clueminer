@@ -1,6 +1,6 @@
 package org.clueminer.eval;
 
-import org.clueminer.csv.CSVWriter;
+import org.clueminer.io.csv.CSVWriter;
 import com.panayotis.gnuplot.style.ColorPalette;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -22,8 +22,8 @@ import org.clueminer.dataset.benchmark.DatasetFixture;
 import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.gnuplot.PointTypeIterator;
-import org.clueminer.io.ARFFHandler;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.io.arff.ARFFHandler;
+import org.clueminer.io.csv.CsvLoader;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.utils.DatasetWriter;
 import org.clueminer.utils.FileUtils;

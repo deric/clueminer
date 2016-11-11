@@ -12,7 +12,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -1,4 +1,4 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
 /**
  * Created by IntelliJ IDEA.
@@ -6,6 +6,7 @@ package org.clueminer.csv;
  * Date: Oct 7, 2009
  * Time: 9:56:48 PM
  */
+import org.clueminer.io.csv.CSVParser;
 import java.io.IOException;
 import static org.junit.Assert.*;
 import org.junit.Before;

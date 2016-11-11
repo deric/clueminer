@@ -1,4 +1,4 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

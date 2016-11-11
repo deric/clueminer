@@ -31,7 +31,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
-import org.clueminer.csv.CSVWriter;
+import org.clueminer.io.csv.CSVWriter;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionMO;
 import org.clueminer.gnuplot.GnuplotHelper;

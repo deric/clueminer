@@ -78,9 +78,9 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.api</publicPackage>
+                        <publicPackage>org.clueminer.arff</publicPackage>
                         <publicPackage>org.clueminer.csv</publicPackage>
-                        <publicPackage>org.clueminer.io</publicPackage>
-                        <publicPackage>org.clueminer.io.db</publicPackage>
+                        <publicPackage>org.clueminer.io.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

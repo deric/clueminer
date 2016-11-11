@@ -1,5 +1,6 @@
 package org.clueminer.io;
 
+import org.clueminer.io.arff.ARFFHandler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.dataset.api.Attribute;

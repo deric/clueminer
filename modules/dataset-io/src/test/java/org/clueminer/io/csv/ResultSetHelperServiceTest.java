@@ -1,4 +1,4 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
 /**
  * Copyright 2005 Bytecode Pty Ltd.
@@ -15,6 +15,7 @@ package org.clueminer.csv;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.clueminer.io.csv.ResultSetHelperService;
 import java.io.IOException;
 import java.sql.*;
 import java.text.SimpleDateFormat;

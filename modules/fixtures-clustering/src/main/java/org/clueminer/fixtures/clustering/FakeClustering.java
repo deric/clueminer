@@ -34,7 +34,7 @@ import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.fixtures.ClustFixture;
 import org.clueminer.fixtures.MLearnFixture;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.io.csv.CsvLoader;
 import org.openide.util.Exceptions;
 
 /**

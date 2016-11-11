@@ -32,7 +32,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.TimeseriesDataset;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.io.csv.CsvLoader;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;

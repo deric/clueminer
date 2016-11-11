@@ -24,7 +24,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.io.ARFFWriter;
+import org.clueminer.io.arff.ARFFWriter;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 

@@ -1,5 +1,7 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
+import org.clueminer.io.csv.CSVReader;
+import org.clueminer.io.csv.CSVIterator;
 import java.io.IOException;
 import static org.junit.Assert.*;
 import org.junit.Before;

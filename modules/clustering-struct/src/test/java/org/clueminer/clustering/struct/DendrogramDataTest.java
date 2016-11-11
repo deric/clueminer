@@ -27,7 +27,7 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

@@ -1,5 +1,6 @@
-package org.clueminer.csv;
+package org.clueminer.io.csv;
 
+import org.clueminer.io.csv.ResultSetHelperService;
 import java.math.BigDecimal;
 import java.sql.*;
 import static java.sql.Types.*;

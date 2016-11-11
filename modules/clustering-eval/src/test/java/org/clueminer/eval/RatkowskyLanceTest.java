@@ -30,7 +30,7 @@ import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.openide.util.Exceptions;

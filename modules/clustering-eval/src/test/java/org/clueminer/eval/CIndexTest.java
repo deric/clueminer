@@ -36,7 +36,7 @@ import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.io.FileHandler;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;

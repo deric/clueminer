@@ -7,7 +7,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.fixtures.TimeseriesFixture;
-import org.clueminer.io.CsvLoader;
+import org.clueminer.io.csv.CsvLoader;
 import org.clueminer.io.FileHandler;
 import org.junit.After;
 import org.junit.AfterClass;

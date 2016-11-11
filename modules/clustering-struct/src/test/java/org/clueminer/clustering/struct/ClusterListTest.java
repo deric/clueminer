@@ -28,7 +28,7 @@ import org.clueminer.dataset.impl.ArrayDataset;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.io.ARFFHandler;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;

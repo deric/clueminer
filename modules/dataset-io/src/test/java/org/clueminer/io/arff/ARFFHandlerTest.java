@@ -14,8 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.io;
+package org.clueminer.io.arff;
 
+import org.clueminer.io.arff.ARFFHandler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.BioFixture;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.io.AttrHolder;
+import org.clueminer.io.LineIterator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
