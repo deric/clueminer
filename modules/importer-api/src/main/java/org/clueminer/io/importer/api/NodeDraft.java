@@ -16,40 +16,15 @@
  */
 package org.clueminer.io.importer.api;
 
-import org.clueminer.io.db.SQLDriver;
-
 /**
+ * A graph node draft.
  *
- * @author Tomas Barton
+ * @author deric
  */
-public interface Database {
+public interface NodeDraft extends InstanceDraft {
 
-    String getName();
+    void setLabel(String label);
 
-    SQLDriver getSQLDriver();
-
-    String getHost();
-
-    int getPort();
-
-    String getUsername();
-
-    String getPasswd();
-
-    String getDBName();
-
-    void setName(String name);
-
-    void setSQLDriver(SQLDriver driver);
-
-    void setHost(String host);
-
-    void setPort(int port);
-
-    void setUsername(String username);
-
-    void setPasswd(String passwd);
-
-    void setDBName(String dbName);
+    void setValue(String key, Object value);
 
 }

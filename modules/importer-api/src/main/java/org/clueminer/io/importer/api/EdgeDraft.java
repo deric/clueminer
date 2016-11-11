@@ -16,40 +16,24 @@
  */
 package org.clueminer.io.importer.api;
 
-import org.clueminer.io.db.SQLDriver;
+import org.clueminer.graph.api.EdgeType;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
-public interface Database {
+public interface EdgeDraft {
 
-    String getName();
+    void setSource(NodeDraft node);
 
-    SQLDriver getSQLDriver();
+    void setTarget(NodeDraft node);
 
-    String getHost();
+    void setWeight(double weight);
 
-    int getPort();
+    void setLabel(String label);
 
-    String getUsername();
+    void setDirection(EdgeType type);
 
-    String getPasswd();
-
-    String getDBName();
-
-    void setName(String name);
-
-    void setSQLDriver(SQLDriver driver);
-
-    void setHost(String host);
-
-    void setPort(int port);
-
-    void setUsername(String username);
-
-    void setPasswd(String passwd);
-
-    void setDBName(String dbName);
+    void setValue(String key, Object value);
 
 }

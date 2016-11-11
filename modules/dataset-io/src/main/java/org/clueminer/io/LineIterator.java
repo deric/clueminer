@@ -113,7 +113,7 @@ public class LineIterator implements Iterable<String>, Iterator<String>, Closeab
                 stream = new GZIPInputStream(stream);
             }
             return stream;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
