@@ -24,14 +24,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.clueminer.io.csv.CSVReader;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.utils.DatasetLoader;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parses CSV into Dataset structure.
@@ -52,11 +51,11 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
     private Dataset<E> dataset;
     private String nameJoinChar = " ";
     private String defaultDataType = "NUMERICAL";
-    private static final Logger logger = Logger.getLogger(CsvLoader.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CsvLoader.class);
 
     @Override
     public boolean load(File file, Dataset<E> output) throws FileNotFoundException {
-        logger.log(Level.INFO, "loading file {0}", file.getName());
+        LOG.info("loading file {}", file.getName());
         setDataset(output);
         try {
             CSVReader reader = new CSVReader(new FileReader(file), separator, quotechar);
@@ -126,7 +125,7 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
             if (num == 0 && dataset.attributeCount() == 0) {
                 //detect types from first line
                 createAttributes(arr, false);
-                logger.log(Level.WARNING, "automatic attribute detection. line size: {0}", arr.length);
+                LOG.warn("automatic attribute detection. line size: {}", arr.length);
             }
             if (nameAttr.size() > 0) {
                 name = new StringBuilder();
@@ -165,7 +164,7 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
                             try {
                                 val = Double.parseDouble(arr[i]);
                             } catch (NumberFormatException e) {
-                                logger.log(Level.WARNING, "Number format exception, line {0}, attr {1}: {2}", new Object[]{num, i, e.getMessage()});
+                                LOG.warn("Number format exception, line {}, attr {}: {}", num, i, e.getMessage());
                                 val = Double.NaN;
                             }
                             values[i - skip] = val;

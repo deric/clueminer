@@ -16,7 +16,6 @@
  */
 package org.clueminer.io.arff;
 
-import org.clueminer.io.arff.ARFFHandler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
