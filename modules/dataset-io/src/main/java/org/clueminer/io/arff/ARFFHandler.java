@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.dataset.api.Dataset;
@@ -30,6 +28,8 @@ import org.clueminer.exception.ParserError;
 import org.clueminer.io.AttrHolder;
 import org.clueminer.io.LineIterator;
 import org.clueminer.utils.DatasetLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides method to load data from ARFF formatted files.
@@ -73,7 +73,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
      */
     public static final Pattern attrDef = Pattern.compile("^@attribute(.*)", Pattern.CASE_INSENSITIVE);
 
-    private static final Logger LOG = Logger.getLogger(ARFFHandler.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ARFFHandler.class);
 
     /**
      * Most common values of separators in data (comma is the default)
@@ -156,11 +156,11 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                 String[] arr = line.split(separator);
                 //magic for separator detection
                 if (arr.length == 1) {
-                    LOG.log(Level.INFO, "failed to split line (using separator ''{0}''): {1}", new Object[]{separator, line});
+                    LOG.info("failed to split line (using separator ''{}''): {}", separator, line);
                     for (String s : SEPARATORS) {
                         arr = line.split(s);
                         if (arr.length > 1) {
-                            LOG.log(Level.INFO, "setting separator to ''{0}''", s);
+                            LOG.info("setting separator to ''{}''", s);
                             separator = s;
                             break;
                         }
@@ -192,7 +192,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
                                 setValue(values, idx, val, line);
                             } catch (NumberFormatException e) {
                                 if (skipColumnsWithNaNs) {
-                                    LOG.log(Level.INFO, "skipping column {0} because can't be parsed as number {1}: {2}", new Object[]{i, arr[i], e.getMessage()});
+                                    LOG.info("skipping column {} because can't be parsed as number {}: {}", i, arr[i], e.getMessage());
                                     skippedIndexes.add(i);
                                     skipSize++;
                                     skip++;
@@ -268,7 +268,7 @@ public class ARFFHandler<E extends Instance> implements DatasetLoader<E> {
         try {
             attrParse(line);
         } catch (ParserError e) {
-            LOG.warning(e.getMessage());
+            LOG.warn(e.getMessage());
             return false;
         }
         return true;

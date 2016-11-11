@@ -19,8 +19,7 @@ package org.clueminer.io.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -33,7 +32,7 @@ public class SQLiteDriver implements SQLDriver {
             // load the sqlite-JDBC driver using the current class loader
             Class.forName("org.sqlite.JDBC");
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(SQLiteDriver.class.getName()).log(Level.SEVERE, null, ex);
+            LoggerFactory.getLogger(SQLiteDriver.class).warn("failed to load SQLite driver", ex);
         }
     }
 
