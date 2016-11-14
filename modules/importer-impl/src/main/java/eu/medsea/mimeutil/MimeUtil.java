@@ -1,407 +1,555 @@
+/*
+ * Copyright 2007-2009 Medsea Business Solutions S.L.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.medsea.mimeutil;
 
+import eu.medsea.mimeutil.detector.MimeDetector;
 import java.io.File;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
+import java.net.URL;
 import java.nio.ByteOrder;
 import java.util.Collection;
-
-import eu.medsea.mimeutil.detector.DetectedMimeType;
-import eu.medsea.mimeutil.detector.DetectedMimeTypeSet;
-import eu.medsea.mimeutil.detector.MimeTypeDetectorRegistry;
+import java.util.Set;
 
 /**
- * Central utility class for mime-type detection and mime-type handling
- * (e.g. in web servers, browsers and the like).
+ * <p>
+ * NOTE: Since version 2.1 this class delegates ALL calls to a static instance of the new MimeUtil2 implementation.
  *
- * @author Steven McArdle
- * @author marco schulze - marco at nightlabs dot de
+ * @see eu.medsea.mimeutil.MimeUtil2
+ * </p>
+ * <p>
+ * The <code>MimeUtil</code> utility is a utility class that allows applications to detect, work with and manipulate MIME types.
+ * </p>
+ * <p>
+ * A MIME or "Multipurpose Internet Mail Extension" type is an Internet standard that is important outside of just e-mail use.
+ * MIME is used extensively in other communications protocols such as HTTP for web communications.
+ * IANA "Internet Assigned Numbers Authority" is responsible for the standardisation and publication of MIME types. Basically any
+ * resource on any computer that can be located via a URI can be assigned a mime type. So for instance, JPEG images have a MIME type
+ * of image/jpg. Some resources can have multiple MIME types associated with them such as files with an XML extension have the MIME types
+ * text/xml and application/xml and even specialised versions of xml such as image/svg+xml for SVG image files.
+ * </p>
+ * <p>
+ * To do this <code>MimeUtil</code> uses registered <code>MimeDetector</code>(s) that are delegated to in sequence to actually
+ * perform the detection. There a several <code>MimeDetector</code> implementations that come with the utility and
+ * you can register and unregister them to perform detection based on file extensions, file globing and magic number detection.<br/>
+ * Their is also a fourth MimeDetector that is registered by default that detects text files and encodings. Unlike the other
+ * MimeDetector(s) or any MimeDetector(s) you may choose to implement, the TextMimeDetector cannot be registered or
+ * unregistered by your code. It is advisable that you read the java doc for the TextMimeDetector as it can be modified in
+ * several ways to make it perform better and or detect more specific types.<br/>
+ *
+ * Please refer to the java doc for each of these <code>MimeDetector</code>(s) for a description of how they
+ * actually perform their particular detection process.
+ * </p>
+ * <p>
+ * It is important to note that MIME matching is not an exact science, meaning
+ * that a positive match does not guarantee that the returned MIME type is actually correct.
+ * It is a best guess method of matching and the matched MIME types should be used with this in
+ * mind.
+ * </p>
+ * <p>
+ * New <code>MimeDetector</code>(s) can easily be created and registered with <code>MimeUtil</code> to extend it's
+ * functionality beyond these initial detection strategies by extending the <code>AbstractMimeDetector</code> class.
+ * To see how to implement your own <code>MimeDetector</code> take a look
+ * at the java doc and source code for the {@link ExtensionMimeDetector}, {@link MagicMimeMimeDetector} and
+ * {@link OpendesktopMimeDetector} classes. To register and unregister MimeDetector(s) use the
+ * [un]registerMimeDetector(...) methods of this class.
+ * </p>
+ * <p>
+ * The order that the <code>MimeDetector</code>(s) are executed is defined by the order each <code>MimeDetector</code> is registered.
+ * </p>
+ * <p>
+ * The resulting <code>Collection</code> of MIME types returned in response to a getMimeTypes(...) call is a normalised list of the
+ * accumulation of MIME types returned by each of the registered <code>MimeDetector</code>(s) that implement the specified getMimeTypesXXX(...)
+ * methods.
+ * </p>
+ * <p>
+ * All methods in this class that return a Collection object containing MimeType(s) actually return a {@link MimeTypeHashSet}
+ * that implements both the {@link Set} and {@link Collection} interfaces.
+ * </p>
+ *
+ * @author Steven McArdle.
+ *
  */
-public class MimeUtil
-{
-	/**
-	 * Mime type used to identify no match. In your application, you should normally handle it the same way as
-	 * {@link #OCTET_STREAM_MIME_TYPE}.
-	 *
-	 * @see #OCTET_STREAM_MIME_TYPE
-	 */
-	public static final String UNKNOWN_MIME_TYPE = "application/x-unknown-mime-type";
+public class MimeUtil {
 
-	/**
-	 * Mime type used to identify a generic octet-stream. This usually means the same as {@link #UNKNOWN_MIME_TYPE}.
-	 * @see #UNKNOWN_MIME_TYPE
-	 */
-	public static final String OCTET_STREAM_MIME_TYPE = "application/octet-stream";
+    private static MimeUtil2 mimeUtil = new MimeUtil2();
 
-	/**
-	 * Mime type used to identify a directory
-	 */
-	public static final String DIRECTORY_MIME_TYPE = "application/directory";
+    /**
+     * While MimeType(s) are being loaded by the MimeDetector(s) they should be
+     * added to the list of known MIME types. It is not mandatory for MimeDetector(s)
+     * to do so but they should where possible so that the list is as complete as possible.
+     * You can add other MIME types to this list using this method. You can then use the
+     * isMimeTypeKnown(...) utility methods to see if a MIME type you have
+     * matches one that the utility has already seen.
+     * <p>
+     * This can be used to limit the mime types you work with i.e. if its not been loaded
+     * then don't bother using it as it won't match. This is no guarantee that a match will not
+     * be found as it is possible that a particular MimeDetector does not have an initialisation
+     * phase that loads all of the MIME types it will match.
+     * </p>
+     * <p>
+     * For instance if you had a MIME type of abc/xyz and passed this to
+     * isMimeTypeKnown(...) it would return false unless you specifically add
+     * this to the know MIME types using this method.
+     * </p>
+     *
+     * @param mimeType
+     *                 a MIME type you want to add to the known MIME types.
+     *                 Duplicates are ignored.
+     * @see #isMimeTypeKnown(String mimeType)
+     * @see #isMimeTypeKnown(MimeType mimetType)
+     */
+    public static void addKnownMimeType(final MimeType mimeType) {
+        MimeUtil2.addKnownMimeType(mimeType);
+    }
 
-	/**
-	 * Get the native byte order of the OS on which you are running. It will be either big or little endian.
-	 * This is used internally for the magic mime rules mapping.
-	 *
-	 * @return ByteOrder
-	 */
-	public static ByteOrder getNativeOrder() {
-		return eu.medsea.mimeutil.magicfile.Helper.getNativeOrder();
-	}
+    /**
+     * While MimeType(s) are being loaded by the MimeDetector(s) they should be
+     * added to the list of known MIME types. It is not mandatory for MimeDetector(s)
+     * to do so but they should where possible so that the list is as complete as possible.
+     * You can add other MIME types to this list using this method. You can then use the
+     * isMimeTypeKnown(...) utility methods to see if a MIME type you have
+     * matches one that the utility has already seen.
+     * <p>
+     * This can be used to limit the mime types you work with i.e. if its not been loaded
+     * then don't bother using it as it won't match. This is no guarantee that a match will not
+     * be found as it is possible that a particular MimeDetector does not have an initialisation
+     * phase that loads all of the MIME types it will match.
+     * </p>
+     * <p>
+     * For instance if you had a MIME type of abc/xyz and passed this to
+     * isMimeTypeKnown(...) it would return false unless you specifically add
+     * this to the know MIME types using this method.
+     * </p>
+     *
+     * @param mimeType
+     *                 a MIME type you want to add to the known MIME types.
+     *                 Duplicates are ignored.
+     * @see #isMimeTypeKnown(String mimetype)
+     * @see #isMimeTypeKnown(MimeType mimetType)
+     */
+    public static void addKnownMimeType(final String mimeType) {
+        MimeUtil2.addKnownMimeType(mimeType);
+    }
 
-	/**
-	 * Get the mime type of the data in the specified {@link InputStream}. Therefore,
-	 * the <code>InputStream</code> must support mark and reset
-	 * (see {@link InputStream#markSupported()}). If it does not support mark and reset,
-	 * an {@link IllegalArgumentException} is thrown.
-	 *
-	 * @param the stream from which to read the data.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if the specified <code>InputStream</code> does not support mark and reset (see {@link InputStream#markSupported()}).
-	 * @deprecated Use {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} or {@link #detectMimeTypes(File, DetectionStrategy)} instead!
-	 */
-	public static String getMimeType(InputStream in)
-	throws MimeException
-	{
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				in, null, DetectionStrategy.ONLY_CONTENT
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Register a MimeDetector and add it to the MimeDetector registry.
+     * MimeDetector(s) are effectively singletons as they are keyed against their
+     * fully qualified class name.
+     *
+     * @param mimeDetector. This must be the fully qualified name of a concrete instance of an
+     *                      AbstractMimeDetector class.
+     *                      This enforces that all custom MimeDetector(s) extend the AbstractMimeDetector.
+     * @see MimeDetector
+     */
+    public static MimeDetector registerMimeDetector(final String mimeDetector) {
+        return mimeUtil.registerMimeDetector(mimeDetector);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get the extension part of a file name defined by the file parameter.
+     *
+     * @param file
+     *             a file object
+     * @return the file extension or null if it does not have one.
+     */
+    public static String getExtension(final File file) {
+        return MimeUtil2.getExtension(file);
+    }
 
-	/**
-	 * Get the mime type of a file using a path which can be relative to the JVM
-	 * or an absolute path. The path can point to a file or directory location and if
-	 * the path does not point to an actual file or directory the {@link #UNKNOWN_MIME_TYPE}is returned.
-	 * <p>
-	 * Their is an exception to this and that is if the <code>fname</code> parameter does NOT point to a real file or directory
-	 * and extFirst is <code>true</code> then a match against the file extension could be found and would be returned.
-	 * </p>
-	 * @param fname points to a file or directory
-	 * @param extFirst if <code>true</code> will first use file extension mapping and then then <code>magic.mime</code> rules.
-	 * If <code>false</code> it will try to match the other way around i.e. <code>magic.mime</code> rules and then file extension.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if while using the <code>magic.mime</code> rules there is a problem processing the file.
-	 * @deprecated Use {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} or {@link #detectMimeTypes(File, DetectionStrategy)} instead!
-	 */
-	public static String getMimeType(String fname, boolean extFirst) throws MimeException {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				(RandomAccessFile)null, fname, DetectionStrategy.ONLY_CONTENT
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Get the extension part of a file name defined by the fileName parameter.
+     * There may be no extension or it could be a single part extension such as
+     * .bat or a multi-part extension such as .tar.gz
+     *
+     * @param fileName
+     *                 a relative or absolute path to a file
+     * @return the file extension or null if it does not have one.
+     */
+    public static String getExtension(final String fileName) {
+        return MimeUtil2.getExtension(fileName);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get the first in a comma separated list of mime types. Useful when using
+     * extension mapping that can return multiple mime types separate by commas
+     * and you only want the first one.
+     *
+     * @param mimeTypes
+     *                  comma separated list of mime types
+     * @return first in a comma separated list of mime types or null if the mimeTypes string is null or empty
+     */
+    public static MimeType getFirstMimeType(final String mimeTypes) {
+        return MimeUtil2.getFirstMimeType(mimeTypes);
+    }
 
-	/**
-	 * This is a convenience method where the order of lookup is set to extension mapping first.
-	 * @see #getMimeType(String fname, boolean extFirst)
-	 * @deprecated Use {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} or {@link #detectMimeTypes(File, DetectionStrategy)} instead!
-	 */
-	public static String getMimeType(String fname) throws MimeException {
-		return eu.medsea.mimeutil.magicfile.Helper.getMimeType(fname);
-	}
+    /**
+     * Utility method to get the major or media part of a mime type
+     * i.e. the part before the '/' character
+     *
+     * @param mimeType
+     *                 you want to get the media part from
+     * @return media type of the mime type
+     * @throws MimeException
+     *                       if you pass in an invalid mime type structure
+     */
+    public static String getMediaType(final String mimeType)
+            throws MimeException {
+        return MimeUtil2.getMediaType(mimeType);
+    }
 
-	/**
-	 * Get the mime type of a file using a <code>File</code> object which can be relative to the JVM
-	 * or an absolute path. The path can point to a file or directory location and if
-	 * the path does not point to an actual file or directory the {@link #UNKNOWN_MIME_TYPE}is returned.
-	 * <p>
-	 * Their is an exception to this and that is if the <code>file</code> parameter does NOT point to a real file or directory
-	 * and extFirst is <code>true</code> then a match against the file extension could be found and would be returned.
-	 * </p>
-	 * @param file points to a file or directory
-	 * @param extFirst if <code>true</code> will first use file extension mapping and then then <code>magic.mime</code> rules.
-	 * If <code>false</code> it will try to match the other way around i.e. <code>magic.mime</code> rules and then file extension.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if while using the <code>magic.mime</code> rules there is a problem processing the file.
-	 * @deprecated Use {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} or {@link #detectMimeTypes(File, DetectionStrategy)} instead!
-	 */
-	public static String getMimeType(File file, boolean extFirst) throws MimeException {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				file, file.getName(), extFirst ? DetectionStrategy.FILE_NAME_AND_CONTENT : DetectionStrategy.CONTENT_AND_FILE_NAME
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     *
+     * Utility method to get the quality part of a mime type. If it does not
+     * exist then it is always set to q=1.0 unless it's a wild card. For the
+     * major component wild card the value is set to 0.01 For the minor
+     * component wild card the value is set to 0.02
+     * <p>
+     * Thanks to the Apache organisation for these settings.
+     *
+     * @param mimeType
+     *                 a valid mime type string with or without a valid q parameter
+     * @return the quality value of the mime type either calculated from the
+     *         rules above or the actual value defined.
+     * @throws MimeException
+     *                       this is thrown if the mime type pattern is invalid.
+     */
+    public static double getMimeQuality(final String mimeType) throws MimeException {
+        return MimeUtil2.getMimeQuality(mimeType);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get a registered MimeDetector by name.
+     *
+     * @param name the name of a registered MimeDetector. This is always the fully qualified
+     *             name of the class implementing the MimeDetector.
+     * @return
+     */
+    public static MimeDetector getMimeDetector(final String name) {
+        return mimeUtil.getMimeDetector(name);
+    }
 
-	/**
-	 * This is a convenience method where the order of lookup is set to extension mapping first.
-	 * @see #getMimeType(File, boolean)
-	 * @deprecated Use {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} or {@link #detectMimeTypes(File, DetectionStrategy)} instead!
-	 */
-	public static String getMimeType(File file) throws MimeException {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				file, file.getName(), DetectionStrategy.FILE_NAME_AND_CONTENT
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Get a Collection of possible MimeType(s) that this byte array could represent
+     * according to the registered MimeDetector(s). If no MimeType(s) are detected
+     * then the returned Collection will contain only the UNKNOWN_MIME_TYPE
+     *
+     * @param data
+     * @return all matching MimeType(s)
+     * @throws MimeException
+     */
+    public static final Collection getMimeTypes(final byte[] data) throws MimeException {
+        return mimeUtil.getMimeTypes(data);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get a Collection of possible MimeType(s) that this byte array could represent
+     * according to the registered MimeDetector(s). If no MimeType(s) are detected
+     * then the returned Collection will contain only the passed in unknownMimeType
+     *
+     * @param data
+     * @param unknownMimeType used if the registered MimeDetector(s) fail to match any MimeType(s)
+     * @return all matching MimeType(s)
+     * @throws MimeException
+     */
+    public static final Collection getMimeTypes(final byte[] data, final MimeType unknownMimeType) throws MimeException {
+        return mimeUtil.getMimeTypes(data, unknownMimeType);
+    }
 
+    /**
+     * Get all of the matching mime types for this file object.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the default UNKNOWN_MIME_TYPE
+     *
+     * @param file the File object to detect.
+     * @return collection of matching MimeType(s)
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final File file) throws MimeException {
+        return mimeUtil.getMimeTypes(file);
+    }
 
-	/**
-	 * Gives you the best match for your requirements.
-	 * <p>
-	 * You can pass the accept header from a browser request to this method along with a comma separated
-	 * list of possible mime types returned from say getExtensionMimeTypes(...) and the best match according
-	 * to the accept header will be returned.
-	 * </p>
-	 * <p>
-	 * The following is typical of what may be specified in an HTTP Accept header:
-	 * </p>
-	 * <p>
-	 * Accept: text/xml, application/xml, application/xhtml+xml, text/html;q=0.9, text/plain;q=0.8, video/x-mng, image/png, image/jpeg, image/gif;q=0.2, text/css, *&#47;*;q=0.1
-	 * </p>
-	 * <p>
-	 * The quality parameter (q) indicates how well the user agent handles the MIME type. A value of 1 indicates the MIME type is understood perfectly,
-	 * and a value of 0 indicates the MIME type isn't understood at all.
-	 * </p>
-	 * <p>
-	 * The reason the image/gif MIME type contains a quality parameter of 0.2, is to indicate that PNG & JPEG are preferred over GIF if the server is using
-	 * content negotiation to deliver either a PNG or a GIF to user agents. Similarly, the text/html quality parameter has been lowered a little, to ensure
-	 * that the XML MIME types are given in preference if content negotiation is being used to serve an XHTML document.
-	 * </p>
-	 * @param accept is a comma separated list of mime types you can accept including QoS parameters. Can pass the Accept: header directly.
-	 * @param canProvide is a comma separated list of mime types that can be provided such as that returned from a call to getExtensionMimeTypes(...)
-	 * @return the best matching mime type possible.
-	 */
-	public static String getPreferedMimeType(String accept, String canProvide) {
-		return eu.medsea.mimeutil.magicfile.Helper.getPreferedMimeType(accept, canProvide);
-	}
+    /**
+     * Get all of the matching mime types for this file object.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the unknownMimeType passed in.
+     *
+     * @param file             the File object to detect.
+     * @param unknownMimeType.
+     * @return the Collection of matching mime types. If the collection would be empty i.e. no matches then this will
+     *         contain the passed in parameter unknownMimeType
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final File file, final MimeType unknownMimeType) throws MimeException {
+        return mimeUtil.getMimeTypes(file, unknownMimeType);
+    }
 
-	/**
-	 *
-	 * Utility method to get the quality part of a mime type.
-	 * If it does not exist then it is always set to q=1.0 unless
-	 * it's a wild card.
-	 * For the major component wild card the value is set to 0.01
-	 * For the minor component wild card the value is set to 0.02
-	 * <p>
-	 * Thanks to the Apache organisation or these settings.
-	 *
-	 * @param mimeType a valid mime type string with or without a valid q parameter
-	 * @return the quality value of the mime type either calculated from the rules above or the actual value defined.
-	 * @throws MimeException this is thrown if the mime type pattern is invalid.
-	 */
-	public static double getMimeQuality(String mimeType) throws MimeException{
-		return eu.medsea.mimeutil.magicfile.Helper.getMimeQuality(mimeType);
-	}
+    /**
+     * Get all of the matching mime types for this InputStream object.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the default UNKNOWN_MIME_TYPE
+     *
+     * @param in InputStream to detect.
+     * @return
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final InputStream in) throws MimeException {
+        return mimeUtil.getMimeTypes(in);
+    }
 
-	/**
-	 * Get the mime type of a file using the <code>magic.mime</code> rules files.
-	 * @param f is a file object that points to a file or directory.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if the file cannot be parsed.
-	 * @deprecated Use {@link #detectMimeTypes(File, DetectionStrategy)} or {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} instead!
-	 */
-	public static String getMagicMimeType(File file) throws MimeException {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				file, (String)null, DetectionStrategy.ONLY_CONTENT
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Get all of the matching mime types for this InputStream object.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the unknownMimeType passed in.
+     *
+     * @param in               the InputStream object to detect.
+     * @param unknownMimeType.
+     * @return the Collection of matching mime types. If the collection would be empty i.e. no matches then this will
+     *         contain the passed in parameter unknownMimeType
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final InputStream in, final MimeType unknownMimeType) throws MimeException {
+        return mimeUtil.getMimeTypes(in, unknownMimeType);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get all of the matching mime types for this file name.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the default UNKNOWN_MIME_TYPE
+     *
+     * @param fileName the name of a file to detect.
+     * @return collection of matching MimeType(s)
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final String fileName) throws MimeException {
+        return mimeUtil.getMimeTypes(fileName);
+    }
 
-	/**
-	 * Utility method to get the major part of a mime type
-	 * i.e. the bit before the '/' character
-	 *
-	 * @param mimeType you want to get the major part from
-	 * @return major component of the mime type
-	 * @throws MimeException if you pass in an invalid mime type structure
-	 */
-	public static String getMajorComponent(String mimeType) throws MimeException {
-		return eu.medsea.mimeutil.magicfile.Helper.getMajorComponent(mimeType);
-	}
+    /**
+     * Get all of the matching mime types for this file name .
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the unknownMimeType passed in.
+     *
+     * @param fileName         the name of a file to detect.
+     * @param unknownMimeType.
+     * @return the Collection of matching mime types. If the collection would be empty i.e. no matches then this will
+     *         contain the passed in parameter unknownMimeType
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final String fileName, final MimeType unknownMimeType) throws MimeException {
+        return mimeUtil.getMimeTypes(fileName, unknownMimeType);
+    }
 
-	/**
-	 * Utility method to get the minor part of a mime type
-	 * i.e. the bit after the '/' character
-	 *
-	 * @param mimeType you want to get the minor part from
-	 * @return minor component of the mime type
-	 * @throws MimeException if you pass in an invalid mime type structure
-	 */
-	public static String getMinorComponent(String mimeType) throws MimeException{
-		return eu.medsea.mimeutil.magicfile.Helper.getMinorComponent(mimeType);
-	}
+    /**
+     * Get all of the matching mime types for this URL object.
+     * The method delegates down to each of the registered MimeHandler(s) and returns a
+     * normalised list of all matching mime types. If no matching mime types are found the returned
+     * Collection will contain the default UNKNOWN_MIME_TYPE
+     *
+     * @param url a URL to detect.
+     * @return Collection of matching MimeType(s)
+     * @throws MimeException if there are problems such as reading files generated when the MimeHandler(s)
+     *                       executed.
+     */
+    public static final Collection getMimeTypes(final URL url) throws MimeException {
+        return mimeUtil.getMimeTypes(url);
+    }
 
-	/**
-	 * Get the extension part of a file name defined by the file parameter.
-	 * @param file a file object
-	 * @return the file extension or null if it does not have one.
-	 */
-	public static String getFileExtension(File file) {
-		return eu.medsea.mimeutil.magicfile.Helper.getFileExtension(file);
-	}
+    public static final Collection getMimeTypes(final URL url, final MimeType unknownMimeType) throws MimeException {
+        return mimeUtil.getMimeTypes(url, unknownMimeType);
+    }
 
-	/**
-	 * Get the extension part of a file name defined by the fname parameter.
-	 * @param fileName a relative or absolute path to a file
-	 * @return the file extension or null if it does not have one.
-	 */
-	public static String getFileExtension(String fileName) {
-		return eu.medsea.mimeutil.magicfile.Helper.getFileExtension(fileName);
-	}
+    /**
+     * Get the native byte order of the OS on which you are running. It will be
+     * either big or little endian. This is used internally for the magic mime
+     * rules mapping.
+     *
+     * @return ByteOrder
+     */
+    public static ByteOrder getNativeOrder() {
+        return MimeUtil2.getNativeOrder();
+    }
 
-	/**
-	 * While all of the property files and magic.mime files are being loaded the utility keeps a list of mime types it's seen.
-	 * You can add other mime types to this list using this method. You can then use the isMimeTypeKnown(...) utility method to see
-	 * if a mime type you have matches one that the utility already understands.
-	 * <p>
-	 * For instance if you had a mime type of abc/xyz and passed this to isMimeTypeKnown(...) it would return false unless you specifically
-	 * add this to the know mime types using this method.
-	 * </p>
-	 * @param mimeType a mime type you want to add to the known mime types. Duplicates are ignored.
-	 * @see #isMimeTypeKnown(String mimetype)
-	 */
-	// Add a mime type to the list of known mime types.
-	public static void addKnownMimeType(String mimeType) {
-		eu.medsea.mimeutil.magicfile.Helper.addKnownMimeType(mimeType);
-	}
+    /**
+     * Gives you the best match for your requirements.
+     * <p>
+     * You can pass the accept header from a browser request to this method
+     * along with a comma separated list of possible mime types returned from
+     * say getExtensionMimeTypes(...) and the best match according to the accept
+     * header will be returned.
+     * </p>
+     * <p>
+     * The following is typical of what may be specified in an HTTP Accept
+     * header:
+     * </p>
+     * <p>
+     * Accept: text/xml, application/xml, application/xhtml+xml,
+     * text/html;q=0.9, text/plain;q=0.8, video/x-mng, image/png, image/jpeg,
+     * image/gif;q=0.2, text/css, *&#47;*;q=0.1
+     * </p>
+     * <p>
+     * The quality parameter (q) indicates how well the user agent handles the
+     * MIME type. A value of 1 indicates the MIME type is understood perfectly,
+     * and a value of 0 indicates the MIME type isn't understood at all.
+     * </p>
+     * <p>
+     * The reason the image/gif MIME type contains a quality parameter of 0.2,
+     * is to indicate that PNG & JPEG are preferred over GIF if the server is
+     * using content negotiation to deliver either a PNG or a GIF to user
+     * agents. Similarly, the text/html quality parameter has been lowered a
+     * little, to ensure that the XML MIME types are given in preference if
+     * content negotiation is being used to serve an XHTML document.
+     * </p>
+     *
+     * @param accept
+     *                   is a comma separated list of mime types you can accept
+     *                   including QoS parameters. Can pass the Accept: header
+     *                   directly.
+     * @param canProvide
+     *                   is a comma separated list of mime types that can be provided
+     *                   such as that returned from a call to
+     *                   getExtensionMimeTypes(...)
+     * @return the best matching mime type possible.
+     */
+    public static MimeType getPreferedMimeType(String accept, final String canProvide) {
+        return MimeUtil2.getPreferedMimeType(accept, canProvide);
+    }
 
-	/**
-	 * Check to see if this mime type is one of the types seen during initialisation
-	 * or has been added at some later stage using addKnownMimeType(...)
-	 * @param mimeType
-	 * @return true if the mimeType is in the list else false is returned
-	 * @see #addKnownMimeType(String mimetype)
-	 */
-	public static boolean isMimeTypeKnown(String mimeType) {
-		return eu.medsea.mimeutil.magicfile.Helper.isMimeTypeKnown(mimeType);
-	}
+    /**
+     * Get the most specific match of the Collection of mime types passed in.
+     * The Collection
+     *
+     * @param mimeTypes this should be the Collection of mime types returned
+     *                  from a getMimeTypes(...) call.
+     * @return the most specific MimeType. If more than one of the mime types in the Collection
+     *         have the same value then the first one found with this value in the Collection is returned.
+     */
+    public static MimeType getMostSpecificMimeType(final Collection mimeTypes) {
+        return MimeUtil2.getMostSpecificMimeType(mimeTypes);
+    }
 
-	/**
-	 * Get the first in a comma separated list of mime types. Useful when using extension mapping
-	 * that can return multiple mime types separate by commas and you only want the first one.
-	 * Will return UNKNOWN_MIME_TYPE if the passed in list is null or empty.
-	 *
-	 * @param mimeTypes comma separated list of mime types
-	 * @return the first in a comma separated list of mime types or the UNKNOWN_MIME_TYPE if the mimeTypes parameter is null or empty.
-	 */
-	public static String getFirstMimeType(String mimeTypes) {
-		return eu.medsea.mimeutil.magicfile.Helper.getFirstMimeType(mimeTypes);
-	}
+    /**
+     * Utility method to get the minor part of a mime type i.e. the bit after
+     * the '/' character
+     *
+     * @param mimeType
+     *                 you want to get the minor part from
+     * @return sub type of the mime type
+     * @throws MimeException
+     *                       if you pass in an invalid mime type structure
+     */
+    public static String getSubType(final String mimeType)
+            throws MimeException {
+        return MimeUtil2.getSubType(mimeType);
+    }
 
-	/**
-	 * Get the mime type of a file using file extension mappings. The file path can be a relative or absolute or can be a completely
-	 * non-existent file as only the extension is important.
-	 * @param file is a <code>File</code> object that points to a file or directory. If the file or directory cannot be found
-	 * {@link #UNKNOWN_MIME_TYPE} is returned.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if the file cannot be parsed.
-	 * @deprecated Use {@link #detectMimeTypes(File, DetectionStrategy)} or {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} instead.
-	 */
-	public static String getExtensionMimeTypes(File file) {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				(RandomAccessFile)null, file.getName(), DetectionStrategy.ONLY_FILE_NAME
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Check to see if this mime type is one of the types seen during
+     * initialisation or has been added at some later stage using
+     * addKnownMimeType(...)
+     *
+     * @param mimeType
+     * @return true if the mimeType is in the list else false is returned
+     * @see #addKnownMimeType(String mimetype)
+     */
+    public static boolean isMimeTypeKnown(final MimeType mimeType) {
+        return MimeUtil2.isMimeTypeKnown(mimeType);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Check to see if this mime type is one of the types seen during
+     * initialisation or has been added at some later stage using
+     * addKnownMimeType(...)
+     *
+     * @param mimeType
+     * @return true if the mimeType is in the list else false is returned
+     * @see #addKnownMimeType(String mimetype)
+     */
+    public static boolean isMimeTypeKnown(final String mimeType) {
+        return MimeUtil2.isMimeTypeKnown(mimeType);
+    }
 
-	/**
-	 * Get the mime type of a file using file extension mappings. The file path can be a relative or absolute or can be a completely
-	 * non-existent file as only the extension is important.
-	 * @param fname is a path that points to a file or directory. If the file or directory cannot be found
-	 * {@link #UNKNOWN_MIME_TYPE} is returned.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if the file cannot be parsed.
-	 * @deprecated Use {@link #detectMimeTypes(File, DetectionStrategy)} or {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} instead!
-	 */
-	public static String getExtensionMimeTypes(String fname) {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				(RandomAccessFile)null, fname, DetectionStrategy.ONLY_FILE_NAME
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Utility convenience method to check if a particular MimeType instance is actually a TextMimeType.
+     * Used when iterating over a collection of MimeType's to help with casting to enable access
+     * the the TextMimeType methods not available to a standard MimeType. Can also use instanceof.
+     *
+     * @param mimeType
+     * @return true if the passed in instance is a TextMimeType
+     * @see MimeType
+     * @see TextMimeType
+     */
+    public static boolean isTextMimeType(final MimeType mimeType) {
+        return MimeUtil2.isTextMimeType(mimeType);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Remove a previously registered MimeDetector
+     *
+     * @param mimeDetector
+     * @return the MimeDetector that was removed from the registry else null.
+     */
+    public static MimeDetector unregisterMimeDetector(final MimeDetector mimeDetector) {
+        return mimeUtil.unregisterMimeDetector(mimeDetector);
+    }
 
-	/**
-	 * Get the mime type of a file using the <code>magic.mime</code> rules files.
-	 * @param fname is a path location to a file or directory.
-	 * @return the mime type. Never returns <code>null</code> (if the mime type cannot be found, {@link #UNKNOWN_MIME_TYPE} is returned).
-	 * @throws MimeException if the file cannot be parsed.
-	 * @deprecated Use {@link #detectMimeTypes(File, DetectionStrategy)} or {@link #detectMimeTypes(InputStream, String, DetectionStrategy)} instead!
-	 */
-	public static String getMagicMimeType(String fname) throws MimeException {
-		DetectedMimeTypeSet detectedMimeTypeSet = MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(
-				(RandomAccessFile)null, fname, DetectionStrategy.ONLY_FILE_NAME
-		);
-		Collection c = detectedMimeTypeSet.getDetectedMimeTypes();
-		if (c.isEmpty())
-			return UNKNOWN_MIME_TYPE;
+    /**
+     * Remove a previously registered MimeDetector
+     *
+     * @param mimeDetector
+     * @return the MimeDetector that was removed from the registry else null.
+     */
+    public static MimeDetector unregisterMimeDetector(final String mimeDetector) {
+        return mimeUtil.unregisterMimeDetector(mimeDetector);
+    }
 
-		return ((DetectedMimeType)c.iterator().next()).getMimeType();
-	}
+    /**
+     * Get the quality parameter of this mime type i.e. the <code>q=</code> property.
+     * This method implements a value system similar to that used by the apache server i.e.
+     * if the media type is a * then it's <code>q</code> value is set to 0.01 and if the sub type is
+     * a * then the <code>q</code> value is set to 0.02 unless a specific <code>q</code>
+     * value is specified. If a <code>q</code> property is set it is limited to a max value of 1.0
+     *
+     * @param mimeType
+     * @return the quality value as a double between 0.0 and 1.0
+     * @throws MimeException
+     */
+    public static double getQuality(final String mimeType) throws MimeException {
+        return MimeUtil2.getQuality(mimeType);
+    }
 
-	/**
-	 * Try to determine the mime type(s) from the file name or the contents read from the {@link InputStream}
-	 * (magic numbers).
-	 * <p>
-	 * If you pass a parameter combination that does not make sense (e.g. <code>null</code> as
-	 * <code>inputStream</code> and the
-	 * <code>DetectionStrategy</code> {@link DetectionStrategy#ONLY_CONTENT ONLY_CONTENT}), the method will still succeed,
-	 * but the resulting {@link DetectedMimeTypeSet} will be empty.
-	 * </p>
-	 *
-	 * @param inputStream <code>null</code> or the stream to read the data from. It must support <code>mark</code> &amp; <code>reset</code> (see {@link InputStream#markSupported()}.
-	 * @param fileName <code>null</code> or the simple name of the file (no path!).
-	 * @param detectionStrategy how to proceed detection. If the detect strategy is not supported by your implementation or
-	 *		it does not match the data specified (e.g. <code>randomAccessFile</code> is <code>null</code> but the strategy
-	 *		is {@link DetectionStrategy#ONLY_CONTENT}) you should silently return and skip your checks.
-	 * @return a collection of all mime-types that were detected wrapped in a {@link DetectedMimeTypeSet} instance.
-	 *
-	 * @see #detectMimeTypes(File, DetectionStrategy)
-	 */
-	public DetectedMimeTypeSet detectMimeTypes(InputStream inputStream, String fileName, DetectionStrategy detectionStrategy)
-	{
-		return MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(inputStream, fileName, detectionStrategy);
-	}
-
-	/**
-	 * Try to determine the mime type(s) from the file name or the contents of the file (magic numbers).
-	 * Note, that the specified <code>file</code> instance does not need to point to an existing
-	 * file. It can be used to solely pass the file's name, in order to determine the mime type from the
-	 * file extension.
-	 * <p>
-	 * If you pass a parameter combination that does not make sense (e.g. a non-existing file and the
-	 * <code>DetectionStrategy</code> {@link DetectionStrategy#ONLY_CONTENT ONLY_CONTENT}), the method will still succeed,
-	 * but the resulting {@link DetectedMimeTypeSet} will be empty.
-	 * </p>
-	 *
-	 * @param file <code>null</code> or the file to read the data from or a simple file name wrapper
-	 *		(of a file that doesn't need to exist - maybe without path).
-	 * @param detectionStrategy how to proceed detection. If the detect strategy is not supported by your implementation or
-	 *		it does not match the data specified (e.g. <code>randomAccessFile</code> is <code>null</code> but the strategy
-	 *		is {@link DetectionStrategy#ONLY_CONTENT}) you should silently return and skip your checks.
-	 * @return a collection of all mime-types that were detected wrapped in a {@link DetectedMimeTypeSet} instance.
-	 *
-	 * @see #detectMimeTypes(InputStream, String, DetectionStrategy)
-	 */
-	public DetectedMimeTypeSet detectMimeTypes(File file, DetectionStrategy detectionStrategy)
-	{
-		String fileName = file == null ? null : file.getName();
-		return MimeTypeDetectorRegistry.sharedInstance().detectMimeTypes(file, fileName, detectionStrategy);
-	}
+    /**
+     * Utility method to get the InputStream from a URL. Handles several schemes, for instance, if the URL points to a jar
+     * entry it will get a proper usable stream from the URL
+     *
+     * @param url
+     * @return
+     */
+    public static InputStream getInputStreamForURL(URL url) throws Exception {
+        return MimeUtil2.getInputStreamForURL(url);
+    }
 }
