@@ -25,6 +25,7 @@ import org.clueminer.dataset.api.AttributeType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.exception.ParserError;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -163,7 +164,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                             realIdx = inputMap.get(j);
                             //delegate type conversion to builders
                             builder.set(instd.getObject(j), dataset.getAttribute(realIdx), (E) inst);
-                        } catch (Exception ex) {
+                        } catch (ParserError ex) {
                             throw new RuntimeException("failed to convert "
                                     + instd.getObject(j) + " to " + attr.getType() + ", inst: " + instd.toString(), ex);
                             //Exceptions.printStackTrace(ex);
