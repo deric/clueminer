@@ -16,8 +16,6 @@
  */
 package org.clueminer.importer.gui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
@@ -29,6 +27,8 @@ import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.spi.AnalysisListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -41,7 +41,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
 
     private Container<E> container;
     private JTable table;
-    private static final Logger LOG = Logger.getLogger(DataTableModel.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DataTableModel.class);
 
     public DataTableModel() {
 
@@ -82,7 +82,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
 
     public void setContainer(final Container loader) {
         if (loader != null) {
-            LOG.log(Level.INFO, "setting container with {0} rows ", loader.getInstanceCount());
+            LOG.info("setting container with {} rows ", loader.getInstanceCount());
         }
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -144,7 +144,7 @@ public class DataTableModel<E extends InstanceDraft> extends AbstractTableModel 
                     tcm.addColumn(tc);
                 }
                 tc.setHeaderValue(attr.getName());
-                LOG.log(Level.INFO, "setting header: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+                LOG.info("setting header: {} type: {}, role: {}", attr.getName(), attr.getJavaType(), attr.getRole());
             }
             th.repaint();
         }

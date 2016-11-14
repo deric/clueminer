@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
@@ -29,8 +27,8 @@ import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
-import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.io.AttrHolder;
+import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -43,10 +41,13 @@ import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Attribute-Relation File Format (ARFF) importer
  *
+ * @param <E>
  * @see http://weka.wikispaces.com/ARFF
  * @see http://www.cs.waikato.ac.nz/ml/weka/arff.html
  *
@@ -56,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<E> implements FileImporter<E>, LongTask {
 
     public static final String NAME = "ARFF";
-    private static final Logger logger = Logger.getLogger(ArffImporter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ArffImporter.class);
 
     private static final Pattern klassAttr = Pattern.compile("^@attribute\\s+['\"]?class['\"]?\\s+\\{(.*)\\}", Pattern.CASE_INSENSITIVE);
     private ArrayList<Integer> skippedIndexes = new ArrayList<>();
@@ -115,16 +116,16 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
     public boolean execute(Container<E> container, LineNumberReader reader) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
-            logger.log(Level.INFO, "importing file {0}", container.getFile().getName());
+            LOG.info("importing file {}", container.getFile().getName());
         }
         container.reset(); //remove all previous instances
         container.setDataset(null);
         container.setNumberOfLines(0);
         this.report = new Report();
-        logger.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
+        LOG.info("number of attributes = {}", container.getAttributeCount());
 
         for (AttributeDraft attr : container.getAttrIter()) {
-            logger.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+            LOG.info("attr: {} type: {}, role: {}", attr.getName(), attr.getJavaType(), attr.getRole());
         }
         parseHeader(container, reader);
         importData(container, reader);
@@ -235,7 +236,7 @@ public class ArffImporter<E extends InstanceDraft> extends AbstractLineImporter<
             //we should have read a next line, but we didn't
             if (count == prev) {
                 reading = false;
-                logger.log(Level.WARNING, "exitting reading input because no data has been read. Got to line #{0}: {1}", new Object[]{count, line});
+                LOG.info("exitting reading input because no data has been read. Got to line #{}: {}", count, line);
             }
             prev = count;
         }

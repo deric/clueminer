@@ -22,8 +22,6 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.event.EventListenerList;
 import org.clueminer.gui.msg.NotifyUtil;
 import org.clueminer.importer.ImportController;
@@ -44,6 +42,8 @@ import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -55,7 +55,7 @@ public class ImportTaskImpl implements ImportTask {
     private final FileObject fileObject;
     private final ImportController controller;
     private final transient EventListenerList importListeners = new EventListenerList();
-    private final static Logger logger = Logger.getLogger(ImportTaskImpl.class.getName());
+    private final static Logger LOG = LoggerFactory.getLogger(ImportTaskImpl.class);
     private int num;
 
     public ImportTaskImpl(FileImporter importer, FileObject fileObject, ImportController controller, int num) {
@@ -87,7 +87,7 @@ public class ImportTaskImpl implements ImportTask {
         }
 
         try {
-            logger.log(Level.INFO, "preloading file: {0}", containerSource);
+            LOG.info("preloading file: {}", containerSource);
 
             MessageDigest md = MessageDigest.getInstance("MD5");
             DigestInputStream dis = new DigestInputStream(stream, md);
@@ -101,8 +101,8 @@ public class ImportTaskImpl implements ImportTask {
                 }
             }
 
-            logger.log(Level.INFO, "[" + num + "] file MD5: {0} ", convertMD5(digest));
-            logger.log(Level.INFO, "showing import dialog...");
+            LOG.info("[" + num + "] file MD5: {} ", convertMD5(digest));
+            LOG.info("showing import dialog...");
             //display import window
             finishImport(container);
         } catch (NoSuchAlgorithmException ex) {
@@ -116,7 +116,7 @@ public class ImportTaskImpl implements ImportTask {
                 }
             }
         }
-        logger.log(Level.INFO, "[{0}] importer finished", num);
+        LOG.info("[{}] importer finished", num);
     }
 
     private String convertMD5(byte[] md5) {
@@ -157,7 +157,7 @@ public class ImportTaskImpl implements ImportTask {
                     pcui.newProject();
                     workspace = pc.getCurrentWorkspace();
                 }
-                logger.log(Level.INFO, "processing input file");
+                LOG.info("processing input file");
                 //actual data import
                 controller.process(container, processor, workspace);
                 fireDataLoaded();

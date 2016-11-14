@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -67,6 +65,8 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -97,7 +97,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     private GridBagConstraints gbc;
     private ColumnsPreview colPreviewPane;
     private DataTableModel dataTableModel;
-    private static final Logger logger = Logger.getLogger(ReportPanel.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
     private FileObject currentFile;
     private static final RequestProcessor RP = new RequestProcessor("Preloading file");
 
@@ -251,7 +251,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         fileImporter = importer;
         fileImporter.addAnalysisListener(dataTableModel);
         fileImporter.addAnalysisListener(this);
-        logger.log(Level.INFO, "new file importer: {0}", fileImporter.getName());
+        LOG.info("new file importer: {}", fileImporter.getName());
         cbImporter.setSelectedItem(fileImporter.getName());
         if (controller != null) {
             importerUI = controller.getUI(importer);
@@ -267,10 +267,10 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 importerPanel.revalidate();
                 importerPanel.repaint();
             } else {
-                logger.warning("importer UI missing");
+                LOG.warn("importer UI missing");
             }
         } else {
-            logger.log(Level.SEVERE, "no controller found");
+            LOG.error("no controller found");
         }
 
         dataTableModel.setContainer(container);
@@ -606,22 +606,22 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void importerChanged(final Importer importer, final ImporterUI importerUI) {
-        logger.log(Level.INFO, "current importer: {0}", importer.getName());
+        LOG.info("current importer: {}", importer.getName());
         Container cont = importer.getContainer();
 
         //import is executed asynchronously, we might not have container immediately
         if (cont == null) {
-            logger.severe("container is null!");
+            LOG.error("container is null!");
             if (cont == null) {
-                logger.severe("reimport");
+                LOG.error("reimport");
                 Callable<Container> c = new Callable<Container>() {
                     @Override
                     public Container call() throws Exception {
                         FileImporter fi = (FileImporter) importer;
                         Container cont = controller.importFile(currentFile, currentFile.getInputStream(), fi, true);
-                        logger.log(Level.INFO, "container for {0}", cont.getFile().getName());
+                        LOG.info("container for {}", cont.getFile().getName());
                         setData(cont);
-                        logger.log(Level.INFO, "finished loading data with {0}", importer.getName());
+                        LOG.info("finished loading data with {}", importer.getName());
 
                         return cont;
                     }
@@ -633,7 +633,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 } catch (InterruptedException | ExecutionException ex) {
                     Exceptions.printStackTrace(ex);
                 }
-                logger.log(Level.INFO, "container instances {0}", cont.getInstanceCount());
+                LOG.info("container instances {}", cont.getInstanceCount());
                 this.container = cont;
             }
             return;
@@ -646,7 +646,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
 
     @Override
     public void dataLoaded() {
-        logger.log(Level.INFO, "data loaded");
+        LOG.info("data loaded");
         if (fileImporter != null) {
             fileImporter.removeListener(dataTableModel);
             fileImporter.removeListener(this);
@@ -658,7 +658,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     public void attributeChanged(AttributeDraft attr, Object property) {
         if (colPreviewPane != null) {
             //update GUI
-            logger.log(Level.INFO, "attr {0} changed prop ={1}", new Object[]{attr.getName(), property});
+            LOG.info("attr {} changed prop ={}", attr.getName(), property);
             colPreviewPane.attributeChanged(attr);
         }
     }

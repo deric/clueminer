@@ -19,8 +19,6 @@ package org.clueminer.importer.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.gui.msg.NotifyUtil;
@@ -30,6 +28,8 @@ import org.clueminer.processor.ui.AttributeProp;
 import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
 import org.clueminer.spi.ImporterUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -43,7 +43,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     private AttributeDraft[] attributes;
     private AttributeProp[] attrPanels;
     private ImporterUI importerUI;
-    private static final Logger logger = Logger.getLogger(ColumnsPreview.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ColumnsPreview.class);
 
     public ColumnsPreview() {
         initComponents();
@@ -59,7 +59,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
         final Container container = importer.getContainer();
         final ColumnsPreview preview = this;
         if (container != null) {
-            logger.log(Level.INFO, "detected {0} attributes", container.getAttributeCount());
+            LOG.info("detected {} attributes", container.getAttributeCount());
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -109,7 +109,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     @Override
     public void dataLoaded() {
         //
-        logger.log(Level.INFO, "data was loaded");
+        LOG.info("data was loaded");
         attributes = null;
         attrPanels = null;
         numAttributes = 0;
@@ -118,7 +118,7 @@ public class ColumnsPreview extends JPanel implements ImportListener {
     }
 
     public void attributeChanged(AttributeDraft attr) {
-        logger.log(Level.INFO, "updating attribute {0} idx {1}", new Object[]{attr.getName(), attr.getIndex()});
+        LOG.info("updating attribute {} idx {}", attr.getName(), attr.getIndex());
         int idx = attr.getIndex();
         if (idx < attrPanels.length) {
             attrPanels[idx].setAttrName(attr.getName());

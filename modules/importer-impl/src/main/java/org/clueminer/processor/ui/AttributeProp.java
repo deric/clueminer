@@ -1,12 +1,28 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.processor.ui;
 
 import java.awt.event.ItemEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.dataset.api.AttributeRole;
 import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.spi.ImporterUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,7 +33,7 @@ public class AttributeProp extends javax.swing.JPanel {
     private static final long serialVersionUID = 4808266192954985430L;
     private final AttributeDraft attr;
     private final ImporterUI importerUI;
-    private static Logger log = Logger.getLogger(AttributeProp.class.getName());
+    private static Logger LOG = LoggerFactory.getLogger(AttributeProp.class);
 
     /**
      * Creates new form AttributeProp
@@ -156,7 +172,7 @@ public class AttributeProp extends javax.swing.JPanel {
             Class<?> type = stringToClass(item);
             if (type != attr.getJavaType()) {
                 attr.setJavaType(type);
-                log.log(Level.INFO, "attr {0} type changed to {1}", new Object[]{attr.getName(), type});
+                LOG.info("attr {} type changed to {}", attr.getName(), type);
                 importerUI.fireImporterChanged();
             }
         }
@@ -169,23 +185,27 @@ public class AttributeProp extends javax.swing.JPanel {
             AttributeRole role = BasicAttrRole.valueOf(strRole.toUpperCase());
             if (attr.getRole() != role) {
                 attr.setRole(role);
-                log.log(Level.INFO, "attr {0} role changed to {1}", new Object[]{attr.getName(), role.toString()});
+                LOG.info("attr {} role changed to {}", attr.getName(), role.toString());
                 importerUI.fireImporterChanged();
             }
         }
     }//GEN-LAST:event_cbRoleItemStateChanged
 
     protected Class<?> stringToClass(String type) {
-        if (type.equals("double")) {
-            return Double.class;
-        } else if (type.equals("float")) {
-            return Float.class;
-        } else if (type.equals("int") || type.equals("integer")) {
-            return Integer.class;
-        } else if (type.equals("long")) {
-            return Long.class;
-        } else if (type.equals("string")) {
-            return String.class;
+        switch (type) {
+            case "double":
+                return Double.class;
+            case "float":
+                return Float.class;
+            case "int":
+            case "integer":
+                return Integer.class;
+            case "long":
+                return Long.class;
+            case "string":
+                return String.class;
+            default:
+                break;
         }
         throw new RuntimeException("type '" + type + "' is not supported");
     }

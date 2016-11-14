@@ -19,8 +19,6 @@ package org.clueminer.processor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
@@ -36,6 +34,8 @@ import org.clueminer.processor.spi.Processor;
 import org.clueminer.types.TimePoint;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Time series data importer
@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Processor.class)
 public class TimeseriesProcessor<D extends InstanceDraft, E extends Instance> extends AbstractProcessor<D, E> implements Processor<D> {
 
-    private static final Logger LOGGER = Logger.getLogger(TimeseriesProcessor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TimeseriesProcessor.class);
 
     private static final Pattern NUMBER = Pattern.compile("^\\d+(\\.\\d+)?");
     private static final Pattern numberWithPrefix = Pattern.compile("([a-z_ ]+)(\\d+(\\.\\d+)?)(\\w+)?", Pattern.CASE_INSENSITIVE);
@@ -98,7 +98,7 @@ public class TimeseriesProcessor<D extends InstanceDraft, E extends Instance> ex
                     inputMap.put(attrd.getIndex(), i);
                     parsed++;
                 } catch (NumberFormatException e) {
-                    LOGGER.log(Level.WARNING, "failed to parse ''{0}'' as a number", name);
+                    LOG.warn("failed to parse ''{}'' as a number", name);
                     NotifyUtil.warn("time attribute error", "failed to parse '"
                             + name + "' as a number", true);
                 }

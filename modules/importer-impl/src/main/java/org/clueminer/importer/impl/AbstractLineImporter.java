@@ -25,8 +25,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.importer.ImportController;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
@@ -36,15 +34,18 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Importer which reads file line by line.
  *
  * @author Tomas Barton
+ * @param <E>
  */
 public abstract class AbstractLineImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
 
-    private static final Logger logger = Logger.getLogger(AbstractLineImporter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractLineImporter.class);
     protected static final int INITIAL_READ_SIZE = 128;
     protected String pending;
     protected boolean ignoreQuotations = false;
@@ -64,7 +65,7 @@ public abstract class AbstractLineImporter<E extends InstanceDraft> extends Base
 
     @Override
     public void reload(final FileObject file, final Reader reader) {
-        logger.info("reload called");
+        LOG.info("reload called");
         LongTask task = null;
         if (this instanceof LongTask) {
             task = (LongTask) this;
@@ -77,7 +78,7 @@ public abstract class AbstractLineImporter<E extends InstanceDraft> extends Base
                 @Override
                 public void run() {
                     try {
-                        logger.log(Level.INFO, "reloading file");
+                        LOG.info("reloading file");
                         controller.importFile(file, reader, importer, true);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
@@ -85,7 +86,7 @@ public abstract class AbstractLineImporter<E extends InstanceDraft> extends Base
                 }
             }, taskName, errorHandler);
         } else {
-            logger.log(Level.INFO, "executor is still running");
+            LOG.info("executor is still running");
         }
     }
 

@@ -27,8 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.MissingResourceException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.importer.FileImporterFactory;
 import org.clueminer.importer.ImportController;
 import org.clueminer.importer.ImportTask;
@@ -51,6 +49,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -62,7 +62,7 @@ public class ImportControllerImpl implements ImportController {
     private final List<FileImporter> fileImporters;
     private final ImporterUI[] uis;
     private MimeHelper helper;
-    private static final Logger LOGGER = Logger.getLogger(ImportControllerImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ImportControllerImpl.class);
     private final HashMap<String, Container> containers;
     private static int cnt = 0;
 
@@ -72,7 +72,7 @@ public class ImportControllerImpl implements ImportController {
         helper = new MimeHelper();
         //Get UIS
         uis = Lookup.getDefault().lookupAll(ImporterUI.class).toArray(new ImporterUI[0]);
-        LOGGER.info("creating new ImportController");
+        LOG.info("creating new ImportController");
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ImportControllerImpl implements ImportController {
                 DialogDisplayer.getDefault().notify(msg);
                 return null;
             } else {
-                LOGGER.info("detected importer " + importer.getName());
+                LOG.info("detected importer {}", importer.getName());
             }
 
             //MRU
@@ -94,7 +94,7 @@ public class ImportControllerImpl implements ImportController {
 
             return new ImportTaskImpl(importer, fileObject, this, cnt++);
         } catch (MissingResourceException ex) {
-            Logger.getLogger("").log(Level.WARNING, "", ex);
+            LOG.warn("missing resource: ", ex);
         }
         return null;
     }
@@ -114,14 +114,14 @@ public class ImportControllerImpl implements ImportController {
         FileObject fileObject = FileUtil.toFileObject(file);
         if (fileObject != null) {
             fileObject = getArchivedFile(fileObject);   //Unzip and return content file
-            LOGGER.log(Level.INFO, "searching importer for {0}, ext: {1}", new Object[]{fileObject.getName(), fileObject.getExt()});
+            LOG.info("searching importer for {}, ext: {}", fileObject.getName(), fileObject.getExt());
             FileImporter importer = getMatchingImporter(fileObject);
             if (importer == null) {
-                LOGGER.info("no importer found by extension");
+                LOG.info("no importer found by extension");
                 //try to find importer by MIME type
                 importer = getMatchingImporter(helper.detectMIME(fileObject));
             } else {
-                LOGGER.log(Level.INFO, "using importer {0}", importer.getName());
+                LOG.info("using importer {}", importer.getName());
             }
             return importFile(fileObject, fileObject.getInputStream(), importer, false);
         }
@@ -161,20 +161,20 @@ public class ImportControllerImpl implements ImportController {
         //Create Container
         Container container;
         String path = file.getPath();
-        LOGGER.log(Level.INFO, "reload {0}, file: {1}", new Object[]{reload, path});
+        LOG.info("reload {}, file: {}", reload, path);
         // unique container for path
         if (containers.containsKey(path)) {
             container = containers.get(path);
         } else {
-            LOGGER.log(Level.INFO, "did not find container for {0}, cached containers = {1}", new Object[]{path, containers.size()});
+            LOG.info("did not find container for {}, cached containers = {}", path, containers.size());
             container = new DraftContainer();
             containers.put(path, container);
             container.setFile(file);
         }
 
         //container = Lookup.getDefault().lookup(Container.class);
-        LOGGER.log(Level.INFO, "importer contr num attr: {0}", container.getAttributeCount());
-        LOGGER.log(Level.INFO, "importer contr num inst: {0}", container.getInstanceCount());
+        LOG.info("importer contr num attr: {}", container.getAttributeCount());
+        LOG.info("importer contr num inst: {}", container.getInstanceCount());
         //Report
         // Report report = container.getReport();
         //container.setReport(report);

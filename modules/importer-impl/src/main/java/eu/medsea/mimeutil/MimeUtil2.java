@@ -377,7 +377,7 @@ public class MimeUtil2 {
         } else {
             if (log.isDebugEnabled()) {
                 try {
-                    log.debug("Getting MIME types for byte array [" + StringUtil.getHexString(data) + "].");
+                    log.trace("Getting MIME types for byte array [" + StringUtil.getHexString(data) + "].");
                 } catch (UnsupportedEncodingException e) {
                     throw new MimeException(e);
                 }

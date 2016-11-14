@@ -19,8 +19,6 @@ package org.clueminer.processor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.attributes.BasicAttrRole;
 import org.clueminer.attributes.BasicAttrType;
 import org.clueminer.dataset.api.AttributeType;
@@ -35,6 +33,8 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Processor is responsible of unloading data from draft objects into objects
@@ -49,7 +49,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
     protected Workspace workspace;
     protected Container<D> container;
     protected Dataset<E> dataset;
-    private static final Logger logger = Logger.getLogger(AbstractProcessor.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractProcessor.class);
 
     @Override
     public void setWorkspace(Workspace workspace) {
@@ -95,7 +95,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
      * Method which can be run during tests without workspace
      */
     protected void run() {
-        logger.log(Level.INFO, "importing dataset");
+        LOG.info("importing dataset");
         //basic numeric dataset
 
         ArrayList<AttributeDraft> inputAttr = new ArrayList<>(container.getAttributeCount());
@@ -111,11 +111,11 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
         //sort attributes by index
         Collections.sort(inputAttr, new AttributeComparator());
 
-        logger.log(Level.INFO, "found {0} meta attributes, and input attributes {1}", new Object[]{metaCnt, inputAttr.size()});
+        LOG.info("found {} meta attributes, and input attributes {}", metaCnt, inputAttr.size());
 
         dataset = createDataset(inputAttr);
 
-        logger.log(Level.INFO, "allocating space: {0} x {1}", new Object[]{container.getInstanceCount(), inputAttr.size()});
+        LOG.info("allocating space: {} x {}", container.getInstanceCount(), inputAttr.size());
 
         //set attributes
         Map<Integer, Integer> inputMap = attributeMapping(inputAttr);
@@ -169,13 +169,13 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                             //Exceptions.printStackTrace(ex);
                         }
                     } else {
-                        logger.log(Level.INFO, "skipping setting value {0}, {1}: {2}", new Object[]{j, i, instd.getObject(j)});
+                        LOG.info("skipping setting value {}, {}: {}", j, i, instd.getObject(j));
                     }
                 } else if (attr.getRole().equals(BasicAttrRole.CLASS) || attr.getRole().equals(BasicAttrRole.LABEL)) {
                     inst.setClassValue(instd.getObject(j));
                     inst.setId((String) instd.getObject(j));
                     inst.setName((String) instd.getObject(j));
-                    logger.log(Level.FINEST, "setting class {0}: {1}", new Object[]{i, instd.getObject(j)});
+                    LOG.debug("setting class {}: {}", i, instd.getObject(j));
                 } else if (attr.getRole().equals(BasicAttrRole.ID)) {
                     inst.setId((String) instd.getObject(j));
                     inst.setName((String) instd.getObject(j));
@@ -195,10 +195,10 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                 inst.setName(inst.classValue().toString());
             }
             dataset.add((E) inst);
-            logger.log(Level.ALL, inst.toString());
+            LOG.trace(inst.toString());
             i++;
         }
-        logger.log(Level.INFO, "loaded {0} instances, {1} classes", new Object[]{i, dataset.getClasses().size()});
+        LOG.info("loaded {} instances, {} classes", i, dataset.getClasses().size());
     }
 
     protected AttributeType getType(Object klass) {

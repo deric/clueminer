@@ -21,8 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.importer.Issue;
@@ -37,6 +35,8 @@ import org.clueminer.utils.progress.Progress;
 import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Load data into provisional storage with weak typing (for checking parser issues).
@@ -48,7 +48,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> implements FileImporter<E>, LongTask {
 
     private static final String NAME = "JSON";
-    private static final Logger LOGGER = Logger.getLogger(JsonImporter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(JsonImporter.class);
 
     @Override
     public String getName() {
@@ -59,14 +59,14 @@ public class JsonImporter<E extends InstanceDraft> extends BaseImporter<E> imple
     public boolean execute(Container<E> container, Reader reader, int limit) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
-            LOGGER.log(Level.INFO, "importing file {0}", container.getFile().getName());
+            LOG.info("importing file {}", container.getFile().getName());
         }
         container.reset(); //remove all previous instances
         container.setDataset(null);
         container.setNumberOfLines(0);
         this.report = new Report();
         importData(container, reader, limit);
-        LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
+        LOG.info("number of attributes = {}", container.getAttributeCount());
 
         fireAnalysisFinished();
 

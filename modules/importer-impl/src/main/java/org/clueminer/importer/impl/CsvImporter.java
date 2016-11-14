@@ -23,8 +23,6 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.clueminer.attributes.BasicAttrRole;
@@ -43,6 +41,8 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Import CSV into data structures supported by the framework.
@@ -62,7 +62,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
      */
     private boolean parsedHeader = false;
     private int prevColCnt = -1;
-    private static final Logger LOGGER = Logger.getLogger(CsvImporter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(CsvImporter.class);
     private final Pattern patternType = Pattern.compile("(double|float|int|integer|long|string)", Pattern.CASE_INSENSITIVE);
 
     public CsvImporter() {
@@ -100,19 +100,19 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
     public boolean execute(Container<E> container, LineNumberReader lineReader) throws IOException {
         this.container = container;
         if (container.getFile() != null) {
-            LOGGER.log(Level.INFO, "importing file {0}", container.getFile().getName());
+            LOG.info("importing file {}", container.getFile().getName());
         }
         container.reset(); //remove all previous instances
         container.setDataset(null);
         container.setNumberOfLines(0);
         this.report = new Report();
         parsedHeader = false;
-        LOGGER.log(Level.INFO, "has header = {0}", hasHeader);
-        LOGGER.log(Level.INFO, "number of attributes = {0}", container.getAttributeCount());
+        LOG.info("has header = {}", hasHeader);
+        LOG.info("number of attributes = {}", container.getAttributeCount());
 
         Container<E> c = container;
         for (AttributeDraft attr : c.getAttrIter()) {
-            LOGGER.log(Level.INFO, "attr: {0} type: {1}, role: {2}", new Object[]{attr.getName(), attr.getJavaType(), attr.getRole()});
+            LOG.info("attr: {} type: {}, role: {}", attr.getName(), attr.getJavaType(), attr.getRole());
         }
 
         importData(lineReader);
@@ -154,7 +154,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         int prev = -1;
         boolean reading = true;
 
-        LOGGER.log(Level.INFO, "reader ready? {0}", reader.ready());
+        LOG.info("reader ready? {}", reader.ready());
         while (reader.ready() && reading) {
             String line = reader.readLine();
             count = reader.getLineNumber();
@@ -165,8 +165,8 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
             //we should have read a next line, but we didn't
             if (count == prev) {
                 reading = false;
-                LOGGER.log(Level.WARNING, "exitting reading input because no data has been read. "
-                        + "Got to line #{0}: {1}", new Object[]{count, line});
+                LOG.info("exitting reading input because no data has been read. "
+                        + "Got to line #{}: {}", count, line);
             }
             prev = count;
         }
@@ -185,11 +185,11 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         }
         //Dump.array(columns, "line " + num + " (" + columns.length + ")");
         if (hasHeader && !skipHeader && !parsedHeader) {
-            LOGGER.log(Level.INFO, "header: {0}", line);
+            LOG.info("header: {}", line);
             parseHeader(columns);
             parsedHeader = true;
         } else if (skipHeader) {
-            LOGGER.log(Level.INFO, "skipping: {0}", line);
+            LOG.info("skipping: {}", line);
             // just skip it
         } else {
             /**
@@ -198,7 +198,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
              */
 
             if (container.getAttributeCount() != columns.length) {
-                LOGGER.log(Level.INFO, "expected: {0} but got {1}", new Object[]{container.getAttributeCount(), columns.length});
+                LOG.info("expected: {} but got {}", container.getAttributeCount(), columns.length);
                 container.resetAttributes();
             }
 
@@ -255,7 +255,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
             attr = container.getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
             if (!attr.getJavaType().equals(res)) {
-                LOGGER.log(Level.INFO, "type changed {0} from {2} to {1}", new Object[]{container.getAttribute(attrIndex).getName(), type, attr.getJavaType()});
+                LOG.info("type changed {} from {} to {}", container.getAttribute(attrIndex).getName(), attr.getJavaType(), type);
                 report.logIssue(new Issue(container.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
                 attr.setJavaType(res);
                 fireAttributeChanged(container.getAttribute(attrIndex), "type");
@@ -264,7 +264,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         }
         attr = container.getAttribute(attrIndex);
         AttributeRole role = guessAttrType(attr.getName(), attr);
-        LOGGER.log(Level.INFO, "column ''{0}'' doesn't look like a type information. guessing type to: " + role, column);
+        LOG.info("column ''{}'' doesn't look like a type information. guessing type to: {}", column, role);
 
         return false;
     }
@@ -278,7 +278,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
                 attrd = container.getAttribute(i);
                 if (!container.getAttribute(i).getName().equals(attrName) && container.hasAttribute(attrName)) {
                     //this should be unique. TODO: really?
-                    LOGGER.info("creating attr: " + attrName);
+                    LOG.info("creating attr: {}", attrName);
                     attrd = container.createAttribute(i, attrName + "_" + i);
                 } else {
                     //get or update attribute name
@@ -292,7 +292,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
                 } else {
                     attrd = container.createAttribute(i, attrName);
                 }
-                LOGGER.log(Level.INFO, "created missing attr {1}: {0}", new Object[]{attrName, i});
+                LOG.info("created missing attr {}: {}", i, attrName);
             }
 
             lower = attrName.toLowerCase();
@@ -312,7 +312,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         if (name.startsWith("meta_") || name.startsWith("name")) {
             attrd.setRole(BasicAttrRole.META);
             attrd.setType(BasicAttrType.STRING);
-            LOGGER.log(Level.INFO, "meta attr {0}", new Object[]{attrd.getIndex()});
+            LOG.info("meta attr {0}", attrd.getIndex());
         } else if (name.startsWith("id")) {
             attrd.setRole(BasicAttrRole.ID);
         } else if (name.startsWith("!")) {
