@@ -16,6 +16,7 @@
  */
 package org.clueminer.importer.impl;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.clueminer.graph.api.EdgeType;
 import org.clueminer.io.importer.api.EdgeDraft;
 import org.clueminer.io.importer.api.NodeDraft;
@@ -26,37 +27,50 @@ import org.clueminer.io.importer.api.NodeDraft;
  */
 public class EdgeDraftImpl implements EdgeDraft {
 
+    private NodeDraft source;
+    private NodeDraft target;
+    private double weight;
+    private String label;
+    private EdgeType direction;
+    private Object2ObjectOpenHashMap<String, Object> map;
+
     public EdgeDraftImpl() {
+        map = new Object2ObjectOpenHashMap<>();
     }
 
     @Override
     public void setSource(NodeDraft node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.source = node;
     }
 
     @Override
     public void setTarget(NodeDraft node) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.target = node;
     }
 
     @Override
     public void setWeight(double weight) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.weight = weight;
     }
 
     @Override
     public void setLabel(String label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.label = label;
     }
 
     @Override
     public void setDirection(EdgeType type) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.direction = type;
     }
 
     @Override
     public void setValue(String key, Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        map.put(key, value);
+    }
+
+    @Override
+    public String getLabel() {
+        return label;
     }
 
 }

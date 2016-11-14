@@ -16,6 +16,11 @@
  */
 package org.clueminer.importer.impl;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.HashSet;
+import java.util.Set;
+import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphBuilderFactory;
 import org.clueminer.io.importer.api.EdgeDraft;
@@ -26,32 +31,38 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author deric
+ * @param <E>
  */
 public class GraphDraft<E extends NodeDraft> extends DraftContainer<E> {
 
     private GraphBuilder factory;
-    private static Logger LOG = LoggerFactory.getLogger(GraphDraft.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GraphDraft.class);
+    private EdgeType edgeDefault;
+    private Object2ObjectMap<String, NodeDraft> nodeMap;
+    private Set<EdgeDraft> edgeMap;
 
     public GraphDraft() {
+        nodeMap = new Object2ObjectOpenHashMap<>();
+        edgeMap = new HashSet<>();
         this.factory = GraphBuilderFactory.getInstance().getDefault();
         LOG.info("building graph with {}", factory.getName());
     }
 
     public NodeDraft newNodeDraft(String id) {
-        NodeDraft node = new NodeDraftImpl();
+        NodeDraft node = new NodeDraftImpl(this);
         node.setId(id);
         //TODO add node to tmp graph
         return node;
     }
 
     public NodeDraft newNodeDraft() {
-        NodeDraft node = new NodeDraftImpl();
+        NodeDraft node = new NodeDraftImpl(this);
         //TODO add node to tmp graph
         return node;
     }
 
     public void addNode(NodeDraft node) {
-
+        nodeMap.put(node.getId(), node);
     }
 
     public EdgeDraft newEdgeDraft() {
@@ -64,12 +75,24 @@ public class GraphDraft<E extends NodeDraft> extends DraftContainer<E> {
         return edge;
     }
 
-    public void addEdge(EdgeDraft node) {
-
+    public void addEdge(EdgeDraft edge) {
+        edgeMap.add(edge);
     }
 
     public NodeDraft getNode(String id) {
-        return null;
+        return nodeMap.get(id);
+    }
+
+    public void setEdgeDefault(EdgeType edgeDefault) {
+        this.edgeDefault = edgeDefault;
+    }
+
+    public int getNumNodes() {
+        return nodeMap.size();
+    }
+
+    public int getNumEdges() {
+        return edgeMap.size();
     }
 
 }

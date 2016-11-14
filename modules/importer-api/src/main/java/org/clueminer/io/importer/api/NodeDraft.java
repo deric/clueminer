@@ -25,6 +25,8 @@ public interface NodeDraft extends InstanceDraft {
 
     void setLabel(String label);
 
+    String getLabel();
+
     void setValue(String key, Object value);
 
 }

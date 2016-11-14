@@ -24,6 +24,8 @@ import org.clueminer.graph.api.EdgeType;
  */
 public interface EdgeDraft {
 
+    String getLabel();
+
     void setSource(NodeDraft node);
 
     void setTarget(NodeDraft node);

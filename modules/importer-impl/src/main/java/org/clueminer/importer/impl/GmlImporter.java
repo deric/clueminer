@@ -18,7 +18,6 @@ package org.clueminer.importer.impl;
 
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.clueminer.graph.api.EdgeType;
@@ -42,12 +41,12 @@ import org.slf4j.LoggerFactory;
  * describing graphs. It has been also named Graph Meta Language.
  *
  * @author deric
+ * @param <E>
  */
 public class GmlImporter<E extends InstanceDraft> extends AbstractLineImporter<E> implements FileImporter<E>, LongTask {
 
     private static String NAME = "GML";
     private static Logger LOG = LoggerFactory.getLogger(GmlImporter.class);
-    private Reader reader;
     private GraphDraft gcont;
     private Report report;
     private ProgressTicket progressTicket;
@@ -182,7 +181,7 @@ public class GmlImporter<E extends InstanceDraft> extends AbstractLineImporter<E
             } else if ("directed".equals(key)) {
                 if (value instanceof Number) {
                     EdgeType edgeDefault = ((Number) value).intValue() == 1 ? EdgeType.FORWARD : EdgeType.NONE;
-                    //container.setEdgeDefault(edgeDefault);
+                    gcont.setEdgeDefault(edgeDefault);
                 } else {
                     report.logIssue(new Issue("error parsing graph", Issue.Level.WARNING));
                 }
@@ -264,18 +263,28 @@ public class GmlImporter<E extends InstanceDraft> extends AbstractLineImporter<E
         for (int i = 0; i < list.size(); i += 2) {
             String key = (String) list.get(i);
             Object value = list.get(i + 1);
-            if ("source".equals(key)) {
-                NodeDraft source = gcont.getNode(value.toString());
-                edgeDraft.setSource(source);
-            } else if ("target".equals(key)) {
-                NodeDraft target = gcont.getNode(value.toString());
-                edgeDraft.setTarget(target);
-            } else if ("value".equals(key) || "weight".equals(key)) {
-                if (value instanceof Number) {
-                    edgeDraft.setWeight(((Number) value).doubleValue());
+            if (null != key) {
+                switch (key) {
+                    case "source":
+                        NodeDraft source = gcont.getNode(value.toString());
+                        edgeDraft.setSource(source);
+                        break;
+                    case "target":
+                        NodeDraft target = gcont.getNode(value.toString());
+                        edgeDraft.setTarget(target);
+                        break;
+                    case "value":
+                    case "weight":
+                        if (value instanceof Number) {
+                            edgeDraft.setWeight(((Number) value).doubleValue());
+                        }
+                        break;
+                    case "label":
+                        edgeDraft.setLabel(value.toString());
+                        break;
+                    default:
+                        break;
                 }
-            } else if ("label".equals(key)) {
-                edgeDraft.setLabel(value.toString());
             }
         }
         boolean ret = addEdgeAttributes(edgeDraft, "", list);
