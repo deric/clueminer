@@ -72,7 +72,7 @@ import org.openide.windows.TopComponent;
 @Messages({
     "CTL_DendroViewAction=DendroView",
     "CTL_DendroViewTopComponent=DendroView Window",
-    "HINT_DendroViewTopComponent=This is a DendroView window"
+    "HINT_DendroViewTopComponent=Displays dendrogram"
 })
 public final class DendroViewTopComponent<E extends Instance, C extends Cluster<E>>
         extends TopComponent implements LookupListener, ClusteringListener<E, C> {
