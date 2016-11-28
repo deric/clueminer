@@ -26,7 +26,7 @@
         </developer>
     </developers>
     <properties>
-        <netbeans.version>RELEASE81</netbeans.version>
+        <netbeans.version>RELEASE82</netbeans.version>
         <brandingToken>clueminer</brandingToken>
         <project.organization>clueminer.org</project.organization>
         <maven.compiler>3.5.1</maven.compiler>
