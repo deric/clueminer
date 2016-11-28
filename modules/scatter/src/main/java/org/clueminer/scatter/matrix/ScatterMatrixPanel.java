@@ -138,8 +138,10 @@ public class ScatterMatrixPanel<E extends Instance, C extends Cluster<E>> extend
         chart.getStyleManager().setMarkerSize(10);
 
         for (Cluster<E> clust : clustering) {
-            Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
-            s.setMarkerColor(clust.getColor());
+            if (!clust.isEmpty()) {
+                Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+                s.setMarkerColor(clust.getColor());
+            }
         }
 
         return new XChartPanel(chart);
