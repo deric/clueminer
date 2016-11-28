@@ -16,12 +16,15 @@
  */
 package org.clueminer.dataset.std;
 
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.DataStandardization;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.std.StdScale;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,15 +34,20 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataStandardization.class)
 public class StdMinMax<E extends Instance> extends StdScale implements DataStandardization<E> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataScaler.class);
+
     @Override
     public Dataset<E> optimize(Dataset<E> dataset) {
         double min, max;
         Dataset<E> opt = (Dataset<E>) dataset.duplicate();
         Instance orig;
+        Attribute attr;
 
         for (int j = 0; j < dataset.attributeCount(); j++) {
-            min = dataset.getAttribute(j).statistics(StatsNum.MIN);
-            max = dataset.getAttribute(j).statistics(StatsNum.MAX);
+            attr = dataset.getAttribute(j);
+            LOG.info("computing stats for {}", attr.getName());
+            min = attr.statistics(StatsNum.MIN);
+            max = attr.statistics(StatsNum.MAX);
             for (int i = 0; i < dataset.size(); i++) {
                 opt.set(i, j, scaleToRange(dataset.get(i, j), min, max, getTargetMin(), getTargetMax()));
                 if (j == 0) {

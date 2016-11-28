@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.ApproximatorFactory;
 import org.clueminer.approximation.api.DataTransform;
@@ -26,6 +24,8 @@ import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -37,12 +37,12 @@ import org.openide.util.lookup.ServiceProvider;
 public class DatasetTransformation<I extends Instance, O extends Instance> implements DataTransform<I, O> {
 
     private boolean save = false;
-    private static final String name = "approx cubic-exp-poly9";
-    private static final Logger logger = Logger.getLogger(DatasetTransformation.class.getName());
+    private static final String NAME = "approx cubic-exp-poly9";
+    private static final Logger LOG = LoggerFactory.getLogger(DatasetTransformation.class);
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -84,14 +84,13 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
         ph.start(dataset.size());
         TimePoint[] timePoints = dataset.getTimePoints();
         //find max and min values in dataset
-        logger.log(Level.INFO, "starting analysis timepoints {0}", timePoints.length);
+        LOG.info("starting analysis timepoints {}", timePoints.length);
         double[] xAxis = new double[timePoints.length];
         for (int i = 0; i < timePoints.length; i++) {
             xAxis[i] = timePoints[i].getPosition();
         }
         ContinuousInstance item;
 
-        int j = 0;
         ApproximatorFactory am = ApproximatorFactory.getInstance();
         //create attribute for each parameter
         List<Approximator> approx = new ArrayList<>();
@@ -121,7 +120,7 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
             //output
             ph.progress(++analyzeProgress);
         }
-        logger.log(Level.INFO, "approximation finished");
+        LOG.info("approximation finished");
         //save approximation to file
         String prefix = System.getProperty("user.home") /*
                  * FileUtils.LocalFolder()

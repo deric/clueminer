@@ -45,7 +45,7 @@ public class DataScaler<E extends Instance> {
             if (std == null) {
                 throw new RuntimeException("Standartization method " + std + " was not found");
             }
-            LOG.info("scaling dataset {} name: {1}", dataset.getClass().getName(), dataset.getName());
+            LOG.info("scaling dataset {} name: {}", dataset.getClass().getName(), dataset.getName());
             res = std.optimize(dataset);
         }
         if (logScale) {

@@ -1,10 +1,24 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.project;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.ProjectInformation;
@@ -17,6 +31,8 @@ import org.clueminer.spi.WorkspaceDuplicateProvider;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,6 +51,7 @@ public class ProjectControllerImpl implements ProjectController {
     private Project currentProject;
     private final List<WorkspaceListener> listeners;
     private WorkspaceImpl temporaryOpeningWorkspace;
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectControllerImpl.class);
 
     public ProjectControllerImpl() {
 
@@ -228,7 +245,7 @@ public class ProjectControllerImpl implements ProjectController {
         } else if (temporaryOpeningWorkspace != null) {
             return temporaryOpeningWorkspace;
         }
-        Logger.getLogger(ProjectControllerImpl.class.getName()).log(Level.INFO, "no current workspace");
+        LOG.info("no current workspace");
         return null;
     }
 
@@ -248,7 +265,7 @@ public class ProjectControllerImpl implements ProjectController {
         closeCurrentWorkspace();
         getCurrentProject().getLookup().lookup(WorkspaceProviderImpl.class).setCurrentWorkspace(workspace);
         workspace.getLookup().lookup(WorkspaceInformationImpl.class).open();
-        Logger.getLogger(ProjectControllerImpl.class.getName()).log(Level.INFO, "opening workspace");
+        LOG.info("opening workspace");
         //Event
         fireWorkspaceEvent(EventType.SELECT, workspace);
     }
@@ -338,7 +355,7 @@ public class ProjectControllerImpl implements ProjectController {
                     wl.projectActivated(currentProject);
                     break;
                 default:
-                    Logger.getLogger(ProjectControllerImpl.class.getName()).log(Level.WARNING, "unsupported event type {0}", event);
+                    LOG.warn("unsupported event type {}", event);
             }
         }
     }

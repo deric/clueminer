@@ -2,7 +2,6 @@ package org.clueminer.transform;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.clueminer.approximation.CurveApproximator;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.DataTransform;
@@ -15,6 +14,8 @@ import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -26,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class CurveParameters<I extends Instance, O extends Instance> extends LegendreTransformation<I, O> implements DataTransform<I, O> {
 
     private static final String name = "curve parameters";
-    private static final Logger logger = Logger.getLogger(CurveParameters.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(CurveParameters.class);
 
     @Override
     public String getName() {
