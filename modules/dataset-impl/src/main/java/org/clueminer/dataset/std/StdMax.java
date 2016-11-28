@@ -34,11 +34,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = DataStandardization.class)
 public class StdMax<E extends Instance> implements DataStandardization<E> {
 
-    public static final String name = "Maximum";
+    public static final String NAME = "Maximum";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

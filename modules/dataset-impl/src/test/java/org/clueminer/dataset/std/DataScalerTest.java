@@ -51,7 +51,7 @@ public class DataScalerTest {
     public void testStandartize() {
         run(data1, StdDev.name, true);
         run(data1, StdScale.name, true);
-        run(data1, StdMax.name, true);
+        run(data1, StdMax.NAME, true);
         run(data1, StdAbsDev.name, true);
     }
 
@@ -59,7 +59,7 @@ public class DataScalerTest {
     public void testSchool() {
         run(kumarData(), StdDev.name, false);
         run(kumarData(), StdScale.name, false);
-        run(kumarData(), StdMax.name, false);
+        run(kumarData(), StdMax.NAME, false);
         run(kumarData(), StdAbsDev.name, false);
     }
 

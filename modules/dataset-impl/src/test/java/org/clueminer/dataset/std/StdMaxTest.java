@@ -34,7 +34,7 @@ public class StdMaxTest {
     private static final double[][] data2 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, -10}, {-5, -2, 19, 1, 5}};
     private static final double delta = 1e-9;
     private static final StdMax subject = new StdMax();
-    private static final String method = StdMax.name;
+    private static final String method = StdMax.NAME;
 
     public StdMaxTest() {
     }
