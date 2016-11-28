@@ -45,7 +45,6 @@ public class StdMinMax<E extends Instance> extends StdScale implements DataStand
 
         for (int j = 0; j < dataset.attributeCount(); j++) {
             attr = dataset.getAttribute(j);
-            LOG.info("computing stats for {}", attr.getName());
             min = attr.statistics(StatsNum.MIN);
             max = attr.statistics(StatsNum.MAX);
             for (int i = 0; i < dataset.size(); i++) {
