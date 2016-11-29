@@ -19,8 +19,6 @@ package org.clueminer.explorer;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -60,6 +58,8 @@ import org.openide.util.TaskListener;
 import org.openide.util.Utilities;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays something.
@@ -94,7 +94,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     private Dataset<E> dataset;
     private static final RequestProcessor RP = new RequestProcessor("Evolution", 100, false, true);
     private volatile RequestProcessor.Task task;
-    private static final Logger logger = Logger.getLogger(ExplorerTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ExplorerTopComponent.class);
     private ExplorerToolbar toolbar;
     private IconView iconView;
     private ClustComparator comparator;
@@ -227,9 +227,9 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     @Override
     public void taskFinished(Task task) {
-        logger.log(Level.INFO, "evolution finished");
+        LOG.info("evolution finished");
         if (!task.isFinished()) {
-            logger.warning("task should have been already finished");
+            LOG.warn("task should have been already finished");
         }
         toolbar.evolutionFinished();
         //shutdown image workers
@@ -273,7 +273,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                 }
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);
-                logger.log(Level.INFO, "starting evolution...");
+                LOG.info("starting evolution...");
                 task = RP.create(alg);
                 task.addTaskListener(this);
                 task.schedule(0);
@@ -283,7 +283,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     }
 
     private boolean handleCancel() {
-        logger.info("Evolution task was canceled");
+        LOG.info("Evolution task was canceled");
         toolbar.evolutionFinished();
         return true;
     }
@@ -300,7 +300,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     @Override
     public void runClustering(final ClusteringAlgorithm alg, final Dataset<E> data, final Props props) {
-        logger.log(Level.INFO, "starting clustering {0}", alg.getName());
+        LOG.info("starting clustering {0}", alg.getName());
         if (data == null) {
             throw new RuntimeException("missing dataset");
         }
@@ -308,8 +308,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
             @Override
             public void run() {
-                logger.log(Level.INFO, "clustering {0} [{1}x{2}]",
-                        new Object[]{data.getName(), data.size(), data.attributeCount()});
+                LOG.info("clustering {} [{}x{}]", data.getName(), data.size(), data.attributeCount());
                 exec.setAlgorithm(alg);
                 Clustering<E, C> clustering;
                 ClusteringType ct = ClusteringType.parse(props.get(AlgParams.CLUSTERING_TYPE, "ROWS_CLUSTERING"));
@@ -321,8 +320,8 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                     clustering = exec.clusterRows(data, props);
                     children.addClustering(clustering);
                 }
-                logger.log(Level.INFO, "finished clustering dataset {1} with algorithm {0}",
-                        new Object[]{alg.getName(), data.getName()});
+                LOG.info("finished clustering dataset {} with algorithm {}",
+                        data.getName(), alg.getName());
             }
         });
         task.schedule(0);

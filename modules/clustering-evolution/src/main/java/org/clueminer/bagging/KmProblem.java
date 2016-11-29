@@ -21,8 +21,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -35,6 +33,8 @@ import org.clueminer.evolution.mo.MoSolution;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 
@@ -47,7 +47,7 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
     private static final long serialVersionUID = 8835095132879570407L;
 
     protected final KmEvolution evolution;
-    private static final Logger logger = Logger.getLogger(KmProblem.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(KmProblem.class);
 
     private HashSet<String> blacklist = new HashSet<>();
 
@@ -90,7 +90,7 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
                 if (!blacklist.contains(p.getName())) {
                     mapping.put(i, p.getName());
                     lp.add(i, p);
-                    logger.log(Level.INFO, "param {0}: {1}", new Object[]{i, p.getName()});
+                    LOG.info("param {}: {}", i, p.getName());
                     switch (p.getType()) {
                         case STRING:
                             ServiceFactory f = getFactory(p);
@@ -99,16 +99,16 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
                             lower.add(i, 0);
                             upper.add(i, size - 1);
                             combinations *= size;
-                            logger.log(Level.INFO, "possible values: {0}", size);
+                            LOG.info("possible values: {}", size);
                             break;
                         case BOOLEAN:
                             lower.add(i, 0);
                             upper.add(i, 1);
                             combinations *= 2;
-                            logger.log(Level.INFO, "possible values: {0}", 2);
+                            LOG.info("possible values: {}", 2);
                             break;
                         case INTEGER:
-                            logger.log(Level.INFO, "min: {0}", p.getMin());
+                            LOG.info("min: {}", p.getMin());
                             if (!Double.isNaN(p.getMin())) {
                                 lower.add(i, (int) p.getMin());
                             }
@@ -116,14 +116,14 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
                             if (defaultProp != null && "k".equals(p.getName()) && defaultProp.containsKey("max_k")) {
                                 upper.add(i, defaultProp.getInt("max_k"));
                             } else {
-                                logger.log(Level.INFO, "max: {0}", p.getMax());
+                                LOG.info("max: {}", p.getMax());
                                 if (!Double.isNaN(p.getMax())) {
                                     upper.add(i, (int) p.getMax());
                                 }
                             }
                             int pos = upper.get(i) - lower.get(i);
                             combinations *= pos;
-                            logger.log(Level.INFO, "possible values: {0}", pos);
+                            LOG.info("possible values: {}", pos);
                             break;
                         default:
                             throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
@@ -134,7 +134,7 @@ public class KmProblem extends BaseIntProblem implements IntegerProblem {
                 Exceptions.printStackTrace(ex);
             }
         }
-        logger.log(Level.INFO, "number of combinations = {0}", combinations);
+        LOG.info("number of combinations = {}", combinations);
         setNumberOfVariables(lp.size());
         params = lp.toArray(new Parameter[0]);
         lowerLimit = Ints.toArray(lower);

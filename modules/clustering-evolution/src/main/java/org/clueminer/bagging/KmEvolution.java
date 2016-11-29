@@ -18,13 +18,13 @@ package org.clueminer.bagging;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.evolution.mo.MoEvolution;
 import org.clueminer.evolution.mo.MoSolution;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -43,7 +43,7 @@ import org.uma.jmetal.util.comparator.DominanceComparator;
  */
 public class KmEvolution extends MoEvolution {
 
-    private static final Logger logger = Logger.getLogger(KmEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(KmEvolution.class);
     private int numSolutions = 10;
     private List<Solution> moPop;
 
@@ -69,14 +69,14 @@ public class KmEvolution extends MoEvolution {
         if (getNumObjectives() < 2) {
             throw new RuntimeException("provide at least 2 objectives. currently we have just " + getNumObjectives());
         }
-        logger.log(Level.INFO, "starting evolution {0}", getName());
-        logger.log(Level.INFO, "variables: {0}", problem.getNumberOfVariables());
-        logger.log(Level.INFO, "objectives: {0}", getNumObjectives());
-        logger.log(Level.INFO, "generations: {0}", getGenerations());
-        logger.log(Level.INFO, "population: {0}", getPopulationSize());
-        logger.log(Level.INFO, "requested solutions: {0}", getNumSolutions());
+        LOG.info("starting evolution {}", getName());
+        LOG.info("variables: {}", problem.getNumberOfVariables());
+        LOG.info("objectives: {}", getNumObjectives());
+        LOG.info("generations: {}", getGenerations());
+        LOG.info("population: {}", getPopulationSize());
+        LOG.info("requested solutions: {}", getNumSolutions());
         for (int i = 0; i < getNumObjectives(); i++) {
-            logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
+            LOG.info("objective {}: {}", i, getObjective(i).getName());
         }
         MoSolution.setSolutionsCount(0);
 
@@ -98,7 +98,7 @@ public class KmEvolution extends MoEvolution {
                 .build();
 
         fireEvolutionStarted(this);
-        logger.info("starting evolution");
+        LOG.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
         //try {
         moAlg.run();
@@ -106,7 +106,7 @@ public class KmEvolution extends MoEvolution {
          throw new RuntimeException("clustering failed", e);
          }*/
         moPop = ((NSGAII) moAlg).getResult();
-        logger.log(Level.INFO, "result size: {0}", moPop.size());
+        LOG.info("result size: {}", moPop.size());
         fireFinalResult(moPop);
         int i = 0;
         for (Solution s : moPop) {
@@ -123,7 +123,7 @@ public class KmEvolution extends MoEvolution {
         }
         //long computingTime = algorithmRunner.getComputingTime();
         //System.out.println("computing time: " + computingTime);
-        logger.log(Level.INFO, "explored solutions: {0}", MoSolution.getSolutionsCount());
+        LOG.info("explored solutions: {}", MoSolution.getSolutionsCount());
         /*
          int numberOfDimensions = getNumObjectives();
          Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);

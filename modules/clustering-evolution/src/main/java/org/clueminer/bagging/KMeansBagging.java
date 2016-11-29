@@ -18,8 +18,6 @@ package org.clueminer.bagging;
 
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Algorithm;
@@ -36,6 +34,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.mo.MoSolution;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.solution.Solution;
 
 /**
@@ -62,7 +62,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
     private int bagging;
 
-    private static final Logger logger = Logger.getLogger(KMeansBagging.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(KMeansBagging.class);
 
     private Random random;
 
@@ -116,7 +116,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
         //result store
         String consensus = props.get(CONSENSUS, "co-association HAC");
         Consensus reducer = ConsensusFactory.getInstance().getProvider(consensus);
-        logger.log(Level.INFO, "consensus:{0}", consensus);
+        LOG.info("consensus:{}", consensus);
         Clustering<E, C> res = null;
         //Clustering<? extends Cluster> res = Clusterings.newList(k);
         switch (initSet) {

@@ -16,19 +16,17 @@
  */
 package org.clueminer.bagging;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.AlgParams;
+import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Consensus;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
@@ -40,6 +38,8 @@ import org.clueminer.math.Matrix;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Inspired by Jain's evidence accumulation
@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Consensus.class)
 public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> extends CoAssocMatrix<E, C> implements Consensus<E, C> {
 
-    private static final Logger logger = Logger.getLogger(CoAssociationReduce.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(CoAssociationReduce.class);
     public static final String name = "co-association HAC";
 
     @Override
@@ -107,9 +107,9 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
 
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
-        logger.log(Level.FINER, "cutting dendrogram with {0}", strategy.getName());
+        logger.debug("cutting dendrogram with {}", strategy.getName());
         double cut = result.findCutoff(strategy);
-        logger.log(Level.FINER, "found cutoff {0}, resulting clusters {1}", new Object[]{cut, result.getClustering().size()});
+        logger.debug("found cutoff {}, resulting clusters {}", cut, result.getClustering().size());
     }
 
     protected CutoffStrategy getCutoffStrategy(Props params) {
