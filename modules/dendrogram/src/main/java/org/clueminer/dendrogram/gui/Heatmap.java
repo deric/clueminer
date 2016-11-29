@@ -27,8 +27,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -44,6 +42,8 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dendrogram.DistributionCollector;
 import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to render a heatmap of given dendroData.
@@ -85,6 +85,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private ColorScheme colorScheme;
     private final DistributionCollector distribution;
     private boolean collectData = false;
+    private static final Logger LOG = LoggerFactory.getLogger(Heatmap.class);
 
     public Heatmap() {
         setBackground(Color.GRAY);
@@ -607,7 +608,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                     size.width, size.height,
                     null);
         } else {
-            Logger.getLogger(Heatmap.class.getName()).log(Level.SEVERE, "missing buffered image {0}", size);
+            LOG.error("missing buffered image {}", size);
         }
 
 

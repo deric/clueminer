@@ -17,7 +17,6 @@
 package org.clueminer.dgram.vis;
 
 import java.awt.Image;
-import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.HC;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
@@ -33,6 +32,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.openide.util.RequestProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -44,13 +45,13 @@ import org.openide.util.RequestProcessor;
  */
 public class DGramVis<E extends Instance, C extends Cluster<E>> {
 
-    private static final Logger log = Logger.getLogger(DGramVis.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(DGramVis.class);
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
     public Image generate(final Clustering<E, C> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
-            log.warning("missing mapping, can't generate preview");
+            log.warn("missing mapping, can't generate preview");
             //generating clustering does not help
             //TODO return error image
             return loading();

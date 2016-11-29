@@ -18,14 +18,14 @@ package org.clueminer.dgram.vis;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.RequestProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,7 +39,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private static ImageFactory instance;
     private BlockingQueue<ImageTask> queue;
     private static final RequestProcessor RP = new RequestProcessor("Dendrogram image preview");
-    private static final Logger logger = Logger.getLogger(ImageFactory.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ImageFactory.class);
     private int workerCnt = 0;
 
     public static ImageFactory getInstance() {
@@ -57,7 +57,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private void initWorkers(int numWorkers) {
         queue = new LinkedBlockingQueue<>();
         workers = new ImageWorker[numWorkers];
-        logger.log(Level.INFO, "intializing {0} workers", numWorkers);
+        LOG.info("intializing {} workers", numWorkers);
         ensure(numWorkers);
     }
 
@@ -117,7 +117,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
      * Stop workers and free resources
      */
     public void shutdown() {
-        logger.log(Level.INFO, "stopping {0} workers", workerCnt);
+        LOG.info("stopping {} workers", workerCnt);
         if (workerCnt > 0) {
             for (ImageWorker worker : workers) {
                 if (worker != null) {

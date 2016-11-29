@@ -21,7 +21,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramDataEvent;
@@ -33,6 +32,8 @@ import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDataListener, TreeListener {
 
@@ -41,7 +42,7 @@ public class ColumnAnnotation extends AbstractAnnotation implements DendrogramDa
     private int maxTextWidth;
     private int firstSelectedColumn = -1;
     private int lastSelectedColumn = -1;
-    private static final Logger log = Logger.getLogger(ColumnAnnotation.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ColumnAnnotation.class);
 
     public ColumnAnnotation(DendroPane p) {
         super(p);

@@ -21,7 +21,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -36,6 +35,8 @@ import org.clueminer.gui.BPanel;
 import org.clueminer.std.StdScale;
 import org.clueminer.utils.Props;
 import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -50,7 +51,7 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
     private final StdScale scale;
     private double[] score;
     private HierarchicalResult hierarchicalResult;
-    private static final Logger logger = Logger.getLogger(SilhouettePlot.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SilhouettePlot.class);
 
     public SilhouettePlot(boolean fit) {
         super();
@@ -254,7 +255,7 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
     @Override
     public void clusteringChanged(Clustering clust) {
         //setClustering(clust);
-        logger.info("got clustering without hierarchical data");
+        LOG.info("got clustering without hierarchical data");
     }
 
     @Override

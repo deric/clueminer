@@ -23,8 +23,6 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.font.FontRenderContext;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -37,6 +35,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.gui.BPanel;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Color stripe for showing assignments to clusters
@@ -54,7 +54,7 @@ public class ClusterAssignment<E extends Instance, C extends Cluster<E>> extends
     protected boolean drawBorders = true;
     private boolean drawLabels = true;
     protected final Insets insets = new Insets(0, 10, 0, 10);
-    private static final Logger logger = Logger.getLogger(ClusterAssignment.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterAssignment.class);
     protected Font font = new Font("verdana", Font.BOLD, 12);
     protected int lineHeight;
     private final int labelOffset = 5;
@@ -81,7 +81,7 @@ public class ClusterAssignment<E extends Instance, C extends Cluster<E>> extends
             int[] clusters = hieraRes.getClusters(0);
             int i = 0;
             if (clusters == null || clusters.length == 0) {
-                logger.log(Level.INFO, "clusters size is 0!!!");
+                LOG.info("clusters size is 0!!!");
                 return;
             }
             g.setFont(font);

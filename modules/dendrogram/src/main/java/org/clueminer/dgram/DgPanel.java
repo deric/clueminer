@@ -25,8 +25,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLayeredPane;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.Clustering;
@@ -57,6 +55,8 @@ import org.clueminer.dendrogram.tree.VerticalScale;
 import org.clueminer.dgram.eval.SilhouettePlot;
 import org.clueminer.events.ListenerList;
 import org.clueminer.gui.BPanel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -110,7 +110,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected Insets insets = new Insets(5, 5, 40, 5);
     private int cutoffSliderSize = 6;
     private final transient ListenerList<DendrogramDataListener> dataListeners = new ListenerList<>();
-    private static final Logger logger = Logger.getLogger(DgPanel.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DgPanel.class);
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -157,7 +157,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
-        logger.log(Level.FINER, "dg panel size {0} x {1}", new Object[]{req.width, req.height});
+        logger.debug("dg panel size {} x {}", req.width, req.height);
 
         if (fitToPanel) {
             //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
@@ -890,6 +890,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         return dataListeners;
     }
 
+    @Override
     public String toString() {
         return this.getClass().getSimpleName();
     }

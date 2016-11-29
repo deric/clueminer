@@ -22,8 +22,6 @@ import java.awt.Insets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringListener;
@@ -46,6 +44,8 @@ import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.Lookups;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays dendrograms
@@ -82,7 +82,7 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
     private DendroViewer frame;
     private DendroToolbar toolbar;
     private final InstanceContent content = new InstanceContent();
-    private static final Logger logger = Logger.getLogger(DendroViewTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DendroViewTopComponent.class);
 
     public DendroViewTopComponent() {
         initComponents();
@@ -174,7 +174,7 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
         pc.getCurrentProject().add(Lookups.singleton(clust));
-        logger.log(Level.INFO, "adding to lookup clustring {0} - {1}", new Object[]{clust.size(), clust.getName()});
+        LOG.info("adding to lookup clustring {} - {}", clust.size(), clust.getName());
         content.set(Collections.singleton(clust), null);
     }
 
@@ -186,7 +186,7 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
             pc.getCurrentProject().add(Lookups.singleton(hclust));
             //System.out.println("adding clustering result to lookup");
             Clustering c = hclust.getClustering();
-            logger.log(Level.INFO, "hclust update: {0}", c.size());
+            LOG.info("hclust update: {}", c.size());
             content.set(Collections.singleton(c), null);
         }
 

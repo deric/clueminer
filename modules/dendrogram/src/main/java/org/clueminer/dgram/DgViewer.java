@@ -28,8 +28,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
@@ -49,6 +47,8 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.utils.Exportable;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Component for dendrogram visualization
@@ -67,7 +67,7 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
     protected DendrogramMapping data;
     private boolean fitToPanel = false;
     private final transient EventListenerList clusteringListeners = new EventListenerList();
-    private static final Logger logger = Logger.getLogger(DgViewer.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DgViewer.class);
 
     public DgViewer() {
         setBackground(Color.WHITE);
@@ -361,7 +361,7 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = bi.createGraphics();
         dendrogramPanel.render(g, width, height);
-        logger.log(Level.INFO, "exporting dendrogram to bitmap, export size: {0}x{1}", new Object[]{width, height});
+        LOG.info("exporting dendrogram to bitmap, export size: {}x{}", width, height);
         if (prev != null) {
             //combine images
             g.drawImage(prev, dendroDim.width, 0, null);
