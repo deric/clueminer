@@ -16,6 +16,8 @@
  */
 package org.clueminer.flow;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -48,12 +50,15 @@ import org.openide.windows.TopComponent;
 })
 public final class FlowTopComponent extends TopComponent {
 
+    private FlowFrame frame;
+    private FlowToolbar toolbar;
+
     public FlowTopComponent() {
         initComponents();
         setName(Bundle.CTL_FlowTopComponent());
         setToolTipText(Bundle.HINT_FlowTopComponent());
         putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
-
+        initialize();
     }
 
     /** This method is called from within the constructor to
@@ -88,6 +93,27 @@ public final class FlowTopComponent extends TopComponent {
         // TODO add custom code on component closing
     }
 
+    private void initialize() {
+        frame = new FlowFrame();
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(frame, c);
+
+        toolbar = new FlowToolbar(frame);
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weighty = 0;
+        add(toolbar, c);
+    }
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -99,4 +125,5 @@ public final class FlowTopComponent extends TopComponent {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
     }
+
 }
