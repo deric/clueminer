@@ -82,11 +82,6 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dendrogram</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>clustering-api</artifactId>
             <version>${project.version}</version>
         </dependency>

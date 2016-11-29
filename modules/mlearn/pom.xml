@@ -17,7 +17,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-annotations-common</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -40,19 +39,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dendrogram</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-lookup</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -62,17 +54,14 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>${netbeans.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
