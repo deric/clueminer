@@ -217,7 +217,6 @@
         <module>modules/project-api</module>
         <module>modules/project-impl</module>
         <module>modules/importer-api</module>
-        <module>modules/dendrogram</module>
         <module>modules/perspective-api</module>
         <module>modules/perspective-impl</module>
         <module>modules/approximation-api</module>
