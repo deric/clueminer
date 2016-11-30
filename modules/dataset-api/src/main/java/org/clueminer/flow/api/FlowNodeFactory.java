@@ -14,45 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.flow;
+package org.clueminer.flow.api;
 
-import org.clueminer.flow.api.FlowNode;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 
 /**
  *
  * @author deric
  */
-public class FlowContainerNode extends AbstractNode {
+public class FlowNodeFactory extends ServiceFactory<FlowNode> {
 
-    public FlowContainerNode(Children children) {
-        super(children);
+    private static FlowNodeFactory instance;
+
+    public static FlowNodeFactory getInstance() {
+        if (instance == null) {
+            instance = new FlowNodeFactory();
+        }
+        return instance;
     }
 
-    public FlowContainerNode(Children children, Lookup lookup) {
-        super(children, lookup);
-    }
-
-    @Override
-    public boolean canCut() {
-        return false;
-    }
-
-    @Override
-    public boolean canCopy() {
-        return true;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return getLookup().lookup(FlowNode.class).getName();
+    private FlowNodeFactory() {
+        providers = new LinkedHashMap<>();
+        Collection<? extends FlowNode> list = Lookup.getDefault().lookupAll(FlowNode.class);
+        for (FlowNode c : list) {
+            providers.put(c.getName(), c);
+        }
+        sort();
     }
 
     @Override
-    public boolean canDestroy() {
-        return false;
+    public FlowNode[] getAllArray() {
+        return providers.values().toArray(new FlowNode[0]);
     }
-
 }

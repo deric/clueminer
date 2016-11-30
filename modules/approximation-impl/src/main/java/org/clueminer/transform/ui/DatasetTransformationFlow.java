@@ -14,105 +14,105 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.gui;
+package org.clueminer.transform.ui;
 
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.flow.api.FlowNode;
+import org.clueminer.transform.DatasetTransformation;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
  */
-public class ClusteringRunner implements Runnable {
+@ServiceProvider(service = FlowNode.class)
+public class DatasetTransformationFlow implements FlowNode {
 
-    private ClusteringDialog config = null;
-    private final ClusterAnalysis analysis;
+    private final Class[] inputs = new Class[]{Dataset.class};
+    private final Class[] outputs = new Class[]{Dataset.class};
+    private Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
-    private static final Logger LOG = LoggerFactory.getLogger(ClusteringRunner.class);
 
-    public ClusteringRunner(ClusterAnalysis clust, ClusteringDialog config) {
-        this.analysis = clust;
-        this.config = config;
+    @Override
+    public String getName() {
+        return DatasetTransformation.NAME;
     }
 
     @Override
-    public void run() {
-        Dataset<? extends Instance> dataset;
-        Props params = config.getParams();
+    public Object[] getInputs() {
+        return inputs;
+    }
 
-        String datasetTransform = params.get("transformations", "");
-        String[] trans = null;
-        LOG.info("using trasformations: {}", datasetTransform);
-        if (datasetTransform.length() > 0) {
-            trans = datasetTransform.split(",");
-        }
+    @Override
+    public Object[] getOutputs() {
+        return outputs;
+    }
 
-        if (!analysis.hasDataset()) {
-            throw new RuntimeException("missing dataset!");
-        }
+    @Override
+    public Object[] execute(Object[] input, Props params) {
+        checkInputs(input);
+        Object[] ret = new Object[1];
 
-        Dataset<? extends Instance> data = analysis.getDataset();
+        Dataset<? extends Instance> data = (Dataset<? extends Instance>) input[0];
         LOG.info("dataset size: {}", data.size());
         LOG.info("dataset has {} attributes", data.attributeCount());
 
         if (data.isEmpty() || data.attributeCount() == 0) {
             throw new RuntimeException("dataset is empty!");
         }
-        if (trans != null) {
-            for (String transformation : trans) {
-                //make sure we don't have old data
-                transform = null;
-                //check if there's preloaded dataset available
-                transform = data.getChild(transformation);
-                if (transform == null) {
-                    preprocessingFinished = false;
-                    //run analysis and wait
-                    final Object lock = new Object();
+        String transformation = params.get("transformation", "");
 
-                    runPreprocessing(lock, data, transformation);
+        //make sure we don't have old data
+        transform = null;
+        //check if there's preloaded dataset available
+        transform = data.getChild(transformation);
+        if (transform == null) {
+            preprocessingFinished = false;
+            //run analysis and wait
+            final Object lock = new Object();
 
-                    synchronized (lock) {
-                        while (!preprocessingFinished) {
-                            try {
-                                lock.wait();
-                            } catch (InterruptedException ex) {
-                                Exceptions.printStackTrace(ex);
-                            }
-                        }
+            runPreprocessing(lock, data, transformation);
+
+            synchronized (lock) {
+                while (!preprocessingFinished) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
                 }
-                //System.out.println("trasformed dataset " + transform.getClass().toString() + " name: " + transform.getName() + ", size = " + transform.size());
-
-                //wait until real data are loaded
-                if ((transform instanceof Dataset) && transform.isEmpty()) {
-                    LOG.info("waiting for data");
-                    while ((transform = data.getChild(datasetTransform)) == null) {
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException ex) {
-                            Exceptions.printStackTrace(ex);
-                        }
-                    }
-                }
-                data = transform;
             }
-            dataset = transform;
-        } else {
-            dataset = data;
         }
-        analysis.execute(params, dataset);
+        ret[0] = transform;
+
+        return ret;
+    }
+
+    private void checkInputs(Object[] in) {
+        if (in.length != inputs.length) {
+            throw new RuntimeException("expected " + inputs.length + " input(s), got " + in.length);
+        }
+        //type check
+        int i = 0;
+        /* for (Object obj : in) {            if (!obj.getClass().equals(inputs[i].getClass())) {
+                throw new RuntimeException("expected " + inputs[i].getClass().toString() + " input(s), got " + in.getClass().toString());
+            }
+            i++;
+        } */
+
     }
 
     private void runPreprocessing(final Object lock, final Dataset<? extends Instance> data, String datasetTransform) {
@@ -144,4 +144,5 @@ public class ClusteringRunner implements Runnable {
         });
         taskAnalyze.schedule(0);
     }
+
 }

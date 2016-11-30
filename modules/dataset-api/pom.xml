@@ -68,6 +68,7 @@
                         <publicPackage>org.clueminer.distance.api</publicPackage>
                         <publicPackage>org.clueminer.events</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>
+                        <publicPackage>org.clueminer.flow.api</publicPackage>
                         <publicPackage>org.clueminer.neighbor</publicPackage>
                         <publicPackage>org.clueminer.types</publicPackage>
                         <publicPackage>org.clueminer.utils</publicPackage>

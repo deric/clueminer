@@ -1,11 +1,25 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.transform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.approximation.LegendreApproximator;
 import org.clueminer.approximation.api.Approximator;
 import org.clueminer.approximation.api.DataTransform;
@@ -21,6 +35,8 @@ import org.clueminer.std.StdScale;
 import org.clueminer.types.TimePoint;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -33,7 +49,7 @@ public class LegendreTransformation<I extends Instance, O extends Instance> impl
 
     private static String name = "ortho-polynomials (Legendre)";
     protected int degree;
-    private static final Logger logger = Logger.getLogger(LegendreTransformation.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LegendreTransformation.class);
 
     public LegendreTransformation() {
         degree = 5;
@@ -51,10 +67,10 @@ public class LegendreTransformation<I extends Instance, O extends Instance> impl
     @Override
     public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph) {
         Timeseries<ContinuousInstance> d = (Timeseries<ContinuousInstance>) dataset;
-        logger.log(Level.INFO, "starting transformation {0}", name);
+        LOG.info("starting transformation {}", name);
         ph.start(dataset.size());
         analyzeTimeseries(d, output, ph, 0);
-        logger.log(Level.INFO, "finished transformation {0}", name);
+        LOG.info("finished transformation {}", name);
         ph.finish();
     }
 
@@ -158,7 +174,7 @@ public class LegendreTransformation<I extends Instance, O extends Instance> impl
     @Override
     public Dataset<O> createDefaultOutput(Dataset<I> input) {
         //number of attributes is some default, could be expanded
-        logger.log(Level.INFO, "input size: {0} attrs {1}", new Object[]{input.size(), input.attributeCount()});
+        LOG.info("input size: {} attrs {}", input.size(), input.attributeCount());
         return new AttrHashDataset<>(input.size());
     }
 

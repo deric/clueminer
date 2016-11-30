@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.api.flow;
+package org.clueminer.flow.api;
+
+import org.clueminer.utils.Props;
 
 /**
  * Basic element of data processing pipeline.
@@ -28,4 +30,13 @@ public interface FlowNode {
     Object[] getInputs();
 
     Object[] getOutputs();
+
+    /**
+     * Execute node's operation
+     *
+     * @param inputs array of input data
+     * @param props  key-value configuration
+     * @return
+     */
+    Object[] execute(Object[] inputs, Props props);
 }
