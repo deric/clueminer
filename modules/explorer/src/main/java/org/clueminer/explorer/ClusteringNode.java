@@ -23,8 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -54,6 +52,8 @@ import org.openide.util.TaskListener;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.PasteType;
 import org.openide.util.lookup.Lookups;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -66,7 +66,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     private Image image;
     DendrogramMapping mapping;
     private boolean rendering = false;
-    private static final Logger logger = Logger.getLogger(ClusteringNode.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusteringNode.class);
     private final ReentrantLock lock = new ReentrantLock();
     private static final RequestProcessor RP = new RequestProcessor("clustering properties");
 
@@ -209,7 +209,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         taskMetrics.addTaskListener(new TaskListener() {
             @Override
             public void taskFinished(Task task) {
-                logger.info("finished computing properties");
+                LOG.info("finished computing properties");
                 firePropertySetsChange(null, null);
             }
         });
@@ -230,7 +230,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     private Dataset<E> getDataset(Clustering<E, C> clustering) {
         Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
         if (dataset == null) {
-            logger.warning("no dataset in lookup");
+            LOG.warn("no dataset in lookup");
         }
         return dataset;
     }
@@ -275,8 +275,8 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
                 sheet.put(set);
             } else {
-                logger.log(Level.WARNING, "dataset {0} seem to have {1} classes",
-                        new Object[]{dataset.getName(), dataset.getClasses().size()});
+                LOG.warn("dataset {} seem to have {} classes",
+                        dataset.getName(), dataset.getClasses().size());
             }
         }
     }

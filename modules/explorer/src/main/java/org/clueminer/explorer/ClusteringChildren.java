@@ -17,8 +17,6 @@
 package org.clueminer.explorer;
 
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.evolution.api.Evolution;
 import org.openide.nodes.Children;
@@ -26,6 +24,8 @@ import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -34,7 +34,7 @@ import org.openide.util.LookupListener;
 public class ClusteringChildren extends Children.Keys<Clustering> {
 
     private Lookup.Result<Clustering> result;
-    private static final Logger logger = Logger.getLogger(ClusteringChildren.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusteringChildren.class);
 
     public ClusteringChildren() {
 
@@ -45,7 +45,7 @@ public class ClusteringChildren extends Children.Keys<Clustering> {
         result.addLookupListener(new LookupListener() {
             @Override
             public void resultChanged(LookupEvent evt) {
-                logger.log(Level.INFO, "clust child lookup event! {0}", evt);
+                LOG.info("clust child lookup event! {}", evt);
                 addNotify();
             }
         });
@@ -65,7 +65,7 @@ public class ClusteringChildren extends Children.Keys<Clustering> {
                 setKeys(coll);
             }
         } else {
-            logger.log(Level.SEVERE, "clustering result is null!");
+            LOG.error("clustering result is null!");
         }
     }
 

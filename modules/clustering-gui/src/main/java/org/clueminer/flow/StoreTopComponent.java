@@ -21,44 +21,43 @@ import java.awt.Insets;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.explorer.view.BeanTreeView;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * Top component which displays components available for data pipeline.
  */
 @ConvertAsProperties(
-        dtd = "-//org.clueminer.flow//Flow//EN",
+        dtd = "-//org.clueminer.flow//Store//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "FlowTopComponent",
-        iconBase = "org/clueminer/flow/flow-16.png",
+        preferredID = "StoreTopComponent",
+        iconBase = "org/clueminer/flow/node-store16.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "editor", openAtStartup = true)
-@ActionID(category = "Window", id = "org.clueminer.flow.FlowTopComponent")
+@TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
+@ActionID(category = "Window", id = "org.clueminer.flow.StoreTopComponent")
 @ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_FlowAction",
-        preferredID = "FlowTopComponent"
+        displayName = "#CTL_StoreAction",
+        preferredID = "StoreTopComponent"
 )
 @Messages({
-    "CTL_FlowAction=Flow",
-    "CTL_FlowTopComponent=Flow Window",
-    "HINT_FlowTopComponent=This is a Flow window"
+    "CTL_StoreAction=Node Store",
+    "CTL_StoreTopComponent=Node Store",
+    "HINT_StoreTopComponent=Components for data pipeline"
 })
-public final class FlowTopComponent extends TopComponent {
+public final class StoreTopComponent extends TopComponent {
 
-    private FlowFrame frame;
-    private FlowToolbar toolbar;
+    private BeanTreeView treeView;
 
-    public FlowTopComponent() {
+    public StoreTopComponent() {
         initComponents();
-        setName(Bundle.CTL_FlowTopComponent());
-        setToolTipText(Bundle.HINT_FlowTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
-        initialize();
+        setName(Bundle.CTL_StoreTopComponent());
+        setToolTipText(Bundle.HINT_StoreTopComponent());
+        init();
     }
 
     /** This method is called from within the constructor to
@@ -93,27 +92,6 @@ public final class FlowTopComponent extends TopComponent {
         // TODO add custom code on component closing
     }
 
-    private void initialize() {
-        frame = new FlowFrame();
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.fill = GridBagConstraints.BOTH;
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        c.weightx = 1.0;
-        c.weighty = 1.0;
-        c.insets = new Insets(0, 0, 0, 0);
-        add(frame, c);
-
-        toolbar = new FlowToolbar(frame);
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0;
-        add(toolbar, c);
-    }
-
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -126,4 +104,18 @@ public final class FlowTopComponent extends TopComponent {
         // TODO read your settings according to their version
     }
 
+    private void init() {
+        treeView = new BeanTreeView();
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.insets = new Insets(0, 0, 0, 0);
+        add(treeView, c);
+    }
 }

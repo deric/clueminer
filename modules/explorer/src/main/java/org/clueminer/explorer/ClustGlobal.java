@@ -19,14 +19,14 @@ package org.clueminer.explorer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.openide.util.LookupListener;
 public class ClustGlobal extends Children.Keys<Clustering> {
 
     private Lookup.Result<Clustering> result;
-    private static final Logger logger = Logger.getLogger(ClustGlobal.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClustGlobal.class);
     private Set<Clustering> all = new HashSet<>(5);
 
     public ClustGlobal() {
@@ -68,7 +68,7 @@ public class ClustGlobal extends Children.Keys<Clustering> {
                 setKeys(all);
             }
         } else {
-            logger.log(Level.SEVERE, "clustering result is null!");
+            LOG.error("clustering result is null!");
         }
     }
 

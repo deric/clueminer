@@ -18,8 +18,6 @@ package org.clueminer.explorer;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -33,6 +31,8 @@ import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Doesn't work with Children.SortedMap<>
@@ -44,7 +44,7 @@ import org.openide.util.Lookup;
 public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Children.SortedArray implements EvolutionListener {
 
     private Lookup.Result<Clustering> result;
-    private static final Logger logger = Logger.getLogger(ClustSorted.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClustSorted.class);
     private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
     private final Project project;
     //private Set<Clustering> all = new HashSet<Clustering>(5);
@@ -71,7 +71,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
      */
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
-        logger.log(Level.INFO, "best in generation {0}: {1} ext: {2}", new Object[]{generationNum, population.getAvgFitness(), external});
+        LOG.info("best in generation {}: {} ext: {}", generationNum, population.getAvgFitness(), external);
         addClustering(population.getBestIndividual().getClustering());
     }
 
@@ -109,7 +109,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
             if (!map.containsValue(hash)) {
                 addClustering(c);
             } else {
-                logger.log(Level.INFO, "ignoring {0} clust: {1}", new Object[]{hash, c.getName()});
+                LOG.info("ignoring {} clust: {}", hash, c.getName());
             }
             if (!toKeep.contains(c)) {
                 toKeep.add(c);
