@@ -21,6 +21,7 @@ import java.awt.Insets;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.explorer.ExplorerManager;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -48,7 +49,7 @@ import org.openide.windows.TopComponent;
     "CTL_FlowTopComponent=Flow Window",
     "HINT_FlowTopComponent=This is a Flow window"
 })
-public final class FlowTopComponent extends TopComponent {
+public final class FlowTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private FlowFrame frame;
     private FlowToolbar toolbar;
@@ -115,6 +116,11 @@ public final class FlowTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public ExplorerManager getExplorerManager() {
+        return frame.getExplorerManager();
     }
 
 }

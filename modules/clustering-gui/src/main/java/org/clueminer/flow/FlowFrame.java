@@ -16,7 +16,13 @@
  */
 package org.clueminer.flow;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.JPanel;
+import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.AbstractNode;
 
 /**
  *
@@ -24,12 +30,35 @@ import javax.swing.JPanel;
  */
 public class FlowFrame extends JPanel {
 
+    private final transient ExplorerManager mgr = new ExplorerManager();
+    private AbstractNode root;
+    private BeanTreeView treeView;
+
+
     public FlowFrame() {
         initComponents();
     }
 
     private void initComponents() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 1;
+        c.gridwidth = 1;
+        c.gridheight = 1;
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.insets = new Insets(0, 0, 0, 0);
 
+        treeView = new BeanTreeView();
+        treeView.setRootVisible(false);
+        add(treeView, c);
+    }
+
+    public ExplorerManager getExplorerManager() {
+        return mgr;
     }
 
 }
