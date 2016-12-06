@@ -39,15 +39,15 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "explorer", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.flow.FlowTopComponent")
-@ActionReference(path = "Menu/Window" /* , position = 333 */)
+@ActionReference(path = "Menu/Window", position = 20)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_FlowAction",
         preferredID = "FlowTopComponent"
 )
 @Messages({
     "CTL_FlowAction=Flow",
-    "CTL_FlowTopComponent=Flow Window",
-    "HINT_FlowTopComponent=This is a Flow window"
+    "CTL_FlowTopComponent=Analysis Flow",
+    "HINT_FlowTopComponent=Data processing flow"
 })
 public final class FlowTopComponent extends TopComponent implements ExplorerManager.Provider {
 

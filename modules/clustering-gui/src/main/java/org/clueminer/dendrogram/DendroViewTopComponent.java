@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
         iconBase = "org/clueminer/clustering/resources/clustering16.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "properties", openAtStartup = true)
+@TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.dendrogram.DendroViewTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
