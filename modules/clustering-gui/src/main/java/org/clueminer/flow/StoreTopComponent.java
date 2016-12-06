@@ -18,12 +18,19 @@ package org.clueminer.flow;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import org.clueminer.flow.api.FlowNode;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.BeanTreeView;
+import org.openide.nodes.AbstractNode;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays components available for data pipeline.
@@ -37,7 +44,7 @@ import org.openide.windows.TopComponent;
         iconBase = "org/clueminer/flow/node-store16.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
+@TopComponent.Registration(mode = "explorer", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.flow.StoreTopComponent")
 @ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -49,14 +56,20 @@ import org.openide.windows.TopComponent;
     "CTL_StoreTopComponent=Node Store",
     "HINT_StoreTopComponent=Components for data pipeline"
 })
-public final class StoreTopComponent extends TopComponent {
+public final class StoreTopComponent extends TopComponent implements ExplorerManager.Provider {
 
     private BeanTreeView treeView;
+    private Lookup.Result<FlowNode> result = null;
+    private static final Logger LOG = LoggerFactory.getLogger(StoreTopComponent.class);
+    private AbstractNode root;
+    private FlowNodes flowNodes;
+    private final transient ExplorerManager mgr = new ExplorerManager();
 
     public StoreTopComponent() {
         initComponents();
         setName(Bundle.CTL_StoreTopComponent());
         setToolTipText(Bundle.HINT_StoreTopComponent());
+        associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
         init();
     }
 
@@ -68,28 +81,22 @@ public final class StoreTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.GridBagLayout());
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        flowNodes = new FlowNodes();
+        root = new AbstractNode(flowNodes);
+        LOG.info("found {} flow nodes", flowNodes.getNodesCount());
+        mgr.setRootContext(root);
     }
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+
     }
 
     void writeProperties(java.util.Properties p) {
@@ -106,6 +113,7 @@ public final class StoreTopComponent extends TopComponent {
 
     private void init() {
         treeView = new BeanTreeView();
+        treeView.setRootVisible(false);
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -118,4 +126,10 @@ public final class StoreTopComponent extends TopComponent {
         c.insets = new Insets(0, 0, 0, 0);
         add(treeView, c);
     }
+
+    @Override
+    public ExplorerManager getExplorerManager() {
+        return mgr;
+    }
+
 }

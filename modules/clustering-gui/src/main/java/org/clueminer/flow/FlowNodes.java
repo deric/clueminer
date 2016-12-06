@@ -16,48 +16,34 @@
  */
 package org.clueminer.flow;
 
+import java.util.Collection;
 import org.clueminer.flow.api.FlowNode;
-import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
-import org.openide.util.lookup.Lookups;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author deric
  */
-public class FlowContainerNode extends AbstractNode {
+public class FlowNodes extends Children.SortedArray {
 
-    public FlowContainerNode(FlowNode node) {
-        super(Children.LEAF, Lookups.singleton(node));
+    private static final Logger LOG = LoggerFactory.getLogger(FlowNodes.class);
+
+    public FlowNodes() {
+        initialize();
     }
 
-    public FlowContainerNode(Children children) {
-        super(children);
-    }
-
-    public FlowContainerNode(Children children, Lookup lookup) {
-        super(children, lookup);
-    }
-
-    @Override
-    public boolean canCut() {
-        return false;
-    }
-
-    @Override
-    public boolean canCopy() {
-        return true;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return getLookup().lookup(FlowNode.class).getName();
-    }
-
-    @Override
-    public boolean canDestroy() {
-        return false;
+    private void initialize() {
+        Collection<? extends FlowNode> res = Lookup.getDefault().lookupAll(FlowNode.class);
+        LOG.info("found {} flow nodes", res.size());
+        FlowContainerNode[] cont = new FlowContainerNode[res.size()];
+        int i = 0;
+        for (FlowNode fn : res) {
+            cont[i++] = new FlowContainerNode(fn);
+        }
+        add(cont);
     }
 
 }
