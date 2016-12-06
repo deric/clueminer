@@ -16,20 +16,22 @@
  */
 package org.clueminer.transform.ui;
 
-import org.clueminer.fixtures.CommonFixture;
-import org.clueminer.fixtures.clustering.FakeDatasets;
+import java.io.IOException;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.transform.TsTest;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class DatasetTransformationFlowTest {
+public class DatasetTransformationFlowTest extends TsTest {
 
-    private DatasetTransformationFlow subject;
-    private final CommonFixture CF = new CommonFixture();
+    private final DatasetTransformationFlow subject;
+
 
     public DatasetTransformationFlowTest() {
         subject = new DatasetTransformationFlow();
@@ -45,14 +47,18 @@ public class DatasetTransformationFlowTest {
         assertEquals(1, subject.getOutputs().length);
     }
 
-    //@Test
-    public void testExecute() {
+    @Test
+    public void testExecute() throws IOException {
         Object[] in = new Object[1];
-        in[0] = FakeDatasets.irisDataset();
+        in[0] = loadData01();
         Props params = new Props();
         params.put("transformation", "curve parameters");
         Object[] out = subject.execute(in, params);
         assertEquals(1, out.length);
+        assertTrue(out[0] instanceof Dataset);
+        Dataset d = (Dataset) out[0];
+        assertEquals(1, d.size());
+        assertEquals(9, d.attributeCount());
     }
 
 }

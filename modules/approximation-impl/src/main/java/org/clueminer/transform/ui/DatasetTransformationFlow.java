@@ -20,6 +20,7 @@ import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.transform.DatasetTransformation;
 import org.clueminer.utils.Props;
@@ -39,9 +40,9 @@ import org.slf4j.LoggerFactory;
 @ServiceProvider(service = FlowNode.class)
 public class DatasetTransformationFlow implements FlowNode {
 
-    private final Class[] inputs = new Class[]{Dataset.class};
+    private final Class[] inputs = new Class[]{Timeseries.class};
     private final Class[] outputs = new Class[]{Dataset.class};
-    private Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
+    private final Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
@@ -107,11 +108,12 @@ public class DatasetTransformationFlow implements FlowNode {
         }
         //type check
         int i = 0;
-        /* for (Object obj : in) {            if (!obj.getClass().equals(inputs[i].getClass())) {
-                throw new RuntimeException("expected " + inputs[i].getClass().toString() + " input(s), got " + in.getClass().toString());
+        for (Object obj : in) {
+            if (!inputs[i].isInstance(obj)) {
+                throw new RuntimeException("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
             }
             i++;
-        } */
+        }
 
     }
 
