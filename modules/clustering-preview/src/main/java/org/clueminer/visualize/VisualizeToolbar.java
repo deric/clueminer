@@ -21,11 +21,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-import org.clueminer.export.impl.ImageExporter;
+import org.clueminer.utils.ImageExporter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -68,7 +69,8 @@ public class VisualizeToolbar extends JToolBar {
                 //exportDialog.destroy();
 
                 if (dd.getValue() == DialogDescriptor.OK_OPTION) {
-                    ImageExporter.getDefault().export(viewer);
+                    ImageExporter exp = (ImageExporter) Utilities.actionsGlobalContext().lookupResult(ImageExporter.class);
+                    exp.export(viewer);
                 }
 
             }

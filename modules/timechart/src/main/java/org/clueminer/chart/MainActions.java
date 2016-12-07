@@ -13,7 +13,7 @@ import org.clueminer.dialogs.AnnotationProperties;
 import org.clueminer.dialogs.Overlays;
 import org.clueminer.dialogs.SettingsPanel;
 import org.clueminer.factory.TemplateFactory;
-import org.clueminer.export.impl.ImageExporter;
+import org.clueminer.utils.ImageExporter;
 import org.netbeans.api.print.PrintManager;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -21,6 +21,7 @@ import org.openide.NotifyDescriptor.Confirmation;
 import org.openide.NotifyDescriptor.InputLine;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -435,7 +436,8 @@ public final class MainActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            ImageExporter.getDefault().export(chartFrame.getMainPanel());
+            ImageExporter exp = (ImageExporter) Utilities.actionsGlobalContext().lookupResult(ImageExporter.class);
+            exp.export(chartFrame.getMainPanel());
             chartFrame.componentFocused();
         }
     }
