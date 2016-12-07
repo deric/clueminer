@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2016 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.project.api;
 
 import java.io.File;
@@ -10,48 +26,47 @@ import java.util.List;
  */
 public interface ProjectController extends Serializable {
 
-    public void startup();
+    void startup();
 
-    public void newProject();
+    void newProject();
 
-    public Runnable openProject(File file);
+    Runnable openProject(File file);
 
-    public Runnable saveProject(Project project);
+    Runnable saveProject(Project project);
 
-    public Runnable saveProject(Project project, File file);
+    Runnable saveProject(Project project, File file);
 
     /**
      * Currently active project at given workspace
      *
      * @return active project
      */
-    public Project getCurrentProject();
+    Project getCurrentProject();
 
     /**
      * Checks whether there is some project in workspace
      *
      * @return
      */
-    public boolean hasCurrentProject();
+    boolean hasCurrentProject();
 
     /**
      * Multiple project could be opened at the same time (in different tab)
      *
      * @param project
-     * @return
      */
-    public void setCurrentProject(Project project);
+    void setCurrentProject(Project project);
 
-    public void renameProject(Project project, String name);
+    void renameProject(Project project, String name);
 
-    public void closeCurrentProject();
+    void closeCurrentProject();
 
     /**
      * All opened projects
      *
      * @return list of opened projects
      */
-    public List<Project> getProjects();
+    List<Project> getProjects();
 
     /**
      * Should be used at initialization workspace (loading session from last
@@ -59,34 +74,34 @@ public interface ProjectController extends Serializable {
      *
      * @param projects
      */
-    public void setProjects(List<Project> projects);
+    void setProjects(List<Project> projects);
 
     /**
      * When project is closed, should be removed by this method
      *
      * @param project
      */
-    public void removeProject(Project project);
+    void removeProject(Project project);
 
-    public Workspace newWorkspace(Project project);
+    Workspace newWorkspace(Project project);
 
-    public void deleteWorkspace(Workspace workspace);
+    void deleteWorkspace(Workspace workspace);
 
-    public void renameWorkspace(Workspace workspace, String name);
+    void renameWorkspace(Workspace workspace, String name);
 
-    public Workspace getCurrentWorkspace();
+    Workspace getCurrentWorkspace();
 
-    public void openWorkspace(Workspace workspace);
+    void openWorkspace(Workspace workspace);
 
-    public void closeCurrentWorkspace();
+    void closeCurrentWorkspace();
 
-    public void cleanWorkspace(Workspace workspace);
+    void cleanWorkspace(Workspace workspace);
 
-    public Workspace duplicateWorkspace(Workspace workspace);
+    Workspace duplicateWorkspace(Workspace workspace);
 
-    public void setSource(Workspace workspace, String source);
+    void setSource(Workspace workspace, String source);
 
-    public void addWorkspaceListener(WorkspaceListener workspaceListener);
+    void addWorkspaceListener(WorkspaceListener workspaceListener);
 
-    public void removeWorkspaceListener(WorkspaceListener workspaceListener);
+    void removeWorkspaceListener(WorkspaceListener workspaceListener);
 }

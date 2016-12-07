@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays dendrograms
+ * Top component for displaying dendrograms
  *
  * @param <E>
  * @param <C>
@@ -64,15 +64,15 @@ import org.slf4j.LoggerFactory;
 )
 @TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.dendrogram.DendroViewTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window", position = 100)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_DendroViewAction",
         preferredID = "DendroViewTopComponent"
 )
 @Messages({
-    "CTL_DendroViewAction=DendroView",
-    "CTL_DendroViewTopComponent=DendroView Window",
-    "HINT_DendroViewTopComponent=Displays dendrogram"
+    "CTL_DendroViewAction=Dendrogram",
+    "CTL_DendroViewTopComponent=Dendrogram",
+    "HINT_DendroViewTopComponent=Displays clustering dendrogram"
 })
 public final class DendroViewTopComponent<E extends Instance, C extends Cluster<E>>
         extends TopComponent implements LookupListener, ClusteringListener<E, C> {
@@ -173,8 +173,9 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
     public void clusteringChanged(Clustering<E, C> clust) {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
-        pc.getCurrentProject().add(Lookups.singleton(clust));
-        LOG.info("adding to lookup clustring {} - {}", clust.size(), clust.getName());
+        //pc.getCurrentProject().add(Lookups.singleton(clust));
+        pc.getCurrentProject().add(clust);
+        LOG.info("adding to lookup clustering {} - {}", clust.size(), clust.fingerprint());
         content.set(Collections.singleton(clust), null);
     }
 

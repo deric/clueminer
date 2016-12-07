@@ -133,7 +133,7 @@ public class ProjectControllerImpl implements ProjectController {
         if (getCurrentProject() == project) {
             closeCurrentProject();
         }
-        removeProject(project);
+        //removeProject(project);
     }
 
     @Override

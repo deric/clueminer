@@ -19,6 +19,7 @@ package org.clueminer.explorer;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -38,6 +39,8 @@ import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.UpdateFeed;
 import org.clueminer.evolution.api.UpdateFeedFactory;
 import org.clueminer.explorer.gui.ExplorerToolbar;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -55,7 +58,6 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import org.openide.util.Utilities;
 import org.openide.windows.CloneableTopComponent;
 import org.openide.windows.TopComponent;
 import org.slf4j.Logger;
@@ -100,6 +102,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     private ClustComparator comparator;
     private ClustSorted children;
     private Evolution alg;
+    private Project project;
     //private final Executor exec = new ClusteringExecutor();
     private final Executor exec = new ClusteringExecutorCached();
 
@@ -158,7 +161,11 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        result = Utilities.actionsGlobalContext().lookupResult(Clustering.class);
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        project = pc.getCurrentProject();
+        //find only clusterings for given project
+        result = project.getLookup().lookupResult(Clustering.class);
+        result.addLookupListener(this);
 
         comparator = new ClustComparator(new Precision());
         children = new ClustSorted();
@@ -169,17 +176,6 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         root = new AbstractNode(children);
         root.setDisplayName("root node");
         mgr.setRootContext(root);
-
-        //result.addLookupListener(this);
-        //resultChanged(new LookupEvent(result));
-        //ClustGlobal children = new ClustGlobal(result);
-        /* comparator = new ClustComparator(new AICScore());
-         * ClustSorted children = new ClustSorted(result);
-         * children.setComparator(comparator);
-         * root = new AbstractNode(children);
-         *
-         * root.setDisplayName("root node");
-         * mgr.setRootContext(root); */
     }
 
     @Override
@@ -206,19 +202,14 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         return mgr;
     }
 
+
     @Override
     public void resultChanged(LookupEvent ev) {
-        /* Collection<? extends Clustering> allClusterings = result.allInstances();
-         * ClusteringNode node;
-         * for (Clustering c : allClusterings) {
-         * //System.out.println("clustring size" + c.size());
-         * //System.out.println(c.toString());
-         * //root = new ClusteringNode(c);
-         * logger.log(Level.INFO, "created node in top component {0}", c.size());
-         * node = new ClusteringNode(c);
-         * //
-         * }
-         * mgr.setRootContext(root); */
+        Collection<? extends Clustering> allClusterings = result.allInstances();
+        for (Clustering c : allClusterings) {
+            LOG.info("found clustering {}", c.fingerprint());
+            children.addUniqueClustering(c);
+        }
     }
 
     public void setDataset(Dataset<E> dataset) {
@@ -340,6 +331,10 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     @Override
     public Dataset<E> getDataset() {
         return dataset;
+    }
+
+    public void setProject(Project project){
+        this.project = project;
     }
 
 }

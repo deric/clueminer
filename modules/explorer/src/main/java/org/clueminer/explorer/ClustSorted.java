@@ -43,11 +43,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Children.SortedArray implements EvolutionListener {
 
-    private Lookup.Result<Clustering> result;
+    //private Lookup.Result<Clustering> result;
     private static final Logger LOG = LoggerFactory.getLogger(ClustSorted.class);
     private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
     private final Project project;
-    //private Set<Clustering> all = new HashSet<Clustering>(5);
 
     public ClustSorted() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -73,6 +72,16 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         LOG.info("best in generation {}: {} ext: {}", generationNum, population.getAvgFitness(), external);
         addClustering(population.getBestIndividual().getClustering());
+    }
+
+    public void addUniqueClustering(Clustering<E, C> clustering) {
+        int hash = clustering.hashCode();
+        //new clustering
+        if (!map.containsValue(hash)) {
+            addClustering(clustering);
+        } else {
+            LOG.info("ignoring {} clust: {}", hash, clustering.getName());
+        }
     }
 
     public void addClustering(Clustering<E, C> clustering) {
@@ -104,36 +113,30 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         Clustering<E, C> c;
         for (Individual ind : result) {
             c = ind.getClustering();
-            hash = c.hashCode();
-            //new clustering
-            if (!map.containsValue(hash)) {
-                addClustering(c);
-            } else {
-                LOG.info("ignoring {} clust: {}", hash, c.getName());
-            }
+            addUniqueClustering(c);
             if (!toKeep.contains(c)) {
                 toKeep.add(c);
             }
         }
         System.out.println("map: " + map.size() + ", to keep: " + toKeep.size());
         //go through all current nodes and remove old nodes
-    /*    ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
-         for (final ClusteringNode[] n : map.keySet()) {
-         if (!toKeep.contains(n[0].getClustering())) {
-         System.out.println("want to remove: " + n[0].getClustering().getName() + " precision " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
-         toRemove.add(n);
-         }
-         }
-         for (final ClusteringNode[] n : toRemove) {
-         SwingUtilities.invokeLater(new Runnable() {
-
-         @Override
-         public void run() {
-         remove(n);
-         }
-         });
-         map.remove(n);
-         }*/
+        /* ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
+         * for (final ClusteringNode[] n : map.keySet()) {
+         * if (!toKeep.contains(n[0].getClustering())) {
+         * System.out.println("want to remove: " + n[0].getClustering().getName() + " precision " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
+         * toRemove.add(n);
+         * }
+         * }
+         * for (final ClusteringNode[] n : toRemove) {
+         * SwingUtilities.invokeLater(new Runnable() {
+         *
+         * @Override
+         * public void run() {
+         * remove(n);
+         * }
+         * });
+         * map.remove(n);
+         * } */
 
     }
 

@@ -20,8 +20,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -34,9 +32,11 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays something.
+ * Cluster visualization
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.visualize//VisualizeCluster//EN",
@@ -47,17 +47,17 @@ import org.openide.windows.TopComponent;
         iconBase = "org/clueminer/visualize/visualize-cluster.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "rightSlidingSide", openAtStartup = true)
+@TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.visualize.VisualizeClusterTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_VisualizeClusterAction",
         preferredID = "VisualizeClusterTopComponent"
 )
 @Messages({
-    "CTL_VisualizeClusterAction=VisualizeCluster",
-    "CTL_VisualizeClusterTopComponent=VisualizeCluster Window",
-    "HINT_VisualizeClusterTopComponent=This is a VisualizeCluster window"
+    "CTL_VisualizeClusterAction=Cluster visualization",
+    "CTL_VisualizeClusterTopComponent=Cluster visualization",
+    "HINT_VisualizeClusterTopComponent=Displays objects assigned to clusters"
 })
 public final class VisualizeClusterTopComponent extends TopComponent implements LookupListener, Lookup.Provider {
 
@@ -65,7 +65,7 @@ public final class VisualizeClusterTopComponent extends TopComponent implements 
     private Lookup.Result<Clustering> result = null;
     private VisualizePanel frame;
     private VisualizeToolbar toolbar;
-    private static final Logger logger = Logger.getLogger(VisualizeClusterTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(VisualizeClusterTopComponent.class);
 
     public VisualizeClusterTopComponent() {
         initComponents();
@@ -136,9 +136,11 @@ public final class VisualizeClusterTopComponent extends TopComponent implements 
     @Override
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        logger.log(Level.INFO, "visualize cluster: got {0} clusterings", allClusterings.size());
-        for (Clustering c : allClusterings) {
-            frame.setClustering(c);
+        if (allClusterings.size() > 0) {
+            LOG.info("visualize cluster: got {0} clusterings", allClusterings.size());
+            for (Clustering c : allClusterings) {
+                frame.setClustering(c);
+            }
         }
     }
 }
