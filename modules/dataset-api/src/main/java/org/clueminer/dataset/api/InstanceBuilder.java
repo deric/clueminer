@@ -47,6 +47,7 @@ public interface InstanceBuilder<E extends Instance> {
     E createCopyOf(E orig, Dataset<E> parent);
 
     /**
+     * Build instance and immediately adds to the dataset
      *
      * @param capacity maximum number of items in set (array)
      * @return object for storing values (numerical, nominal, etc.)

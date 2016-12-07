@@ -71,8 +71,8 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
         HashMap<String, Double> coefficients;
         if (input.size() > 0) {
             InstanceBuilder<O> builder = output.builder();
-            if (output.size() < i) {
-                O instance = builder.create(output.attributeCount());
+            if (!output.hasIndex(i)) {
+                O instance = builder.build(output.attributeCount());
                 instance.setName(input.getFullName());
                 instance.setId(input.getId());
                 instance.setAncestor(input);

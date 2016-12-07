@@ -53,12 +53,16 @@ public class DatasetTransformationTest extends TsTest {
         //analyze data
         ph.start(degree * simple.size());
         subject.analyze(simple, output, ph);
-        assertEquals(1, output.size());
+
         for (int i = 0; i < output.attributeCount(); i++) {
             //check that all attributes were assigned some value
             //System.out.println("attr [" + i + "] = " + output.get(0, i));
             assertEquals(true, output.get(0, i) != 0.0);
         }
+        for (int i = 0; i < output.size(); i++) {
+            System.out.println(i + ": " + output.get(i));
+        }
+        assertEquals(1, output.size());
         ph.finish();
     }
 
