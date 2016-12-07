@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.xml.stream.XMLStreamWriter;
-import org.clueminer.project.WorkspaceProviderImpl;
+import org.clueminer.project.impl.WorkspaceProviderImpl;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectInformation;
 import org.clueminer.project.api.ProjectMetaData;

@@ -114,8 +114,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
-                        <publicPackage>org.clueminer.project</publicPackage>
-                        <publicPackage>org.clueminer.project.io</publicPackage>
+                        <publicPackage>org.clueminer.project.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>

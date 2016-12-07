@@ -22,7 +22,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.SampleDataset;
-import org.clueminer.project.ProjectControllerImpl;
+import org.clueminer.project.impl.ProjectControllerImpl;
 import org.clueminer.project.api.Workspace;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Lookup;

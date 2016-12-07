@@ -1,4 +1,4 @@
-package org.clueminer.project;
+package org.clueminer.project.impl;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

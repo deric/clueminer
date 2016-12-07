@@ -1,4 +1,4 @@
-package org.clueminer.project;
+package org.clueminer.project.impl;
 
 import java.io.Serializable;
 import org.clueminer.project.api.Selection;
