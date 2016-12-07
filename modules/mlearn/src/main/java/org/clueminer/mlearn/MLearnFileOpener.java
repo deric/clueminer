@@ -28,9 +28,9 @@ import org.clueminer.importer.ImportTask;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
-import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectControllerUI;
 import org.clueminer.project.api.Workspace;
 import org.clueminer.spi.ImportListener;
 import org.clueminer.spi.Importer;
@@ -137,6 +137,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                 Container container = importTask.getContainer();
                 if (container != null) {
                     ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
+                    ProjectControllerUI pcui = Lookup.getDefault().lookup(ProjectControllerUI.class);
                     Dataset<? extends Instance> dataset = container.getDataset();
                     if (dataset == null) {
                         LOG.info("loading dataset failed");
@@ -150,7 +151,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         if (filename == null) {
                             throw new RuntimeException("no source was given");
                         }
-                        project = new ProjectImpl();
+                        project = pcui.newProject();
                         ProjectInformationImpl pinfo = project.getLookup().lookup(ProjectInformationImpl.class);
                         pinfo.setName(dataset.getName());
                         pinfo.setFile(new File(filename));
