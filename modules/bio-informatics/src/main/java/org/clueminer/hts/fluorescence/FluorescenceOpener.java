@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.dendrogram.DendroViewTopComponent;
 import org.clueminer.hts.api.HtsInstance;
@@ -46,6 +44,8 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -58,7 +58,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private static Project project;
     private FluorescenceImporter importer;
-    private static final Logger logger = Logger.getLogger(FluorescenceOpener.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(FluorescenceOpener.class);
 
     public FluorescenceOpener() {
         //MIME type detection
@@ -191,7 +191,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 //content
                 HtsInstance current;
                 String sampleName;
-                logger.log(Level.INFO, "export size {0}", plate.size());
+                LOG.info("export size {}", plate.size());
 
                 if (normalized) {
                     for (int i = 0; i < plate.size(); i++) {
@@ -224,7 +224,7 @@ public class FluorescenceOpener implements OpenFileImpl, TaskListener {
                 writer.flush();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Exceptions.printStackTrace(e);
         }
     }
 }
