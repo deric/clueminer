@@ -137,7 +137,7 @@ public final class VisualizeClusterTopComponent extends TopComponent implements 
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         if (allClusterings.size() > 0) {
-            LOG.info("visualize cluster: got {} clusterings", allClusterings.size());
+            LOG.trace("visualize cluster: got {} clusterings", allClusterings.size());
             for (Clustering c : allClusterings) {
                 frame.setClustering(c);
             }

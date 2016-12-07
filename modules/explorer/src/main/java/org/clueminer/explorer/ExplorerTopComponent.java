@@ -33,7 +33,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
-import org.clueminer.eval.external.Precision;
+import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.UpdateFeed;
@@ -168,7 +168,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         result = project.getLookup().lookupResult(Clustering.class);
         result.addLookupListener(this);
 
-        comparator = new ClustComparator(new Precision());
+        comparator = new ClustComparator(new NMIsqrt());
         children = new ClustSorted();
         children.setComparator(comparator);
 
