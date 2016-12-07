@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
 )
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.visualize.VisualizeClusterTopComponent")
-@ActionReference(path = "Menu/Window" /* , position = 333 */)
+@ActionReference(path = "Menu/Window", position = 120)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_VisualizeClusterAction",
         preferredID = "VisualizeClusterTopComponent"
@@ -137,7 +137,7 @@ public final class VisualizeClusterTopComponent extends TopComponent implements 
     public void resultChanged(LookupEvent le) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         if (allClusterings.size() > 0) {
-            LOG.info("visualize cluster: got {0} clusterings", allClusterings.size());
+            LOG.info("visualize cluster: got {} clusterings", allClusterings.size());
             for (Clustering c : allClusterings) {
                 frame.setClustering(c);
             }

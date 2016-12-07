@@ -28,6 +28,7 @@ import org.clueminer.importer.ImportTask;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.openfile.OpenFileImpl;
 import org.clueminer.project.ProjectControllerImpl;
+import org.clueminer.project.ProjectImpl;
 import org.clueminer.project.ProjectInformationImpl;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.Workspace;
@@ -50,7 +51,6 @@ import org.slf4j.LoggerFactory;
 @org.openide.util.lookup.ServiceProvider(service = org.clueminer.openfile.OpenFileImpl.class, position = 90)
 public class MLearnFileOpener implements OpenFileImpl, ImportListener {
 
-    private static Project project;
     private ImportTask importTask;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ImportController controller;
@@ -133,6 +133,7 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
         WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
             @Override
             public void run() {
+                Project project;
                 Container container = importTask.getContainer();
                 if (container != null) {
                     ProjectControllerImpl pc = Lookup.getDefault().lookup(ProjectControllerImpl.class);
@@ -144,26 +145,21 @@ public class MLearnFileOpener implements OpenFileImpl, ImportListener {
                         if (workspace != null) {
                             workspace.add(dataset);  //add plate to project's lookup
                         }
-                        project = pc.getCurrentProject();
                         String filename = container.getSource();
                         dataset.setName(filename);
                         if (filename == null) {
                             throw new RuntimeException("no source was given");
                         }
+                        project = new ProjectImpl();
                         ProjectInformationImpl pinfo = project.getLookup().lookup(ProjectInformationImpl.class);
+                        pinfo.setName(dataset.getName());
                         pinfo.setFile(new File(filename));
                         project.add(dataset);
                         pc.openProject(project);
 
-                        //old dendrogram component
-                        /* DendrogramTopComponent tc = new DendrogramTopComponent();
-                         * tc.setDataset(container.getDataset());
-                         * //tc.setProject(project);
-                         * tc.setDisplayName(getTitle(filename));
-                         * tc.open();
-                         * tc.requestActive(); */
                         ExplorerTopComponent explorer = new ExplorerTopComponent();
                         explorer.setDataset(dataset);
+                        //explorer.setProject(project);
                         explorer.setDisplayName(getTitle(filename));
                         explorer.open();
                         explorer.requestActive();

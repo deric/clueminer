@@ -105,6 +105,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     private Project project;
     //private final Executor exec = new ClusteringExecutor();
     private final Executor exec = new ClusteringExecutorCached();
+    private ProjectController pc;
 
     public ExplorerTopComponent() {
         initComponents();
@@ -113,6 +114,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         init();
 
         associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
+        pc = Lookup.getDefault().lookup(ProjectController.class);
 
         //maybe we want IconView
         //explorerPane.setViewportView(new BeanTreeView());
@@ -161,7 +163,6 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         project = pc.getCurrentProject();
         //find only clusterings for given project
         result = project.getLookup().lookupResult(Clustering.class);
@@ -183,6 +184,11 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         if (result != null) {
             result.removeLookupListener(this);
         }
+    }
+
+    @Override
+    public void componentActivated(){
+        pc.setCurrentProject(project);
     }
 
     void writeProperties(java.util.Properties p) {
