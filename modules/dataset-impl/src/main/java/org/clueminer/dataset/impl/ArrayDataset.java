@@ -473,7 +473,7 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
 
     @Override
     public void setAttributeValue(String attributeName, int instanceIdx, double value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported. Consider using AttrHashDataset");
     }
 
     @Override
