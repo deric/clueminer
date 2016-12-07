@@ -71,7 +71,7 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
         HashMap<String, Double> coefficients;
         if (input.size() > 0) {
             InstanceBuilder<O> builder = output.builder();
-            if (output.size() <= i) {
+            if (output.size() < i) {
                 O instance = builder.create(output.attributeCount());
                 instance.setName(input.getFullName());
                 instance.setId(input.getId());
@@ -85,7 +85,10 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
                     output.setAttributeValue(item.getKey(), i, item.getValue());
                 }
             }
+        } else {
+            LOG.warn("empty input on index {}", i);
         }
+
     }
 
     @Override
@@ -131,7 +134,7 @@ public class DatasetTransformation<I extends Instance, O extends Instance> imple
             }
         }
         for (int i = 0; i < dataset.size(); i++) {
-            item = dataset.instance(i);
+            item = dataset.get(i);
             approximate(i, xAxis, item, output, approx);
             //output
             ph.progress(++analyzeProgress);
