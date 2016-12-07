@@ -103,7 +103,7 @@ public class ProjectControllerImpl implements ProjectController {
 
     @Override
     public void newProject() {
-        closeCurrentProject();
+        //closeCurrentProject();
         ProjectImpl project = new ProjectImpl();
         addProject(project);
         openProject(project);
