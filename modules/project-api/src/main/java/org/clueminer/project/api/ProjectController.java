@@ -26,7 +26,7 @@ import java.util.List;
  */
 public interface ProjectController extends Serializable {
 
-    void startup();
+    void startup(String appTitle);
 
     void newProject();
 

@@ -19,6 +19,8 @@ package org.clueminer.project.impl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.ProjectInformation;
@@ -31,6 +33,7 @@ import org.clueminer.spi.WorkspaceDuplicateProvider;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.WindowManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +54,7 @@ public class ProjectControllerImpl implements ProjectController {
     private Project currentProject;
     private final List<WorkspaceListener> listeners;
     private WorkspaceImpl temporaryOpeningWorkspace;
+    private String appTitle;
     private static final Logger LOG = LoggerFactory.getLogger(ProjectControllerImpl.class);
 
     public ProjectControllerImpl() {
@@ -61,11 +65,12 @@ public class ProjectControllerImpl implements ProjectController {
     }
 
     @Override
-    public void startup() {
+    public void startup(final String appTitle) {
         final String OPEN_LAST_PROJECT_ON_STARTUP = "Open_Last_Project_On_Startup";
         final String NEW_PROJECT_ON_STARTUP = "New_Project_On_Startup";
         boolean openLastProject = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(OPEN_LAST_PROJECT_ON_STARTUP, false);
         boolean newProjectStartup = NbPreferences.forModule(ProjectControllerImpl.class).getBoolean(NEW_PROJECT_ON_STARTUP, false);
+        this.appTitle = appTitle;
 
         //Default project
         if (!openLastProject && newProjectStartup) {
@@ -84,6 +89,15 @@ public class ProjectControllerImpl implements ProjectController {
         if (currentProject != project) {
             this.currentProject = project;
             fireWorkspaceEvent(EventType.PROJECT_SELECTED, null);
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                    String title = appTitle + " - " + currentProject.getName();
+                    frame.setTitle(title);
+                }
+            });
         }
     }
 
