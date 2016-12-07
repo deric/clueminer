@@ -145,7 +145,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         final String LAST_PATH_DEFAULT = "SaveAsProject_Last_Path_Default";
 
         DialogFileFilter filter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "SaveAsProject_filechooser_filter"));
-        filter.addExtension("."+ PROJECT_EXTENSION);
+        filter.addExtension("." + PROJECT_EXTENSION);
 
         //Get last directory
         String lastPathDefault = NbPreferences.forModule(ProjectControllerUIImpl.class).get(LAST_PATH_DEFAULT, null);
@@ -414,7 +414,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
         //Init dialog
         final JFileChooser chooser = new JFileChooser(lastPath);
         DialogFileFilter clueminerFilter = new DialogFileFilter(NbBundle.getMessage(ProjectControllerUIImpl.class, "OpenProject_filechooser_filter"));
-        clueminerFilter.addExtension("."+PROJECT_EXTENSION);
+        clueminerFilter.addExtension("." + PROJECT_EXTENSION);
 
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
         for (FileType fileType : importController.getFileTypes()) {
@@ -435,7 +435,7 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
             File file = chooser.getSelectedFile();
             file = FileUtil.normalizeFile(file);
             FileObject fileObject = FileUtil.toFileObject(file);
-            if(fileObject == null){
+            if (fileObject == null) {
                 System.out.println("failed to converto to file object");
             }
 
@@ -466,23 +466,20 @@ public class ProjectControllerUIImpl implements ProjectControllerUI {
 
     @Override
     public Project newProject() {
-        if (closeCurrentProject()) {
-            controller.newProject();
-            final Project project = controller.getCurrentProject();
+        controller.newProject();
+        final Project project = controller.getCurrentProject();
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-                    String title = frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
-                    frame.setTitle(title);
-                }
-            });
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
+                String title = frame.getTitle() + " - " + project.getLookup().lookup(ProjectInformation.class).getName();
+                frame.setTitle(title);
+            }
+        });
 
-            unlockProjectActions();
-            return project;
-        }
-        return null;
+        unlockProjectActions();
+        return project;
     }
 
     @Override
