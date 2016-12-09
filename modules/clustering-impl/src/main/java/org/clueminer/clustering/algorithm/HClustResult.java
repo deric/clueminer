@@ -255,6 +255,9 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
             clusters.add(clust);
         }
         clusters.lookupAdd(dataset);
+        if (dendroMapping != null) {
+            clusters.lookupAdd(dendroMapping);
+        }
         clusters.lookupAdd(this);
         return clusters;
     }

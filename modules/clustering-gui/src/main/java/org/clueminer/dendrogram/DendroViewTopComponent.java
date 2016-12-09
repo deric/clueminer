@@ -194,7 +194,6 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
         //add result to lookup
         if (hclust != null) {
             pc.getCurrentProject().add(Lookups.singleton(hclust));
-            //System.out.println("adding clustering result to lookup");
             Clustering c = hclust.getClustering();
             LOG.info("hclust update: {}", c.size());
             content.set(Collections.singleton(c), null);

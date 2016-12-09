@@ -45,13 +45,13 @@ import org.slf4j.LoggerFactory;
  */
 public class DGramVis<E extends Instance, C extends Cluster<E>> {
 
-    private static final Logger log = LoggerFactory.getLogger(DGramVis.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DGramVis.class);
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
     public Image generate(final Clustering<E, C> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
-            log.warn("missing mapping, can't generate preview");
+            LOG.warn("missing mapping, can't generate preview");
             //generating clustering does not help
             //TODO return error image
             return loading();
