@@ -28,7 +28,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author Tomas Barton
  */
-public class InstanceNode extends AbstractNode {
+public class InstanceNode extends AbstractNode implements Comparable<InstanceNode> {
 
     private final Instance instance;
 
@@ -69,5 +69,14 @@ public class InstanceNode extends AbstractNode {
         }
         sheet.put(set);
         return sheet;
+    }
+
+    public Instance getInstance() {
+        return instance;
+    }
+
+    @Override
+    public int compareTo(InstanceNode o) {
+        return this.getInstance().getId().compareTo(o.getInstance().getId());
     }
 }
