@@ -19,7 +19,7 @@ package org.clueminer.properties;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -30,9 +30,11 @@ import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays something.
+ * Alternative properties panel
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.properties//Properties//EN",
@@ -45,7 +47,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "properties", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.properties.PropertiesTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window", position = 200)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_PropertiesAction",
         preferredID = "PropertiesTopComponent"
@@ -58,7 +60,7 @@ import org.openide.windows.TopComponent;
 public final class PropertiesTopComponent extends TopComponent implements LookupListener {
 
     private Lookup.Result<AbstractNode> result = null;
-    private static final Logger logger = Logger.getLogger(PropertiesTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PropertiesTopComponent.class);
     private final PropPanel panel;
 
     public PropertiesTopComponent() {
@@ -108,11 +110,17 @@ public final class PropertiesTopComponent extends TopComponent implements Lookup
     @Override
     public void resultChanged(LookupEvent ev) {
         if (result != null) {
-            Collection<? extends AbstractNode> res = result.allInstances();
-            panel.setNodes(res);
-            if (res.size() == 1) {
-                setName(res.iterator().next().getName() + " - " + Bundle.CTL_PropertiesTopComponent());
-            }
+            final Collection<? extends AbstractNode> res = result.allInstances();
+
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    panel.setNodes(res);
+                    if (res.size() == 1) {
+                        setName(res.iterator().next().getName() + " - " + Bundle.CTL_PropertiesTopComponent());
+                    }
+                }
+            });
         }
     }
 }
