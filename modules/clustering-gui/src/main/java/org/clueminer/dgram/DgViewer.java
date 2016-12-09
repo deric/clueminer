@@ -86,12 +86,26 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
     }
 
     @Override
-    public void setDataset(DendrogramMapping dataset) {
+    public void setDendrogramMapping(DendrogramMapping dataset, boolean update) {
         this.data = dataset;
-        updateLayout();
-        //update all components to work with same data
-        fireDatasetChanged(new DendrogramDataEvent(this), data);
-        dendrogramPanel.triggerUpdate();
+        if (update) {
+            update();
+        }
+    }
+
+    @Override
+    public void update() {
+        if (data != null) {
+            updateLayout();
+            //update all components to work with same data
+            fireDatasetChanged(new DendrogramDataEvent(this), data);
+            dendrogramPanel.triggerUpdate();
+        }
+    }
+
+    @Override
+    public void setDataset(DendrogramMapping dataset) {
+        this.setDendrogramMapping(dataset, true);
     }
 
     public DendrogramMapping getDendrogramData() {
@@ -133,15 +147,15 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
 
     private void updateLayout() {
         //int heatmapSize = this.getSize().width - dendrogramPanel.getVerticalTreeSize().width - dendrogramPanel.getAnnotationWidth();
-        /*  System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
-
-         System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
-         System.out.println("heatmap " + dendrogramPanel.getHeatmapSize());
-         System.out.println("clustering view size" + this.getSize() + " heatmap size= " + heatmapSize);
-
-         //System.out.println("feature length = "+featuresLenght+ " heat map width = "+dendrogramPanel.getHeatmapWidth() );
-         //dendrogramPanel.getHeatmapWidth() / featuresLenght;///data.getFeaturesSize();
-         System.out.println("new element size " + elementSize);*/
+        /* System.out.println("annotation panel = " + dendrogramPanel.getAnnotationWidth());
+         *
+         * System.out.println("vertical tree = " + dendrogramPanel.getVerticalTreeSize().width);
+         * System.out.println("heatmap " + dendrogramPanel.getHeatmapSize());
+         * System.out.println("clustering view size" + this.getSize() + " heatmap size= " + heatmapSize);
+         *
+         * //System.out.println("feature length = "+featuresLenght+ " heat map width = "+dendrogramPanel.getHeatmapWidth() );
+         * //dendrogramPanel.getHeatmapWidth() / featuresLenght;///data.getFeaturesSize();
+         * System.out.println("new element size " + elementSize); */
         //setMinimumSize(dendrogramPanel.getSize());
         //update size of scrollbars
         scroller.getViewport().revalidate();
@@ -374,7 +388,7 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
         // System.out.println("adjusted");
-     /*
+        /*
          * dendrogramPanel.updateSize();
          * scroller.setPreferredSize(dendrogramPanel.getSize());
          * scroller.getViewport().revalidate();
@@ -391,12 +405,12 @@ public class DgViewer<E extends Instance, C extends Cluster<E>> extends JPanel i
      * @param clustering
      */
     @Override
-    public void setClustering(Clustering clustering) {
+    public void setClustering(Clustering clustering, boolean update) {
         Lookup lookup = clustering.getLookup();
         if (lookup != null) {
             DendrogramMapping mapping = lookup.lookup(DendrogramMapping.class);
             if (mapping != null) {
-                setDataset(mapping);
+                setDendrogramMapping(mapping, update);
             }
         }
     }

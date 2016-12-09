@@ -140,6 +140,14 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
         }
     }
 
+    @Override
+    public void componentActivated() {
+        //re-render component upon activation
+        if (result != null) {
+            frame.update();
+        }
+    }
+
     void writeProperties(java.util.Properties p) {
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
@@ -156,13 +164,14 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         if (allClusterings != null && allClusterings.size() > 0) {
-
+            //trigger rendering only when component visible
+            boolean update = isVisible();
             Iterator<? extends Clustering> it = allClusterings.iterator();
 
             if (it.hasNext()) {
                 Clustering clust = it.next();
                 if (clust != null) {
-                    frame.setClustering(clust);
+                    frame.setClustering(clust, update);
                 }
             }
 

@@ -117,8 +117,22 @@ public interface DendroViewer<E extends Instance, C extends Cluster<E>> extends 
     /**
      *
      * @param clustering
+     * @param update     trigger update immediately?
      */
-    void setClustering(Clustering clustering);
+    void setClustering(Clustering clustering, boolean update);
+
+    /**
+     * Trigger re-rendering data
+     */
+    void update();
+
+    /**
+     * Set clustering to display
+     *
+     * @param dendroMapping
+     * @param update        whether trigger update immediately
+     */
+    void setDendrogramMapping(DendrogramMapping dendroMapping, boolean update);
 
     /**
      * Fired after optimization of dendrogram rows tree order

@@ -110,7 +110,7 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
     protected Insets insets = new Insets(5, 5, 40, 5);
     private int cutoffSliderSize = 6;
     private final transient ListenerList<DendrogramDataListener> dataListeners = new ListenerList<>();
-    private static final Logger logger = LoggerFactory.getLogger(DgPanel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DgPanel.class);
 
     public DgPanel(DendroViewer v) {
         size = new Dimension(10, 10);
@@ -157,10 +157,9 @@ public class DgPanel extends BPanel implements DendrogramDataListener, DendroPan
         if (!hasData()) {
             return;
         }
-        logger.debug("dg panel size {} x {}", req.width, req.height);
+        LOG.trace("dg panel size {} x {}", req.width, req.height);
 
         if (fitToPanel) {
-            //System.out.println("dgPanel.upd: " + req.width + " x " + req.height);
             this.reqSize = req; //necessary
             recalculate();
         }
