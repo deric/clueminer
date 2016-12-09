@@ -25,14 +25,25 @@ import org.openide.nodes.Node;
  *
  * @author Tomas Barton
  */
-public class ClusterMembers extends Children.Keys<Instance> {
+public class ClusterMembers<E extends Instance> extends Children.SortedArray {
 
-    public ClusterMembers(Cluster cluster){
+    public ClusterMembers(Cluster<E> cluster) {
         setKeys(cluster);
+        //TODO: set custom comparator
+        // setComparator(c);
     }
 
-    @Override
-    protected Node[] createNodes(Instance key) {
+    /* @Override
+       protected Node[] createNodes(Instance key) {
         return new Node[]{ new InstanceNode(key)};
+    } */
+    private void setKeys(Cluster<E> cluster) {
+        Node[] instNodes = new Node[cluster.size()];
+        int i = 0;
+        for (E inst : cluster) {
+            instNodes[i++] = new InstanceNode(inst);
+        }
+        add(instNodes);
     }
+
 }

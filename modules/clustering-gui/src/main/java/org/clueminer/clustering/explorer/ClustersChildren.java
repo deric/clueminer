@@ -30,7 +30,7 @@ import org.openide.nodes.Node;
  */
 public class ClustersChildren<E extends Instance, C extends Cluster<E>> extends Children.Keys<Cluster> {
 
-    private Clustering<E, C> clusters;
+    private final Clustering<E, C> clusters;
 
     public ClustersChildren(Clustering<E, C> clusters) {
         this.clusters = clusters;

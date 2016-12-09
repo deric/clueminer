@@ -36,7 +36,7 @@ import org.openide.util.lookup.Lookups;
  */
 public class ClusterNode extends AbstractNode {
 
-    private Cluster cluster;
+    private final Cluster cluster;
 
     public ClusterNode(Cluster cluster) {
         super(new ClusterMembers(cluster), Lookups.singleton(cluster));
