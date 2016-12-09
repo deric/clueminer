@@ -24,6 +24,8 @@ import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.std.DataScaler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple storage for standardized data, stores references to data, not deep
@@ -37,6 +39,7 @@ public class StdStorage<E extends Instance> {
     private final Dataset<E> dataset;
     private final Table<String, Boolean, Dataset<E>> cache;
     private DataScaler ds;
+    private static final Logger LOG = LoggerFactory.getLogger(StdStorage.class);
 
     /**
      * Currently it is storage only for one dataset
@@ -53,8 +56,11 @@ public class StdStorage<E extends Instance> {
             if (ds == null) {
                 ds = new DataScaler();
             }
+            LOG.debug("computing normalization {}, using log? {}", method, logscale);
             Dataset<E> norm = ds.standartize(dataset, method, logscale);
             cache.put(method, logscale, norm);
+        } else {
+            LOG.debug("using cached data for {}, std: {}, using log? {}", dataset.getName(), method, logscale);
         }
         return cache.get(method, logscale);
     }
