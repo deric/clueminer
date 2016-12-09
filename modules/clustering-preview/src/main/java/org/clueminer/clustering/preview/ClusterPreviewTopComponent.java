@@ -19,8 +19,6 @@ package org.clueminer.clustering.preview;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Clustering;
 import static org.clueminer.clustering.preview.Bundle.*;
 import org.clueminer.dataset.api.Dataset;
@@ -40,6 +38,8 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays previews of clusters.
@@ -53,14 +53,14 @@ import org.openide.windows.TopComponent;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(mode = "properties", openAtStartup = false)
 @ActionID(category = "Window", id = "org.clueminer.clusterpreview.ClusterPreviewTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window", position = 135)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ClusterPreviewAction",
         preferredID = "ClusterPreviewTopComponent")
 @Messages({
-    "CTL_ClusterPreviewAction=ClusterPreview",
-    "CTL_ClusterPreviewTopComponent=ClusterPreview Window",
-    "HINT_ClusterPreviewTopComponent=This is a ClusterPreview window"
+    "CTL_ClusterPreviewAction=Cluster Preview",
+    "CTL_ClusterPreviewTopComponent=Cluster Preview",
+    "HINT_ClusterPreviewTopComponent=Displays visualization of clusters"
 })
 public final class ClusterPreviewTopComponent extends TopComponent implements LookupListener, Lookup.Provider {
 
@@ -69,7 +69,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
     private Lookup.Result<Clustering> result = null;
     private final ClusterPreviewFrame frame;
     private Dataset<Instance> dataset;
-    private static final Logger logger = Logger.getLogger(ClusterPreviewTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterPreviewTopComponent.class);
 
     public ClusterPreviewTopComponent() {
         initComponents();
@@ -101,10 +101,9 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         Workspace workspace = pc.getCurrentWorkspace();
         if (workspace != null) {
-            System.out.println("got result (dataset)");
             dataset = workspace.getLookup().lookup(Dataset.class);
             if (dataset != null) {
-                System.out.println("dataset size = " + dataset.size());
+                LOG.info("dataset size = {}", dataset.size());
             }
             workspace.add(frame.getViewer());
             content.add(frame.getViewer());
@@ -185,7 +184,7 @@ public final class ClusterPreviewTopComponent extends TopComponent implements Lo
     @Override
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
-        logger.log(Level.INFO, "clustering preview lookup: got {0} clusterings", allClusterings.size());
+        LOG.info("clustering preview lookup: got {} clusterings", allClusterings.size());
         for (Clustering c : allClusterings) {
             frame.setClustering(c);
         }
