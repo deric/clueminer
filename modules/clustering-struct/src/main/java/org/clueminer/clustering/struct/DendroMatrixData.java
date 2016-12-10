@@ -209,6 +209,11 @@ public class DendroMatrixData<E extends Instance, C extends Cluster<E>> implemen
         return get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
     }
 
+    @Override
+    public double getOriginalValue(int rowIndex, int columnIndex) {
+        return dataset.get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
+    }
+
     /**
      * @return the instances
      */
@@ -311,4 +316,5 @@ public class DendroMatrixData<E extends Instance, C extends Cluster<E>> implemen
         }
         output.println();   // end with blank line.
     }
+
 }

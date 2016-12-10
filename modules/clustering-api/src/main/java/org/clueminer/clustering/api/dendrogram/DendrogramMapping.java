@@ -97,6 +97,15 @@ public interface DendrogramMapping<E extends Instance, C extends Cluster<E>> {
 
     public double getMappedValue(int rowIndex, int columnIndex);
 
+    /**
+     * in case data was normalized, will return original value
+     *
+     * @param rowIndex
+     * @param columnIndex
+     * @return
+     */
+    public double getOriginalValue(int rowIndex, int columnIndex);
+
     public double getMinValue();
 
     public double getMaxValue();

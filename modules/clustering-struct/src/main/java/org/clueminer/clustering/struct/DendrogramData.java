@@ -201,6 +201,11 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
         return get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
     }
 
+    @Override
+    public double getOriginalValue(int rowIndex, int columnIndex) {
+        return origData.get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
+    }
+
     /**
      * @return the instances
      */
