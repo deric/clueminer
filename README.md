@@ -84,6 +84,15 @@ and run benchmarks (might be computationally expensive):
 $ java -jar target/*-jar-with-dependencies.jar
 ``
 
+## R support
+
+In order to enable R code execution JRI is needed.
+
+Debian/Ubuntu:
+```
+apt install r-cran-rjava
+```
+
 ## OpenGL support
 
 For OpenGL visualizations you'll need native extensions

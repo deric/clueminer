@@ -160,6 +160,8 @@
                 <configuration>
                     <environmentVariables>
                         <R_HOME>/usr/lib/R</R_HOME>
+                        <CLASSPATH>${CLASSPATH}:/usr/lib/R/site-library/rJava/jri/</CLASSPATH>
+                        <LD_LIBRARY_PATH>${LD_LIBRARY_PATH}:/usr/lib/R/site-library/rJava/jri/</LD_LIBRARY_PATH>
                     </environmentVariables>
                 </configuration>
             </plugin>
