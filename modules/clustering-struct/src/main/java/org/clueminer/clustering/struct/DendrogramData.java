@@ -118,7 +118,11 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
      */
     @Override
     public int getColumnIndex(int column) {
-        return colsResult.getMappedIndex(column);
+        if (colsResult != null) {
+            return colsResult.getMappedIndex(column);
+        } else {
+            return column; //same ordering as original data
+        }
     }
 
     /**
@@ -193,17 +197,25 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double get(int i, int j) {
-        return normData.get(i, j);
+        if (normData != null) {
+            return normData.get(i, j);
+        } else {
+            return Double.NaN;
+        }
     }
 
     @Override
     public double getMappedValue(int rowIndex, int columnIndex) {
-        return get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
+        return get(rowsResult.getMappedIndex(rowIndex), getColumnIndex(columnIndex));
     }
 
     @Override
     public double getOriginalValue(int rowIndex, int columnIndex) {
-        return origData.get(rowsResult.getMappedIndex(rowIndex), colsResult.getMappedIndex(columnIndex));
+        if (origData != null) {
+            return origData.get(rowsResult.getMappedIndex(rowIndex), getColumnIndex(columnIndex));
+        } else {
+            return Double.NaN;
+        }
     }
 
     /**

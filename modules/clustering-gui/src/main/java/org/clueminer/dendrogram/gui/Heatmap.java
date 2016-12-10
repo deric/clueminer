@@ -757,7 +757,11 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                     sb.append(df.format(value));
                     Object cls = dataset.get(row).classValue();
                     if (cls != null) {
-                        sb.append(" [" + cls.toString() + "]");
+                        sb.append(" [").append(cls.toString()).append("]");
+                    }
+                    double orig = dendroData.getOriginalValue(row, column);
+                    if (value != orig) {
+                        sb.append("\n -> ").append(df.format(orig));
                     }
 
                     //+ dendroData.getMappedValue(row, column)
