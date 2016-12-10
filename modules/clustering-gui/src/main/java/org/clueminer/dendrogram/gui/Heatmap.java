@@ -27,6 +27,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -40,6 +41,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramTree;
 import org.clueminer.clustering.api.dendrogram.TreeCluster;
 import org.clueminer.clustering.api.dendrogram.TreeListener;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dendrogram.DistributionCollector;
 import org.imgscalr.Scalr;
 import org.slf4j.Logger;
@@ -59,6 +62,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private boolean isCompact = true;
     private boolean isShowRects = false;
     private boolean clickedCell = true;
+    private boolean showTooltips = true;
     private int clickedColumn = 0;
     private int clickedRow = 0;
     private int firstSelectedRow = -1;
@@ -67,7 +71,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private int lastSelectedColumn = -1;
     private Insets insets = new Insets(0, 10, 0, 0);
     private boolean showClusters = true;
-    private boolean haveColorBar = false;
     private int colorWidth = 0;
     private int maxColorWidth = 0;
     private boolean mouseOnMap = true;
@@ -86,6 +89,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
     private final DistributionCollector distribution;
     private boolean collectData = false;
     private static final Logger LOG = LoggerFactory.getLogger(Heatmap.class);
+    private DecimalFormat df = new DecimalFormat("#.##");
 
     public Heatmap() {
         setBackground(Color.GRAY);
@@ -166,18 +170,14 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      *
      */
     public void onDataChanged() {
-        if (showClusters) {
-            haveColorBar = false;
-        }
         updateSize();
     }
 
     /**
-     * Returns the row index in the experiment's <code>FloatMatrix<\code>
+     * Returns the row index in the original <code>Dataset</code>
      * corresponding to the passed index to the clusters array
      */
     private int rowIndex(int row) {
-        //return this.clusters[this.clusterIndex][row];
         if (dendroData.hasRowsClustering()) {
             return dendroData.getRowsResult().getMappedIndex(row);
         }
@@ -216,9 +216,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
         if (maxColorWidth < colorWidth) {
             maxColorWidth = colorWidth;
-        }
-        if (haveColorBar) {
-            size.width += this.elementSize.width * colorWidth + 10;
         }
 
         size.height = countComponentHeight(elementSize.height);
@@ -310,12 +307,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         }
         //until next dataset change
         collectData = false;
-
-        if (haveColorBar) {
-            if (dendroData != null) {
-                fillClusterColorPositions(bufferedGraphics);
-            }
-        }
         bufferedGraphics.dispose();
         return bufferedImage;
     }
@@ -368,7 +359,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
 
             if (mouseOnMap) {
                 drawRectAt(g2d, mouseRow, mouseColumn, Color.white);
-                if (haveColorBar && isShowRects) {
+                if (isShowRects) {
                     drawClusterRectsAt(g2d, mouseRow, mouseColumn, Color.gray);
                 }
             }
@@ -432,43 +423,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         g.setColor(color);
 
         g.fillRect(xLoc + insets.left, row * elementSize.height + insets.top, elementSize.width - 1, elementSize.height);
-    }
-
-    /**
-     * @TODO move to separate component
-     *
-     * Determines the location of the cluster colors for either compact or
-     * non-compact settings and then fills the appropriate rectangles
-     */
-    private void fillClusterColorPositions(Graphics g) {
-        final int samples = dendroData.getNumberOfColumns();
-        // Rectangle bounds = g.getClipBounds();
-        final int top = getTopIndex(bounds.y);
-        final int bottom = getBottomIndex(bounds.y + bounds.height, dendroData.getNumberOfRows());
-
-        int spacesOver = 0;
-        /*
-         * for (int row = top; row < bottom; row++) { Color[] colors =
-         * dendroData.getRowsColors(getDataRow(row)); if (colors == null) { continue;
-         * } for (int clusters = 0; clusters < colors.length; clusters++) { if
-         * (colors[clusters] == null) { continue; } if
-         * (storedRowColors.contains(colors[clusters])) { activeCluster =
-         * storedRowColors.indexOf(colors[clusters]); } else {
-         * storedRowColors.add(colors[clusters]); activeCluster =
-         * (storedRowColors.size() - 1); ColorOverlaps[activeCluster] =
-         * activeCluster; //compacts the cluster color display boolean foundit =
-         * false; if (!isCompact) { foundit = true; } while (!foundit) { for
-         * (int i = 0; i < storedRowColors.size(); i++) { boolean allClear =
-         * true; for (int j = 0; j < storedRowColors.size(); j++) { if
-         * (ColorOverlaps[j] == i) { if (dendroData.isColorOverlap(getDataRow(row),
-         * colors[clusters], storedRowColors.get(j))) { allClear = false; break;
-         * } allClear = true; } } if (allClear) { ColorOverlaps[activeCluster] =
-         * i; foundit = true; break; } } if (foundit) { break; } } } spacesOver
-         * = ColorOverlaps[activeCluster]; int expWidth = samples *
-         * this.elementSize.width + 5 + this.elementSize.width * spacesOver;
-         * fillClusterRectAt(g, row, expWidth, colors[clusters]); }public double getMidValue()
-         }
-         */
     }
 
     /**
@@ -724,7 +678,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
      */
     private class Listener extends MouseAdapter implements MouseMotionListener {
 
-        private String oldStatusText;
         private int oldRow = -1;
         private int oldColumn = -1;
         private int startColumn = 0;
@@ -759,15 +712,14 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                 return;
             }
             if (!event.isShiftDown()) { // element info
-               /*
+                /*
                  * System.out.println("getting " +
                  * dendroData.getColumnIndex(getColumn(column)) + " " +
                  * getDataRow(row) + " value= " + dendroData.get(getColumn(column),
                  * getDataRow(row)) + " name= " +
                  * dendroData.getColumnName(getColumn(column)) + " orig= " + column);
                  */
-                System.out.println("row= " + row + ", column= " + column + ", value= " + dendroData.getMappedValue(row, column));
-                //  framework.displaySlideElementInfo(experiment.getSampleIndex(getColumn(column)), getMultipleArrayDataRow(row));
+                //System.out.println("row= " + row + ", column= " + column + ", value= " + dendroData.getMappedValue(row, column));
             }
         }
 
@@ -792,13 +744,25 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                 if (isShowRects) {
                     drawClusterRectsAt(g, row, column, Color.gray);
                 }
-                /*
-                 * framework.setStatusText( "Gene: "+
-                 * dendroData.getUniqueId(getMultipleArrayDataRow(row)) +" Sample: "+
-                 * dendroData.getSampleName(experiment.getSampleIndex(getColumn(column)))
-                 * +" Value: "+ experiment.get(getExperimentRow(row),
-                 * getColumn(column)));
-                 */
+                if (showTooltips) {
+                    Dataset<Instance> dataset = dendroData.getDataset();
+                    Instance inst = dataset.get(rowIndex(row));
+                    double value = dendroData.get(rowIndex(row), colIndex(column));
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("#").append(inst.getIndex()).append(" ");
+                    if (inst.getName() != null) {
+                        sb.append(inst.getName()).append(", ");
+                    }
+                    sb.append(dataset.getAttribute(colIndex(column)).getName()).append(" = ");
+                    sb.append(df.format(value));
+                    Object cls = dataset.get(row).classValue();
+                    if (cls != null) {
+                        sb.append(" [" + cls.toString() + "]");
+                    }
+
+                    //+ dendroData.getMappedValue(row, column)
+                    setToolTipText(sb.toString());
+                }
             }
             //mouse on different rectangle, but still on the map
             if (!isCurrentPosition(row, column) && isLegalPosition(row, column)) {
@@ -840,8 +804,6 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                 g.dispose();
             }
             setOldPosition(-1, -1);
-            System.out.println();
-            //framework.setStatusText(oldStatusText);
             repaint();
         }
 
@@ -911,22 +873,22 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
                 return;
             }
             if (!isCompact) {
-                /*  Color inter = storedRowColors.get(startColumn - dendroData.getNumberOfColumns());
-                 storedRowColors.remove(startColumn - dendroData.getNumberOfColumns());
-                 storedRowColors.add(endColumn - dendroData.getNumberOfColumns(), inter);*/
+                /* Color inter = storedRowColors.get(startColumn - dendroData.getNumberOfColumns());
+                 * storedRowColors.remove(startColumn - dendroData.getNumberOfColumns());
+                 * storedRowColors.add(endColumn - dendroData.getNumberOfColumns(), inter); */
                 repaint();
             } else {
-                /*   for (int j = 0; j < storedRowColors.size(); j++) {
-                 if (ColorOverlaps[j] == startColumn - dendroData.getNumberOfColumns()) {
-                 ColorOverlaps[j] = -1;
-                 }
-                 if (ColorOverlaps[j] == endColumn - dendroData.getNumberOfColumns()) {
-                 ColorOverlaps[j] = startColumn - dendroData.getNumberOfColumns();
-                 }
-                 if (ColorOverlaps[j] == -1) {
-                 ColorOverlaps[j] = endColumn - dendroData.getNumberOfColumns();
-                 }
-                 }
+                /* for (int j = 0; j < storedRowColors.size(); j++) {
+                 * if (ColorOverlaps[j] == startColumn - dendroData.getNumberOfColumns()) {
+                 * ColorOverlaps[j] = -1;
+                 * }
+                 * if (ColorOverlaps[j] == endColumn - dendroData.getNumberOfColumns()) {
+                 * ColorOverlaps[j] = startColumn - dendroData.getNumberOfColumns();
+                 * }
+                 * if (ColorOverlaps[j] == -1) {
+                 * ColorOverlaps[j] = endColumn - dendroData.getNumberOfColumns();
+                 * }
+                 * }
                  */ repaint();
             }
         }
