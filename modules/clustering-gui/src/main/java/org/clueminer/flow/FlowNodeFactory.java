@@ -16,10 +16,16 @@
  */
 package org.clueminer.flow;
 
+import java.awt.datatransfer.Transferable;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.clueminer.flow.api.FlowNode;
 import org.openide.nodes.ChildFactory;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 
 /**
  * Factory is responsible for creating drag&drop objects
@@ -30,13 +36,46 @@ public class FlowNodeFactory<T extends FlowNode> extends ChildFactory<T> {
 
     List<T> nodes = new ArrayList<>();
 
+    public void addNode(T node) {
+        nodes.add(node);
+        refresh(true);
+    }
+
     @Override
     protected boolean createKeys(List<T> toPopulate) {
-        boolean ret = nodes.addAll(nodes);
+        boolean ret = nodes.addAll(toPopulate);
         if (ret) {
             refresh(true);
         }
         return ret;
+    }
+
+    public void reorder(int[] perm) {
+        FlowNode[] reordered = new FlowNode[nodes.size()];
+        for (int i = 0; i < perm.length; i++) {
+            int j = perm[i];
+
+            FlowNode c = nodes.get(i);
+            reordered[j] = c;
+        }
+        nodes.clear();
+        nodes.addAll((Collection<? extends T>) Arrays.asList(reordered));
+        refresh(true);
+
+    }
+
+    @Override
+    protected Node createNodeForKey(final FlowNode fn) {
+        Node node = new FlowContainerNode(Children.LEAF) {
+
+            @Override
+            public Transferable drag() throws IOException {
+                return fn;
+            }
+
+        };
+        node.setDisplayName(fn.getName());
+        return node;
     }
 
 }

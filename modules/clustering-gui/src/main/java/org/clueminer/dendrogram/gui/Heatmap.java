@@ -395,7 +395,7 @@ public class Heatmap extends JPanel implements DendrogramDataListener, TreeListe
         boolean mask = this.firstSelectedRow >= 0 && this.lastSelectedRow >= 0 && (row < this.firstSelectedRow || row > this.lastSelectedRow);
         mask = (mask || this.firstSelectedColumn >= 0 && this.lastSelectedColumn >= 0 && (column < this.firstSelectedColumn || column > this.lastSelectedColumn));
 //System.out.println("orig row "+row+" -> "+rowIndex(row)+" orig col= "+column+" -> "+colIndex(column));
-        value = dendroData.get(rowIndex(row), colIndex(column));
+        value = dendroData.getMappedValue(row, column);
         g.setColor(colorScheme.getColor(value, dendroData));
         if (collectData) {
             distribution.sample(value);

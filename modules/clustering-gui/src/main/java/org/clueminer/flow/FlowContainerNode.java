@@ -16,10 +16,18 @@
  */
 package org.clueminer.flow;
 
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import org.clueminer.flow.api.FlowNode;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Index;
+import org.openide.nodes.Node;
+import org.openide.nodes.NodeTransfer;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.openide.util.datatransfer.PasteType;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -27,6 +35,30 @@ import org.openide.util.lookup.Lookups;
  * @author deric
  */
 public class FlowContainerNode extends AbstractNode {
+
+    private FlowNodeFactory factory;
+
+    public FlowContainerNode(final FlowNodeFactory factory) {
+        super(Children.create(factory, true));
+        this.factory = factory;
+        getCookieSet().add(new Index.Support() {
+
+            @Override
+            public Node[] getNodes() {
+                return getChildren().getNodes();
+            }
+
+            @Override
+            public int getNodesCount() {
+                return getNodes().length;
+            }
+
+            @Override
+            public void reorder(int[] perm) {
+                factory.reorder(perm);
+            }
+        });
+    }
 
     public FlowContainerNode(FlowNode node) {
         super(Children.LEAF, Lookups.singleton(node));
@@ -58,6 +90,32 @@ public class FlowContainerNode extends AbstractNode {
     @Override
     public boolean canDestroy() {
         return false;
+    }
+
+    @Override
+    public PasteType getDropType(final Transferable t, int arg1, int arg2) {
+
+        if (t.isDataFlavorSupported(FlowFlavor.FLOW_FLAVOR)) {
+
+            return new PasteType() {
+
+                @Override
+                public Transferable paste() throws IOException {
+                    try {
+                        factory.addNode((FlowNode) t.getTransferData(FlowFlavor.FLOW_FLAVOR));
+                        final Node node = NodeTransfer.node(t, NodeTransfer.DND_MOVE + NodeTransfer.CLIPBOARD_CUT);
+                        if (node != null) {
+                            node.destroy();
+                        }
+                    } catch (UnsupportedFlavorException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                    return null;
+                }
+            };
+        } else {
+            return null;
+        }
     }
 
 }

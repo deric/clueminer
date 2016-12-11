@@ -14,30 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.flow.api;
+package org.clueminer.flow;
 
-import java.awt.datatransfer.Transferable;
-import org.clueminer.utils.Props;
+import java.awt.datatransfer.DataFlavor;
+import org.clueminer.flow.api.FlowNode;
 
 /**
- * Basic element of data processing pipeline.
  *
  * @author deric
  */
-public interface FlowNode extends Transferable {
+public class FlowFlavor extends DataFlavor {
 
-    String getName();
+    public static final DataFlavor FLOW_FLAVOR = new FlowFlavor();
 
-    Object[] getInputs();
+    public FlowFlavor() {
+        super(FlowNode.class, "FlowFlavor");
+    }
 
-    Object[] getOutputs();
-
-    /**
-     * Execute node's operation
-     *
-     * @param inputs array of input data
-     * @param props  key-value configuration
-     * @return
-     */
-    Object[] execute(Object[] inputs, Props props);
 }
