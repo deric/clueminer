@@ -16,10 +16,11 @@
  */
 package org.clueminer.flow;
 
-import java.util.Collection;
-import org.clueminer.flow.api.FlowNode;
-import org.openide.nodes.Children;
-import org.openide.util.Lookup;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import org.openide.nodes.Index;
+import org.openide.nodes.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,23 +28,26 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-public class FlowNodes extends Children.SortedArray {
+public class NodeContainer extends Index.ArrayChildren {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FlowNodes.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeContainer.class);
+    private List<Node> list = new ArrayList<Node>();
 
-    public FlowNodes() {
-        initialize();
+    @Override
+    protected List<Node> initCollection() {
+        return list;
     }
 
-    private void initialize() {
-        Collection<? extends FlowNode> res = Lookup.getDefault().lookupAll(FlowNode.class);
-        LOG.info("found {} flow nodes", res.size());
-        FlowNodeContainer[] cont = new FlowNodeContainer[res.size()];
-        int i = 0;
-        for (FlowNode fn : res) {
-            cont[i++] = new FlowNodeContainer(fn);
+    public ListIterator<FlowNodes> getRemaining(Node current) {
+        List<FlowNodes> v = new ArrayList<>();
+        for (Node n : list.subList(indexOf(current), list.size())) {
+            v.add(n.getLookup().lookup(FlowNodes.class));
         }
-        add(cont);
+        return v.listIterator();
+    }
+
+    public void add(Node n) {
+        add(new Node[]{n});
     }
 
 }

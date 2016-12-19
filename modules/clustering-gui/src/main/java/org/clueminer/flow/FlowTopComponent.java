@@ -22,6 +22,8 @@ import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.explorer.ExplorerManager;
+import org.openide.explorer.ExplorerUtils;
+import org.openide.nodes.AbstractNode;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -53,6 +55,11 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
 
     private FlowFrame frame;
     private FlowToolbar toolbar;
+    private final transient ExplorerManager mgr = new ExplorerManager();
+    private FlowNodeRoot root;
+    private FlowView treeView;
+    private FlowNodeFactory factory;
+    private NodeContainer container = new NodeContainer();
 
     public FlowTopComponent() {
         initComponents();
@@ -86,7 +93,13 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
     }
 
     private void initialize() {
-        frame = new FlowFrame();
+        factory = new FlowNodeFactory();
+        treeView = new FlowView(container);
+        //root = new FlowNodeRoot(factory);
+        mgr.setRootContext(new AbstractNode(container));
+        associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
+
+        //frame = new FlowFrame();
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -97,7 +110,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
         c.weightx = 1.0;
         c.weighty = 1.0;
         c.insets = new Insets(0, 0, 0, 0);
-        add(frame, c);
+        add(treeView, c);
 
         toolbar = new FlowToolbar(frame);
         c.gridy = 0;
@@ -120,7 +133,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
 
     @Override
     public ExplorerManager getExplorerManager() {
-        return frame.getExplorerManager();
+        return mgr;
     }
 
 }

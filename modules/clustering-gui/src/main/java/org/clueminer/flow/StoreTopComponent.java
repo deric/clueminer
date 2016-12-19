@@ -90,6 +90,7 @@ public final class StoreTopComponent extends TopComponent implements ExplorerMan
     public void componentOpened() {
         flowNodes = new FlowNodes();
         root = new AbstractNode(flowNodes);
+        //root = new FlowContainerNode(flowNodes);
         LOG.info("found {} flow nodes", flowNodes.getNodesCount());
         mgr.setRootContext(root);
     }

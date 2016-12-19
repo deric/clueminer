@@ -14,10 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.flow;
+package org.clueminer.flow.api;
 
 import java.awt.datatransfer.DataFlavor;
-import org.clueminer.flow.api.FlowNode;
 
 /**
  *
@@ -25,10 +24,10 @@ import org.clueminer.flow.api.FlowNode;
  */
 public class FlowFlavor extends DataFlavor {
 
-    public static final DataFlavor FLOW_FLAVOR = new FlowFlavor();
+    public static final DataFlavor FLOW_NODE = new FlowFlavor();
 
     public FlowFlavor() {
-        super(FlowNode.class, "FlowFlavor");
+        super(FlowNode.class, "FlowNode");
     }
 
 }

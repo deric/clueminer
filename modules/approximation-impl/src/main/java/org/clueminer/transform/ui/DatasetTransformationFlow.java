@@ -16,11 +16,15 @@
  */
 package org.clueminer.transform.ui;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
+import org.clueminer.flow.api.FlowFlavor;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.transform.DatasetTransformation;
 import org.clueminer.utils.Props;
@@ -46,6 +50,7 @@ public class DatasetTransformationFlow implements FlowNode {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
+    private final DataFlavor[] flavors = new DataFlavor[]{FlowFlavor.FLOW_NODE};
 
     @Override
     public String getName() {
@@ -145,6 +150,21 @@ public class DatasetTransformationFlow implements FlowNode {
             }
         });
         taskAnalyze.schedule(0);
+    }
+
+    @Override
+    public DataFlavor[] getTransferDataFlavors() {
+        return flavors;
+    }
+
+    @Override
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        return flavor.equals(FlowFlavor.FLOW_NODE);
+    }
+
+    @Override
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        return this;
     }
 
 }

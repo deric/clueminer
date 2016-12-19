@@ -198,6 +198,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
             noise = findNoiseViaDBSCAN(dataset, pref);
             if (noise != null) {
                 for (E i : noise) {
+                    //TODO don't remove points completely!!!, just from graph
                     dataset.remove(i);
                 }
             }

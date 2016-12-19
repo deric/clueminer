@@ -16,33 +16,39 @@
  */
 package org.clueminer.flow;
 
-import java.awt.datatransfer.Transferable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import org.clueminer.flow.api.FlowNode;
+import org.openide.nodes.AbstractNode;
 import org.openide.nodes.ChildFactory;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.lookup.Lookups;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory is responsible for creating drag&drop objects
  *
  * @author deric
  */
-public class FlowNodeFactory<T extends FlowNode> extends ChildFactory<T> {
+public class FlowNodeFactory extends ChildFactory<FlowNode> {
 
-    List<T> nodes = new ArrayList<>();
+    List<FlowNode> nodes = new ArrayList<>();
+    private static final Logger LOG = LoggerFactory.getLogger(FlowNodeFactory.class);
 
-    public void addNode(T node) {
+    public FlowNodeFactory() {
+        //
+    }
+
+    public void addNode(FlowNode node) {
         nodes.add(node);
         refresh(true);
     }
 
     @Override
-    protected boolean createKeys(List<T> toPopulate) {
+    protected boolean createKeys(List<FlowNode> toPopulate) {
         boolean ret = nodes.addAll(toPopulate);
         if (ret) {
             refresh(true);
@@ -50,32 +56,27 @@ public class FlowNodeFactory<T extends FlowNode> extends ChildFactory<T> {
         return ret;
     }
 
+    @Override
+    protected Node createNodeForKey(final FlowNode fn) {
+        //FlowNodeContainer node = new FlowNodeContainer(fn, this);
+        //Node node = new FlowNodeContainer(Children.create(new FlowNodeFactory(fn.getName()), true), fn);
+        Node node = new AbstractNode(Children.LEAF, Lookups.fixed(fn));
+        node.setDisplayName(fn.getName());
+        return node;
+    }
+
     public void reorder(int[] perm) {
         FlowNode[] reordered = new FlowNode[nodes.size()];
         for (int i = 0; i < perm.length; i++) {
             int j = perm[i];
 
-            FlowNode c = nodes.get(i);
-            reordered[j] = c;
+            FlowNode fn = nodes.get(i);
+            reordered[j] = fn;
         }
         nodes.clear();
-        nodes.addAll((Collection<? extends T>) Arrays.asList(reordered));
+        nodes.addAll(Arrays.asList(reordered));
         refresh(true);
 
-    }
-
-    @Override
-    protected Node createNodeForKey(final FlowNode fn) {
-        Node node = new FlowContainerNode(Children.LEAF) {
-
-            @Override
-            public Transferable drag() throws IOException {
-                return fn;
-            }
-
-        };
-        node.setDisplayName(fn.getName());
-        return node;
     }
 
 }

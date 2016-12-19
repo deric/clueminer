@@ -17,28 +17,29 @@
 package org.clueminer.flow;
 
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
-import org.clueminer.flow.api.FlowNode;
+import java.util.Arrays;
+import org.clueminer.flow.api.FlowFlavor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Index;
 import org.openide.nodes.Node;
 import org.openide.nodes.NodeTransfer;
-import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 import org.openide.util.datatransfer.PasteType;
-import org.openide.util.lookup.Lookups;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
+ * Root node of the execution flow.
  *
  * @author deric
  */
-public class FlowContainerNode extends AbstractNode {
+public class FlowNodeRoot extends AbstractNode {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FlowNodeRoot.class);
     private FlowNodeFactory factory;
 
-    public FlowContainerNode(final FlowNodeFactory factory) {
+    public FlowNodeRoot(final FlowNodeFactory factory) {
         super(Children.create(factory, true));
         this.factory = factory;
         getCookieSet().add(new Index.Support() {
@@ -60,33 +61,6 @@ public class FlowContainerNode extends AbstractNode {
         });
     }
 
-    public FlowContainerNode(FlowNode node) {
-        super(Children.LEAF, Lookups.singleton(node));
-    }
-
-    public FlowContainerNode(Children children) {
-        super(children);
-    }
-
-    public FlowContainerNode(Children children, Lookup lookup) {
-        super(children, lookup);
-    }
-
-    @Override
-    public boolean canCut() {
-        return false;
-    }
-
-    @Override
-    public boolean canCopy() {
-        return true;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return getLookup().lookup(FlowNode.class).getName();
-    }
-
     @Override
     public boolean canDestroy() {
         return false;
@@ -94,26 +68,25 @@ public class FlowContainerNode extends AbstractNode {
 
     @Override
     public PasteType getDropType(final Transferable t, int arg1, int arg2) {
-
-        if (t.isDataFlavorSupported(FlowFlavor.FLOW_FLAVOR)) {
+        LOG.info("root: got drop {}", Arrays.toString(t.getTransferDataFlavors()));
+        if (t.isDataFlavorSupported(FlowFlavor.FLOW_NODE)) {
 
             return new PasteType() {
 
                 @Override
                 public Transferable paste() throws IOException {
-                    try {
-                        factory.addNode((FlowNode) t.getTransferData(FlowFlavor.FLOW_FLAVOR));
-                        final Node node = NodeTransfer.node(t, NodeTransfer.DND_MOVE + NodeTransfer.CLIPBOARD_CUT);
-                        if (node != null) {
-                            node.destroy();
-                        }
-                    } catch (UnsupportedFlavorException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
+                    LOG.info("adding node");
+                    final Node node = NodeTransfer.node(t, NodeTransfer.DND_COPY + NodeTransfer.CLIPBOARD_COPY);
+                    LOG.info("transferred node {}", node);
+                    /* if (node != null) {
+                     * factory.addNode((FlowNode) node);
+                     * } */
+                    //factory.addNode((FlowNode) t.getTransferData(FlowFlavor.FLOW_NODE));
                     return null;
                 }
             };
         } else {
+            LOG.info("flavor not supported {}", Arrays.toString(t.getTransferDataFlavors()));
             return null;
         }
     }

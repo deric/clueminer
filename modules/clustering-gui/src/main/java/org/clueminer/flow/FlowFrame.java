@@ -22,7 +22,6 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
-import org.openide.nodes.AbstractNode;
 
 /**
  *
@@ -31,12 +30,15 @@ import org.openide.nodes.AbstractNode;
 public class FlowFrame extends JPanel {
 
     private final transient ExplorerManager mgr = new ExplorerManager();
-    private AbstractNode root;
+    private FlowNodeRoot root;
     private BeanTreeView treeView;
-
+    private FlowNodeFactory factory;
 
     public FlowFrame() {
         initComponents();
+        factory = new FlowNodeFactory();
+        root = new FlowNodeRoot(factory);
+        mgr.setRootContext(root);
     }
 
     private void initComponents() {
