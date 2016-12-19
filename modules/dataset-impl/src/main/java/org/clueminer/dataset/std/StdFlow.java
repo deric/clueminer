@@ -20,7 +20,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
-import org.clueminer.flow.api.FlowPanel;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,28 +35,18 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
 
     private static final Logger LOG = LoggerFactory.getLogger(StdFlow.class);
     public static final String NAME = "data normalization";
-    private final Class[] inputs = new Class[]{Dataset.class};
-    private final Class[] outputs = new Class[]{Dataset.class};
     private DataScaler ds;
 
     public StdFlow() {
         ds = new DataScaler();
         panel = new StdFlowUI();
+        inputs = new Class[]{Dataset.class};
+        outputs = new Class[]{Dataset.class};
     }
 
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public Object[] getInputs() {
-        return inputs;
-    }
-
-    @Override
-    public Object[] getOutputs() {
-        return outputs;
     }
 
     @Override
@@ -72,26 +61,6 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
         Dataset<E> norm = ds.standartize(dataset, method, logscale);
         ret[0] = norm;
         return ret;
-    }
-
-    private void checkInputs(Object[] in) {
-        if (in.length != inputs.length) {
-            throw new RuntimeException("expected " + inputs.length + " input(s), got " + in.length);
-        }
-        //type check
-        int i = 0;
-        for (Object obj : in) {
-            if (!inputs[i].isInstance(obj)) {
-                throw new RuntimeException("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
-            }
-            i++;
-        }
-
-    }
-
-    @Override
-    public FlowPanel getPanel() {
-        return panel;
     }
 
 }

@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
 @ServiceProvider(service = FlowNode.class)
 public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
 
-    private final Class[] inputs = new Class[]{Timeseries.class};
-    private final Class[] outputs = new Class[]{Dataset.class};
     private final Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
@@ -51,22 +49,14 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
     public static final String PROP_NAME = "transformation";
 
     public DatasetTransformationFlow() {
+        inputs = new Class[]{Timeseries.class};
+        outputs = new Class[]{Dataset.class};
         panel = new DatasetTransformationUI();
     }
 
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public Object[] getInputs() {
-        return inputs;
-    }
-
-    @Override
-    public Object[] getOutputs() {
-        return outputs;
     }
 
     @Override
@@ -107,21 +97,6 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
         ret[0] = transform;
 
         return ret;
-    }
-
-    private void checkInputs(Object[] in) {
-        if (in.length != inputs.length) {
-            throw new RuntimeException("expected " + inputs.length + " input(s), got " + in.length);
-        }
-        //type check
-        int i = 0;
-        for (Object obj : in) {
-            if (!inputs[i].isInstance(obj)) {
-                throw new RuntimeException("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
-            }
-            i++;
-        }
-
     }
 
     private void runPreprocessing(final Object lock, final Dataset<? extends Instance> data, String datasetTransform) {

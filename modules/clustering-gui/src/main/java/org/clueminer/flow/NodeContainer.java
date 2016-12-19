@@ -85,10 +85,14 @@ public class NodeContainer extends Index.ArrayChildren {
                     Object[] inputs = new Object[]{dataset};
                     Object[] outputs;
                     for (Node node : list) {
+                        try {
                         FlowNode fn = node.getLookup().lookup(FlowNode.class);
                         LOG.info("applying {}, with {}", fn.getName(), fn.getProps());
                         outputs = fn.execute(inputs, fn.getProps());
-                        inputs = outputs;
+                            inputs = outputs;
+                        } catch (Exception e) {
+                            LOG.error("flow failed", e);
+                        }
                     }
                     //
                 }

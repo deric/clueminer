@@ -19,6 +19,8 @@ package org.clueminer.flow.api;
 import org.clueminer.utils.Props;
 
 /**
+ * Implementing class must initialize <code>inputs</code> and <code>outputs</code>
+ * in the constructor (or override appropriate getters).
  *
  * @author deric
  */
@@ -26,6 +28,8 @@ public abstract class AbsFlowNode implements FlowNode {
 
     protected Props props;
     protected FlowPanel panel;
+    protected Class[] inputs;
+    protected Class[] outputs;
 
     public Props getProps() {
         if (props == null) {
@@ -44,5 +48,28 @@ public abstract class AbsFlowNode implements FlowNode {
         return panel;
     }
 
+    @Override
+    public Object[] getInputs() {
+        return inputs;
+    }
+
+    @Override
+    public Object[] getOutputs() {
+        return outputs;
+    }
+
+    protected void checkInputs(Object[] in) {
+        if (in.length != inputs.length) {
+            throw new RuntimeException("expected " + inputs.length + " input(s), got " + in.length);
+        }
+        //type check
+        int i = 0;
+        for (Object obj : in) {
+            if (!inputs[i].isInstance(obj)) {
+                throw new RuntimeException("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
+            }
+            i++;
+        }
+    }
 
 }
