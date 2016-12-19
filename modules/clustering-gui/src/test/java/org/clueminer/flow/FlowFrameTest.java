@@ -63,6 +63,7 @@ public class FlowFrameTest extends JFrame {
     private void initComponents() {
         setLayout(new GridBagLayout());
         frame = new FlowFrame();
+        NodeContainer container = new NodeContainer();
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -75,7 +76,7 @@ public class FlowFrameTest extends JFrame {
         c.insets = new Insets(0, 0, 0, 0);
         add((Component) frame, c);
 
-        toolbar = new FlowToolbar(frame);
+        toolbar = new FlowToolbar(container);
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;

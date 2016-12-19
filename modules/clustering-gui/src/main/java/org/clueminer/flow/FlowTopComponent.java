@@ -112,7 +112,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
         c.insets = new Insets(0, 0, 0, 0);
         add(treeView, c);
 
-        toolbar = new FlowToolbar(frame);
+        toolbar = new FlowToolbar(container);
         c.gridy = 0;
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weighty = 0;

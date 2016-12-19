@@ -19,8 +19,18 @@ package org.clueminer.flow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.flow.api.FlowNode;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
+import org.clueminer.utils.Props;
 import org.openide.nodes.Index;
 import org.openide.nodes.Node;
+import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +42,12 @@ public class NodeContainer extends Index.ArrayChildren {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeContainer.class);
     private List<Node> list = new ArrayList<Node>();
+    private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
+    private ProjectController pc;
+
+    public NodeContainer() {
+        pc = Lookup.getDefault().lookup(ProjectController.class);
+    }
 
     @Override
     protected List<Node> initCollection() {
@@ -48,6 +64,48 @@ public class NodeContainer extends Index.ArrayChildren {
 
     public void add(Node n) {
         add(new Node[]{n});
+    }
+
+    public void run() {
+        //we can't start without active project
+        if (pc.hasCurrentProject()) {
+            final RequestProcessor.Task task = RP.create(new Runnable() {
+                @Override
+                public void run() {
+                    LOG.info("started data-mining process");
+                    Project project = pc.getCurrentProject();
+                    Dataset<? extends Instance> dataset = project.getLookup().lookup(Dataset.class);
+                    if (dataset != null) {
+                        LOG.info("using dataset {}", dataset.getName());
+                    } else {
+                        LOG.error("missing dataset!");
+                    }
+                    LOG.info("process includes {} steps", list.size());
+                    Props props = new Props();
+                    Object[] inputs = new Object[]{dataset};
+                    Object[] outputs;
+                    for (Node node : list) {
+                        FlowNode fn = node.getLookup().lookup(FlowNode.class);
+                        LOG.info("applying {}", fn.getName());
+                        outputs = fn.execute(inputs, props);
+                        inputs = outputs;
+                    }
+                    //
+                }
+            });
+
+            task.addTaskListener(new TaskListener() {
+                @Override
+                public void taskFinished(Task task) {
+                    LOG.info("data-mining finished.");
+
+                }
+            });
+            task.schedule(0);
+        } else {
+            LOG.warn("missing current project");
+
+        }
     }
 
 }

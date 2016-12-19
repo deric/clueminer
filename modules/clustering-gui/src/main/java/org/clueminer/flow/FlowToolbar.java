@@ -30,11 +30,11 @@ import org.openide.util.ImageUtilities;
 public class FlowToolbar extends JToolBar {
 
     private JButton btnRun;
-    private FlowFrame frame;
+    private NodeContainer container;
 
-    public FlowToolbar(FlowFrame frame) {
+    public FlowToolbar(NodeContainer container) {
         super(SwingConstants.HORIZONTAL);
-        this.frame = frame;
+        this.container = container;
         initComponents();
     }
 
@@ -49,7 +49,7 @@ public class FlowToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                container.run();
             }
         });
 
