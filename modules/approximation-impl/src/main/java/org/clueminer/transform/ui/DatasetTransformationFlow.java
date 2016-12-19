@@ -23,7 +23,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
-import org.clueminer.flow.api.FlowPanel;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
@@ -48,6 +47,12 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
     public static final String NAME = "timeseries reduction";
+
+    public static final String PROP_NAME = "transformation";
+
+    public DatasetTransformationFlow() {
+        panel = new DatasetTransformationUI();
+    }
 
     @Override
     public String getName() {
@@ -76,7 +81,7 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
         if (data.isEmpty() || data.attributeCount() == 0) {
             throw new RuntimeException("dataset is empty!");
         }
-        String transformation = params.get("transformation", "");
+        String transformation = params.get(PROP_NAME, "");
 
         //make sure we don't have old data
         transform = null;
@@ -147,11 +152,6 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
             }
         });
         taskAnalyze.schedule(0);
-    }
-
-    @Override
-    public FlowPanel getPanel() {
-        return new DatasetTransformationUI();
     }
 
 

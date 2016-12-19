@@ -24,7 +24,6 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import static javax.swing.Action.NAME;
-import org.clueminer.clustering.explorer.ClusterNode;
 import org.clueminer.flow.api.FlowFlavor;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.flow.api.FlowPanel;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-public class FlowNodeContainer extends AbstractNode implements Transferable {
+public class FlowNodeContainer extends AbstractNode implements Transferable, Comparable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeContainer.class);
     private final DataFlavor[] flavors = new DataFlavor[]{FlowFlavor.FLOW_NODE};
@@ -138,10 +137,16 @@ public class FlowNodeContainer extends AbstractNode implements Transferable {
         return getLookup().lookup(FlowNode.class);
     }
 
+    @Override
+    public int compareTo(Object o) {
+        FlowNodeContainer other = (FlowNodeContainer) o;
+        return getDisplayName().compareTo(other.getDisplayName());
+    }
+
     private class PropertiesAction extends AbstractAction {
 
         public PropertiesAction() {
-            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "FlowNodeContainer.actions.Properties.name"));
+            putValue(NAME, NbBundle.getMessage(FlowNodeContainer.class, "FlowNodeContainer.actions.Properties.name"));
         }
 
         @Override

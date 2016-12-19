@@ -25,8 +25,12 @@ import org.clueminer.utils.Props;
 public abstract class AbsFlowNode implements FlowNode {
 
     protected Props props;
+    protected FlowPanel panel;
 
     public Props getProps() {
+        if (props == null) {
+            return panel.getParams();
+        }
         return props;
     }
 
@@ -34,5 +38,11 @@ public abstract class AbsFlowNode implements FlowNode {
     public void setProps(Props props) {
         this.props = props;
     }
+
+    @Override
+    public FlowPanel getPanel() {
+        return panel;
+    }
+
 
 }
