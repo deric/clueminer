@@ -16,29 +16,22 @@
  */
 package org.clueminer.flow.api;
 
+import javax.swing.JPanel;
 import org.clueminer.utils.Props;
 
 /**
- * Basic element of data processing pipeline.
+ * UI for FlowNode configuration
  *
  * @author deric
  */
-public interface FlowNode {
-
-    String getName();
-
-    Object[] getInputs();
-
-    Object[] getOutputs();
+public interface FlowPanel {
 
     /**
-     * Execute node's operation
+     * Parameters configured by user (or default ones)
      *
-     * @param inputs array of input data
-     * @param props  key-value configuration
      * @return
      */
-    Object[] execute(Object[] inputs, Props props);
+    Props getParams();
 
     /**
      * GUI which will be embedded into another dialog (should not contain any
@@ -46,9 +39,6 @@ public interface FlowNode {
      *
      * @return
      */
-    FlowPanel getPanel();
+    JPanel getPanel();
 
-    void setProps(Props props);
-
-    Props getProps();
 }

@@ -86,8 +86,8 @@ public class NodeContainer extends Index.ArrayChildren {
                     Object[] outputs;
                     for (Node node : list) {
                         FlowNode fn = node.getLookup().lookup(FlowNode.class);
-                        LOG.info("applying {}", fn.getName());
-                        outputs = fn.execute(inputs, props);
+                        LOG.info("applying {}, with {}", fn.getName(), fn.getProps());
+                        outputs = fn.execute(inputs, fn.getProps());
                         inputs = outputs;
                     }
                     //

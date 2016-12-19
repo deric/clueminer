@@ -19,11 +19,21 @@ package org.clueminer.flow;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import static javax.swing.Action.NAME;
+import org.clueminer.clustering.explorer.ClusterNode;
 import org.clueminer.flow.api.FlowFlavor;
 import org.clueminer.flow.api.FlowNode;
+import org.clueminer.flow.api.FlowPanel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.NbBundle;
 import org.openide.util.datatransfer.ExTransferable;
 import org.openide.util.lookup.Lookups;
 import org.slf4j.Logger;
@@ -53,9 +63,13 @@ public class FlowNodeContainer extends AbstractNode implements Transferable {
         return true;
     }
 
+    private FlowNode getData() {
+        return getLookup().lookup(FlowNode.class);
+    }
+
     @Override
     public String getDisplayName() {
-        return getLookup().lookup(FlowNode.class).getName();
+        return getData().getName();
     }
 
     @Override
@@ -74,6 +88,11 @@ public class FlowNodeContainer extends AbstractNode implements Transferable {
             }
         });
         return added;
+    }
+
+    @Override
+    public Action[] getActions(boolean popup) {
+        return new Action[]{new PropertiesAction()};
     }
 
     /*
@@ -117,6 +136,24 @@ public class FlowNodeContainer extends AbstractNode implements Transferable {
     @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         return getLookup().lookup(FlowNode.class);
+    }
+
+    private class PropertiesAction extends AbstractAction {
+
+        public PropertiesAction() {
+            putValue(NAME, NbBundle.getMessage(ClusterNode.class, "FlowNodeContainer.actions.Properties.name"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FlowNode fn = getData();
+            FlowPanel nodePanel = fn.getPanel();
+            DialogDescriptor dd = new DialogDescriptor(nodePanel.getPanel(), NbBundle.getMessage(FlowNodeContainer.class, "FlowNodeContainer.title", fn.getName()));
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                //update flow configuration
+                fn.setProps(nodePanel.getParams());
+            }
+        }
     }
 
 }

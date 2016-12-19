@@ -19,36 +19,20 @@ package org.clueminer.flow.api;
 import org.clueminer.utils.Props;
 
 /**
- * Basic element of data processing pipeline.
  *
  * @author deric
  */
-public interface FlowNode {
+public abstract class AbsFlowNode implements FlowNode {
 
-    String getName();
+    protected Props props;
 
-    Object[] getInputs();
+    public Props getProps() {
+        return props;
+    }
 
-    Object[] getOutputs();
+    @Override
+    public void setProps(Props props) {
+        this.props = props;
+    }
 
-    /**
-     * Execute node's operation
-     *
-     * @param inputs array of input data
-     * @param props  key-value configuration
-     * @return
-     */
-    Object[] execute(Object[] inputs, Props props);
-
-    /**
-     * GUI which will be embedded into another dialog (should not contain any
-     * OK/Cancel buttons)
-     *
-     * @return
-     */
-    FlowPanel getPanel();
-
-    void setProps(Props props);
-
-    Props getProps();
 }

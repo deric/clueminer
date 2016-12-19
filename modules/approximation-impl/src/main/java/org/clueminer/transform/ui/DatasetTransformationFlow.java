@@ -16,17 +16,14 @@
  */
 package org.clueminer.transform.ui;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.approximation.api.DataTransformFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.flow.api.FlowFlavor;
+import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
-import org.clueminer.transform.DatasetTransformation;
+import org.clueminer.flow.api.FlowPanel;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.Exceptions;
@@ -42,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author deric
  */
 @ServiceProvider(service = FlowNode.class)
-public class DatasetTransformationFlow implements FlowNode {
+public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
 
     private final Class[] inputs = new Class[]{Timeseries.class};
     private final Class[] outputs = new Class[]{Dataset.class};
@@ -50,11 +47,11 @@ public class DatasetTransformationFlow implements FlowNode {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
-    private final DataFlavor[] flavors = new DataFlavor[]{FlowFlavor.FLOW_NODE};
+    public static final String NAME = "timeseries reduction";
 
     @Override
     public String getName() {
-        return DatasetTransformation.NAME;
+        return NAME;
     }
 
     @Override
@@ -153,18 +150,9 @@ public class DatasetTransformationFlow implements FlowNode {
     }
 
     @Override
-    public DataFlavor[] getTransferDataFlavors() {
-        return flavors;
+    public FlowPanel getPanel() {
+        return new DatasetTransformationUI();
     }
 
-    @Override
-    public boolean isDataFlavorSupported(DataFlavor flavor) {
-        return flavor.equals(FlowFlavor.FLOW_NODE);
-    }
-
-    @Override
-    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-        return this;
-    }
 
 }
