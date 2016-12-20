@@ -38,7 +38,6 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
-import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -98,7 +97,7 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
     @Override
     public Object[] execute(Object[] inputs, Props params) {
         checkInputs(inputs);
-        Object[] ret = new Object[1];
+        Object[] ret = new Object[2];
         Dataset<E> dataset = (Dataset<E>) inputs[0];
 
         DendrogramMapping dendroData;
@@ -209,9 +208,6 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
     }
 
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
-        LOG.info("normalizing data {}, logscale: {}",
-                params.get(AlgParams.STD, Scaler.NONE),
-                params.getBoolean(AlgParams.LOG, false));
         params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         LOG.info("clustering {}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;

@@ -75,6 +75,7 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
             //run analysis
             transform = runPreprocessing(data, transformation);
         }
+        LOG.info("output dataset has {} attributes", transform.attributeCount());
         ret[0] = transform;
 
         return ret;
