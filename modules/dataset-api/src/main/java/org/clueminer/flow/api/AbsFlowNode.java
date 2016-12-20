@@ -31,8 +31,9 @@ public abstract class AbsFlowNode implements FlowNode {
     protected Class[] inputs;
     protected Class[] outputs;
 
+    @Override
     public Props getProps() {
-        if (props == null) {
+        if (props == null && panel != null) {
             return panel.getParams();
         }
         return props;

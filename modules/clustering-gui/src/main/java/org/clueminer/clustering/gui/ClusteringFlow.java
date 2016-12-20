@@ -40,13 +40,18 @@ import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Node responsible for clustering algorithm execution.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
+@ServiceProvider(service = FlowNode.class)
 public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends AbsFlowNode implements FlowNode {
 
     private static final String NAME = "clustering";
@@ -56,7 +61,8 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
 
     public ClusteringFlow() {
         inputs = new Class[]{Dataset.class};
-        outputs = new Class[]{Clustering.class};
+        outputs = new Class[]{Clustering.class, DendrogramMapping.class};
+        panel = new ClusteringUI();
     }
 
     public ClusteringAlgorithm<E, C> getAlgorithm() {
@@ -90,11 +96,21 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
     }
 
     @Override
-    public Object[] execute(Object[] inputs, Props props) {
+    public Object[] execute(Object[] inputs, Props params) {
         checkInputs(inputs);
         Object[] ret = new Object[1];
+        Dataset<E> dataset = (Dataset<E>) inputs[0];
 
-        ret[0] = clusterRows((Dataset<E>) inputs[0], props);
+        DendrogramMapping dendroData;
+        if (params.getObject(AlgParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
+            HierarchicalResult res = hclustRows(dataset, params);
+            dendroData = new DendrogramData(dataset, res);
+        } else {
+            dendroData = clusterAll(dataset, params);
+        }
+
+        ret[0] = clusterRows(dataset, params);
+        ret[1] = dendroData;
         return ret;
     }
 
@@ -110,6 +126,27 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
                 this.algorithm.setColorGenerator(cg);
             }
         }
+    }
+
+    /**
+     * Cluster both - rows and columns
+     *
+     * @param dataset data to be clustered
+     * @param params
+     * @return
+     */
+    public DendrogramMapping clusterAll(Dataset<E> dataset, Props params) {
+        updateAlgorithm(params);
+        HierarchicalResult rowsResult = hclustRows(dataset, params);
+        findCutoff(rowsResult, params);
+        HierarchicalResult columnsResult = hclustColumns(dataset, params);
+        DendrogramMapping mapping = new DendrogramData(dataset, rowsResult, columnsResult);
+        Clustering clustering = rowsResult.getClustering();
+        clustering.lookupAdd(mapping);
+        clustering.lookupAdd(rowsResult);
+        clustering.lookupAdd(columnsResult);
+        clustering.mergeParams(params);
+        return mapping;
     }
 
     public Clustering<E, C> clusterRows(Dataset<E> dataset, Props params) {
@@ -143,6 +180,16 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
             clustering = algorithm.cluster(dataset, params);
         }
         return clustering;
+    }
+
+    public HierarchicalResult hclustColumns(Dataset<E> dataset, Props params) {
+        params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
+        AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        HierarchicalResult columnsResult = aggl.hierarchy(dataset, params);
+        //treeOrder.optimize(columnsResult, true);
+        //CutoffStrategy strategy = getCutoffStrategy(params);
+        //columnsResult.findCutoff(strategy);
+        return columnsResult;
     }
 
     private boolean isEstimationNeeded(ClusteringAlgorithm alg, Props params) {
