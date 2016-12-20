@@ -104,6 +104,7 @@ public class DataScalerTest {
     public static Dataset<? extends Instance> kumarData() {
         if (kumar == null) {
             kumar = new ArrayDataset<>(4, 2);
+            kumar.setName("kumar");
             kumar.attributeBuilder().create("x", BasicAttrType.NUMERIC);
             kumar.attributeBuilder().create("y", BasicAttrType.NUMERIC);
             kumar.builder().create(new double[]{0.40, 0.53}, "1");

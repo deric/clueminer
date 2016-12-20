@@ -38,7 +38,7 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
 
     private final Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
     private Dataset<? extends Instance> transform;
-    public static final String NAME = "timeseries reduction";
+    public static final String NAME = "timeseries transformation";
 
     public static final String PROP_NAME = "transformation";
 

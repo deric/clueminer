@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = FlowNode.class)
 public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode {
@@ -60,6 +61,7 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
         Dataset<E> dataset = (Dataset<E>) inputs[0];
         Dataset<E> norm = ds.standartize(dataset, method, logscale);
         ret[0] = norm;
+        LOG.info("finished normalization");
         return ret;
     }
 

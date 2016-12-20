@@ -32,7 +32,7 @@ public class StdMinMaxTest {
 
     private static final double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
     private static final double[][] data2 = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, -10}, {-5, -2, 19, 1, 5}};
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
     private static final StdMinMax subject = new StdMinMax();
     private static final String method = StdMinMax.name;
 
@@ -47,7 +47,7 @@ public class StdMinMaxTest {
 
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
-                assertEquals(res.get(i, j), out.get(i, j), delta);
+                assertEquals(res.get(i, j), out.get(i, j), DELTA);
             }
         }
     }
@@ -61,7 +61,7 @@ public class StdMinMaxTest {
 
         for (int i = 0; i < dataset.size(); i++) {
             for (int j = 0; j < dataset.attributeCount(); j++) {
-                assertEquals(res.get(i, j), out.get(i, j), delta);
+                assertEquals(res.get(i, j), out.get(i, j), DELTA);
             }
         }
     }
