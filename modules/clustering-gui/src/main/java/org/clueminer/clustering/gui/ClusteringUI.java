@@ -24,6 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.flow.api.FlowPanel;
@@ -47,7 +48,9 @@ public class ClusteringUI extends JPanel implements FlowPanel {
     @Override
     public Props getParams() {
         if (dialog != null) {
-            return dialog.getParams();
+            Props p = dialog.getParams();
+            p.put(AlgParams.ALG, comboAlg.getSelectedItem());
+            return p;
         } else {
             throw new RuntimeException("missing dialog");
         }

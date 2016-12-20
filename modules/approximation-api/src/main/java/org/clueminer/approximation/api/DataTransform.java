@@ -30,7 +30,7 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public interface DataTransform<I extends Instance, O extends Instance> {
 
-    public String getName();
+    String getName();
 
     /**
      * Creates a discrete dataset from dataset with continuous values.
@@ -41,7 +41,7 @@ public interface DataTransform<I extends Instance, O extends Instance> {
      * @param output
      * @param ph
      */
-    public void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph);
+    void analyze(Dataset<I> dataset, Dataset<O> output, ProgressHandle ph);
 
     /**
      * Creates preferred data structure for storing results of this
@@ -51,5 +51,5 @@ public interface DataTransform<I extends Instance, O extends Instance> {
      *              dimensionality to optimize output storage
      * @return dataset for storing results
      */
-    public Dataset<O> createDefaultOutput(Dataset<I> input);
+    Dataset<O> createDefaultOutput(Dataset<I> input);
 }

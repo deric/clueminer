@@ -19,12 +19,12 @@ package org.clueminer.flow;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
-import org.clueminer.utils.Props;
 import org.openide.nodes.Index;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -81,20 +81,32 @@ public class NodeContainer extends Index.ArrayChildren {
                         LOG.error("missing dataset!");
                     }
                     LOG.info("process includes {} steps", list.size());
-                    Props props = new Props();
                     Object[] inputs = new Object[]{dataset};
-                    Object[] outputs;
-                    for (Node node : list) {
-                        try {
-                        FlowNode fn = node.getLookup().lookup(FlowNode.class);
-                        LOG.info("applying {}, with {}", fn.getName(), fn.getProps());
-                        outputs = fn.execute(inputs, fn.getProps());
+                    Object[] outputs = new Object[0];
+                    String currFlow = null;
+                    try {
+                        for (Node node : list) {
+                            FlowNode fn = node.getLookup().lookup(FlowNode.class);
+                            currFlow = fn.getName();
+                            LOG.info("applying {}, with {}", fn.getName(), fn.getProps());
+                            outputs = fn.execute(inputs, fn.getProps());
+                            if (outputs.length > 0) {
+                                LOG.debug("output 0 is {}", outputs[0].getClass());
+                            }
+
                             inputs = outputs;
-                        } catch (Exception e) {
-                            LOG.error("flow failed", e);
                         }
+                        //process result - check whether there's some clustering
+                        for (Object o : outputs) {
+                            if (o instanceof Clustering) {
+                                Clustering c = (Clustering) o;
+                                pc.getCurrentProject().add(c);
+                            }
+                        }
+                    } catch (Exception e) {
+                        LOG.error("flow {} failed", currFlow, e);
                     }
-                    //
+
                 }
             });
 

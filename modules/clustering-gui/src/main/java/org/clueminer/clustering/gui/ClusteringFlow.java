@@ -99,6 +99,7 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
         checkInputs(inputs);
         Object[] ret = new Object[2];
         Dataset<E> dataset = (Dataset<E>) inputs[0];
+        checkInput(dataset);
 
         DendrogramMapping dendroData;
         if (params.getObject(AlgParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
@@ -211,10 +212,18 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
         params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         LOG.info("clustering {}", params.toString());
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
+        LOG.info("algorithm is {}", algorithm.getName());
+        LOG.info("dataset: {}", dataset.getName());
         HierarchicalResult rowsResult = aggl.hierarchy(dataset, params);
         //TODO: tree ordering might break assigning items to clusters
         //treeOrder.optimize(rowsResult, true);
         return rowsResult;
+    }
+
+    private void checkInput(Dataset<? extends Instance> dataset) {
+        if (dataset == null || dataset.isEmpty()) {
+            throw new NullPointerException("no data to process");
+        }
     }
 
 }

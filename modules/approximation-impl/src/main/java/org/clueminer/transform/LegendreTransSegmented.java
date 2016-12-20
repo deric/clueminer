@@ -16,8 +16,6 @@
  */
 package org.clueminer.transform;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.approximation.api.DataTransform;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
@@ -28,6 +26,8 @@ import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.std.StdScale;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LegendreTransSegmented<I extends Instance, O extends Instance> extends LegendreTransformation<I, O> implements DataTransform<I, O> {
 
     private static String name = "Legendre segmented";
-    private static final Logger logger = Logger.getLogger(LegendreTransSegmented.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(LegendreTransSegmented.class);
     private int numSegments = 2;
 
     public LegendreTransSegmented() {
@@ -67,7 +67,7 @@ public class LegendreTransSegmented<I extends Instance, O extends Instance> exte
         // last two params: number of segments and degree of polynomials
 
         int workunits = numSegments * dataset.size();
-        logger.log(Level.INFO, "work units = {0}", workunits);
+        LOG.info("work units = {}", workunits);
         ph.start(workunits);
         analyze(dataset, output, ph, numSegments, degree);
         ph.finish();
@@ -94,10 +94,10 @@ public class LegendreTransSegmented<I extends Instance, O extends Instance> exte
         for (Timeseries<ContinuousInstance> input : segments) {
             analyzeTimeseries(input, output, ph, seg);
             //Dump.matrix(output.arrayCopy(), "output-" + seg, 2);
-            logger.log(Level.INFO, "segment {0}", seg);
+            LOG.info("segment {}", seg);
             seg++;
         }
-        logger.log(Level.INFO, "finished");
+        LOG.info("finished");
     }
 
     protected Timeseries<ContinuousInstance>[] splitIntoSegments(Timeseries<ContinuousInstance> source, int n) {
@@ -112,7 +112,7 @@ public class LegendreTransSegmented<I extends Instance, O extends Instance> exte
         double value, min, max;
         int m;
         StdScale scale = new StdScale();
-        logger.log(Level.INFO, "splitting: {0} size= {1} attr cnt = {2}", new Object[]{source.getClass().getName(), source.size(), source.attributeCount()});
+        LOG.info("splitting: {} size= {} attr cnt = {}", source.getClass().getName(), source.size(), source.attributeCount());
         for (int i = 0; i < n; i++) {
             //res[i] = (Timeseries<ContinuousInstance>) source.duplicate();
             res[i] = new TimeseriesDataset<>(source.size());
