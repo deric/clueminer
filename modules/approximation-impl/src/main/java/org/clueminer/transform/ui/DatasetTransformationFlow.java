@@ -25,10 +25,6 @@ import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
-import org.openide.util.Exceptions;
-import org.openide.util.RequestProcessor;
-import org.openide.util.Task;
-import org.openide.util.TaskListener;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +37,6 @@ import org.slf4j.LoggerFactory;
 public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
 
     private final Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
-    private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
-    private boolean preprocessingFinished = false;
     private Dataset<? extends Instance> transform;
     public static final String NAME = "timeseries reduction";
 
@@ -78,56 +72,22 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
         //check if there's preloaded dataset available
         transform = data.getChild(transformation);
         if (transform == null) {
-            preprocessingFinished = false;
-            //run analysis and wait
-            final Object lock = new Object();
-
-            runPreprocessing(lock, data, transformation);
-
-            synchronized (lock) {
-                while (!preprocessingFinished) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            }
+            //run analysis
+            transform = runPreprocessing(data, transformation);
         }
         ret[0] = transform;
 
         return ret;
     }
 
-    private void runPreprocessing(final Object lock, final Dataset<? extends Instance> data, String datasetTransform) {
+    private Dataset<? extends Instance> runPreprocessing(final Dataset<? extends Instance> data, String datasetTransform) {
 
         DataTransformFactory df = DataTransformFactory.getInstance();
         final DataTransform trans = df.getProvider(datasetTransform);
         final Dataset<? extends Instance> output = trans.createDefaultOutput(data);
 
         final ProgressHandle ph = ProgressHandle.createHandle("Running preprocessing");
-
-        final RequestProcessor.Task taskAnalyze = RP.create(new Runnable() {
-            @Override
-            public void run() {
-                trans.analyze(data, output, ph);
-            }
-        });
-        taskAnalyze.addTaskListener(new TaskListener() {
-            @Override
-            public void taskFinished(Task task) {
-                synchronized (lock) {
-                    LOG.info("preprocessing finished.");
-                    LOG.info("output dataset " + output.getClass().toString() + " name: " + output.getName() + ", size = " + output.size());
-                    transform = output;
-
-                    preprocessingFinished = true;
-                    lock.notifyAll();
-                }
-            }
-        });
-        taskAnalyze.schedule(0);
+        trans.analyze(data, output, ph);
+        return output;
     }
-
-
 }
