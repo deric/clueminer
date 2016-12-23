@@ -87,8 +87,8 @@ public class CutoffLine extends BPanel implements DendrogramDataListener {
      * Computes position of line on the dendrogram tree
      *
      * @param hres
-     * @param min target interval minimum
-     * @param max target interval maximum
+     * @param min  target interval minimum
+     * @param max  target interval maximum
      *
      * @return
      */

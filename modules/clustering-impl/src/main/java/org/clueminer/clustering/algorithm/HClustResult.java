@@ -231,6 +231,13 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         colorGenerator.reset();
         num = 0; //human readable
         Clustering clusters = new ClusterList(estClusters);
+        if (clustering != null) {
+            //copy algorithm properties etc.
+            Props p = clustering.getParams().copy();
+            p.put(AlgParams.CUTOFF_STRATEGY, "manual");
+            p.put(AlgParams.CUTOFF_SCORE, String.valueOf(cutoff));
+            clusters.setParams(p);
+        }
         DendroNode root = treeData.getRoot();
         if (root != null) {
             checkCutoff(root, cutoff, clusters, assign);
