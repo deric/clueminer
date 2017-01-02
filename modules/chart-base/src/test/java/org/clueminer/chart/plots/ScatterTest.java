@@ -9,6 +9,9 @@ import org.clueminer.chart.ui.InteractivePanel;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Should serve for testing DendroView component
@@ -18,6 +21,7 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 public class ScatterTest extends JFrame {
 
     private static final long serialVersionUID = 2454805549250048515L;
+    private static Logger LOG = LoggerFactory.getLogger(ScatterTest.class);
 
     private ScatterPlot scatter;
 
@@ -31,7 +35,7 @@ public class ScatterTest extends JFrame {
     }
 
     // this function will be run from the EDT
-    private static void createAndShowGUI() throws Exception {
+    protected static void createAndShowGUI() throws Exception {
         ScatterTest hmf = new ScatterTest();
         hmf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         hmf.setSize(800, 600);
@@ -47,10 +51,10 @@ public class ScatterTest extends JFrame {
                     long start = System.currentTimeMillis();
                     createAndShowGUI();
                     long end = (System.currentTimeMillis() - start);
-                    System.out.println("clm-chart show = " + end + " ms");
+                    LOG.info("clm-chart show = {} ms", end);
                 } catch (Exception e) {
                     System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });
@@ -72,7 +76,7 @@ public class ScatterTest extends JFrame {
         c.insets = new Insets(0, 0, 0, 0);
         InteractivePanel panel = new InteractivePanel(scatter);
         long create = (System.currentTimeMillis() - start);
-        System.out.println("clm-chart create = " + create + " ms");
+        LOG.info("clm-chart create = {} ms", create);
         add(panel, c);
 
     }

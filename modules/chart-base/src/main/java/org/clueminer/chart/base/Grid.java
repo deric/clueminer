@@ -77,11 +77,11 @@ public class Grid extends AbstractDrawable implements Drawable {
     @Override
     public void draw(DrawingContext context) {
 
-        Graphics2D graphics = context.getGraphics();
+        Graphics2D g = context.getGraphics();
 
-        AffineTransform txOrig = graphics.getTransform();
-        graphics.translate(getX(), getY());
-        AffineTransform txOffset = graphics.getTransform();
+        AffineTransform txOrig = g.getTransform();
+        g.translate(getX(), getY());
+        AffineTransform txOffset = g.getTransform();
         Rectangle2D bounds = getBounds();
 
         // Draw gridX
@@ -112,10 +112,10 @@ public class Grid extends AbstractDrawable implements Drawable {
                     if (tick.type == TickType.MINOR) {
                         paint = getMinorGridColor();
                     }
-                    graphics.translate(tickPoint.getX(), tickPoint.getY());
+                    g.translate(tickPoint.getX(), tickPoint.getY());
                     GraphicsUtils.drawPaintedShape(
-                            graphics, gridLineVert, paint, null, null);
-                    graphics.setTransform(txOffset);
+                            g, gridLineVert, paint, null, null);
+                    g.setTransform(txOffset);
                 }
             }
         }
@@ -127,7 +127,6 @@ public class Grid extends AbstractDrawable implements Drawable {
             if (axisY != null && axisY.isValid() && axisYRenderer != null) {
                 Shape shapeY = axisYRenderer.getShape();
                 Rectangle2D shapeBoundsY = shapeY.getBounds2D();
-                System.out.println("rendering Y: " + shapeBoundsY);
                 List<Tick> ticksY = axisYRenderer.getTicks(axisY);
                 Line2D gridLineHoriz = new Line2D.Double(
                         -shapeBoundsY.getMinX(), -shapeBoundsY.getMinY(),
@@ -149,15 +148,15 @@ public class Grid extends AbstractDrawable implements Drawable {
                     if (isMinorTick) {
                         paint = getMinorGridColor();
                     }
-                    graphics.translate(tickPoint.getX(), tickPoint.getY());
+                    g.translate(tickPoint.getX(), tickPoint.getY());
                     GraphicsUtils.drawPaintedShape(
-                            graphics, gridLineHoriz, paint, null, null);
-                    graphics.setTransform(txOffset);
+                            g, gridLineHoriz, paint, null, null);
+                    g.setTransform(txOffset);
                 }
             }
         }
 
-        graphics.setTransform(txOrig);
+        g.setTransform(txOrig);
     }
 
     public boolean isMajorGridX() {

@@ -74,6 +74,7 @@ public class DrawablePanel extends JPanel {
 
             getDrawable().draw(new DrawingContext(graphics));
         }
+        g.dispose();
     }
 
     @Override

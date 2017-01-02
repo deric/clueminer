@@ -26,7 +26,7 @@ import java.awt.Paint;
  */
 public class BaseChartTheme implements ChartTheme {
 
-    public static final Color bg = new Color(210, 210, 210);
+    public static final Color bg = new Color(210, 210, 210); //GRAY
     public static final Font font = new Font(Font.SANS_SERIF, Font.BOLD, 14);
 
     @Override

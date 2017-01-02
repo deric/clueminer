@@ -1,10 +1,25 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chart.plots;
 
 import java.awt.Font;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.Stroke;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
@@ -16,12 +31,10 @@ import org.clueminer.chart.api.AxisPosition;
 import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.Plot;
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.chart.base.BaseAxis;
 import org.clueminer.chart.base.Grid;
 import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
-import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.util.Insets2D;
 import org.clueminer.chart.util.Location;
 import org.clueminer.chart.util.Orientation;
@@ -38,6 +51,10 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     private Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
 
     public ScatterPlot(int width, int height) {
+        initComponents(width, height);
+    }
+
+    private void initComponents(int width, int height) {
         grid = new Grid(this);
         setBounds(0, 0, width, height);
         axes = new HashMap<>(2);
@@ -45,18 +62,6 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
         setInsets(insets);
         add(grid);
-
-    }
-
-    private Axis createAxis(boolean isLogscale, Orientation orient) {
-        Axis ax;
-        if (isLogscale) {
-            throw new UnsupportedOperationException("not supported yet");
-        } else {
-            ax = new BaseAxis(new LinearRenderer2D(), orient);
-        }
-        add(ax);
-        return ax;
     }
 
     @Override
@@ -77,7 +82,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         }
         AxisRenderer renderer = comp.getRenderer();
 
-        Dimension2D size = comp.getPreferredSize();
+        //Dimension2D size = comp.getPreferredSize();
 
         Shape shape;
         if (orientation == Orientation.HORIZONTAL) {
@@ -86,8 +91,8 @@ public class ScatterPlot extends AbstractPlot implements Plot {
                     plotBounds.getWidth(), plotBounds.getY()
             );
         } else {
-            shape = new Line2D.Double(size.getWidth(), plotBounds.getHeight(),
-                    size.getWidth(), 0.0
+            shape = new Line2D.Double(plotBounds.getX(), plotBounds.getHeight(),
+                    plotBounds.getX(), 0.0
             );
         }
         renderer.setShape(shape);

@@ -19,11 +19,14 @@ package org.clueminer.chart.base;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
+import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.factory.ThemeFactory;
+import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.theme.Theme;
 import org.clueminer.chart.util.GraphicsUtils;
+import org.clueminer.chart.util.Orientation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -76,6 +79,17 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
 
     public Dataset<? extends Instance> getDataset() {
         return dataset;
+    }
+
+    protected Axis createAxis(boolean isLogscale, Orientation orient) {
+        Axis ax;
+        if (isLogscale) {
+            throw new UnsupportedOperationException("not supported yet");
+        } else {
+            ax = new BaseAxis(new LinearRenderer2D(), orient);
+        }
+        add(ax);
+        return ax;
     }
 
 }
