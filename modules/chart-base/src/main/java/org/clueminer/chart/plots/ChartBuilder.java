@@ -17,7 +17,7 @@
 package org.clueminer.chart.plots;
 
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.chart.theme.ChartTheme;
+import org.clueminer.chart.theme.Theme;
 
 /**
  *
@@ -30,7 +30,7 @@ public class ChartBuilder {
     String title = "";
     String xAxisTitle = "";
     String yAxisTitle = "";
-    ChartTheme chartTheme;
+    Theme chartTheme;
 
     public ChartBuilder width(int width) {
         this.width = width;
@@ -58,7 +58,7 @@ public class ChartBuilder {
         return this;
     }
 
-    public ChartBuilder theme(ChartTheme chartTheme) {
+    public ChartBuilder theme(Theme chartTheme) {
         this.chartTheme = chartTheme;
         return this;
     }

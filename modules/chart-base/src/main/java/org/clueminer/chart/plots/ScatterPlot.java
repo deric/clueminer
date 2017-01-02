@@ -16,10 +16,7 @@
  */
 package org.clueminer.chart.plots;
 
-import java.awt.Font;
-import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
@@ -46,9 +43,13 @@ import org.clueminer.chart.util.Orientation;
 public class ScatterPlot extends AbstractPlot implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
-    private Map<AxisPosition, Axis> axes;
-    private Grid grid;
-    private Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
+    protected Map<AxisPosition, Axis> axes;
+    protected Grid grid;
+    protected Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
+
+    public ScatterPlot() {
+
+    }
 
     public ScatterPlot(int width, int height) {
         initComponents(width, height);
@@ -223,46 +224,6 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public void setVisible(DataSource source, boolean visible) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Paint getBackground() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBackground(Paint background) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Stroke getBorderStroke() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBorderStroke(Stroke border) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Paint getBorderColor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBorderColor(Paint color) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Font getFont() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setFont(Font font) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

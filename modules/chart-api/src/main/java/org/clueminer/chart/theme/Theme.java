@@ -18,7 +18,6 @@ package org.clueminer.chart.theme;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Paint;
 import java.awt.Stroke;
 
 /**
@@ -34,14 +33,6 @@ public interface Theme {
      */
     String getName();
 
-    Font getFont();
-
-    Paint getBorderColor();
-
-    Stroke getBorderStroke();
-
-    ChartTheme getChart();
-
     int getMarkerSize();
 
     Color getErrorBarsColor();
@@ -49,5 +40,74 @@ public interface Theme {
     boolean isLegendVisible();
 
     boolean isErrorBarsColorSeriesColor();
+
+    /**
+     * Returns the paint which is used to fill the background of the plot.
+     *
+     * @return Paint which is used to fill the background of the plot.
+     */
+    Color getBackground();
+
+    /**
+     * Sets the paint which will be used to fill the background of the plot.
+     *
+     * @param background Paint which will be used to fill the background of the
+     *                   plot.
+     */
+    void setBackground(Color background);
+
+    /**
+     * Returns the stroke which is used to paint the border of the plot.
+     *
+     * @return Stroke which is used to paint the border of the plot.
+     */
+    Stroke getBorderStroke();
+
+    /**
+     * Sets the stroke which will be used to paint the border of the plot.
+     *
+     * @param border Stroke which will be used to paint the border of the plot.
+     */
+    void setBorderStroke(Stroke border);
+
+    /**
+     * Returns the paint which is used to fill the border of the plot.
+     *
+     * @return Paint which is used to fill the border of the plot.
+     */
+    Color getBorderColor();
+
+    /**
+     * Sets the paint which will be used to fill the border of the plot.
+     *
+     * @param color Paint which will be used to fill the border of the plot.
+     */
+    void setBorderColor(Color color);
+
+    /**
+     * Returns the base font used by the plot.
+     *
+     * @return Font used by the plot.
+     */
+    Font getFont();
+
+    /**
+     * Sets the base font that will be used by the plot.
+     *
+     * @param font Font that will used by the plot.
+     */
+    void setFont(Font font);
+
+    void setChartPadding(int chartPadding);
+
+    int getChartPadding();
+
+    void setChartFontColor(Color color);
+
+    Color getChartFontColor();
+
+    void setAxisTitleFont(Font axisTitleFont);
+
+    Font getAxisTitleFont();
 
 }

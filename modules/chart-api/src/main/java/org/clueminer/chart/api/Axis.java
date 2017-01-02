@@ -138,4 +138,11 @@ public interface Axis extends Drawable {
 
     void setOrientation(Orientation orientation);
 
+    /**
+     * Returns plot to which axis belong
+     *
+     * @return parent plot
+     */
+    Plot getPlot();
+
 }

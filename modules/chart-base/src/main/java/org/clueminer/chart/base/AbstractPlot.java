@@ -57,7 +57,7 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
     public void draw(DrawingContext context) {
         Graphics2D graphics = context.getGraphics();
 
-        Paint bg = theme.getChart().getBackground();
+        Paint bg = theme.getBackground();
         if (bg != null) {
             GraphicsUtils.fillPaintedShape(graphics, getBounds(), bg, null);
         }
@@ -86,7 +86,7 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
         if (isLogscale) {
             throw new UnsupportedOperationException("not supported yet");
         } else {
-            ax = new BaseAxis(new LinearRenderer2D(), orient);
+            ax = new InsideAxis(new LinearRenderer2D(), orient);
         }
         add(ax);
         return ax;
