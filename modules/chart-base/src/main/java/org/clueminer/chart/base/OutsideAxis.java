@@ -39,7 +39,6 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
     /** the paint zone */
     private Rectangle2D paintZone;
 
-    private Plot plot;
 
     public OutsideAxis(Plot parent, AxisRenderer renderer, Orientation orient) {
         this(true);
