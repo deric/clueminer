@@ -1,5 +1,3 @@
-package org.clueminer.chart.base;
-
 /*
  * Copyright (C) 2011-2017 clueminer.org
  *
@@ -16,6 +14,8 @@ package org.clueminer.chart.base;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.clueminer.chart.base;
+
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
@@ -38,9 +38,8 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
     private Theme theme;
     protected Dataset<? extends Instance> dataset;
 
-    public AbstractPlot(int width, int height) {
+    public AbstractPlot() {
         theme = ThemeFactory.getInstance().getDefault();
-        //setBounds(0, 0, width, height);
     }
 
     public void setTheme(Theme t) {

@@ -299,6 +299,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      *
      * @return Major tick length in pixels.
      */
+    @Override
     public double getTickLengthAbsolute() {
         double fontSize = getTickFont().getSize2D();
         return getTickLength() * fontSize;
@@ -409,6 +410,7 @@ public abstract class AbstractAxisRenderer2D implements AxisRenderer, Serializab
      * @param forceLinear Force linear interpolation.
      * @return N-dimensional normal vector at the position
      */
+    @Override
     public PointND<Double> getNormal(Axis axis, Number value,
             boolean extrapolate, boolean forceLinear) {
         double valueView;

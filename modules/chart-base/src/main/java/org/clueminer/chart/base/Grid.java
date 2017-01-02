@@ -82,7 +82,7 @@ public class Grid extends AbstractDrawable implements Drawable {
         AffineTransform txOrig = graphics.getTransform();
         graphics.translate(getX(), getY());
         AffineTransform txOffset = graphics.getTransform();
-        Rectangle2D bounds = plot.getBounds();
+        Rectangle2D bounds = getBounds();
 
         // Draw gridX
         if (isMajorGridX() || isMinorGridX()) {
@@ -127,6 +127,7 @@ public class Grid extends AbstractDrawable implements Drawable {
             if (axisY != null && axisY.isValid() && axisYRenderer != null) {
                 Shape shapeY = axisYRenderer.getShape();
                 Rectangle2D shapeBoundsY = shapeY.getBounds2D();
+                System.out.println("rendering Y: " + shapeBoundsY);
                 List<Tick> ticksY = axisYRenderer.getTicks(axisY);
                 Line2D gridLineHoriz = new Line2D.Double(
                         -shapeBoundsY.getMinX(), -shapeBoundsY.getMinY(),

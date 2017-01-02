@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chart.graphics;
 
 import java.awt.Color;
@@ -140,10 +156,10 @@ public class Label extends AbstractDrawable {
         double shapePosY = getY() - textBounds.getY();
         // Position the text inside the bounding rectangle using the alignment
         // settings
-        double alignmentX = getAlignmentX();
-        double alignmentY = getAlignmentY();
-        shapePosX += alignmentX * (getWidth() - textBounds.getWidth());
-        shapePosY += alignmentY * (getHeight() - textBounds.getHeight());
+        double algX = getAlignmentX();
+        double algY = getAlignmentY();
+        shapePosX += algX * (getWidth() - textBounds.getWidth());
+        shapePosY += algY * (getHeight() - textBounds.getHeight());
         // Apply positioning
         graphics.translate(shapePosX, shapePosY);
 
@@ -186,16 +202,16 @@ public class Label extends AbstractDrawable {
      * @return Outline for this label.
      */
     protected Shape getOutline(boolean wordWrap) {
-        Font font = getFont();
+        Font f = getFont();
         float wrappingWidth = 0f;
         if (wordWrap) {
-            double rotation = Math.toRadians(getRotation());
-            wrappingWidth = (float) (Math.abs(Math.cos(rotation)) * getWidth()
-                    + Math.abs(Math.sin(rotation)) * getHeight());
+            double rot = Math.toRadians(getRotation());
+            wrappingWidth = (float) (Math.abs(Math.cos(rot)) * getWidth()
+                    + Math.abs(Math.sin(rot)) * getHeight());
         }
         double alignment = getTextAlignment();
         Shape outline = GraphicsUtils.getOutline(
-                getText(), font, wrappingWidth, alignment);
+                getText(), f, wrappingWidth, alignment);
         return outline;
     }
 

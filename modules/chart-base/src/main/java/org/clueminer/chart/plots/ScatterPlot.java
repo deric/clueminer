@@ -38,14 +38,14 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     private Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
 
     public ScatterPlot(int width, int height) {
-        super(width, height);
         grid = new Grid(this);
-        add(grid);
-
+        setBounds(0, 0, width, height);
         axes = new HashMap<>(2);
         axes.put(AxisPosition.X, createAxis(false, Orientation.HORIZONTAL));
         axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
         setInsets(insets);
+        add(grid);
+
     }
 
     private Axis createAxis(boolean isLogscale, Orientation orient) {
@@ -64,7 +64,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         grid.setBounds(getPlotArea());
         if (axes != null) {
             for (Axis ax : axes.values()) {
-                layoutAxisShape(ax, Orientation.HORIZONTAL);
+                layoutAxisShape(ax, ax.getOrientation());
             }
         }
     }
@@ -86,8 +86,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
                     plotBounds.getWidth(), plotBounds.getY()
             );
         } else {
-            shape = new Line2D.Double(
-                    size.getWidth(), plotBounds.getHeight(),
+            shape = new Line2D.Double(size.getWidth(), plotBounds.getHeight(),
                     size.getWidth(), 0.0
             );
         }
@@ -116,11 +115,11 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     @Override
     public Rectangle2D getPlotArea() {
         Rectangle2D b = getBounds();
-        /*Rectangle2D rect = new Rectangle2D.Double(insets.left, insets.top,
-         b.getWidth() - insets.right - insets.left,
-         b.getHeight() - insets.bottom - insets.top);*/
+        Rectangle2D rect = new Rectangle2D.Double(insets.getBottom(), insets.getTop(),
+                b.getWidth() - insets.getHorizontal(),
+                b.getHeight() - insets.getVertical());
 
-        return b;
+        return rect;
     }
 
     @Override
@@ -135,7 +134,11 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public AxisRenderer getAxisRenderer(AxisPosition axisName) {
-        return axes.get(axisName).getRenderer();
+        Axis axis = axes.get(axisName);
+        if (axis != null) {
+            return axis.getRenderer();
+        }
+        return null;
     }
 
     @Override
