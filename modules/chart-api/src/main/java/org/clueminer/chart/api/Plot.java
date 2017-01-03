@@ -1,14 +1,28 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chart.api;
 
-import java.awt.Font;
-import java.awt.Paint;
-import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
+import org.clueminer.chart.theme.Theme;
 import org.clueminer.chart.util.Location;
 
 /**
@@ -112,19 +126,19 @@ public interface Plot extends Drawable, Container {
     /**
      * Adds a new data series to the plot.
      *
-     * @param source Data series.
+     * @param source  Data series.
      * @param visible {@code true} if the series should be displayed,
-     * {@code false} otherwise.
+     *                {@code false} otherwise.
      */
     void add(DataSource source, boolean visible);
 
     /**
      * Inserts the specified data series to the plot at a specified position.
      *
-     * @param index Position.
-     * @param source Data series.
+     * @param index   Position.
+     * @param source  Data series.
      * @param visible {@code true} if the series should be displayed,
-     * {@code false} otherwise.
+     *                {@code false} otherwise.
      */
     void add(int index, DataSource source, boolean visible);
 
@@ -133,7 +147,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data series.
      * @return {@code true} if the specified element is stored in the
-     * plot, otherwise {@code false}
+     *         plot, otherwise {@code false}
      */
     boolean contains(DataSource source);
 
@@ -150,7 +164,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data series.
      * @return {@code true} if the series existed,
-     * otherwise {@code false}.
+     *         otherwise {@code false}.
      */
     boolean remove(DataSource source);
 
@@ -167,7 +181,7 @@ public interface Plot extends Drawable, Container {
      *
      * @param source Data source.
      * @return Array containing axis names in the order of the columns,
-     * or {@code null} if no mapping exists for the column.
+     *         or {@code null} if no mapping exists for the column.
      */
     String[] getMapping(DataSource source);
 
@@ -177,7 +191,7 @@ public interface Plot extends Drawable, Container {
      * {@code source} will be mapped to first element of {@code axisNames}.
      * Axis names with value {@code null} will be ignored.
      *
-     * @param source Data source.
+     * @param source    Data source.
      * @param axisNames Sequence of axis names in the order of the columns.
      */
     void setMapping(DataSource source, String... axisNames);
@@ -207,74 +221,31 @@ public interface Plot extends Drawable, Container {
     /**
      * Changes the visibility of the specified data series.
      *
-     * @param source Data series.
+     * @param source  Data series.
      * @param visible {@code true} if the series should be visible,
-     * {@code false} otherwise.
+     *                {@code false} otherwise.
      */
     void setVisible(DataSource source, boolean visible);
 
     /**
-     * Returns the paint which is used to fill the background of the plot.
+     * Returns style used for plot rendering.
      *
-     * @return Paint which is used to fill the background of the plot.
+     * @return plot's theme
      */
-    Paint getBackground();
+    Theme getTheme();
 
     /**
-     * Sets the paint which will be used to fill the background of the plot.
+     * Sets the theme for plot rendering.
      *
-     * @param background Paint which will be used to fill the background of the
-     * plot.
+     * @param t theme
      */
-    void setBackground(Paint background);
-
-    /**
-     * Returns the stroke which is used to paint the border of the plot.
-     *
-     * @return Stroke which is used to paint the border of the plot.
-     */
-    Stroke getBorderStroke();
-
-    /**
-     * Sets the stroke which will be used to paint the border of the plot.
-     *
-     * @param border Stroke which will be used to paint the border of the plot.
-     */
-    void setBorderStroke(Stroke border);
-
-    /**
-     * Returns the paint which is used to fill the border of the plot.
-     *
-     * @return Paint which is used to fill the border of the plot.
-     */
-    Paint getBorderColor();
-
-    /**
-     * Sets the paint which will be used to fill the border of the plot.
-     *
-     * @param color Paint which will be used to fill the border of the plot.
-     */
-    void setBorderColor(Paint color);
-
-    /**
-     * Returns the base font used by the plot.
-     *
-     * @return Font used by the plot.
-     */
-    Font getFont();
-
-    /**
-     * Sets the base font that will be used by the plot.
-     *
-     * @param font Font that will used by the plot.
-     */
-    void setFont(Font font);
+    void setTheme(Theme t);
 
     /**
      * Returns whether the legend is shown.
      *
      * @return {@code true} if the legend is shown,
-     * {@code false} if the legend is hidden.
+     *         {@code false} if the legend is hidden.
      */
     boolean isLegendVisible();
 
@@ -282,7 +253,7 @@ public interface Plot extends Drawable, Container {
      * Sets whether the legend will be shown.
      *
      * @param legendVisible {@code true} if the legend should be shown,
-     * {@code false} if the legend should be hidden.
+     *                      {@code false} if the legend should be hidden.
      */
     void setLegendVisible(boolean legendVisible);
 
@@ -304,7 +275,7 @@ public interface Plot extends Drawable, Container {
      * Returns the spacing between the plot area and the legend.
      *
      * @return Spacing between the plot area and the legend relative to font
-     * height.
+     *         height.
      */
     double getLegendDistance();
 
@@ -313,8 +284,8 @@ public interface Plot extends Drawable, Container {
      * The distance is defined in font height.
      *
      * @param distance Spacing between the plot area and the legend relative to
-     * font
-     * height.
+     *                 font
+     *                 height.
      */
     void setLegendDistance(double distance);
 }

@@ -1,7 +1,5 @@
-package org.clueminer.chart.base;
-
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,14 +14,19 @@ package org.clueminer.chart.base;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package org.clueminer.chart.base;
+
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
+import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.factory.ThemeFactory;
+import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.theme.Theme;
 import org.clueminer.chart.util.GraphicsUtils;
+import org.clueminer.chart.util.Orientation;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -38,9 +41,8 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
     private Theme theme;
     protected Dataset<? extends Instance> dataset;
 
-    public AbstractPlot(int width, int height) {
+    public AbstractPlot() {
         theme = ThemeFactory.getInstance().getDefault();
-        //setBounds(0, 0, width, height);
     }
 
     public void setTheme(Theme t) {
@@ -55,7 +57,7 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
     public void draw(DrawingContext context) {
         Graphics2D graphics = context.getGraphics();
 
-        Paint bg = theme.getChart().getBackground();
+        Paint bg = theme.getBackground();
         if (bg != null) {
             GraphicsUtils.fillPaintedShape(graphics, getBounds(), bg, null);
         }
@@ -77,6 +79,17 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
 
     public Dataset<? extends Instance> getDataset() {
         return dataset;
+    }
+
+    protected Axis createAxis(boolean isLogscale, Orientation orient) {
+        Axis ax;
+        if (isLogscale) {
+            throw new UnsupportedOperationException("not supported yet");
+        } else {
+            ax = new InsideAxis(new LinearRenderer2D(), orient);
+        }
+        add(ax);
+        return ax;
     }
 
 }

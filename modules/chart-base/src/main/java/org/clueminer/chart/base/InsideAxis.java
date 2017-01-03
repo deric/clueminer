@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.chart.api.AbstractDrawable;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.AxisListener;
 import org.clueminer.chart.api.AxisRenderer;
@@ -53,17 +52,12 @@ import org.clueminer.chart.util.PointND;
  * <li>Administration of {@link AxisListener AxisListeners}</li>
  * </ul>
  */
-public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
+public class InsideAxis extends AbstractAxis implements Axis, Serializable {
 
     /**
      * Version id for serialization.
      */
     private static final long serialVersionUID = 5355772833362614591L;
-
-    /**
-     * Objects that will be notified when axis settings are changing.
-     */
-    private transient List<AxisListener> axisListeners;
 
     /**
      * Minimal value on axis.
@@ -73,14 +67,6 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
      * Maximal value on axis.
      */
     private Number max;
-    /**
-     * Has the axis a valid range. Used for auto-scaling.
-     */
-    private boolean autoscaled;
-
-    private AxisRenderer renderer;
-
-    private Orientation orientation;
 
     /**
      * Initializes a new instance with a specified automatic scaling mode, but
@@ -88,7 +74,7 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
      *
      * @param autoscaled {@code true} to turn automatic scaling on
      */
-    private BaseAxis(boolean autoscaled) {
+    private InsideAxis(boolean autoscaled) {
         axisListeners = new LinkedList<>();
         this.autoscaled = autoscaled;
     }
@@ -96,7 +82,7 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
     /**
      * Initializes a new instance without minimum and maximum values.
      */
-    public BaseAxis() {
+    public InsideAxis() {
         this(true);
     }
 
@@ -106,56 +92,18 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
      * @param min minimum value
      * @param max maximum value
      */
-    public BaseAxis(Number min, Number max) {
+    public InsideAxis(Number min, Number max) {
         this(false);
         this.min = min;
         this.max = max;
     }
 
-    public BaseAxis(AxisRenderer renderer, Orientation orient) {
+    public InsideAxis(AxisRenderer renderer, Orientation orient) {
         this(true);
         this.renderer = renderer;
         this.orientation = orient;
         this.min = 0;
         this.max = 1;
-    }
-
-    /**
-     * Adds the specified {@code AxisListener} to this Axis. The Listeners will
-     * be notified if changes to the Axis occur, for Example if the minimum or
-     * maximum value changes.
-     *
-     * @param listener Listener to be added
-     * @see AxisListener
-     */
-    @Override
-    public void addAxisListener(AxisListener listener) {
-        axisListeners.add(listener);
-    }
-
-    /**
-     * Removes the specified {@code AxisListener} from this Axis.
-     *
-     * @param listener Listener to be removed
-     * @see AxisListener
-     */
-    @Override
-    public void removeAxisListener(AxisListener listener) {
-        axisListeners.remove(listener);
-    }
-
-    /**
-     * Notifies all registered {@code AxisListener}s that the value range has
-     * changed.
-     *
-     * @param min new minimum value
-     * @param max new maximum value
-     */
-    @Override
-    public void fireRangeChanged(Number min, Number max) {
-        for (AxisListener listener : axisListeners) {
-            listener.rangeChanged(this, min, max);
-        }
     }
 
     /**
@@ -226,31 +174,6 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
     }
 
     /**
-     * Returns whether the axis range should be determined automatically rather
-     * than using the axis's minimum and a maximum values.
-     *
-     * @return whether the axis is scaled automatically to fit the current data
-     */
-    @Override
-    public boolean isAutoscaled() {
-        return autoscaled;
-    }
-
-    /**
-     * Sets whether the axis range should be determined automatically rather
-     * than using the axis's minimum and a maximum values.
-     *
-     * @param autoscaled Defines whether the axis should be automatically scaled
-     *                   to fit the current data.
-     */
-    @Override
-    public void setAutoscaled(boolean autoscaled) {
-        if (this.autoscaled != autoscaled) {
-            this.autoscaled = autoscaled;
-        }
-    }
-
-    /**
      * Returns whether the currently set minimum and maximum values are valid.
      *
      * @return {@code true} when minimum and maximum values are correct,
@@ -259,30 +182,6 @@ public class BaseAxis extends AbstractDrawable implements Axis, Serializable {
     @Override
     public boolean isValid() {
         return MathUtils.isCalculatable(min) && MathUtils.isCalculatable(max);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public AxisRenderer getRenderer() {
-        return renderer;
-    }
-
-    @Override
-    public void setRenderer(AxisRenderer renderer) {
-        this.renderer = renderer;
-    }
-
-    @Override
-    public Orientation getOrientation() {
-        return orientation;
-    }
-
-    @Override
-    public void setOrientation(Orientation orientation) {
-        this.orientation = orientation;
     }
 
     @Override

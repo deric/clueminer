@@ -1,10 +1,22 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.chart.plots;
 
-import java.awt.Font;
-import java.awt.Paint;
 import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
@@ -16,12 +28,10 @@ import org.clueminer.chart.api.AxisPosition;
 import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.Plot;
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.chart.base.BaseAxis;
 import org.clueminer.chart.base.Grid;
 import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.graphics.Label;
 import org.clueminer.chart.legends.Legend;
-import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.util.Insets2D;
 import org.clueminer.chart.util.Location;
 import org.clueminer.chart.util.Orientation;
@@ -33,30 +43,26 @@ import org.clueminer.chart.util.Orientation;
 public class ScatterPlot extends AbstractPlot implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
-    private Map<AxisPosition, Axis> axes;
-    private Grid grid;
-    private Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
+    protected Map<AxisPosition, Axis> axes;
+    protected Grid grid;
+    protected Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
+
+    public ScatterPlot() {
+
+    }
 
     public ScatterPlot(int width, int height) {
-        super(width, height);
-        grid = new Grid(this);
-        add(grid);
+        initComponents(width, height);
+    }
 
+    private void initComponents(int width, int height) {
+        grid = new Grid(this);
+        setBounds(0, 0, width, height);
         axes = new HashMap<>(2);
         axes.put(AxisPosition.X, createAxis(false, Orientation.HORIZONTAL));
         axes.put(AxisPosition.Y, createAxis(false, Orientation.VERTICAL));
         setInsets(insets);
-    }
-
-    private Axis createAxis(boolean isLogscale, Orientation orient) {
-        Axis ax;
-        if (isLogscale) {
-            throw new UnsupportedOperationException("not supported yet");
-        } else {
-            ax = new BaseAxis(new LinearRenderer2D(), orient);
-        }
-        add(ax);
-        return ax;
+        add(grid);
     }
 
     @Override
@@ -64,7 +70,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         grid.setBounds(getPlotArea());
         if (axes != null) {
             for (Axis ax : axes.values()) {
-                layoutAxisShape(ax, Orientation.HORIZONTAL);
+                layoutAxisShape(ax, ax.getOrientation());
             }
         }
     }
@@ -77,7 +83,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
         }
         AxisRenderer renderer = comp.getRenderer();
 
-        Dimension2D size = comp.getPreferredSize();
+        //Dimension2D size = comp.getPreferredSize();
 
         Shape shape;
         if (orientation == Orientation.HORIZONTAL) {
@@ -86,9 +92,8 @@ public class ScatterPlot extends AbstractPlot implements Plot {
                     plotBounds.getWidth(), plotBounds.getY()
             );
         } else {
-            shape = new Line2D.Double(
-                    size.getWidth(), plotBounds.getHeight(),
-                    size.getWidth(), 0.0
+            shape = new Line2D.Double(plotBounds.getX(), plotBounds.getHeight(),
+                    plotBounds.getX(), 0.0
             );
         }
         renderer.setShape(shape);
@@ -116,11 +121,11 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     @Override
     public Rectangle2D getPlotArea() {
         Rectangle2D b = getBounds();
-        /*Rectangle2D rect = new Rectangle2D.Double(insets.left, insets.top,
-         b.getWidth() - insets.right - insets.left,
-         b.getHeight() - insets.bottom - insets.top);*/
+        Rectangle2D rect = new Rectangle2D.Double(insets.getBottom(), insets.getTop(),
+                b.getWidth() - insets.getHorizontal(),
+                b.getHeight() - insets.getVertical());
 
-        return b;
+        return rect;
     }
 
     @Override
@@ -135,7 +140,11 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public AxisRenderer getAxisRenderer(AxisPosition axisName) {
-        return axes.get(axisName).getRenderer();
+        Axis axis = axes.get(axisName);
+        if (axis != null) {
+            return axis.getRenderer();
+        }
+        return null;
     }
 
     @Override
@@ -215,46 +224,6 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public void setVisible(DataSource source, boolean visible) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Paint getBackground() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBackground(Paint background) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Stroke getBorderStroke() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBorderStroke(Stroke border) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Paint getBorderColor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setBorderColor(Paint color) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Font getFont() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setFont(Font font) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

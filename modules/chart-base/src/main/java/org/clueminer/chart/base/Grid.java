@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,12 +77,12 @@ public class Grid extends AbstractDrawable implements Drawable {
     @Override
     public void draw(DrawingContext context) {
 
-        Graphics2D graphics = context.getGraphics();
+        Graphics2D g = context.getGraphics();
 
-        AffineTransform txOrig = graphics.getTransform();
-        graphics.translate(getX(), getY());
-        AffineTransform txOffset = graphics.getTransform();
-        Rectangle2D bounds = plot.getBounds();
+        AffineTransform txOrig = g.getTransform();
+        g.translate(getX(), getY());
+        AffineTransform txOffset = g.getTransform();
+        Rectangle2D bounds = getBounds();
 
         // Draw gridX
         if (isMajorGridX() || isMinorGridX()) {
@@ -112,10 +112,10 @@ public class Grid extends AbstractDrawable implements Drawable {
                     if (tick.type == TickType.MINOR) {
                         paint = getMinorGridColor();
                     }
-                    graphics.translate(tickPoint.getX(), tickPoint.getY());
+                    g.translate(tickPoint.getX(), tickPoint.getY());
                     GraphicsUtils.drawPaintedShape(
-                            graphics, gridLineVert, paint, null, null);
-                    graphics.setTransform(txOffset);
+                            g, gridLineVert, paint, null, null);
+                    g.setTransform(txOffset);
                 }
             }
         }
@@ -148,15 +148,15 @@ public class Grid extends AbstractDrawable implements Drawable {
                     if (isMinorTick) {
                         paint = getMinorGridColor();
                     }
-                    graphics.translate(tickPoint.getX(), tickPoint.getY());
+                    g.translate(tickPoint.getX(), tickPoint.getY());
                     GraphicsUtils.drawPaintedShape(
-                            graphics, gridLineHoriz, paint, null, null);
-                    graphics.setTransform(txOffset);
+                            g, gridLineHoriz, paint, null, null);
+                    g.setTransform(txOffset);
                 }
             }
         }
 
-        graphics.setTransform(txOrig);
+        g.setTransform(txOrig);
     }
 
     public boolean isMajorGridX() {

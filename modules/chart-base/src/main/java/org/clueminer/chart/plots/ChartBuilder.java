@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 package org.clueminer.chart.plots;
 
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.chart.theme.ChartTheme;
+import org.clueminer.chart.theme.Theme;
 
 /**
  *
@@ -30,7 +30,7 @@ public class ChartBuilder {
     String title = "";
     String xAxisTitle = "";
     String yAxisTitle = "";
-    ChartTheme chartTheme;
+    Theme chartTheme;
 
     public ChartBuilder width(int width) {
         this.width = width;
@@ -58,7 +58,7 @@ public class ChartBuilder {
         return this;
     }
 
-    public ChartBuilder theme(ChartTheme chartTheme) {
+    public ChartBuilder theme(Theme chartTheme) {
         this.chartTheme = chartTheme;
         return this;
     }
