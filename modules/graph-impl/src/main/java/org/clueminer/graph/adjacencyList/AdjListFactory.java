@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.AbstractGraphBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,12 +31,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = GraphBuilder.class)
-public class AdjListFactory<E extends Instance> implements GraphBuilder<E> {
+public class AdjListFactory<E extends Instance> extends AbstractGraphBuilder<E> implements GraphBuilder<E> {
 
     private static AdjListFactory instance;
-
-    private static long nodeIdCounter = 0;
-    private static long edgeIdCounter = 0;
 
     public static AdjListFactory getInstance() {
         if (instance == null) {
@@ -114,20 +111,6 @@ public class AdjListFactory<E extends Instance> implements GraphBuilder<E> {
 
     protected static long getEdgeCount() {
         return edgeIdCounter;
-    }
-
-    @Override
-    public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
-        nodeIdCounter = 0;
-        edgeIdCounter = 0;
-        Long[] mapping = new Long[input.size()];
-        for (E inst : input) {
-            Node node = this.newNode();
-            mapping[inst.getIndex()] = node.getId();
-            node.setInstance(inst);
-            graph.addNode(node);
-        }
-        return mapping;
     }
 
 }

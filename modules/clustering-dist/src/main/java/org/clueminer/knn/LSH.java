@@ -17,6 +17,7 @@ package org.clueminer.knn;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,12 +72,15 @@ import smile.stat.distribution.GaussianDistribution;
  * @author Haifeng Li
  */
 @ServiceProviders(value = {
-    @ServiceProvider(service = KNNSearch.class),
+    @ServiceProvider(service = KNNSearch.class)
+    ,
     @ServiceProvider(service = RNNSearch.class)
 })
 public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSearch<E>, RNNSearch<E> {
 
     public static final String NAME = "LSH";
+
+    protected HashSet<Integer> exclude;
 
     @Override
     public String getName() {
@@ -86,6 +90,11 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
     @Override
     public void setDistanceMeasure(Distance dist) {
         this.dm = dist;
+    }
+
+    @Override
+    public void setExclude(HashSet<Integer> exclude) {
+        this.exclude = exclude;
     }
 
     /**
@@ -526,6 +535,7 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
     /**
      * Get whether if query object self be excluded from the neighborhood.
      */
+    @Override
     public boolean isIdenticalExcluded() {
         return identicalExcluded;
     }
@@ -560,6 +570,12 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
             if (q == key && identicalExcluded) {
                 continue;
             }
+
+            //filter out noise
+            if (exclude != null && exclude.contains(key.getIndex())) {
+                continue;
+            }
+
             distance = dm.measure(q, key);
             if (dm.compare(distance, neighbor.distance)) {
                 neighbor.index = index;
@@ -589,6 +605,11 @@ public class LSH<E extends Instance> implements NearestNeighborSearch<E>, KNNSea
         for (int index : candidates) {
             E key = data.get(index);
             if (q == key && identicalExcluded) {
+                continue;
+            }
+
+            //filter out noise
+            if (exclude != null && exclude.contains(key.getIndex())) {
                 continue;
             }
 

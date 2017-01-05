@@ -59,6 +59,11 @@ public class LinearRNN<T extends Instance> extends AbstractKNN<T> implements RNN
                 continue;
             }
 
+            //filter out noise
+            if (exclude != null && exclude.contains(i)) {
+                continue;
+            }
+
             double d = dm.measure(q, dataset.get(i));
 
             if (d <= radius) {

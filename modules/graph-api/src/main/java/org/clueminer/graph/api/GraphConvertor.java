@@ -16,6 +16,7 @@
  */
 package org.clueminer.graph.api;
 
+import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -45,6 +46,17 @@ public interface GraphConvertor<E extends Instance> {
      * @param params
      */
     void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params);
+
+    /**
+     * Create node for each Instance in given dataset, connect nodes with edges based
+     * on nearest neighbors (method could be specified in params).
+     *
+     * @param graph
+     * @param dataset
+     * @param params
+     * @param noise   list of items marked as noise that should be excluded from final graph
+     */
+    void buildGraph(Graph graph, Dataset<E> dataset, Props params, List<E> noise);
 
     /**
      * Create node for each Instance in given dataset, connect nodes with edges based

@@ -16,6 +16,7 @@
  */
 package org.clueminer.knn;
 
+import java.util.HashSet;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -37,6 +38,8 @@ public abstract class AbstractKNN<T extends Instance> implements NearestNeighbor
     protected Dataset<T> dataset;
 
     protected Distance dm;
+
+    protected HashSet<Integer> exclude;
 
     public Dataset<T> getDataset() {
         return dataset;
@@ -60,6 +63,11 @@ public abstract class AbstractKNN<T extends Instance> implements NearestNeighbor
     @Override
     public void setDataset(Dataset<T> dataset) {
         this.dataset = dataset;
+    }
+
+    @Override
+    public void setExclude(HashSet<Integer> exclude) {
+        this.exclude = exclude;
     }
 
     @Override

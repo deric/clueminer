@@ -16,6 +16,7 @@
  */
 package org.clueminer.neighbor;
 
+import java.util.HashSet;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
@@ -69,4 +70,11 @@ public interface NearestNeighborSearch<K extends Instance> {
      * @return whether to exclude instance itself in results
      */
     boolean isIdenticalExcluded();
+
+    /**
+     * Set of dataset indexes to exclude from results
+     *
+     * @param exclude
+     */
+    void setExclude(HashSet<Integer> exclude);
 }

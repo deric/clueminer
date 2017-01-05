@@ -17,10 +17,13 @@
 package org.clueminer.knn;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import static org.clueminer.knn.AbstractNNTest.DELTA;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -80,4 +83,28 @@ public class LinearSearchTest extends AbstractNNTest {
         }
         assertEquals(k, nn.length);
     }
+
+    @Test
+    public void testNoise() {
+        Dataset<? extends Instance> d = irisDataset();
+        subject.setDataset(d);
+        HashSet<Integer> noise = new HashSet<>();
+        noise.add(34);
+        subject.setExclude(noise);
+        int k = 5;
+        //4.9,3.1,1.5,0.1, Iris-setosa
+        Instance ref = d.get(9);
+        Neighbor[] nn = subject.knn(ref, k);
+        assertEquals(k, nn.length);
+        Instance inst;
+        //there are 3 same instances iris dataset
+        //should find two very same instances (id: 34, 37)
+        for (int i = 0; i < 5; i++) {
+            inst = (Instance) nn[i].key;
+            //34 marked as noise
+            assertNotEquals(34, inst.getIndex());
+        }
+        assertEquals(k, nn.length);
+    }
+
 }

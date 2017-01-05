@@ -16,7 +16,12 @@
  */
 package org.clueminer.graph.adjacencyList;
 
+import java.util.HashSet;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.api.Edge;
+import org.clueminer.graph.api.Graph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -25,8 +30,9 @@ import org.junit.Test;
 /**
  *
  * @author Hamster
+ * @param <E>
  */
-public class AdjListFactoryTest {
+public class AdjListFactoryTest<E extends Instance> {
 
     @Test
     public void singletonTest() {
@@ -72,5 +78,23 @@ public class AdjListFactoryTest {
         assertSame(source, edge.getSource());
         assertSame(target, edge.getTarget());
         assertTrue(edge.isDirected());
+    }
+
+    @Test
+    public void testNoise() {
+        AdjListFactory subject = AdjListFactory.getInstance();
+        Dataset<E> data = (Dataset<E>) FakeDatasets.irisDataset();
+        Graph<E> graph = new AdjListGraph();
+        HashSet<Integer> noise = new HashSet<>();
+        noise.add(0);
+        noise.add(1);
+        noise.add(9);
+        noise.add(42);
+
+        Long[] mapping = subject.createNodesFromInput(data, graph, noise);
+        assertEquals(data.size(), mapping.length);
+        //should not be mapped to anything
+        assertEquals(null, mapping[0]);
+
     }
 }

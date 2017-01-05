@@ -86,6 +86,11 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
                 continue;
             }
 
+            //filter out noise
+            if (exclude != null && exclude.contains(i)) {
+                continue;
+            }
+
             //TODO: distance is expected to be minimized (e.g Euclidean)
             // it won't be true in case of correlation etc.
             dist = dm.measure(q, dataset.get(i));

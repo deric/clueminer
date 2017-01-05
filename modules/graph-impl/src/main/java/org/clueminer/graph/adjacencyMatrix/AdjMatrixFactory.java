@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Edge;
-import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.Node;
+import org.clueminer.graph.impl.AbstractGraphBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,12 +31,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = GraphBuilder.class)
-public class AdjMatrixFactory<E extends Instance> implements GraphBuilder<E> {
+public class AdjMatrixFactory<E extends Instance> extends AbstractGraphBuilder<E> implements GraphBuilder<E> {
 
     private static AdjMatrixFactory instance;
-
-    private static long nodeIdCounter;
-    private static long edgeIdCounter;
 
     public static AdjMatrixFactory getInstance() {
         if (instance == null) {
@@ -101,24 +98,6 @@ public class AdjMatrixFactory<E extends Instance> implements GraphBuilder<E> {
             nodes.add(newNode(ins));
         }
         return nodes;
-    }
-
-    /**
-     * {@inheritDoc }
-     *
-     * @param input
-     * @param graph
-     */
-    @Override
-    public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph) {
-        Long[] mapping = new Long[input.size()];
-        Node curr;
-        for (E inst : input) {
-            curr = newNode(inst);
-            graph.addNode(curr);
-            mapping[inst.getIndex()] = curr.getId();
-        }
-        return mapping;
     }
 
 }

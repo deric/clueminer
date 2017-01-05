@@ -17,6 +17,8 @@
 package org.clueminer.graph.knn;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
@@ -218,6 +220,19 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
         g.addEdgesFromNeigborArray(nearests, k);
         g.lookupAdd(dataset);
         return g;
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params, List<E> noise) {
+        GraphBuilder gb = graph.getFactory();
+        HashSet<Integer> hash = new HashSet<>(noise.size());
+        for (E inst : noise) {
+            hash.add(inst.getIndex());
+        }
+
+        Long[] mapping = gb.createNodesFromInput(dataset, graph, hash);
+        createEdges(graph, dataset, mapping, params);
+        graph.lookupAdd(dataset);
     }
 
 }

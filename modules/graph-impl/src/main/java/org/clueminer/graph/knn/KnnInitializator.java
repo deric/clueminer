@@ -16,6 +16,8 @@
  */
 package org.clueminer.graph.knn;
 
+import java.util.HashSet;
+import java.util.List;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.AbsGraphConvertor;
@@ -90,8 +92,24 @@ public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> i
 
     @Override
     public void buildGraph(Graph graph, Dataset<E> dataset, Props params) {
+        buildGraph(graph, dataset, params, null);
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params, List<E> noise) {
         GraphBuilder gb = graph.getFactory();
-        Long[] mapping = gb.createNodesFromInput(dataset, graph);
+        Long[] mapping;
+        if (noise != null) {
+            HashSet<Integer> hash = new HashSet<>(noise.size());
+            for (E inst : noise) {
+                hash.add(inst.getIndex());
+            }
+
+            mapping = gb.createNodesFromInput(dataset, graph, hash);
+        } else {
+            mapping = gb.createNodesFromInput(dataset, graph);
+        }
+
         createEdges(graph, dataset, mapping, params);
     }
 

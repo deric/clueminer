@@ -17,6 +17,7 @@
 package org.clueminer.graph.api;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
@@ -27,6 +28,7 @@ import org.clueminer.dataset.api.Instance;
  * <p>
  * Both nodes and edges have unique identifiers. If not provided, a unique id
  * will be automatically assigned to the elements.
+ *
  * @param <E>
  */
 public interface GraphBuilder<E extends Instance> {
@@ -36,6 +38,7 @@ public interface GraphBuilder<E extends Instance> {
      * @return name of the builder
      */
     String getName();
+
     /**
      * Creates and returns a directed edge between source and target.
      *
@@ -130,5 +133,15 @@ public interface GraphBuilder<E extends Instance> {
      * @return mapping from Dataset index -> Node ID
      */
     Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph);
+
+    /**
+     * Create nodes from dataset's instances and add them to the graph
+     *
+     * @param input source data
+     * @param graph target graph
+     * @param noise items marked as noise (to be excluded)
+     * @return mapping from Dataset index -> Node ID
+     */
+    Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph, HashSet<Integer> noise);
 
 }

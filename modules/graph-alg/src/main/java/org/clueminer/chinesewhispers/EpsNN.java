@@ -17,6 +17,7 @@
 package org.clueminer.chinesewhispers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.clueminer.clustering.algorithm.DBSCAN;
 import org.clueminer.clustering.algorithm.DBSCANParamEstim;
@@ -89,6 +90,38 @@ public class EpsNN<E extends Instance> implements GraphConvertor<E> {
         }
     }
 
+    public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params, HashSet<Integer> noise) {
+        // the semantic is same as in case of DBSCAN
+        double eps;
+        if (!params.containsKey(DBSCAN.EPS)) {
+            DBSCANParamEstim<E> estimation = DBSCANParamEstim.getInstance();
+            estimation.estimate(dataset, params);
+        }
+        eps = params.getDouble(DBSCAN.EPS);
+
+        RnnFactory rnnf = RnnFactory.getInstance();
+        RNNSearch<E> rnn = rnnf.getProvider(params.get("RNN", "KD-tree"));
+        rnn.setDataset(dataset);
+        rnn.setDistanceMeasure(dm);
+        rnn.setExclude(noise);
+
+        Node<E> source, target;
+        Edge edge;
+        List<Neighbor<E>> nn = new ArrayList<>();
+        for (int i = 0; i < dataset.size(); i++) {
+            source = graph.getNode(mapping[i]);
+            E curr = dataset.get(i);
+
+            nn.clear();
+            rnn.range(curr, eps, nn);
+            for (Neighbor neighbor : nn) {
+                target = graph.getNode(mapping[neighbor.index]);
+                edge = graph.getFactory().newEdge(source, target);
+                graph.addEdge(edge);
+            }
+        }
+    }
+
     @Override
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
@@ -104,5 +137,18 @@ public class EpsNN<E extends Instance> implements GraphConvertor<E> {
         GraphBuilder gb = graph.getFactory();
         Long[] mapping = gb.createNodesFromInput(dataset, graph);
         createEdges(graph, dataset, mapping, params);
+    }
+
+    @Override
+    public void buildGraph(Graph graph, Dataset<E> dataset, Props params, List<E> noise) {
+        GraphBuilder gb = graph.getFactory();
+
+        HashSet<Integer> hash = new HashSet<>(noise.size());
+        for (E inst : noise) {
+            hash.add(inst.getIndex());
+        }
+
+        Long[] mapping = gb.createNodesFromInput(dataset, graph, hash);
+        createEdges(graph, dataset, mapping, params, hash);
     }
 }

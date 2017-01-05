@@ -18,6 +18,7 @@ package org.clueminer.knn;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashSet;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -41,6 +42,8 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
     public static final String NAME = "caching k-nn";
 
     private Dataset<T> dataset;
+
+    private HashSet<Integer> exclude;
 
     private Distance dm;
 
@@ -106,7 +109,10 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
             if (q.equals(dataset.get(i)) && identicalExcluded) {
                 continue;
             }
-
+            //filter out noise
+            if (exclude != null && exclude.contains(i)) {
+                continue;
+            }
             dist = dm.measure(q, dataset.get(i));
             //replace smallest value in the heap
             Neighbor<T> datum = heap.peek();
@@ -158,6 +164,11 @@ public class CachingKNN<T extends Instance> implements KNNSearch<T> {
     @Override
     public Neighbor<T> nearest(T q) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setExclude(HashSet<Integer> exclude) {
+        this.exclude = exclude;
     }
 
 }

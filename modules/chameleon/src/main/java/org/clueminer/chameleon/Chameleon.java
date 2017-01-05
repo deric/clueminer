@@ -195,13 +195,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
 
         ArrayList<E> noise = null;
         if (pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
+            //noise will be excluded from the graph
             noise = findNoiseViaDBSCAN(dataset, pref);
-            if (noise != null) {
-                for (E i : noise) {
-                    //TODO don't remove points completely!!!, just from graph
-                    dataset.remove(i);
-                }
-            }
         }
         //run heuristic for algorithm configuration
         ChameleonConfig.getInstance().configure(dataset, pref);
@@ -223,7 +218,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         }
 
         StopWatch time = new StopWatch();
-        knn.buildGraph(g, dataset, pref);
+        knn.buildGraph(g, dataset, pref, noise);
         time.endMeasure();
         LOG.info("building graph took {} ms", time.formatMs());
 
@@ -246,12 +241,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         String merger = pref.get(MERGER, "pair merger");
         Merger m = MergerFactory.getInstance().getProvider(merger);
         m.setDistanceMeasure(knn.getDistanceMeasure());
-        //Restore noise removed by DBSCAN so it is part of the result
-        if (noise != null && pref.getInt(Chameleon.NOISE_DETECTION, 0) == NOISE_DBSCAN) {
-            for (E i : noise) {
-                dataset.add((E) i);
-            }
-        }
+
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
         if (!m.isMultiObjective()) {
             similarityMeasure = pref.get(SIM_MEASURE, BBK1.NAME);

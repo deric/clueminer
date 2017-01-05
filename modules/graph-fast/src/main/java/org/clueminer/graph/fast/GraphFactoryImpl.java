@@ -17,6 +17,7 @@
 package org.clueminer.graph.fast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicLong;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -130,6 +131,25 @@ public class GraphFactoryImpl<E extends Instance> implements GraphBuilder<E> {
             mapping[inst.getIndex()] = node.getId();
             node.setInstance(inst);
             graph.addNode(node);
+        }
+        return mapping;
+    }
+
+    @Override
+    public Long[] createNodesFromInput(Dataset<E> input, Graph<E> graph, HashSet<Integer> noise) {
+        if (noise == null || noise.isEmpty()) {
+            return createNodesFromInput(input, graph);
+        }
+
+        Long[] mapping = new Long[input.size() - noise.size()];
+        int i = 0;
+        for (E inst : input) {
+            if (!noise.contains(inst.getIndex())) {
+                Node node = this.newNode();
+                mapping[i++] = node.getId();
+                node.setInstance(inst);
+                graph.addNode(node);
+            }
         }
         return mapping;
     }
