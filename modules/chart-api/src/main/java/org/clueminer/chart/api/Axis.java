@@ -145,4 +145,8 @@ public interface Axis extends Drawable {
      */
     Plot getPlot();
 
+    double getHeightHint(double workingSpace);
+
+    Label getTitle();
+
 }

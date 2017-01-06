@@ -1,6 +1,8 @@
 package org.clueminer.chart.util;
 
 import java.awt.geom.Area;
+import org.clueminer.chart.util.SerializableShape;
+import org.clueminer.chart.util.SerializationWrapper;
 
 /**
  * A wrapper for creating serializable objects from instances of

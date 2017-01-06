@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chart.graphics;
+package org.clueminer.chart.ui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -34,7 +34,7 @@ import org.clueminer.chart.util.MathUtils;
  * A Label is able to manage its settings and to set and get the
  * displayed text, as well as calculating its bounds.
  */
-public class Label extends AbstractDrawable {
+public class BaseLabel extends AbstractDrawable {
 
     /**
      * Version id for serialization.
@@ -90,7 +90,7 @@ public class Label extends AbstractDrawable {
     /**
      * Initializes a new empty {@code Label} instance.
      */
-    public Label() {
+    public BaseLabel() {
         this(""); //$NON-NLS-1$
     }
 
@@ -99,7 +99,7 @@ public class Label extends AbstractDrawable {
      *
      * @param text Text to be displayed.
      */
-    public Label(String text) {
+    public BaseLabel(String text) {
         this.text = text;
 
         alignmentX = 0.5;

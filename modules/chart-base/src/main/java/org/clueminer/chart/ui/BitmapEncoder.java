@@ -116,7 +116,7 @@ public final class BitmapEncoder {
         at.scale(scaleFactor, scaleFactor);
         graphics2D.setTransform(at);
 
-        chart.paint(graphics2D, chart.getWidth(), chart.getHeight());
+        chart.paint(graphics2D, (int) chart.getWidth(), (int) chart.getHeight());
         Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName(bitmapFormat.toString().toLowerCase());
         if (writers.hasNext()) {
             ImageWriter writer = writers.next();

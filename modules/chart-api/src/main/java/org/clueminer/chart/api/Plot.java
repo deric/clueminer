@@ -20,10 +20,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.Collection;
 import java.util.List;
 import org.clueminer.chart.data.DataSource;
-import org.clueminer.chart.graphics.Label;
-import org.clueminer.chart.legends.Legend;
-import org.clueminer.chart.theme.Theme;
-import org.clueminer.chart.util.Location;
 
 /**
  * <p>
@@ -242,50 +238,10 @@ public interface Plot extends Drawable, Container {
     void setTheme(Theme t);
 
     /**
-     * Returns whether the legend is shown.
-     *
-     * @return {@code true} if the legend is shown,
-     *         {@code false} if the legend is hidden.
+     * @return plot type
      */
-    boolean isLegendVisible();
+    ChartType getChartType();
 
-    /**
-     * Sets whether the legend will be shown.
-     *
-     * @param legendVisible {@code true} if the legend should be shown,
-     *                      {@code false} if the legend should be hidden.
-     */
-    void setLegendVisible(boolean legendVisible);
 
-    /**
-     * Returns the current positioning of the legend inside the plot.
-     *
-     * @return Current positioning of the legend inside the plot.
-     */
-    Location getLegendLocation();
 
-    /**
-     * Sets the positioning of the legend inside the plot.
-     *
-     * @param location Positioning of the legend inside the plot.
-     */
-    void setLegendLocation(Location location);
-
-    /**
-     * Returns the spacing between the plot area and the legend.
-     *
-     * @return Spacing between the plot area and the legend relative to font
-     *         height.
-     */
-    double getLegendDistance();
-
-    /**
-     * Sets the spacing between the plot area and the legend.
-     * The distance is defined in font height.
-     *
-     * @param distance Spacing between the plot area and the legend relative to
-     *                 font
-     *                 height.
-     */
-    void setLegendDistance(double distance);
 }

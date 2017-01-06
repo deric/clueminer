@@ -34,6 +34,8 @@ public interface Drawable {
      */
     Rectangle2D getBounds();
 
+    Rectangle2D getPaintZone();
+
     /**
      * Sets the bounds to the specified bounding rectangle.
      *

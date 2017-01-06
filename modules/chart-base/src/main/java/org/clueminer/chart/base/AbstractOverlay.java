@@ -32,15 +32,15 @@ import org.w3c.dom.Element;
  *
  * @author Tomas Barton
  */
-public abstract class AbstractOverlay implements Serializable, DatasetListener, Overlay, LogListener, XMLTemplate {
+public abstract class AbstractOverlay<E extends Instance> implements Serializable, DatasetListener, Overlay<E>, LogListener, XMLTemplate {
 
     private static final long serialVersionUID = 2709569808433244828L;
-    protected Dataset<? extends Instance> dataset;
+    protected Dataset<E> dataset;
     protected LinkedHashMap<String, ContinuousInstance> instances;
     private boolean logarithmic = false;
 
     public AbstractOverlay() {
-        instances = new LinkedHashMap<String, ContinuousInstance>();
+        instances = new LinkedHashMap<>();
     }
 
     @Override
@@ -59,12 +59,12 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     }
 
     @Override
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
     @Override
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 
@@ -136,7 +136,7 @@ public abstract class AbstractOverlay implements Serializable, DatasetListener, 
     public void datasetChanged(DatasetEvent evt) {
         synchronized (this) {
             ChartData cd = (ChartData) evt.getSource();
-            setDataset(cd.getDataset());
+            setDataset((Dataset<E>) cd.getDataset());
             calculate();
         }
     }

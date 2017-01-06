@@ -18,7 +18,7 @@ package org.clueminer.chart.factory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import org.clueminer.chart.theme.Theme;
+import org.clueminer.chart.api.Theme;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
 

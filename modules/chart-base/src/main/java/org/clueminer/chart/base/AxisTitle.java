@@ -26,7 +26,8 @@ import org.clueminer.chart.api.AbstractDrawable;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
-import org.clueminer.chart.theme.Theme;
+import org.clueminer.chart.api.Label;
+import org.clueminer.chart.api.Theme;
 import org.clueminer.chart.util.Orientation;
 
 /**
@@ -34,7 +35,7 @@ import org.clueminer.chart.util.Orientation;
  *
  * @author deric
  */
-public class AxisTitle extends AbstractDrawable implements Drawable {
+public class AxisTitle extends AbstractDrawable implements Drawable, Label {
 
     /** parent */
     private final Axis axis;
@@ -62,7 +63,7 @@ public class AxisTitle extends AbstractDrawable implements Drawable {
 
         if (axis.getOrientation() == Orientation.VERTICAL) {
 
-            if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isYAxisTitleVisible()) {
+            if (text != null && !text.trim().equalsIgnoreCase("") && theme.isYAxisTitleVisible()) {
 
                 FontRenderContext frc = g.getFontRenderContext();
                 TextLayout nonRotatedTextLayout = new TextLayout(text, theme.getAxisTitleFont(), frc);
@@ -86,8 +87,7 @@ public class AxisTitle extends AbstractDrawable implements Drawable {
                 // ///////////////////////////////////////////////
                 // System.out.println(nonRotatedRectangle.getHeight());
                 // bounds
-                bounds = new Rectangle2D.Double(xOffset - nonRotatedRectangle.getHeight(), yOffset - nonRotatedRectangle.getWidth(), nonRotatedRectangle.getHeight() + getChartPainter().getStyleManager()
-                        .getAxisTitlePadding(), nonRotatedRectangle.getWidth());
+                bounds = new Rectangle2D.Double(xOffset - nonRotatedRectangle.getHeight(), yOffset - nonRotatedRectangle.getWidth(), nonRotatedRectangle.getHeight() + theme.getAxisTitlePadding(), nonRotatedRectangle.getWidth());
                 // g.setColor(Color.blue);
                 // g.draw(bounds);
             } else {
@@ -96,10 +96,10 @@ public class AxisTitle extends AbstractDrawable implements Drawable {
 
         } else {
 
-            if (text != null && !text.trim().equalsIgnoreCase("") && getChartPainter().getStyleManager().isXAxisTitleVisible()) {
+            if (text != null && !text.trim().equalsIgnoreCase("") && theme.isXAxisTitleVisible()) {
 
                 FontRenderContext frc = g.getFontRenderContext();
-                TextLayout textLayout = new TextLayout(text, getChartPainter().getStyleManager().getAxisTitleFont(), frc);
+                TextLayout textLayout = new TextLayout(text, theme.getAxisTitleFont(), frc);
                 Rectangle2D rectangle = textLayout.getBounds();
                 // System.out.println(rectangle);
 
@@ -115,8 +115,10 @@ public class AxisTitle extends AbstractDrawable implements Drawable {
                 g.fill(shape);
                 g.setTransform(orig);
 
-                bounds = new Rectangle2D.Double(xOffset, yOffset - getChartPainter().getStyleManager().getAxisTitlePadding(), rectangle.getWidth(), rectangle.getHeight() + getChartPainter().getStyleManager()
-                        .getAxisTitlePadding());
+                bounds = new Rectangle2D.Double(xOffset,
+                        yOffset - theme.getAxisTitlePadding(),
+                        rectangle.getWidth(),
+                        rectangle.getHeight() + theme.getAxisTitlePadding());
                 // g.setColor(Color.blue);
                 // g.draw(bounds);
 
@@ -129,13 +131,19 @@ public class AxisTitle extends AbstractDrawable implements Drawable {
         }
     }
 
+    @Override
     public String getText() {
-
         return text;
     }
 
+    @Override
     public void setText(String text) {
 
         this.text = text;
+    }
+
+    @Override
+    public int getSizeHint() {
+        return 15;
     }
 }

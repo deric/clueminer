@@ -33,6 +33,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.chart.util.MathUtils;
 
 /**
  * Abstract class that contains utility functions for working with graphics.
