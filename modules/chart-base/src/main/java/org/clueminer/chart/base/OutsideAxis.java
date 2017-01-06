@@ -58,6 +58,8 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
         this.plot = parent;
         this.renderer = renderer;
         this.orientation = orient;
+        this.axisTitle = new AxisTitle(this);
+        this.axisTick = new AxisTick(this);
     }
 
     /**
@@ -71,17 +73,10 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
         this.autoscaled = autoscaled;
     }
 
-    public OutsideAxis(AxisRenderer renderer, Orientation orient) {
-        this(true);
-        this.renderer = renderer;
-        this.orientation = orient;
-    }
-
     /**
      * Reset the default min and max values in preparation for calculating the actual min and max
      */
     public void resetMinMax() {
-
         min = Double.MAX_VALUE;
         max = -Double.MAX_VALUE;
     }
@@ -226,7 +221,8 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
 
     @Override
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO: check min & max
+        return true;
     }
 
     /**

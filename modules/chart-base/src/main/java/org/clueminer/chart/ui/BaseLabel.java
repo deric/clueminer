@@ -26,6 +26,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import org.clueminer.chart.api.AbstractDrawable;
 import org.clueminer.chart.api.DrawingContext;
+import org.clueminer.chart.api.Label;
 import org.clueminer.chart.util.GraphicsUtils;
 import org.clueminer.chart.util.MathUtils;
 
@@ -34,7 +35,7 @@ import org.clueminer.chart.util.MathUtils;
  * A Label is able to manage its settings and to set and get the
  * displayed text, as well as calculating its bounds.
  */
-public class BaseLabel extends AbstractDrawable {
+public class BaseLabel extends AbstractDrawable implements Label {
 
     /**
      * Version id for serialization.
@@ -274,7 +275,7 @@ public class BaseLabel extends AbstractDrawable {
      * Returns whether the cached values in this label are valid.
      *
      * @return {@code true} if all cached values are valid,
-     * otherwise {@code false}.
+     *         otherwise {@code false}.
      */
     protected boolean isValid() {
         boolean wordWrap = isWordWrapEnabled();
@@ -419,7 +420,7 @@ public class BaseLabel extends AbstractDrawable {
      * the label.
      *
      * @return {@code true} if the text should be wrapped, {@code false}
-     * otherwise.
+     *         otherwise.
      */
     public boolean isWordWrapEnabled() {
         return wordWrapEnabled;
@@ -430,7 +431,7 @@ public class BaseLabel extends AbstractDrawable {
      * label.
      *
      * @param wordWrapEnabled {@code true} if the text should be wrapped,
-     * {@code false} otherwise.
+     *                        {@code false} otherwise.
      */
     public void setWordWrapEnabled(boolean wordWrapEnabled) {
         this.wordWrapEnabled = wordWrapEnabled;
@@ -453,6 +454,11 @@ public class BaseLabel extends AbstractDrawable {
      */
     public void setBackground(Paint background) {
         this.background = background;
+    }
+
+    @Override
+    public int getSizeHint() {
+        return (int) getBounds().getHeight();
     }
 
 }

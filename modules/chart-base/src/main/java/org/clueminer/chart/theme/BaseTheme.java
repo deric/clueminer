@@ -38,7 +38,8 @@ public class BaseTheme implements Theme {
 
     private final Color borderColor = Color.BLACK;
 
-    protected Color bg = new Color(210, 210, 210); //GRAY
+    //protected Color bg = new Color(210, 210, 210); //GRAY
+    protected Color bg = Color.YELLOW;
     protected Font font = new Font(Font.SANS_SERIF, Font.BOLD, 14);
     protected int chartPadding;
     protected Color chartFontColor;

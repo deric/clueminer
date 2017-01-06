@@ -31,6 +31,7 @@ import org.clueminer.chart.util.Orientation;
 public class ScatterPlot2 extends ScatterPlot {
 
     public ScatterPlot2(int width, int height) {
+        super();
         initComponents(width, height);
     }
 
@@ -44,12 +45,13 @@ public class ScatterPlot2 extends ScatterPlot {
         add(grid);
     }
 
+    @Override
     protected Axis createAxis(boolean isLogscale, Orientation orient) {
         Axis ax;
         if (isLogscale) {
             throw new UnsupportedOperationException("not supported yet");
         } else {
-            ax = new OutsideAxis(new LinearRenderer2D(), orient);
+            ax = new OutsideAxis(this, new LinearRenderer2D(), orient);
         }
         add(ax);
         return ax;
