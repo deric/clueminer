@@ -33,6 +33,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import org.clueminer.chart.util.MathUtils;
 
 /**
  * Abstract class that represents a collection of utility functions

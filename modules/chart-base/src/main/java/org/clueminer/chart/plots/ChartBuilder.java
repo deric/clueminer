@@ -17,7 +17,7 @@
 package org.clueminer.chart.plots;
 
 import org.clueminer.chart.base.AbstractPlot;
-import org.clueminer.chart.theme.Theme;
+import org.clueminer.chart.api.Theme;
 
 /**
  *

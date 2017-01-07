@@ -5,6 +5,11 @@ import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
+import org.clueminer.chart.util.SerializableArea;
+import org.clueminer.chart.util.SerializableBasicStroke;
+import org.clueminer.chart.util.SerializablePoint2D;
+import org.clueminer.chart.util.SerializableShape;
+import org.clueminer.chart.util.SerializationWrapper;
 
 /**
  * An abstract class containing utility functions for serialization.

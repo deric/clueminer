@@ -2,7 +2,7 @@ package org.clueminer.chart.api;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.events.DatasetListener;
@@ -13,30 +13,31 @@ import org.w3c.dom.Element;
 /**
  *
  * @author Tomas Barton
+ * @param <E>
  */
-public interface Overlay extends LogListener, DatasetListener {
+public interface Overlay<E extends Instance> extends LogListener, DatasetListener {
 
-    public String getName();
+    String getName();
 
-    public String getLabel();
+    String getLabel();
 
-    public Dataset<? extends Instance> getDataset();
+    Dataset<E> getDataset();
 
-    public abstract void paint(Graphics2D g, ChartConfig cf, Rectangle bounds);
+    void paint(Graphics2D g, ChartConfig cf, Rectangle bounds);
 
-    public abstract LinkedHashMap getHTML(ChartConfig cf, int i);
+    HashMap getHTML(ChartConfig cf, int i);
 
-    public abstract void calculate();
+    void calculate();
 
-    public boolean isLogarithmic();
+    boolean isLogarithmic();
 
-    public void setLogarithmic(boolean b);
+    void setLogarithmic(boolean b);
 
-    public abstract AbstractNode getNode();
+    AbstractNode getNode();
 
-    public abstract Overlay newInstance();
+    Overlay newInstance();
 
-    public void setDataset(Dataset<? extends Instance> d);
+    void setDataset(Dataset<E> dataset);
 
-    public void loadFromTemplate(Element element);
+    void loadFromTemplate(Element element);
 }

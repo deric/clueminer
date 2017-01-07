@@ -38,6 +38,10 @@ public enum Location {
      */
     EAST(1.0, 0.5),
     /**
+     * outside of chart
+     */
+    EAST_OUTSIDE(2.0, 0.5),
+    /**
      * South-eastern location.
      */
     SOUTH_EAST(1.0, 1.0),

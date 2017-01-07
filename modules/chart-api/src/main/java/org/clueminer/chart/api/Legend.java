@@ -1,11 +1,26 @@
-package org.clueminer.chart.legends;
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.clueminer.chart.api;
 
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Stroke;
 import java.awt.geom.Dimension2D;
-import org.clueminer.chart.api.Container;
-import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.util.Orientation;
 
@@ -14,6 +29,14 @@ import org.clueminer.chart.util.Orientation;
  * a plot.
  */
 public interface Legend extends Container, Drawable {
+
+    /**
+     * Get the width of the chart legend
+     *
+     * @param g
+     * @return
+     */
+    double[] getSizeHint(Graphics2D g);
 
     /**
      * Adds the specified data source in order to display it.

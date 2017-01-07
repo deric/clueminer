@@ -14,23 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.chart.util;
+package org.clueminer.chart.api;
 
 /**
- * Enumeration type to describe the orientation of a arbitrary elements.
+ *
+ * @author deric
  */
-public enum Orientation {
+public interface Label extends Drawable {
 
-    /**
-     * Horizontal orientation.
-     */
-    HORIZONTAL,
-    /**
-     * Vertical orientation.
-     */
-    VERTICAL,
-    LEFT_TO_RIGHT,
-    RIGHT_TO_LEFT,
-    TOP_DOWN,
-    DOWN_TOP
+    void setText(String text);
+
+    String getText();
+
+    int getSizeHint();
+
+
 }

@@ -3,7 +3,9 @@ package org.clueminer.chart.util;
 import java.awt.Shape;
 import java.awt.geom.Path2D;
 import java.util.List;
+import org.clueminer.chart.util.GeometryUtils;
 import org.clueminer.chart.util.GeometryUtils.PathSegment;
+import org.clueminer.chart.util.SerializationWrapper;
 
 /**
  * A wrapper for creating serializable objects from instances of

@@ -32,9 +32,10 @@ import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.AxisListener;
 import org.clueminer.chart.api.AxisRenderer;
 import org.clueminer.chart.api.DrawingContext;
+import org.clueminer.chart.api.Label;
 import org.clueminer.chart.api.Tick;
 import org.clueminer.chart.api.TickType;
-import org.clueminer.chart.graphics.Label;
+import org.clueminer.chart.ui.BaseLabel;
 import org.clueminer.chart.util.Dim;
 import org.clueminer.chart.util.GeometryUtils;
 import org.clueminer.chart.util.GraphicsUtils;
@@ -68,6 +69,8 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
      */
     private Number max;
 
+    private AxisTitle title;
+
     /**
      * Initializes a new instance with a specified automatic scaling mode, but
      * without minimum and maximum values.
@@ -77,6 +80,7 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
     private InsideAxis(boolean autoscaled) {
         axisListeners = new LinkedList<>();
         this.autoscaled = autoscaled;
+        this.title = new AxisTitle(this);
     }
 
     /**
@@ -271,7 +275,7 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
                         || tick.type == TickType.CUSTOM)) {
                     String tickLabelText = tick.label;
                     if (tickLabelText != null && !tickLabelText.trim().isEmpty()) {
-                        Label tickLabel = new Label(tickLabelText);
+                        BaseLabel tickLabel = new BaseLabel(tickLabelText);
                         tickLabel.setFont(renderer.getTickFont());
                         // TODO Allow separate colors for ticks and tick labels?
                         tickLabel.setColor(tickPaint);
@@ -286,7 +290,7 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
 
         // Draw axis label
         if (renderer.getLabel() != null) {
-            Label axisLabel = new Label(renderer.getLabel());
+            BaseLabel axisLabel = new BaseLabel(renderer.getLabel());
             double tickLength = renderer.getTickLengthAbsolute();
             double tickAlignment = renderer.getTickAlignment();
             double tickLengthOuter = tickLength * (1.0 - tickAlignment);
@@ -315,7 +319,7 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
         graphics.setTransform(txOrig);
     }
 
-    private void layoutLabel(Label label, Point2D labelPos, Point2D labelNormal,
+    private void layoutLabel(BaseLabel label, Point2D labelPos, Point2D labelNormal,
             double labelDist, boolean isLabelOutside, double rotation) {
         Rectangle2D labelSize = label.getTextRectangle();
         Shape marginShape = new Rectangle2D.Double(
@@ -365,6 +369,16 @@ public class InsideAxis extends AbstractAxis implements Axis, Serializable {
         double labelDistance = renderer.getTickLabelDistanceAbsolute() + tickLengthOuter;
         double minSize = fontSize + labelDistance + tickLengthOuter;
         return new Dim.Double(minSize, minSize);
+    }
+
+    @Override
+    public double getHeightHint(double workingSpace) {
+        return 10;
+    }
+
+    @Override
+    public Label getTitle() {
+        return title;
     }
 
 }

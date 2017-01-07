@@ -16,14 +16,23 @@
  */
 package org.clueminer.chart.base;
 
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.LinkedList;
 import org.clueminer.chart.api.Axis;
+import org.clueminer.chart.api.AxisPosition;
 import org.clueminer.chart.api.AxisRenderer;
+import org.clueminer.chart.api.AxisType;
 import org.clueminer.chart.api.DrawingContext;
+import org.clueminer.chart.api.Label;
 import org.clueminer.chart.api.Plot;
-import org.clueminer.chart.theme.Theme;
+import org.clueminer.chart.api.Theme;
+import org.clueminer.chart.util.Location;
 import org.clueminer.chart.util.Orientation;
 
 /**
@@ -36,15 +45,21 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
 
     private double max;
 
-    /** the paint zone */
-    private Rectangle2D paintZone;
+    private AxisType axisType;
 
+    /** the axis title */
+    private AxisTitle axisTitle;
+
+    /** the axis tick */
+    private AxisTick axisTick;
 
     public OutsideAxis(Plot parent, AxisRenderer renderer, Orientation orient) {
         this(true);
         this.plot = parent;
         this.renderer = renderer;
         this.orientation = orient;
+        this.axisTitle = new AxisTitle(this);
+        this.axisTick = new AxisTick(this);
     }
 
     /**
@@ -58,17 +73,10 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
         this.autoscaled = autoscaled;
     }
 
-    public OutsideAxis(AxisRenderer renderer, Orientation orient) {
-        this(true);
-        this.renderer = renderer;
-        this.orientation = orient;
-    }
-
     /**
      * Reset the default min and max values in preparation for calculating the actual min and max
      */
     public void resetMinMax() {
-
         min = Double.MAX_VALUE;
         max = -Double.MAX_VALUE;
     }
@@ -76,6 +84,7 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
     @Override
     public void draw(DrawingContext context) {
 
+        Graphics2D g = context.getGraphics();
         paintZone = new Rectangle2D.Double();
         Theme theme = plot.getTheme();
 
@@ -91,40 +100,39 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
             // |
             // ----
             double xOffset = theme.getChartPadding();
-            double yOffset = getChartPainter().getChartTitle().getSizeHint();
+            double yOffset = plot.getTitle().getSizeHint();
             double width = 80; // arbitrary, final width depends on Axis tick labels
 
             double chartLegendWidth = 0;
-            if (getChartPainter().getStyleManager().getLegendPosition() == LegendPosition.OutsideE) {
-                chartLegendWidth = getChartPainter().getChartLegend().getSizeHint(g)[0];
+            if (theme.getLegendLocation() == Location.EAST_OUTSIDE) {
+                chartLegendWidth = plot.getLegend().getSizeHint(g)[0];
             }
 
             double approximateXAxisWidth
-                    = getChartPainter().getWidth()
+                    = plot.getWidth()
                     - width // y-axis approx. width
 
                     - chartLegendWidth
                     - 2
-                    * getChartPainter().getStyleManager().getChartPadding()
-                    - (getChartPainter().getStyleManager().isYAxisTicksVisible() ? (getChartPainter().getStyleManager().getPlotPadding()) : 0)
-                    - (getChartPainter().getStyleManager().getLegendPosition() == LegendPosition.OutsideE && getChartPainter().getStyleManager().isLegendVisible() ? getChartPainter().getStyleManager()
-                    .getChartPadding() : 0);
+                    * theme.getChartPadding()
+                    - (theme.isYAxisTicksVisible() ? (theme.getPlotPadding()) : 0)
+                    - (theme.getLegendLocation() == Location.EAST_OUTSIDE && theme.isLegendVisible() ? theme.getChartPadding() : 0);
 
             double height
-                    = getChartPainter().getHeight() - yOffset - axisPair.getXAxis().getXAxisHeightHint(approximateXAxisWidth) - getChartPainter().getStyleManager().getPlotPadding()
-                    - getChartPainter().getStyleManager().getChartPadding();
+                    = plot.getHeight() - yOffset - plot.getAxis(AxisPosition.X).getHeightHint(approximateXAxisWidth) - theme.getPlotPadding()
+                    - theme.getChartPadding();
             Rectangle2D yAxisRectangle = new Rectangle2D.Double(xOffset, yOffset, width, height);
             this.paintZone = yAxisRectangle;
             // g.setColor(Color.green);
             // g.draw(yAxisRectangle);
 
             // fill in Axis with sub-components
-            axisTitle.paint(g);
-            axisTick.paint(g);
+            axisTitle.draw(context);
+            axisTick.draw(context);
 
             xOffset = paintZone.getX();
             yOffset = paintZone.getY();
-            width = (getChartPainter().getStyleManager().isYAxisTitleVisible() ? axisTitle.getBounds().getWidth() : 0) + axisTick.getBounds().getWidth();
+            width = (theme.isYAxisTitleVisible() ? axisTitle.getBounds().getWidth() : 0) + axisTick.getBounds().getWidth();
             height = paintZone.getHeight();
             bounds = new Rectangle2D.Double(xOffset, yOffset, width, height);
 
@@ -135,32 +143,32 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
             // calculate paint zone
             // |____________________|
             double xOffset
-                    = axisPair.getYAxis().getBounds().getWidth() + (getChartPainter().getStyleManager().isYAxisTicksVisible() ? getChartPainter().getStyleManager().getPlotPadding() : 0)
-                    + getChartPainter().getStyleManager().getChartPadding();
-            double yOffset = axisPair.getYAxis().getBounds().getY() + axisPair.getYAxis().getBounds().getHeight() + getChartPainter().getStyleManager().getPlotPadding();
+                    = plot.getAxis(AxisPosition.Y).getBounds().getWidth() + (theme.isYAxisTicksVisible() ? theme.getPlotPadding() : 0)
+                    + theme.getChartPadding();
+            double yOffset = plot.getAxis(AxisPosition.Y).getBounds().getY() + plot.getAxis(AxisPosition.Y).getBounds().getHeight() + theme.getPlotPadding();
 
             double chartLegendWidth = 0;
-            if (getChartPainter().getStyleManager().getLegendPosition() == LegendPosition.OutsideE) {
-                chartLegendWidth = getChartPainter().getChartLegend().getSizeHint(g)[0];
+            if (theme.getLegendLocation() == Location.EAST_OUTSIDE) {
+                chartLegendWidth = plot.getLegend().getSizeHint(g)[0];
             }
 
             double width
-                    = getChartPainter().getWidth()
-                    - axisPair.getYAxis().getBounds().getWidth() // y-axis was already painted
+                    = plot.getWidth()
+                    - plot.getAxis(AxisPosition.Y).getBounds().getWidth() // y-axis was already painted
 
                     - chartLegendWidth
                     - 2
-                    * getChartPainter().getStyleManager().getChartPadding()
-                    - (getChartPainter().getStyleManager().isYAxisTicksVisible() ? (getChartPainter().getStyleManager().getPlotPadding()) : 0)
-                    - (getChartPainter().getStyleManager().getLegendPosition() == LegendPosition.OutsideE && getChartPainter().getStyleManager().isLegendVisible() ? getChartPainter().getStyleManager()
-                    .getChartPadding() : 0);
+                    * theme.getChartPadding()
+                    - (theme.isYAxisTicksVisible() ? (theme.getPlotPadding()) : 0)
+                    - (theme.getLegendLocation() == Location.EAST_OUTSIDE && theme.isLegendVisible() ? theme.getChartPadding() : 0);
 
             // double height = this.getXAxisHeightHint(width);
             // System.out.println("height: " + height);
             // the Y-Axis was already draw at this point so we know how much vertical room is left for the X-Axis
             double height
-                    = getChartPainter().getHeight() - axisPair.getYAxis().getBounds().getY() - axisPair.getYAxis().getBounds().getHeight() - getChartPainter().getStyleManager().getChartPadding()
-                    - getChartPainter().getStyleManager().getPlotPadding();
+                    = plot.getHeight() - plot.getAxis(AxisPosition.Y).getBounds().getY()
+                    - plot.getAxis(AxisPosition.Y).getBounds().getHeight() - theme.getChartPadding()
+                    - theme.getPlotPadding();
             // System.out.println("height2: " + height2);
 
             Rectangle2D xAxisRectangle = new Rectangle2D.Double(xOffset, yOffset, width, height);
@@ -171,8 +179,8 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
             // g.draw(xAxisRectangle);
 
             // now paint the X-Axis given the above paint zone
-            axisTitle.paint(g);
-            axisTick.paint(g);
+            axisTitle.draw(context);
+            axisTick.draw(context);
 
             setBounds(paintZone);
 
@@ -213,7 +221,57 @@ public class OutsideAxis extends AbstractAxis implements Axis, Serializable {
 
     @Override
     public boolean isValid() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //TODO: check min & max
+        return true;
+    }
+
+    /**
+     * The vertical Y-Axis is drawn first, but to know the lower bounds of it,
+     * we need to know how high the X-Axis paint zone is going to be. Since the
+     * tick labels could be rotated, we need to actually determine the tick
+     * labels first to get an idea of how tall the X-Axis tick labels will be.
+     *
+     * @param workingSpace
+     * @return
+     */
+    public double getHeightHint(double workingSpace) {
+        Theme theme = plot.getTheme();
+
+        // Axis title
+        double titleHeight = 0.0;
+        if (axisTitle.getText() != null && !axisTitle.getText().trim().equalsIgnoreCase("") && theme.isXAxisTitleVisible()) {
+            TextLayout textLayout = new TextLayout(axisTitle.getText(), theme.getAxisTitleFont(), new FontRenderContext(null, true, false));
+            Rectangle2D rectangle = textLayout.getBounds();
+            titleHeight = rectangle.getHeight() + theme.getAxisTitlePadding();
+        }
+
+        // Axis tick labels
+        double axisTickLabelsHeight = 0.0;
+        if (theme.isXAxisTicksVisible()) {
+
+            // get some real tick labels
+            AxisTickCalculator axisTickCalculator = axisTick.getAxisTickCalculator(plot, workingSpace);
+            String sampleLabel = axisTickCalculator.getTickLabels().get(0);
+            // find the longest String in all the labels
+            for (int i = 1; i < axisTickCalculator.getTickLabels().size(); i++) {
+                if (axisTickCalculator.getTickLabels().get(i) != null && axisTickCalculator.getTickLabels().get(i).length() > sampleLabel.length()) {
+                    sampleLabel = axisTickCalculator.getTickLabels().get(i);
+                }
+            }
+
+            TextLayout textLayout = new TextLayout(sampleLabel, theme.getAxisTickLabelsFont(), new FontRenderContext(null, true, false));
+            AffineTransform rot
+                    = theme.getXAxisLabelRotation() == 0 ? null : AffineTransform.getRotateInstance(-1 * Math.toRadians(theme.getXAxisLabelRotation()));
+            Shape shape = textLayout.getOutline(rot);
+            Rectangle2D rectangle = shape.getBounds();
+            axisTickLabelsHeight = rectangle.getHeight() + theme.getAxisTickPadding() + theme.getAxisTickMarkLength();
+        }
+        return titleHeight + axisTickLabelsHeight;
+    }
+
+    @Override
+    public Label getTitle() {
+        return axisTitle;
     }
 
 }

@@ -56,7 +56,7 @@ public class ScatterTest2 extends JFrame {
 
     private void initComponents() {
         long start = System.currentTimeMillis();
-        scatter = new ScatterPlot(800, 600);
+        scatter = new ScatterPlot2(800, 600);
 
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;

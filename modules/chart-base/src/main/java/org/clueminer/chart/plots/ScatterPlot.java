@@ -26,14 +26,15 @@ import java.util.Map;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.AxisPosition;
 import org.clueminer.chart.api.AxisRenderer;
+import org.clueminer.chart.api.ChartType;
+import org.clueminer.chart.api.Label;
+import org.clueminer.chart.api.Legend;
 import org.clueminer.chart.api.Plot;
 import org.clueminer.chart.base.AbstractPlot;
 import org.clueminer.chart.base.Grid;
 import org.clueminer.chart.data.DataSource;
-import org.clueminer.chart.graphics.Label;
-import org.clueminer.chart.legends.Legend;
+import org.clueminer.chart.ui.BaseLabel;
 import org.clueminer.chart.util.Insets2D;
-import org.clueminer.chart.util.Location;
 import org.clueminer.chart.util.Orientation;
 
 /**
@@ -46,12 +47,14 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     protected Map<AxisPosition, Axis> axes;
     protected Grid grid;
     protected Insets2D insets = new Insets2D.Double(10, 10, 10, 10);
+    private BaseLabel title;
 
     public ScatterPlot() {
-
+        title = new BaseLabel();
     }
 
     public ScatterPlot(int width, int height) {
+        super();
         initComponents(width, height);
     }
 
@@ -154,7 +157,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
 
     @Override
     public Label getTitle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return title;
     }
 
     @Override
@@ -228,33 +231,7 @@ public class ScatterPlot extends AbstractPlot implements Plot {
     }
 
     @Override
-    public boolean isLegendVisible() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ChartType getChartType() {
+        return ChartType.Scatter;
     }
-
-    @Override
-    public void setLegendVisible(boolean legendVisible) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Location getLegendLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setLegendLocation(Location location) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double getLegendDistance() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void setLegendDistance(double distance) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

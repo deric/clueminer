@@ -1,4 +1,4 @@
-package org.clueminer.chart.api;
+package org.clueminer.chart.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,9 +9,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import org.clueminer.chart.api.AbstractDrawable;
+import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.util.GraphicsUtils;
 import org.clueminer.chart.util.Insets2D;
 import org.clueminer.chart.util.SerializationUtils;
+
 
 /**
  * Abstract class that represents a canvas on which plot data will be drawn.

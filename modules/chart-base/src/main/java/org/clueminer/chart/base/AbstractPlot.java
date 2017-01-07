@@ -24,7 +24,7 @@ import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
 import org.clueminer.chart.factory.ThemeFactory;
 import org.clueminer.chart.renderer.LinearRenderer2D;
-import org.clueminer.chart.theme.Theme;
+import org.clueminer.chart.api.Theme;
 import org.clueminer.chart.util.GraphicsUtils;
 import org.clueminer.chart.util.Orientation;
 import org.clueminer.dataset.api.Dataset;
