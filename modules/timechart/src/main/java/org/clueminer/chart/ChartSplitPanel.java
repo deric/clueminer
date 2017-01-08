@@ -7,15 +7,15 @@ import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import org.clueminer.chart.api.ChartConfig;
 import org.clueminer.chart.api.ChartData;
-import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.api.Overlay;
+import org.clueminer.chart.api.Tracker;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.gui.ColorGenerator;
 import org.clueminer.timeseries.chart.NormalizationEvent;
@@ -66,7 +66,6 @@ public class ChartSplitPanel extends JLayeredPane implements Serializable, Track
         Draggable draggable = new Draggable(label);
         label.addMouseListener(draggable);
         label.addMouseMotionListener(draggable);
-
 
         setOpaque(true);
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -213,7 +212,6 @@ public class ChartSplitPanel extends JLayeredPane implements Serializable, Track
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
 
-
         if (day < 10) {
             sb.append("0");
         }
@@ -282,7 +280,7 @@ public class ChartSplitPanel extends JLayeredPane implements Serializable, Track
 
             if (hasOverlays) {
                 for (Overlay overlay : chartPanel.getOverlays()) {
-                    LinkedHashMap map = overlay.getHTML(chartFrame, index);
+                    HashMap map = overlay.getHTML(chartFrame, index);
                     Iterator it = map.keySet().iterator();
                     while (it.hasNext()) {
                         Object key = it.next();
@@ -291,7 +289,6 @@ public class ChartSplitPanel extends JLayeredPane implements Serializable, Track
                     }
                 }
             }
-
 
             String labelText = NbBundle.getMessage(
                     ChartSplitPanel.class,
