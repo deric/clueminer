@@ -17,8 +17,6 @@
 package org.clueminer.visualize;
 
 import java.awt.Dimension;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -34,6 +32,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,7 +52,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
     private boolean useGlobalScale = false;
     private double xmax = 0.0;
-    private static final Logger logger = Logger.getLogger(ClusterSetView.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterSetView.class);
 
     public ClusterSetView(JPanel parent) {
         this.parent = parent;
@@ -73,7 +73,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         }
 
         clusterNum = clust.size();
-        logger.log(Level.FINE, "got {0} clusters", clusterNum);
+        LOG.debug("got {} clusters", clusterNum);
 
         Timeseries<ContinuousInstance> ts;
 
@@ -104,7 +104,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                 E inst;
                 if (dataset != null && dataset.size() > 0) {
                     inst = dataset.instance(0);
-                    logger.log(Level.FINE, "{0}", new Object[]{dataset.toString()});
+                    LOG.trace("dataset: {}", new Object[]{dataset.toString()});
                     /**
                      * @TODO We can't support visualization of all possible
                      * kinds of data, this ability should be implemented
@@ -147,7 +147,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                     total += d.size();
                 }
             }
-            logger.log(Level.FINE, "total num of instances: {0}", total);
+            LOG.trace("total num of instances: {}", total);
         }
     }
 
