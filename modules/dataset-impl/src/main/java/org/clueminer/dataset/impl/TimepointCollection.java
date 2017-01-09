@@ -17,39 +17,45 @@
 package org.clueminer.dataset.impl;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
-import org.clueminer.dataset.api.Dataset;
-import org.clueminer.dataset.api.Instance;
+import org.clueminer.attributes.TimePointAttribute;
 
 /**
+ * Collection allowing iteration over data without copying
  *
  * @author deric
  * @param <E>
  */
-public class AttributeCollection<E extends Number> implements Collection<E> {
+public class TimepointCollection<E extends Date> implements Collection<E> {
 
-    private final Dataset<? extends Instance> dataset;
-    private final int attr;
+    private final TimePointAttribute[] timePoints;
+    private int last = 0;
 
-    public AttributeCollection(Dataset<? extends Instance> dataset, int index) {
-        this.attr = index;
-        this.dataset = dataset;
+    public TimepointCollection(TimePointAttribute[] timePoints) {
+        this.timePoints = timePoints;
+        this.last = timePoints.length;
+    }
+
+    public TimepointCollection(TimePointAttribute[] timePoints, int lastAttr) {
+        this.timePoints = timePoints;
+        this.last = lastAttr;
     }
 
     @Override
     public int size() {
-        return dataset.size();
+        return last;
     }
 
     @Override
     public boolean isEmpty() {
-        return dataset.isEmpty();
+        return timePoints == null || timePoints.length == 0;
     }
 
     @Override
     public boolean contains(Object o) {
-        for (int i = 0; i < dataset.size(); i++) {
-            if (o.equals(dataset.get(i, attr))) {
+        for (TimePointAttribute timePoint : timePoints) {
+            if (o.equals(timePoint.getDate())) {
                 return true;
             }
         }
@@ -58,21 +64,21 @@ public class AttributeCollection<E extends Number> implements Collection<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new AttributeValuesIterator();
+        return new TimePointIterator();
     }
 
-    class AttributeValuesIterator implements Iterator<E> {
+    class TimePointIterator implements Iterator<E> {
 
         private int index = 0;
 
         @Override
         public boolean hasNext() {
-            return index < dataset.size();
+            return index < size();
         }
 
         @Override
         public E next() {
-            return (E) (Number) dataset.get(index++, attr);
+            return (E) timePoints[index++].getDate();
         }
 
         @Override

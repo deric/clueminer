@@ -74,10 +74,10 @@ public class AxisPair implements ChartPart {
         if (yData == null) {
             throw new IllegalArgumentException("Y-Axis data cannot be null!!!");
         }
-        if (yData.size() == 0) {
+        if (yData.isEmpty()) {
             throw new IllegalArgumentException("Y-Axis data cannot be empty!!!");
         }
-        if (xData != null && xData.size() == 0) {
+        if (xData != null && xData.isEmpty()) {
             throw new IllegalArgumentException("X-Axis data cannot be empty!!!");
         }
         // Sanity check
@@ -90,7 +90,7 @@ public class AxisPair implements ChartPart {
 
             // Sanity check
             if (xData.size() != yData.size()) {
-                throw new IllegalArgumentException("X and Y-Axis sizes are not the same!!!");
+                throw new IllegalArgumentException("X and Y-Axis sizes are not the same!!! " + xData.size() + " vs. " + yData.size());
             }
             // inspect the series to see what kind of data it contains (Number, Date or String)
             Iterator<?> itr = xData.iterator();

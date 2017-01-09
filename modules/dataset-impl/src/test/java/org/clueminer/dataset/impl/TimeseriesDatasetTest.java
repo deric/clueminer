@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.row.TimeInstance;
 import org.clueminer.types.TimePoint;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -38,17 +35,9 @@ import org.junit.Test;
 public class TimeseriesDatasetTest {
 
     private static TimeseriesDataset<ContinuousInstance> dataset;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public TimeseriesDatasetTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -71,13 +60,6 @@ public class TimeseriesDatasetTest {
         }
     }
 
-    @After
-    public void tearDown() {
-    }
-
-    /**
-     * Test of attributeCount method, of class TimeseriesDataset.
-     */
     @Test
     public void testAttributeCount() {
     }
@@ -181,7 +163,7 @@ public class TimeseriesDatasetTest {
         double max = Math.random() * 100000;
         data[0] = max;
         dataset.builder().create(data);
-        assertEquals(max, dataset.getMax(), delta);
+        assertEquals(max, dataset.getMax(), DELTA);
     }
 
     /**
@@ -322,9 +304,19 @@ public class TimeseriesDatasetTest {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
                 test.set(i, j, data[i][j]);
-                assertEquals(data[i][j], test.get(i, j), delta);
+                assertEquals(data[i][j], test.get(i, j), DELTA);
             }
         }
+    }
+
+    @Test
+    public void testAddAttribute() {
+        Dataset<? extends Instance> test = new TimeseriesDataset<>(3);
+        int max = 3;
+        for (int i = 0; i < max; i++) {
+            test.addAttribute(new TimePointAttribute(i, i + 100, Math.pow(i, 2)));
+        }
+
     }
 
     /**

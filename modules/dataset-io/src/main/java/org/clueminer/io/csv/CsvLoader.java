@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,7 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
         checkDataset();
         return load(new CSVReader(new FileReader(file)));
     }
+
     /**
      *
      * @param reader input file reader
@@ -197,12 +198,14 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
     }
 
     private void createAttributes(String[] line, boolean detectTypes) {
+        LOG.debug("header has {} columns", line.length);
         for (int i = 0; i < line.length; i++) {
             if (i != classIndex && !skipIndex.contains(i)) {
                 if (!detectTypes) {
                     if (metaAttr.contains(i)) {
                         dataset.attributeBuilder().create(line[i], defaultDataType, "META");
                     } else {
+                        LOG.debug("created attribute {} on position {}", line[i], i);
                         dataset.attributeBuilder().create(line[i], defaultDataType);
                     }
                 } else {
@@ -211,6 +214,7 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
                 }
             }
         }
+        LOG.debug("dataset contains {} attributes", dataset.attributeCount());
     }
 
     public boolean hasHeader() {
@@ -320,18 +324,10 @@ public class CsvLoader<E extends Instance> implements DatasetLoader<E> {
 
     public static String[] firstLine(File file, String separator) {
         String[] result = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            try {
-                String line = br.readLine();
-                result = line.split(separator);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                br.close();
-            }
-        } catch (FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line = br.readLine();
+            result = line.split(separator);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

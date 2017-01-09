@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2016 clueminer.org
+ * Copyright (C) 2011-2017 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import org.clueminer.algorithm.BinarySearch;
 import org.clueminer.attributes.AttributeFactoryImpl;
@@ -40,6 +39,8 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.TimeRowFactory;
 import org.clueminer.math.Interpolator;
 import org.clueminer.types.TimePoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -56,7 +57,8 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     protected InstanceBuilder builder;
     protected AttributeFactoryImpl attributeBuilder;
     protected TreeSet<Object> classes = new TreeSet<>();
-    private static final Logger logger = Logger.getLogger(TimeseriesDataset.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(TimeseriesDataset.class);
+    private int lastAttr;
 
     /**
      * Creates dataset with given initial capacity
@@ -66,20 +68,20 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     public TimeseriesDataset(int capacity) {
         super(capacity);
         colorGenerator = new PaletteGenerator();
+        lastAttr = 0;
+        timePoints = new TimePointAttribute[10]; //some default size
     }
 
     public TimeseriesDataset(int capacity, TimePointAttribute[] tp) {
         super(capacity);
         colorGenerator = new PaletteGenerator();
         setTimePoints(tp);
+        lastAttr = tp.length;
     }
 
     @Override
     public int attributeCount() {
-        if (timePoints != null) {
-            return timePoints.length;
-        }
-        return 0;
+        return lastAttr;
     }
 
     /**
@@ -214,6 +216,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
     @Override
     public final void setTimePoints(TimePoint[] tp) {
         timePoints = (TimePointAttribute[]) tp;
+        lastAttr = tp.length;
         checkAttributes(timePoints);
     }
 
@@ -544,7 +547,21 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public void addAttribute(Attribute attr) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (lastAttr >= timePoints.length) {
+            //extending array is rather expensive on
+            //reallocation of array, so we rather make bigger space
+            ensureAttrCapacity((int) (lastAttr * 1.618));
+        }
+        timePoints[lastAttr++] = (TimePointAttribute) attr;
+    }
+
+    private void ensureAttrCapacity(int capacity) {
+        if (timePoints.length >= capacity) {
+            return;
+        }
+        TimePointAttribute[] newData = new TimePointAttribute[capacity];
+        System.arraycopy(timePoints, 0, newData, 0, timePoints.length);
+        timePoints = newData;
     }
 
     @Override
@@ -576,7 +593,7 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public Collection<? extends Date> getTimePointsCollection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new TimepointCollection<>(this.getTimePoints(), lastAttr);
     }
 
 }
