@@ -36,12 +36,13 @@ import org.clueminer.chart.data.DataSource;
 import org.clueminer.chart.ui.BaseLabel;
 import org.clueminer.chart.util.Insets2D;
 import org.clueminer.chart.util.Orientation;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author Tomas Barton
  */
-public class ScatterPlot extends AbstractPlot implements Plot {
+public class ScatterPlot<E extends Instance> extends AbstractPlot<E> implements Plot {
 
     private static final long serialVersionUID = 1450179727270901601L;
     protected Map<AxisPosition, Axis> axes;

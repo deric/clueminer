@@ -25,6 +25,7 @@ import org.clueminer.chart.ui.DrawablePanel;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeDatasets;
+import org.openide.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +35,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ScatterTest2 extends JFrame {
 
-    private static Logger LOG = LoggerFactory.getLogger(ScatterTest2.class);
-    private ScatterPlot scatter;
+    private static final Logger LOG = LoggerFactory.getLogger(ScatterTest2.class);
+    private ScatterPlot2 scatter;
 
     public ScatterTest2() {
         setLayout(new GridBagLayout());
@@ -86,7 +87,7 @@ public class ScatterTest2 extends JFrame {
                     LOG.info("clm-chart show = {} ms", end);
                 } catch (Exception e) {
                     System.err.println(e);
-                    e.printStackTrace();
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

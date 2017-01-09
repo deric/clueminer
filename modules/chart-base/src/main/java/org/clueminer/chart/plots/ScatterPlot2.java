@@ -23,12 +23,13 @@ import org.clueminer.chart.base.Grid;
 import org.clueminer.chart.base.OutsideAxis;
 import org.clueminer.chart.renderer.LinearRenderer2D;
 import org.clueminer.chart.util.Orientation;
+import org.clueminer.dataset.api.Instance;
 
 /**
  *
  * @author deric
  */
-public class ScatterPlot2 extends ScatterPlot {
+public class ScatterPlot2<E extends Instance> extends ScatterPlot<E> {
 
     public ScatterPlot2(int width, int height) {
         super();

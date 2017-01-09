@@ -22,9 +22,9 @@ import java.awt.Stroke;
 import org.clueminer.chart.api.Axis;
 import org.clueminer.chart.api.Drawable;
 import org.clueminer.chart.api.DrawingContext;
+import org.clueminer.chart.api.Theme;
 import org.clueminer.chart.factory.ThemeFactory;
 import org.clueminer.chart.renderer.LinearRenderer2D;
-import org.clueminer.chart.api.Theme;
 import org.clueminer.chart.util.GraphicsUtils;
 import org.clueminer.chart.util.Orientation;
 import org.clueminer.dataset.api.Dataset;
@@ -33,13 +33,14 @@ import org.clueminer.dataset.api.Instance;
 /**
  *
  * @author deric
+ * @param <E> base data row type
  */
-public class AbstractPlot extends DrawableContainer implements Drawable {
+public class AbstractPlot<E extends Instance> extends DrawableContainer implements Drawable {
 
     private static final long serialVersionUID = -6475620400218498764L;
 
     private Theme theme;
-    protected Dataset<? extends Instance> dataset;
+    protected Dataset<E> dataset;
 
     public AbstractPlot() {
         theme = ThemeFactory.getInstance().getDefault();
@@ -73,11 +74,11 @@ public class AbstractPlot extends DrawableContainer implements Drawable {
         drawComponents(context);
     }
 
-    public void setDataset(Dataset<? extends Instance> data) {
+    public void setDataset(Dataset<E> data) {
         this.dataset = data;
     }
 
-    public Dataset<? extends Instance> getDataset() {
+    public Dataset<E> getDataset() {
         return dataset;
     }
 
