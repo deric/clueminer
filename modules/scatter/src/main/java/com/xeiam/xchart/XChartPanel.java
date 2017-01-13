@@ -64,7 +64,7 @@ public class XChartPanel extends BPanel {
         this.chart = chart;
         reqSize = new Dimension(chart.getWidth(), chart.getHeight());
         realSize = reqSize;
-        //setPreferredSize(reqSize);
+        setMinimumSize(reqSize);
         this.fitToSpace = false;
 
         if (!GraphicsEnvironment.isHeadless()) {

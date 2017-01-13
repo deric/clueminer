@@ -20,8 +20,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -38,6 +36,8 @@ import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data preview for Milka project
@@ -58,7 +58,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
     private double ymax = Double.MIN_VALUE, ymin = Double.MAX_VALUE;
     private boolean useGlobalScale = true;
     private double xmax = 0.0;
-    private static final Logger logger = Logger.getLogger(PreviewFrameSet.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(PreviewFrameSet.class);
     private HashMap<Integer, Instance> metaMap;
     private Map<Integer, Color> metaColors;
     private ChartLegend legend;
@@ -87,7 +87,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
         }
 
         clusterNum = clust.size();
-        logger.log(Level.INFO, "got {0} clusters", clusterNum);
+        LOG.debug("got {} clusters", clusterNum);
 
         Instance inst;
         Timeseries<ContinuousInstance> ts;
@@ -153,7 +153,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
                             plot = metaInst.getPlotter();
                             checkBounds(plot, metaInst);
                         } else {
-                            logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
+                            LOG.debug("failed to find {}", inst.classValue());
                         }
 
                         for (int k = 1; k < dataset.size(); k++) {
@@ -163,7 +163,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
                                 plot.addInstance(metaInst);
                                 checkBounds(plot, metaInst);
                             } else {
-                                logger.log(Level.WARNING, "failed to find {0}", inst.classValue());
+                                LOG.warn("failed to find {}", inst.classValue());
                             }
                         }
                     }
@@ -181,7 +181,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
                     total += d.size();
                 }
             }
-            logger.log(Level.INFO, "total num of instances: {0}", total);
+            LOG.debug("total num of instances: {}", total);
         }
         if (metaColors != null) {
             if (legend == null) {
@@ -192,7 +192,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
             legend.setMaxWidth(this.getWidth());
             legend.updateChart();
             revalidate();
-            System.out.println("legend size: " + legend.getSize());
+            LOG.debug("legend size: {}", legend.getSize());
         }
 
     }

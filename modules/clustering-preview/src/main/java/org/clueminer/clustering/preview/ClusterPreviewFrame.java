@@ -24,8 +24,6 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -47,6 +45,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -67,7 +67,7 @@ public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
     private final int minChartHeight = 150;
     private final int maxChartHeight = 650;
     private final MetaLoaderDialog loader = new MetaLoaderDialog(this);
-    private Logger logger = Logger.getLogger(ClusterPreviewFrame.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterPreviewFrame.class);
 
     public ClusterPreviewFrame() {
         initComponents();
@@ -159,7 +159,7 @@ public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
      */
     @Override
     public void taskFinished(Task task) {
-        logger.log(Level.INFO, "meta data loading finished");
+        LOG.debug("meta data loading finished");
         Dataset<? extends Instance>[] result = loader.getDatasets();
         HashMap<Integer, Instance> metaMap = new HashMap<>(3000);
         int id;
@@ -189,7 +189,7 @@ public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
                         metaMap.put(id, (Instance) inst);
                     }
                 } else {
-                    logger.log(Level.WARNING, "dataset d null!!!");
+                    LOG.warn("dataset d null!!!");
                 }
 
             }
@@ -203,7 +203,7 @@ public class ClusterPreviewFrame<E extends Instance, C extends Cluster<E>>
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        logger.log(Level.INFO, "global scale {0}", chckScale.isSelected());
+        LOG.debug("global scale selected? {}", chckScale.isSelected());
         previewSet.setGlobalScale(chckScale.isSelected());
     }
 
