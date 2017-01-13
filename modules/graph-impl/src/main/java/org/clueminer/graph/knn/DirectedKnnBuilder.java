@@ -16,7 +16,12 @@
  */
 package org.clueminer.graph.knn;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import java.util.List;
+import java.util.Map;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.AbsGraphConvertor;
@@ -27,6 +32,7 @@ import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.GraphBuilder;
 import org.clueminer.graph.api.GraphConvertor;
+import static org.clueminer.graph.api.GraphConvertorFactory.INCLUDE_EDGES;
 import org.clueminer.graph.api.Node;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.KnnFactory;
@@ -69,9 +75,79 @@ public class DirectedKnnBuilder<E extends Instance> extends AbsGraphConvertor<E>
         if (alg == null) {
             throw new RuntimeException("did not find any provider for k-NN");
         }
+        String includeEdges = params.get(INCLUDE_EDGES, "any");
         alg.setDataset(dataset);
         alg.setDistanceMeasure(dm);
         int k = params.getInt("k", 5);
+
+        switch (includeEdges) {
+            case "bidirect":
+                buildBiGraph(k, graph, alg, mapping, params);
+                break;
+            default:
+                buildMixedGraph(k, graph, alg, mapping, params);
+        }
+    }
+
+    public Table<Node, Node, Edge> newTable() {
+        return Tables.newCustomTable(
+                Maps.<Node, Map<Node, Edge>>newHashMap(),
+                new Supplier<Map<Node, Edge>>() {
+            @Override
+            public Map<Node, Edge> get() {
+                return Maps.newHashMap();
+            }
+        });
+    }
+
+    /**
+     * Will include only bidirected edges.
+     *
+     * @param k
+     * @param graph
+     * @param alg
+     * @param mapping
+     * @param params
+     */
+    private void buildBiGraph(int k, Graph graph, KNNSearch<E> alg, Long[] mapping, Props params) {
+        Neighbor[] nn;
+        long nodeId;
+        Node<E> target;
+        Edge edge;
+        DIST2EDGE methd = DIST2EDGE.valueOf(params.get(DIST_TO_EDGE, "INVERSE"));
+        E inst;
+        GraphBuilder factory = graph.getFactory();
+        Table<Node, Node, Edge> cache = newTable();
+        Node<E> a, b;
+        for (Node<E> node : graph.getNodes()) {
+            inst = node.getInstance();
+            nn = alg.knn(inst, k, params);
+            for (Neighbor neighbor : nn) {
+                nodeId = mapping[neighbor.index];
+                target = graph.getNode(nodeId);
+                //check if inverse edge already exits
+                if (target.getId() < node.getId()) {
+                    a = target;
+                    b = node;
+                } else {
+                    a = node;
+                    b = target;
+                }
+                edge = cache.get(a, b);
+                if (edge != null) {
+                    edge.setDirection(EdgeType.BOTH);
+                    //add only bidirect edges
+                    graph.addEdge(edge);
+                    cache.remove(a, b);
+                } else {
+                    edge = factory.newEdge(node, target, 1, convertDistance(neighbor.distance, methd), true);
+                    cache.put(a, b, edge);
+                }
+            }
+        }
+    }
+
+    private void buildMixedGraph(int k, Graph graph, KNNSearch<E> alg, Long[] mapping, Props params) {
         Neighbor[] nn;
         long nodeId;
         Node<E> target;

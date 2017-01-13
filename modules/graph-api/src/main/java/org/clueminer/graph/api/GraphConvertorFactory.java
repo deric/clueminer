@@ -29,6 +29,14 @@ public class GraphConvertorFactory extends ServiceFactory<GraphConvertor> {
 
     private static GraphConvertorFactory instance;
 
+    /**
+     * What type of edges will be included in the graph. Acceptable values:
+     * - any
+     * - bidirect
+     * - single (single direction)
+     */
+    public static final String INCLUDE_EDGES = "include-edges";
+
     public static GraphConvertorFactory getInstance() {
         if (instance == null) {
             instance = new GraphConvertorFactory();

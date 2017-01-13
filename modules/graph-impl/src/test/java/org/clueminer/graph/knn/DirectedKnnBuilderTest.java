@@ -22,6 +22,7 @@ import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.graph.adjacencyList.AdjListFactory;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.Graph;
+import static org.clueminer.graph.api.GraphConvertorFactory.INCLUDE_EDGES;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -49,6 +50,19 @@ public class DirectedKnnBuilderTest<E extends Instance> {
         assertEquals(dataset.size(), graph.getNodeCount());
         //std: 510
         assertEquals(510, graph.getEdgeCount());
+    }
+
+    @Test
+    public void testCreateBidirectEdges() {
+        Dataset<E> dataset = (Dataset<E>) FakeDatasets.irisDataset();
+        Props params = new Props();
+        params.put(INCLUDE_EDGES, "bidirect");
+        Graph graph = new AdjListGraph();
+        Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
+        subject.createEdges(graph, dataset, mapping, params);
+        assertEquals(dataset.size(), graph.getNodeCount());
+        //std: 510
+        assertEquals(240, graph.getEdgeCount());
     }
 
 }
