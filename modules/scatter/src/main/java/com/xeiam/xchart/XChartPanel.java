@@ -18,7 +18,6 @@ package com.xeiam.xchart;
 import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
 import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
@@ -35,11 +34,13 @@ import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
+import org.clueminer.gui.BPanel;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A Swing JPanel that contains a Chart
@@ -48,11 +49,11 @@ import org.openide.util.Exceptions;
  *
  * @author timmolter
  */
-public class XChartPanel extends JPanel {
+public class XChartPanel extends BPanel {
 
     private final Chart chart;
-    private final Dimension preferredSize;
     private String saveAsString = "Save As...";
+    private final static Logger LOG = LoggerFactory.getLogger(XChartPanel.class);
 
     /**
      * Constructor
@@ -60,9 +61,11 @@ public class XChartPanel extends JPanel {
      * @param chart
      */
     public XChartPanel(final Chart chart) {
-
         this.chart = chart;
-        preferredSize = new Dimension(chart.getWidth(), chart.getHeight());
+        reqSize = new Dimension(chart.getWidth(), chart.getHeight());
+        realSize = reqSize;
+        //setPreferredSize(reqSize);
+        this.fitToSpace = false;
 
         if (!GraphicsEnvironment.isHeadless()) {
             // Right-click listener for saving chart
@@ -81,24 +84,31 @@ public class XChartPanel extends JPanel {
      * @param saveAsString
      */
     public void setSaveAsString(String saveAsString) {
-
         this.saveAsString = saveAsString;
     }
 
     @Override
-    protected void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
-
-        Graphics2D g2d = (Graphics2D) g.create();
-        chart.paint(g2d, getWidth(), getHeight());
-        g2d.dispose();
+    public void render(Graphics2D g) {
+        chart.paint(g, getWidth(), getHeight());
     }
 
     @Override
-    public Dimension getPreferredSize() {
+    public void sizeUpdated(Dimension size) {
+        resetCache();
+    }
 
-        return this.preferredSize;
+    @Override
+    public boolean hasData() {
+        return chart != null;
+    }
+
+    @Override
+    public void recalculate() {
+        //TODO: update subcomponents size?
+    }
+
+    public boolean isAntiAliasing() {
+        return true;
     }
 
     private class SaveAction extends AbstractAction {
@@ -209,7 +219,6 @@ public class XChartPanel extends JPanel {
 
         @Override
         public void mousePressed(MouseEvent e) {
-
             if (e.isPopupTrigger()) {
                 doPop(e);
             }
@@ -217,14 +226,12 @@ public class XChartPanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-
             if (e.isPopupTrigger()) {
                 doPop(e);
             }
         }
 
         private void doPop(MouseEvent e) {
-
             XChartPanelPopupMenu menu = new XChartPanelPopupMenu();
             menu.show(e.getComponent(), e.getX(), e.getY());
         }
@@ -241,7 +248,6 @@ public class XChartPanel extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-
                     showSaveAsDialog();
                 }
 
@@ -297,8 +303,7 @@ public class XChartPanel extends JPanel {
         }
 
         // Re-display the chart
-        revalidate();
-        repaint();
+        resetCache();
 
         return series;
     }

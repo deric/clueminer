@@ -28,7 +28,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 /**
- * Buffered panel
+ * Buffered panel. Each component inheriting from this component must set
+ * <code>reqSize</code> and <code>realSize</code> variables. Moreover once method
+ * <code>sizeUpdated</code> is called cache invalidation (using <code>resetCache();</code>)
+ * is recommended.
  *
  * @author Tomas Barton
  */
