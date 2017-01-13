@@ -26,6 +26,8 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Buffered panel. Each component inheriting from this component must set
@@ -46,14 +48,25 @@ public abstract class BPanel extends JPanel {
     protected boolean preserveAlpha = false;
     protected boolean fitToSpace = true;
     protected boolean reloading = false;
+    private static final Logger LOG = LoggerFactory.getLogger(BPanel.class);
 
     public BPanel() {
+        initComponent();
+    }
+
+    private void initComponent() {
         setDoubleBuffered(false);
         this.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
-                reqSize = getSize();
-                sizeUpdated(reqSize);
+
+                Dimension updatedSize = getSize();
+                //avoid useless updates
+                if (reqSize != updatedSize) {
+                    LOG.trace("size updated {} to {}", reqSize, getSize());
+                    reqSize = updatedSize;
+                    sizeUpdated(reqSize);
+                }
             }
 
             @Override
@@ -112,7 +125,7 @@ public abstract class BPanel extends JPanel {
             }
             bufferedImage = new BufferedImage(reqSize.width, reqSize.height, BufferedImage.TYPE_INT_ARGB);
         }
-
+        LOG.trace("creating buffered graphics");
         g = bufferedImage.createGraphics();
         //this.setOpaque(false);
         // clear the panel
@@ -129,6 +142,7 @@ public abstract class BPanel extends JPanel {
             }
         }
         drawComponent(g);
+        LOG.trace("componet drawn");
     }
 
     /**
