@@ -101,7 +101,6 @@ public class XChartPanelTest<E extends Instance> extends JFrame {
     }
 
     private void initComponents(int width, int height) {
-        long start = System.currentTimeMillis();
         setLayout(new GridBagLayout());
         // Create Chart
         chart = new ChartBuilder().width(width).height(height).build();

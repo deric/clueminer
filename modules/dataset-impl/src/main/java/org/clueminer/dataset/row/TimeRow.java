@@ -27,7 +27,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plot.TimePlot;
+import org.clueminer.dataset.plot.TimeXPlot;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
@@ -141,9 +141,12 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public Plotter getPlotter() {
-        TimePlot plot = new TimePlot();
-        // add a line plot to the PlotPanel
+        /* TimePlot plot = new TimePlot();
+           // add a line plot to the PlotPanel
         plot.addLinePlot(getName(), ((Timeseries) parent).getTimePointsArray(), this.arrayCopy());
+        return plot; */
+        TimeXPlot<ContinuousInstance<E>> plot = new TimeXPlot();
+        plot.addInstance(this);
         return plot;
     }
 
