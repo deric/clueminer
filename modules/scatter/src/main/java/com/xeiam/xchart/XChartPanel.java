@@ -54,6 +54,7 @@ public class XChartPanel extends BPanel {
     private final Chart chart;
     private String saveAsString = "Save As...";
     private final static Logger LOG = LoggerFactory.getLogger(XChartPanel.class);
+    private Dimension minSize;
 
     /**
      * Constructor
@@ -78,6 +79,17 @@ public class XChartPanel extends BPanel {
         }
     }
 
+    @Override
+    public void setMinimumSize(Dimension size) {
+        this.minSize = size;
+        resetCache();
+    }
+
+    @Override
+    public Dimension getMinimumSize() {
+        return minSize;
+    }
+
     /**
      * Set the "Save As..." String if you want to localize it.
      *
@@ -94,6 +106,12 @@ public class XChartPanel extends BPanel {
 
     @Override
     public void sizeUpdated(Dimension size) {
+        if (minSize != null) {
+            if (reqSize.width < minSize.width || reqSize.height < minSize.height) {
+                reqSize = minSize;
+                LOG.info("using min size {}", reqSize);
+            }
+        }
         resetCache();
     }
 

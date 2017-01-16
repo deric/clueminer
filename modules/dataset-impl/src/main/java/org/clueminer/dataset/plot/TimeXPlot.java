@@ -19,8 +19,10 @@ package org.clueminer.dataset.plot;
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
 import com.xeiam.xchart.XChartPanel;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -42,6 +44,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     private Chart chart;
     private Collection<? extends Date> yAxis;
     private HashSet<Integer> instances = new HashSet<>(10);
+    private XChartPanel chartPanel;
 
     public TimeXPlot() {
         initComponents(400, 400);
@@ -56,7 +59,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         chart.getStyleManager().setXAxisLabelRotation(60);
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
-        XChartPanel chartPanel = new XChartPanel(chart);
+        chartPanel = new XChartPanel(chart);
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -67,6 +70,27 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         c.gridx = 0;
         c.gridy = 0;
         add(chartPanel, c);
+    }
+
+    @Override
+    public Insets getInsets() {
+        return chartPanel.getInsets();
+    }
+
+    @Override
+    public void setPreferredSize(Dimension preferredSize) {
+        super.setPreferredSize(preferredSize);
+        chartPanel.setPreferredSize(preferredSize);
+    }
+
+    @Override
+    public void setMinimumSize(Dimension minimumSize) {
+        super.setPreferredSize(minimumSize);
+        chartPanel.setMinimumSize(minimumSize);
+    }
+
+    public Dimension getMinimumSize() {
+        return chartPanel.getMinimumSize();
     }
 
     @Override
