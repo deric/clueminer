@@ -17,6 +17,7 @@
 package org.clueminer.dataset.impl;
 
 import org.clueminer.attributes.TimePointAttribute;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -109,37 +110,36 @@ public class TimeseriesDatasetTest {
     public void testCheck() {
     }
 
-    /**
-     * Test of getAttributes method, of class TimeseriesDataset.
-     */
     @Test
     public void testGetAttributes() {
+        TimeseriesDataset<ContinuousInstance> test = new TimeseriesDataset(5);
+        for (int i = 0; i < 15; i++) {
+            test.attributeBuilder().create("attr " + i, "TIME");
+        }
+        int i = 0;
+        for (Attribute attr : test.getAttributes().values()) {
+            assertNotNull((i++) + "-th attribute should not be null", attr);
+        }
     }
 
-    /**
-     * Test of copyAttributes method, of class TimeseriesDataset.
-     */
     @Test
     public void testCopyAttributes() {
     }
 
-    /**
-     * Test of getTimePoints method, of class TimeseriesDataset.
-     */
     @Test
     public void testGetTimePoints() {
     }
 
-    /**
-     * Test of getTimePointsArray method, of class TimeseriesDataset.
-     */
     @Test
     public void testGetTimePointsArray() {
+        TimeseriesDataset<ContinuousInstance> test = new TimeseriesDataset(5);
+        for (int i = 0; i < 15; i++) {
+            test.attributeBuilder().create("attr " + i, "TIME");
+        }
+        double[] tp = test.getTimePointsArray();
+        assertNotNull(tp);
     }
 
-    /**
-     * Test of setTimePoints method, of class TimeseriesDataset.
-     */
     @Test
     public void testSetTimePoints() {
     }

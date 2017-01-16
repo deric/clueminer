@@ -179,8 +179,8 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
      */
     @Override
     public Map<Integer, Attribute> getAttributes() {
-        Map<Integer, Attribute> map = new HashMap<>(timePoints.length);
-        for (int i = 0; i < timePoints.length; i++) {
+        Map<Integer, Attribute> map = new HashMap<>(lastAttr);
+        for (int i = 0; i < lastAttr; i++) {
             map.put(i, timePoints[i]);
         }
         return map;
@@ -188,7 +188,11 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
 
     @Override
     public Attribute[] copyAttributes() {
-        return timePoints.clone();
+        TimePointAttribute[] copy = new TimePointAttribute[lastAttr];
+        for (int i = 0; i < lastAttr; i++) {
+            copy[i] = timePoints[i].duplicate();
+        }
+        return copy;
     }
 
     @Override
@@ -205,8 +209,8 @@ public class TimeseriesDataset<E extends ContinuousInstance> extends AbstractDat
          * TimePoint from that one :(
          */
         if (timepointPosition == null) {
-            timepointPosition = new double[timePoints.length];
-            for (int i = 0; i < timePoints.length; i++) {
+            timepointPosition = new double[lastAttr];
+            for (int i = 0; i < lastAttr; i++) {
                 timepointPosition[i] = timePoints[i].getPosition();
             }
         }
