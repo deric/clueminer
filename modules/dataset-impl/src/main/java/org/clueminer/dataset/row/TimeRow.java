@@ -22,12 +22,13 @@ import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.api.Timeseries;
-import org.clueminer.dataset.plot.TimeXPlot;
 import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
@@ -139,15 +140,28 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         return result;
     }
 
+    /**
+     * Base data type can't be depenet on GUI modules. Here we need to find
+     * appropriate implementation of visualization, if available.
+     *
+     * TODO: pass props to allow choosing preferred renderer
+     *
+     * @return
+     */
     @Override
     public Plotter getPlotter() {
         /* TimePlot plot = new TimePlot();
-           // add a line plot to the PlotPanel
-        plot.addLinePlot(getName(), ((Timeseries) parent).getTimePointsArray(), this.arrayCopy());
-        return plot; */
-        TimeXPlot<ContinuousInstance<E>> plot = new TimeXPlot();
-        plot.addInstance(this);
-        return plot;
+         * // add a line plot to the PlotPanel
+         * plot.addLinePlot(getName(), ((Timeseries) parent).getTimePointsArray(), this.arrayCopy());
+         * return plot; */
+        PlotterFactory factory = PlotterFactory.getInstance();
+        for (Plotter p : factory.getAll()) {
+            if (p.isSupported(DataType.TIMESERIES)) {
+                p.addInstance(this);
+                return p;
+            }
+        }
+        throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
 
     @Override
