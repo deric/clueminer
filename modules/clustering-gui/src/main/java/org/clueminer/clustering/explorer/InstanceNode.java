@@ -77,6 +77,17 @@ public class InstanceNode extends AbstractNode implements Comparable<InstanceNod
 
     @Override
     public int compareTo(InstanceNode o) {
-        return this.getInstance().getId().compareTo(o.getInstance().getId());
+        Instance curr = this.getInstance();
+        Instance other = o.getInstance();
+
+        if (curr.getId() != null && other.getId() != null) {
+            return curr.getId().compareTo(other.getId());
+        }
+
+        if (curr.getName() != null && other.getName() != null) {
+            return curr.getName().compareTo(other.getName());
+        }
+        //we can't decide
+        return 0;
     }
 }
