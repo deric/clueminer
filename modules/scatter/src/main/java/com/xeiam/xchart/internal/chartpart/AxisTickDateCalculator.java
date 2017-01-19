@@ -53,23 +53,23 @@ public class AxisTickDateCalculator extends AxisTickCalculator {
         }
 
         // tick space - a percentage of the working space available for ticks
-        double tickSpace = styleManager.getAxisTickSpacePercentage() * workingSpace; // in plot space
+        double tickSpace = Math.abs(styleManager.getAxisTickSpacePercentage() * workingSpace); // in plot space
 
         // where the tick should begin in the working space in pixels
         double margin = Utils.getTickStartOffset(workingSpace, tickSpace); // in plot space double gridStep = getGridStepForDecimal(tickSpace);
 
         // the span of the data
         long span = (long) Math.abs(maxValue - minValue); // in data space
-        LOG.debug("span is = {}", span);
+        LOG.trace("span = {}, tick space = {}", span, tickSpace);
 
-        long gridStepHint = (long) (span / tickSpace * styleManager.getXAxisTickMarkSpacingHint());
-        LOG.debug("grid step hint = {}", gridStepHint);
+        long gridStepHint = (span / (long) tickSpace * styleManager.getXAxisTickMarkSpacingHint());
+        LOG.trace("grid step hint = {}", gridStepHint);
 
         long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
 
         double gridStep = 0.0;
         int[] steps = dateFormatter.getValidTickStepsMap().get(timeUnit);
-        LOG.debug("time unit = {}, {} steps", timeUnit, steps.length);
+        LOG.trace("time unit = {}, {} steps", timeUnit, steps.length);
         for (int i = 0; i < steps.length - 1; i++) {
             if (gridStepHint < (timeUnit * steps[i] + timeUnit * steps[i + 1]) / 2.0) {
                 gridStep = timeUnit * steps[i];

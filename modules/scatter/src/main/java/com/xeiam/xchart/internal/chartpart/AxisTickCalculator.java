@@ -53,7 +53,6 @@ public abstract class AxisTickCalculator {
      * @param styleManager
      */
     public AxisTickCalculator(Direction axisDirection, double workingSpace, double minValue, double maxValue, StyleManager styleManager) {
-
         // override min/max value for bar charts' Y-Axis
         double overrideMinValue = minValue;
         double overrideMaxValue = maxValue;
@@ -118,7 +117,6 @@ public abstract class AxisTickCalculator {
      * @return
      */
     public double getNumericalGridStep(double tickSpace) {
-
         // this prevents an infinite loop when the plot gets sized really small.
         if (tickSpace < 10) {
             return 1.0;

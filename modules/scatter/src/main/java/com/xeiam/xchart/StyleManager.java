@@ -790,80 +790,65 @@ public class StyleManager {
     /**
      * sets the Y-Axis to be rendered with a logarithmic scale or not
      *
-     * @param isyAxisLogarithmic
+     * @param isYAxisLogarithmic
      */
     public void setYAxisLogarithmic(boolean isYAxisLogarithmic) {
-
         this.isYAxisLogarithmic = isYAxisLogarithmic;
     }
 
     public boolean isYAxisLogarithmic() {
-
         return isYAxisLogarithmic;
     }
 
     public void setXAxisMin(double xAxisMin) {
-
         this.xAxisMin = xAxisMin;
     }
 
     public Double getXAxisMin() {
-
         return xAxisMin;
     }
 
     public void setXAxisMax(double xAxisMax) {
-
         this.xAxisMax = xAxisMax;
     }
 
     public Double getXAxisMax() {
-
         return xAxisMax;
     }
 
     public void setYAxisMin(double yAxisMin) {
-
         this.yAxisMin = yAxisMin;
     }
 
     public Double getYAxisMin() {
-
         return yAxisMin;
     }
 
     public void setYAxisMax(double yAxisMax) {
-
         this.yAxisMax = yAxisMax;
     }
 
     public Double getYAxisMax() {
-
         return yAxisMax;
     }
 
     public void setAxisTickSpacePercentage(double axisTickSpacePercentage) {
-
         this.axisTickSpacePercentage = axisTickSpacePercentage;
     }
 
     public double getAxisTickSpacePercentage() {
-
         return axisTickSpacePercentage;
     }
 
     public TextAlignment getXAxisLabelAlignment() {
-
         return xAxisLabelAlignment;
     }
 
     public void setXAxisLabelAlignment(TextAlignment xAxisLabelAlignment) {
-
         this.xAxisLabelAlignment = xAxisLabelAlignment;
     }
 
     public TextAlignment getYAxisLabelAlignment() {
-
         return yAxisLabelAlignment;
     }
 
