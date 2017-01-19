@@ -89,6 +89,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         chartPanel.setMinimumSize(minimumSize);
     }
 
+    @Override
     public Dimension getMinimumSize() {
         return chartPanel.getMinimumSize();
     }

@@ -66,6 +66,8 @@ public interface Plotter<E extends Instance> extends Serializable {
      */
     void setMinimumSize(Dimension minimumSize);
 
+    Dimension getMinimumSize();
+
     int getWidth();
 
     int getHeight();

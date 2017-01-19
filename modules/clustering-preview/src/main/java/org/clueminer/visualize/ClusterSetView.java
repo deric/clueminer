@@ -133,10 +133,11 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                     }
                     checkBounds(plot, inst);
 
-                    if (dimChart == null) {
-                        dimChart = new Dimension(this.getWidth(), 100);
-                    }
                     if (plot != null) {
+                        dimChart = plot.getMinimumSize();
+                        if (dimChart == null) {
+                            dimChart = new Dimension(this.getWidth(), 100);
+                        }
                         plot.setMinimumSize(dimChart);
                         plot.setPreferredSize(dimChart);
                         plot.setTitle(d.getName() + " (" + d.size() + ")");
