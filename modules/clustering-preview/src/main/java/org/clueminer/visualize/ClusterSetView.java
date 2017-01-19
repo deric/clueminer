@@ -17,6 +17,8 @@
 package org.clueminer.visualize;
 
 import java.awt.Dimension;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -63,6 +65,35 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
 
     private void initComponents() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                //
+                if (dimChart != null) {
+                    if (dimChart.width != parent.getSize().width) {
+                        dimChart.width = parent.getSize().width;
+                        repaint();
+                    }
+
+                }
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                //
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                //
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                //
+            }
+
+        });
     }
 
     private void redraw() {
@@ -136,9 +167,11 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                     checkBounds(plot, inst);
 
                     if (plot != null) {
-                        dimChart = plot.getMinimumSize();
-                        //override width according to component width
-                        dimChart.width = this.getWidth();
+                        if (dimChart == null) {
+                            dimChart = plot.getMinimumSize();
+                            //override width according to component width
+                            dimChart.width = this.getWidth();
+                        }
                         plot.setMinimumSize(dimChart);
                         plot.setPreferredSize(dimChart);
                         plot.setTitle(d.getName() + " (" + d.size() + ")");
@@ -202,6 +235,17 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         if (parent != null) {
             parent.repaint();
         }
+    }
+
+    public Dimension getChartDimension() {
+        return dimChart;
+    }
+
+    public void setChartDimension(Dimension dim) {
+        this.dimChart = dim;
+        dimChart.width = this.getWidth();
+        this.removeAll();
+        redraw();
     }
 
 }

@@ -64,6 +64,7 @@ public class VisualizePanel<E extends Instance, C extends Cluster<E>> extends JP
 
         //scroller.getViewport().revalidate();
         add(scroller, c);
+        previewSet.addMouseWheelListener(new MouseWheelDriver(previewSet));
         //add(previewSet, c);
     }
 
