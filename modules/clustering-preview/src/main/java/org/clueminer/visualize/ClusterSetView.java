@@ -53,9 +53,11 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
     private boolean useGlobalScale = false;
     private double xmax = 0.0;
     private static final Logger LOG = LoggerFactory.getLogger(ClusterSetView.class);
+    private Props props;
 
     public ClusterSetView(JPanel parent) {
         this.parent = parent;
+        this.props = new Props();
         initComponents();
     }
 
@@ -119,7 +121,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
                         inst = (E) inst.getAncestor();
                     }
 
-                    plot = inst.getPlotter();
+                    plot = inst.getPlotter(props);
                     if (dataset.size() > 1) {
                         for (int k = 1; k < dataset.size(); k++) {
                             inst = dataset.instance(k);

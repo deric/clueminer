@@ -19,14 +19,15 @@ package org.clueminer.clustering.selection;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -36,11 +37,13 @@ public class SelectionFrame extends JPanel {
 
     private Dataset<? extends Instance> dataset;
     private Dimension dimChart;
-    private static final Logger logger = Logger.getLogger(SelectionFrame.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(SelectionFrame.class);
     private final int minWidth = 100;
+    private final Props props;
 
     public SelectionFrame() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.props = new Props();
     }
 
     private void redraw() {
@@ -50,7 +53,7 @@ public class SelectionFrame extends JPanel {
         Instance inst;
 
         if (dataset != null && dataset.size() > 0) {
-            logger.log(Level.INFO, "dataset size {0}", dataset.size());
+            LOG.info("dataset size {}", dataset.size());
             inst = dataset.instance(0);
             /**
              * @TODO We can't support visualization of all possible
@@ -64,7 +67,7 @@ public class SelectionFrame extends JPanel {
                 inst = inst.getAncestor();
             }
 
-            Plotter plot = inst.getPlotter();
+            Plotter plot = inst.getPlotter(props);
             if (dataset.size() > 1) {
                 for (int k = 1; k < dataset.size(); k++) {
                     inst = dataset.instance(k);
@@ -88,7 +91,7 @@ public class SelectionFrame extends JPanel {
             }
             add((JComponent) plot, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
             revalidate();
-            logger.log(Level.INFO, "preview size {0}", dimChart.toString());
+            LOG.debug("preview size {}", dimChart);
             super.repaint();
         }
 

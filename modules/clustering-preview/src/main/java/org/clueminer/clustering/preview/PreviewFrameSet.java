@@ -62,6 +62,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
     private HashMap<Integer, Instance> metaMap;
     private Map<Integer, Color> metaColors;
     private ChartLegend legend;
+    private Props props;
 
     public PreviewFrameSet() {
         initComponents();
@@ -73,6 +74,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
     }
 
     private void initComponents() {
+        this.props = new Props();
         //   setLayout(new GridBagLayout());
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
@@ -133,7 +135,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
                             inst = inst.getAncestor();
                         }
 
-                        plot = inst.getPlotter();
+                        plot = inst.getPlotter(props);
                         if (dataset.size() > 1) {
                             for (int k = 1; k < dataset.size(); k++) {
                                 inst = dataset.instance(k);
@@ -150,7 +152,7 @@ public class PreviewFrameSet<E extends Instance, C extends Cluster<E>> extends J
 
                         if (metaMap.containsKey(id)) {
                             metaInst = metaMap.get(id);
-                            plot = metaInst.getPlotter();
+                            plot = metaInst.getPlotter(props);
                             checkBounds(plot, metaInst);
                         } else {
                             LOG.debug("failed to find {}", inst.classValue());
