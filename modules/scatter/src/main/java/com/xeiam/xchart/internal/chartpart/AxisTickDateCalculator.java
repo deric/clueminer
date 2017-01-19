@@ -18,6 +18,8 @@ package com.xeiam.xchart.internal.chartpart;
 import com.xeiam.xchart.StyleManager;
 import com.xeiam.xchart.internal.Utils;
 import com.xeiam.xchart.internal.chartpart.Axis.Direction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class encapsulates the logic to generate the axis tick mark and axis tick label data for rendering the axis ticks for date axes
@@ -27,6 +29,7 @@ import com.xeiam.xchart.internal.chartpart.Axis.Direction;
 public class AxisTickDateCalculator extends AxisTickCalculator {
 
     DateFormatter dateFormatter;
+    private static final Logger LOG = LoggerFactory.getLogger(AxisTickDateCalculator.class);
 
     /**
      * Constructor
@@ -38,13 +41,16 @@ public class AxisTickDateCalculator extends AxisTickCalculator {
      * @param styleManager
      */
     public AxisTickDateCalculator(Direction axisDirection, double workingSpace, double minValue, double maxValue, StyleManager styleManager) {
-
         super(axisDirection, workingSpace, minValue, maxValue, styleManager);
         dateFormatter = new DateFormatter(styleManager);
         calculate();
     }
 
     private void calculate() {
+        //sanity checks
+        if (minValue == maxValue) {
+            throw new IllegalArgumentException("Min and Max can't have the same value: " + minValue);
+        }
 
         // tick space - a percentage of the working space available for ticks
         double tickSpace = styleManager.getAxisTickSpacePercentage() * workingSpace; // in plot space
@@ -54,12 +60,16 @@ public class AxisTickDateCalculator extends AxisTickCalculator {
 
         // the span of the data
         long span = (long) Math.abs(maxValue - minValue); // in data space
+        LOG.debug("span is = {}", span);
 
         long gridStepHint = (long) (span / tickSpace * styleManager.getXAxisTickMarkSpacingHint());
+        LOG.debug("grid step hint = {}", gridStepHint);
 
         long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+
         double gridStep = 0.0;
         int[] steps = dateFormatter.getValidTickStepsMap().get(timeUnit);
+        LOG.debug("time unit = {}, {} steps", timeUnit, steps.length);
         for (int i = 0; i < steps.length - 1; i++) {
             if (gridStepHint < (timeUnit * steps[i] + timeUnit * steps[i + 1]) / 2.0) {
                 gridStep = timeUnit * steps[i];

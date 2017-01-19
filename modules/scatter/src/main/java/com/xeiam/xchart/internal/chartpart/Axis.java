@@ -276,48 +276,38 @@ public class Axis implements ChartPart {
 
     @Override
     public ChartPainter getChartPainter() {
-
         return axisPair.getChartPainter();
     }
 
-    // Getters /////////////////////////////////////////////////
     public AxisType getAxisType() {
-
         return axisType;
     }
 
     public double getMin() {
-
         return min;
     }
 
     public double getMax() {
-
         return max;
     }
 
     public AxisTick getAxisTick() {
-
         return axisTick;
     }
 
     public Direction getDirection() {
-
         return direction;
     }
 
     protected Rectangle2D getPaintZone() {
-
         return paintZone;
     }
 
     public AxisTitle getAxisTitle() {
-
         return axisTitle;
     }
 
     protected void setAxisTitle(AxisTitle axisTitle) {
-
         this.axisTitle = axisTitle;
     }
 

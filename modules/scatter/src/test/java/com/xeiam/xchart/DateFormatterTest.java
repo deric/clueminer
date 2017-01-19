@@ -26,99 +26,97 @@ import org.junit.Test;
  */
 public class DateFormatterTest {
 
-  private final Locale locale = Locale.US;
+    private final Locale locale = Locale.US;
 
-  @Test
-  public void testDateFormatting() {
+    @Test
+    public void testDateFormatting() {
 
-    StyleManager styleManager = new StyleManager();
-    DateFormatter dateFormatter = new DateFormatter(styleManager);
+        StyleManager styleManager = new StyleManager();
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        styleManager.setLocale(locale);
+        styleManager.setTimezone(timeZone);
 
-    TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        DateFormatter dateFormatter = new DateFormatter(styleManager);
+        // ms
+        double value = 1358108105531L;
+        double min = 1358108105100L;
+        double max = 1358108105900L;
+        double span = Math.abs(max - min); // in data space
+        long gridStepHint = (long) (span / 1000 * 74);
+        long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        String stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("05.531");
 
-    styleManager.setLocale(locale);
-    styleManager.setTimezone(timeZone);
+        // sec
+        value = 1358108105000L;
+        min = 1358108101000L;
+        max = 1358108109000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("05.000");
 
-    // ms
-    double value = 1358108105531L;
-    double min = 1358108105100L;
-    double max = 1358108105900L;
-    double span = Math.abs(max - min); // in data space
-    long gridStepHint = (long) (span / 1000 * 74);
-    long timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    String stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("05.531");
+        // min
+        value = 1358111750000L;
+        min = 1358111690000L;
+        max = 1358111870000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("15:50");
 
-    // sec
-    value = 1358108105000L;
-    min = 1358108101000L;
-    max = 1358108109000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("05.000");
+        // hour
+        value = 1358111870000L;
+        min = 1358101070000L;
+        max = 1358115470000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("21:17");
 
-    // min
-    value = 1358111750000L;
-    min = 1358111690000L;
-    max = 1358111870000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("15:50");
+        // day
+        value = 1358112317000L;
+        min = 1357939517000L;
+        max = 1358285117000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("21:25");
 
-    // hour
-    value = 1358111870000L;
-    min = 1358101070000L;
-    max = 1358115470000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("21:17");
+        // week
+        value = 1358112317000L;
+        min = 1357075517000L;
+        max = 1359149117000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("01-13");
 
-    // day
-    value = 1358112317000L;
-    min = 1357939517000L;
-    max = 1358285117000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("21:25");
+        // month
+        value = 1358112838000L;
+        min = 1354397638000L;
+        max = 1361223238000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("01-13");
 
-    // week
-    value = 1358112317000L;
-    min = 1357075517000L;
-    max = 1359149117000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("01-13");
+        // year
+        value = 1358113402000L;
+        min = 1263419002000L;
+        max = 1421185402000L;
+        span = Math.abs(max - min); // in data space
+        gridStepHint = (long) (span / 1000 * 74);
+        timeUnit = dateFormatter.getTimeUnit(gridStepHint);
+        stringValue = dateFormatter.formatDate(value, timeUnit);
+        assertThat(stringValue).isEqualTo("2013-01");
 
-    // month
-    value = 1358112838000L;
-    min = 1354397638000L;
-    max = 1361223238000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("01-13");
-
-    // year
-    value = 1358113402000L;
-    min = 1263419002000L;
-    max = 1421185402000L;
-    span = Math.abs(max - min); // in data space
-    gridStepHint = (long) (span / 1000 * 74);
-    timeUnit = dateFormatter.getTimeUnit(gridStepHint);
-    stringValue = dateFormatter.formatDate(value, timeUnit);
-    assertThat(stringValue).isEqualTo("2013-01");
-
-  }
+    }
 
 }

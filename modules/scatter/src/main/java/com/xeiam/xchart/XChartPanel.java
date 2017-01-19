@@ -106,12 +106,6 @@ public class XChartPanel extends BPanel {
 
     @Override
     public void sizeUpdated(Dimension size) {
-        if (minSize != null) {
-            if (reqSize.width < minSize.width || reqSize.height < minSize.height) {
-                reqSize = minSize;
-                LOG.info("using min size {}", reqSize);
-            }
-        }
         resetCache();
     }
 

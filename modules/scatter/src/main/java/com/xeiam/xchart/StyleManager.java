@@ -663,7 +663,6 @@ public class StyleManager {
     }
 
     public Color getAxisTickMarksColor() {
-
         return axisTickMarksColor;
     }
 
@@ -673,12 +672,10 @@ public class StyleManager {
      * @param axisTickMarksStroke
      */
     public void setAxisTickMarksStroke(Stroke axisTickMarksStroke) {
-
         this.axisTickMarksStroke = axisTickMarksStroke;
     }
 
     public Stroke getAxisTickMarksStroke() {
-
         return axisTickMarksStroke;
     }
 
@@ -688,12 +685,10 @@ public class StyleManager {
      * @param axisTickLabelsColor
      */
     public void setAxisTickLabelsColor(Color axisTickLabelsColor) {
-
         this.axisTickLabelsColor = axisTickLabelsColor;
     }
 
     public Color getAxisTickLabelsColor() {
-
         return axisTickLabelsColor;
     }
 
@@ -708,7 +703,6 @@ public class StyleManager {
     }
 
     public boolean isAxisTicksLineVisible() {
-
         return isAxisTicksLineVisible;
     }
 
@@ -718,12 +712,10 @@ public class StyleManager {
      * @param isAxisTicksMarksVisible
      */
     public void setAxisTicksMarksVisible(boolean isAxisTicksMarksVisible) {
-
         this.isAxisTicksMarksVisible = isAxisTicksMarksVisible;
     }
 
     public boolean isAxisTicksMarksVisible() {
-
         return isAxisTicksMarksVisible;
     }
 
@@ -733,12 +725,10 @@ public class StyleManager {
      * @param plotPadding
      */
     public void setPlotPadding(int plotPadding) {
-
         this.plotPadding = plotPadding;
     }
 
     public int getPlotPadding() {
-
         return plotPadding;
     }
 
@@ -748,12 +738,10 @@ public class StyleManager {
      * @param axisTitlePadding
      */
     public void setAxisTitlePadding(int axisTitlePadding) {
-
         this.axisTitlePadding = axisTitlePadding;
     }
 
     public int getAxisTitlePadding() {
-
         return axisTitlePadding;
     }
 
@@ -763,22 +751,19 @@ public class StyleManager {
      * @param xAxisTickMarkSpacingHint
      */
     public void setXAxisTickMarkSpacingHint(int xAxisTickMarkSpacingHint) {
-
         this.xAxisTickMarkSpacingHint = xAxisTickMarkSpacingHint;
     }
 
     public int getXAxisTickMarkSpacingHint() {
-
         return xAxisTickMarkSpacingHint;
     }
 
     /**
      * set the spacing between tick marks for the Y-Axis
      *
-     * @param xAxisTickMarkSpacingHint
+     * @param yAxisTickMarkSpacingHint
      */
     public void setYAxisTickMarkSpacingHint(int yAxisTickMarkSpacingHint) {
-
         this.yAxisTickMarkSpacingHint = yAxisTickMarkSpacingHint;
     }
 
@@ -790,7 +775,7 @@ public class StyleManager {
     /**
      * sets the X-Axis to be rendered with a logarithmic scale or not
      *
-     * @param isxAxisLogarithmic
+     * @param isXAxisLogarithmic
      */
     public void setXAxisLogarithmic(boolean isXAxisLogarithmic) {
 
@@ -969,7 +954,6 @@ public class StyleManager {
     }
 
     public boolean isPlotTicksMarksVisible() {
-
         return isPlotTicksMarksVisible;
     }
 
@@ -979,12 +963,10 @@ public class StyleManager {
      * @param plotGridLinesColor
      */
     public void setPlotGridLinesColor(Color plotGridLinesColor) {
-
         this.plotGridLinesColor = plotGridLinesColor;
     }
 
     public Color getPlotGridLinesColor() {
-
         return plotGridLinesColor;
     }
 
@@ -994,12 +976,10 @@ public class StyleManager {
      * @param plotGridLinesStroke
      */
     public void setPlotGridLinesStroke(Stroke plotGridLinesStroke) {
-
         this.plotGridLinesStroke = plotGridLinesStroke;
     }
 
     public Stroke getPlotGridLinesStroke() {
-
         return plotGridLinesStroke;
     }
 
@@ -1015,7 +995,6 @@ public class StyleManager {
     }
 
     public double getBarWidthPercentage() {
-
         return barWidthPercentage;
     }
 
@@ -1025,7 +1004,6 @@ public class StyleManager {
      * @param isBarsOverlapped
      */
     public void setBarsOverlapped(boolean isBarsOverlapped) {
-
         this.isBarsOverlapped = isBarsOverlapped;
     }
 
@@ -1040,12 +1018,10 @@ public class StyleManager {
      * @param isBarFilled
      */
     public void setBarFilled(boolean isBarFilled) {
-
         this.isBarFilled = isBarFilled;
     }
 
     public boolean isBarFilled() {
-
         return isBarFilled;
     }
 
@@ -1056,12 +1032,10 @@ public class StyleManager {
      * @param markerSize
      */
     public void setMarkerSize(int markerSize) {
-
         this.markerSize = markerSize;
     }
 
     public int getMarkerSize() {
-
         return markerSize;
     }
 
@@ -1072,27 +1046,24 @@ public class StyleManager {
      * @param errorBarsColor
      */
     public void setErrorBarsColor(Color errorBarsColor) {
-
         this.errorBarsColor = errorBarsColor;
     }
 
     public Color getErrorBarsColor() {
-
         return errorBarsColor;
     }
 
     /**
      * Set true if the the error bar color should match the series color
      *
+     * @param isErrorBarsColorSeriesColor
      * @return
      */
     public void setErrorBarsColorSeriesColor(boolean isErrorBarsColorSeriesColor) {
-
         this.isErrorBarsColorSeriesColor = isErrorBarsColorSeriesColor;
     }
 
     public boolean isErrorBarsColorSeriesColor() {
-
         return isErrorBarsColorSeriesColor;
     }
 
@@ -1103,12 +1074,10 @@ public class StyleManager {
      * @param locale - the locale to use when formatting Strings and dates for the axis tick labels
      */
     public void setLocale(Locale locale) {
-
         this.locale = locale;
     }
 
     public Locale getLocale() {
-
         return locale;
     }
 
@@ -1118,12 +1087,10 @@ public class StyleManager {
      * @param timezone the timezone to use when formatting date data
      */
     public void setTimezone(TimeZone timezone) {
-
         this.timezone = timezone;
     }
 
     public TimeZone getTimezone() {
-
         return timezone;
     }
 
@@ -1132,13 +1099,11 @@ public class StyleManager {
      *
      * @param pattern - the pattern describing the date and time format
      */
-    public void setDatePattern(String datePattern) {
-
-        this.datePattern = datePattern;
+    public void setDatePattern(String pattern) {
+        this.datePattern = pattern;
     }
 
     public String getDatePattern() {
-
         return datePattern;
     }
 
@@ -1147,9 +1112,9 @@ public class StyleManager {
      *
      * @param pattern - the pattern describing the decimal format
      */
-    public void setDecimalPattern(String decimalPattern) {
+    public void setDecimalPattern(String pattern) {
 
-        this.decimalPattern = decimalPattern;
+        this.decimalPattern = pattern;
     }
 
     public String getDecimalPattern() {

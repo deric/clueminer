@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author timmolter
@@ -35,18 +37,18 @@ public class DateFormatter {
     public static final long MONTH_SCALE = TimeUnit.DAYS.toMillis(1L) * 31;
     public static final long YEAR_SCALE = TimeUnit.DAYS.toMillis(1L) * 365;
 
-    private Map<Long, int[]> validTickStepsMap;
-
+    private final Map<Long, int[]> validTickStepsMap;
     private final StyleManager styleManager;
+    private final SimpleDateFormat simpleDateformat;
+    private final static Logger LOG = LoggerFactory.getLogger(DateFormatter.class);
 
     /**
      * Constructor
      */
     public DateFormatter(StyleManager styleManager) {
-
         this.styleManager = styleManager;
 
-        validTickStepsMap = new TreeMap<Long, int[]>();
+        validTickStepsMap = new TreeMap<>();
         validTickStepsMap.put(MILLIS_SCALE, new int[]{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000});
         validTickStepsMap.put(SEC_SCALE, new int[]{1, 2, 5, 10, 15, 20, 30, 60});
         validTickStepsMap.put(MIN_SCALE, new int[]{1, 2, 3, 5, 10, 15, 20, 30, 60});
@@ -54,6 +56,15 @@ public class DateFormatter {
         validTickStepsMap.put(DAY_SCALE, new int[]{1, 2, 3, 5, 10, 15, 31});
         validTickStepsMap.put(MONTH_SCALE, new int[]{1, 2, 3, 4, 6, 12});
         validTickStepsMap.put(YEAR_SCALE, new int[]{1, 2, 5, 10, 20, 50, 100, 200, 500, 1000});
+
+        if (styleManager.getDatePattern() != null) {
+            simpleDateformat = new SimpleDateFormat(styleManager.getDatePattern(), styleManager.getLocale());
+        } else {
+            simpleDateformat = new SimpleDateFormat("yyyy-MM-dd", styleManager.getLocale());
+        }
+
+        simpleDateformat.setTimeZone(styleManager.getTimezone());
+        //simpleDateformat.applyPattern(datePattern);
     }
 
     /**
@@ -61,9 +72,7 @@ public class DateFormatter {
      * @return
      */
     public long getTimeUnit(long gridStepHint) {
-
         for (Entry<Long, int[]> entry : validTickStepsMap.entrySet()) {
-
             long groupMagnitude = entry.getKey();
             int[] steps = entry.getValue();
             long validTickStepMagnitude = (long) ((groupMagnitude * steps[steps.length - 2] + groupMagnitude * steps[steps.length - 1]) / 2.0);
@@ -82,11 +91,10 @@ public class DateFormatter {
      * @return
      */
     public String formatDate(double value, long timeUnit) {
-
         String datePattern;
+        LOG.debug("formatting date: {}, unit = {}", value, timeUnit);
 
         if (styleManager.getDatePattern() == null) {
-
             // intelligently set date pattern if none is given
             if (timeUnit == MILLIS_SCALE) {
                 datePattern = "ss.SSS";
@@ -106,16 +114,12 @@ public class DateFormatter {
         } else {
             datePattern = styleManager.getDatePattern();
         }
-
-        SimpleDateFormat simpleDateformat = new SimpleDateFormat(datePattern, styleManager.getLocale());
-        simpleDateformat.setTimeZone(styleManager.getTimezone());
         simpleDateformat.applyPattern(datePattern);
 
         return simpleDateformat.format(value);
     }
 
     Map<Long, int[]> getValidTickStepsMap() {
-
         return validTickStepsMap;
     }
 }

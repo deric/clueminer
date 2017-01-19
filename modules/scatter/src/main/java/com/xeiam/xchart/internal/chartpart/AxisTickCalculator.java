@@ -28,11 +28,10 @@ import java.util.List;
 public abstract class AxisTickCalculator {
 
     /** the List of tick label position in pixels */
-    protected List<Double> tickLocations = new LinkedList<Double>();
-    ;
+    protected List<Double> tickLocations = new LinkedList<>();
 
-  /** the List of tick label values */
-  protected List<String> tickLabels = new LinkedList<String>();
+    /** the List of tick label values */
+    protected List<String> tickLabels = new LinkedList<>();
 
     protected final Direction axisDirection;
 
@@ -99,19 +98,16 @@ public abstract class AxisTickCalculator {
      * @return
      */
     double getFirstPosition(double gridStep) {
-
         // System.out.println("******");
         double firstPosition = minValue - (minValue % gridStep) - gridStep;
         return firstPosition;
     }
 
     public List<Double> getTickLocations() {
-
         return tickLocations;
     }
 
     public List<String> getTickLabels() {
-
         return tickLabels;
     }
 

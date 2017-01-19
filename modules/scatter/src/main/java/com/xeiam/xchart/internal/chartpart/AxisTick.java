@@ -27,13 +27,13 @@ import java.util.List;
 public class AxisTick implements ChartPart {
 
     /** parent */
-    private Axis axis;
+    private final Axis axis;
 
     /** the axisticklabels */
-    private AxisTickLabels axisTickLabels;
+    private final AxisTickLabels axisTickLabels;
 
     /** the axistickmarks */
-    private AxisTickMarks axisTickMarks;
+    private final AxisTickMarks axisTickMarks;
 
     /** the bounds */
     private Rectangle2D bounds = new Rectangle2D.Double();
@@ -46,7 +46,6 @@ public class AxisTick implements ChartPart {
      * @param axis
      */
     protected AxisTick(Axis axis) {
-
         this.axis = axis;
         axisTickLabels = new AxisTickLabels(this);
         axisTickMarks = new AxisTickMarks(this);
@@ -60,7 +59,6 @@ public class AxisTick implements ChartPart {
 
     @Override
     public void paint(Graphics2D g) {
-
         double workingSpace = 0.0;
         // Y-Axis
         if (axis.getDirection() == Axis.Direction.Y) {
@@ -93,65 +91,49 @@ public class AxisTick implements ChartPart {
             axisTickLabels.paint(g);
             axisTickMarks.paint(g);
 
-            bounds
-                    = new Rectangle2D.Double(axisTickMarks.getBounds().getX(), axisTickMarks.getBounds().getY(), axisTickLabels.getBounds().getWidth(), axisTickMarks.getBounds().getHeight()
-                            + getChartPainter().getStyleManager().getAxisTickPadding() + axisTickLabels.getBounds().getHeight());
+            bounds = new Rectangle2D.Double(
+                    axisTickMarks.getBounds().getX(),
+                    axisTickMarks.getBounds().getY(),
+                    axisTickLabels.getBounds().getWidth(),
+                    axisTickMarks.getBounds().getHeight()
+                    + getChartPainter().getStyleManager().getAxisTickPadding() + axisTickLabels.getBounds().getHeight());
             // g.setColor(Color.red);
             // g.draw(bounds);
-
         }
-
     }
 
     public AxisTickCalculator getAxisTickCalculator(double workingSpace) {
-
         if (axis.getDirection() == Axis.Direction.X && getChartPainter().getStyleManager().getChartType() == ChartType.Bar) {
-
             return new AxisTickBarChartCalculator(axis.getDirection(), workingSpace, axis.getMin(), axis.getMax(), getChartPainter());
-
         } else if (axis.getDirection() == Axis.Direction.X && getChartPainter().getStyleManager().isXAxisLogarithmic() && axis.getAxisType() != AxisType.Date) {
-
             return new AxisTickLogarithmicCalculator(axis.getDirection(), workingSpace, axis.getMin(), axis.getMax(), getChartPainter().getStyleManager());
-
         } else if (axis.getDirection() == Axis.Direction.Y && getChartPainter().getStyleManager().isYAxisLogarithmic() && axis.getAxisType() != AxisType.Date) {
-
             return new AxisTickLogarithmicCalculator(axis.getDirection(), workingSpace, axis.getMin(), axis.getMax(), getChartPainter().getStyleManager());
-
         } else if (axis.getAxisType() == AxisType.Date) {
-
             return new AxisTickDateCalculator(axis.getDirection(), workingSpace, axis.getMin(), axis.getMax(), getChartPainter().getStyleManager());
-
         } else { // number
-
             return new AxisTickNumericalCalculator(axis.getDirection(), workingSpace, axis.getMin(), axis.getMax(), getChartPainter().getStyleManager());
-
         }
     }
 
     @Override
     public ChartPainter getChartPainter() {
-
         return axis.getChartPainter();
     }
 
-    // Getters /////////////////////////////////////////////////
     public Axis getAxis() {
-
         return axis;
     }
 
     public AxisTickLabels getAxisTickLabels() {
-
         return axisTickLabels;
     }
 
     public List<Double> getTickLocations() {
-
         return axisTickCalculator.getTickLocations();
     }
 
     public List<String> getTickLabels() {
-
         return axisTickCalculator.getTickLabels();
     }
 }

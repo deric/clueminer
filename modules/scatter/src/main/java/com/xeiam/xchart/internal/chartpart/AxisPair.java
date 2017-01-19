@@ -37,7 +37,7 @@ public class AxisPair implements ChartPart {
     /** parent */
     private final ChartPainter chartPainter;
 
-    private Map<String, Series> seriesMap = new LinkedHashMap<String, Series>();
+    private Map<String, Series> seriesMap = new LinkedHashMap<>();
 
     private Axis xAxis;
     private Axis yAxis;
@@ -66,7 +66,6 @@ public class AxisPair implements ChartPart {
      * @return Series
      */
     public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData, Collection<? extends Number> errorBars) {
-
         // Sanity checks
         if (seriesName == null) {
             throw new IllegalArgumentException("Series Name cannot be null!!!");
@@ -110,7 +109,7 @@ public class AxisPair implements ChartPart {
             yAxis.setAxisType(AxisType.Number);
             series = new Series(seriesName, xData, xAxis.getAxisType(), yData, yAxis.getAxisType(), errorBars, seriesColorMarkerLineStyleCycler.getNextSeriesColorMarkerLineStyle());
         } else { // generate xData
-            List<Double> generatedXData = new ArrayList<Double>();
+            List<Double> generatedXData = new ArrayList<>();
             for (int i = 1; i < yData.size() + 1; i++) {
                 generatedXData.add((double) i);
             }
