@@ -19,6 +19,7 @@ package org.clueminer.dataset.api;
 import java.awt.Color;
 import java.io.Serializable;
 import org.clueminer.math.Vector;
+import org.clueminer.utils.Props;
 
 /**
  * An instance is a usually a row of data which contains a number of attributes
@@ -224,9 +225,11 @@ public interface Instance<T extends Number> extends Cloneable, Serializable, Vec
      * Return component for default data visualization which displays an
      * Instance (e.g. a scatterplot)
      *
+     * @param props preferred configuration for data visualization (when empty,
+     *              default values will be applied)
      * @return
      */
-    Plotter getPlotter();
+    Plotter getPlotter(Props props);
 
     /**
      *

@@ -19,7 +19,6 @@ package org.clueminer.dataset.row;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
 
 /**
@@ -180,11 +179,6 @@ public class LongDataRow extends DataRow<Long> implements Iterable<Long>, Vector
 
     @Override
     public String toString(String separator) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Plotter getPlotter() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

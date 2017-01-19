@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
 
 /**
@@ -197,11 +196,6 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
     @Override
     public double[] asArray() {
         return arrayCopy();
-    }
-
-    @Override
-    public Plotter getPlotter() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

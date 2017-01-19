@@ -22,8 +22,10 @@ import org.clueminer.algorithm.InterpolationSearch;
 import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.AbstractTimeInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.interpolation.LinearInterpolator;
@@ -31,6 +33,7 @@ import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
 import org.clueminer.types.TimePoint;
+import org.clueminer.utils.Props;
 
 /**
  * Time dataset that allows having multiple data values per each time in one
@@ -258,8 +261,15 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public Plotter getPlotter() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Plotter getPlotter(Props props) {
+        PlotterFactory factory = PlotterFactory.getInstance();
+        for (Plotter p : factory.getAll()) {
+            if (p.isSupported(DataType.TIMESERIES)) {
+                p.addInstance(this);
+                return p;
+            }
+        }
+        throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
 
     @Override

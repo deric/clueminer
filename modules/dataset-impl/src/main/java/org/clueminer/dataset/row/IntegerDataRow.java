@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -244,7 +245,7 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
     }
 
     @Override
-    public Plotter getPlotter() {
+    public Plotter getPlotter(Props props) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

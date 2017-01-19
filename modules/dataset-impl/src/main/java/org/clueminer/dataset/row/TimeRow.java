@@ -33,6 +33,7 @@ import org.clueminer.interpolation.LinearInterpolator;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -149,7 +150,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
      * @return
      */
     @Override
-    public Plotter getPlotter() {
+    public Plotter getPlotter(Props props) {
         /* TimePlot plot = new TimePlot();
          * // add a line plot to the PlotPanel
          * plot.addLinePlot(getName(), ((Timeseries) parent).getTimePointsArray(), this.arrayCopy());

@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.clueminer.dataset.api.DataRow;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.Plotter;
 import org.clueminer.math.Vector;
 
 /**
@@ -356,11 +355,6 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
     @Override
     public Iterator<Double> iterator() {
         return new SparseInstanceIterator();
-    }
-
-    @Override
-    public Plotter getPlotter() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

@@ -24,13 +24,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.clueminer.dataset.api.AbstractInstance;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Stats;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
+import org.clueminer.utils.Props;
 
 /**
  * Continuous representation of two variables (e.g. time and speed).
@@ -264,9 +267,17 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     }
 
     @Override
-    public Plotter getPlotter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Plotter getPlotter(Props props) {
+        PlotterFactory factory = PlotterFactory.getInstance();
+        for (Plotter p : factory.getAll()) {
+            if (p.isSupported(DataType.XY_CONTINUOUS)) {
+                p.addInstance(this);
+                return p;
+            }
+        }
+        throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
+
 
     @Override
     public Double getValue(int index) {

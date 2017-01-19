@@ -2,6 +2,7 @@ package org.clueminer.dataset.api;
 
 import java.util.Iterator;
 import org.clueminer.math.Vector;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -86,6 +87,18 @@ public abstract class DataRow<T extends Number> extends AbstractInstance<T> impl
                 throw new ArrayIndexOutOfBoundsException("DataRow: of Attribute " + attribute.getName() + " is out of bounds.");
             }
         }
+    }
+
+    @Override
+    public Plotter getPlotter(Props props) {
+        PlotterFactory factory = PlotterFactory.getInstance();
+        for (Plotter p : factory.getAll()) {
+            if (p.isSupported(DataType.DISCRETE)) {
+                p.addInstance(this);
+                return p;
+            }
+        }
+        throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
 
     /**
