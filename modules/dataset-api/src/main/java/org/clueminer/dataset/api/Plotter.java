@@ -68,6 +68,8 @@ public interface Plotter<E extends Instance> extends Serializable {
 
     Dimension getMinimumSize();
 
+    Dimension getPreferredSize();
+
     int getWidth();
 
     int getHeight();

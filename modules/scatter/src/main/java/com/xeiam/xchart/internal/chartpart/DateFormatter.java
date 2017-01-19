@@ -92,7 +92,7 @@ public class DateFormatter {
      */
     public String formatDate(double value, long timeUnit) {
         String datePattern;
-        LOG.debug("formatting date: {}, unit = {}", value, timeUnit);
+        LOG.trace("formatting date: {}, unit = {}", value, timeUnit);
 
         if (styleManager.getDatePattern() == null) {
             // intelligently set date pattern if none is given

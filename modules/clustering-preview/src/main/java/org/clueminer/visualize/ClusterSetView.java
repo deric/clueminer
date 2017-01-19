@@ -137,15 +137,14 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
 
                     if (plot != null) {
                         dimChart = plot.getMinimumSize();
-                        if (dimChart == null) {
-                            dimChart = new Dimension(this.getWidth(), 100);
-                        }
+                        //override width according to component width
+                        dimChart.width = this.getWidth();
                         plot.setMinimumSize(dimChart);
                         plot.setPreferredSize(dimChart);
                         plot.setTitle(d.getName() + " (" + d.size() + ")");
+                        //LOG.debug("plot {}, min = {}, pref = {}", i, plot.getMinimumSize(), plot.getPreferredSize());
                         plots[i++] = plot;
                         add((JComponent) plot);
-                        //System.out.println("adding plot " + i);
                     }
                     total += d.size();
                 }
