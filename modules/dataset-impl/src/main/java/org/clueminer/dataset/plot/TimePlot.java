@@ -19,19 +19,23 @@ package org.clueminer.dataset.plot;
 import java.awt.Color;
 import java.awt.Font;
 import org.clueminer.dataset.api.ContinuousInstance;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.DataType;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.math.plot.Plot2DPanel;
 import org.math.plot.plotObjects.BaseLabel;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Basic timeseries chart
  *
+ * TODO: GUI component should not be part of basic data structures module
+ *
  * @author Tomas Barton
  * @param <E>
  */
+@ServiceProvider(service = Plotter.class, position = 200)
 public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter<E> {
 
     private static final long serialVersionUID = 9134124279294818651L;

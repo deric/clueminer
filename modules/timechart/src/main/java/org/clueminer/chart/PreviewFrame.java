@@ -1,10 +1,5 @@
 package org.clueminer.chart;
 
-import org.clueminer.chart.api.ChartProperties;
-import org.clueminer.chart.api.ChartListener;
-import org.clueminer.chart.api.ChartConfig;
-import org.clueminer.chart.api.ChartData;
-import org.clueminer.chart.api.Range;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -12,19 +7,25 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.event.EventListenerList;
+import org.clueminer.chart.api.ChartConfig;
+import org.clueminer.chart.api.ChartData;
+import org.clueminer.chart.api.ChartListener;
+import org.clueminer.chart.api.ChartProperties;
 import org.clueminer.chart.api.Overlay;
+import org.clueminer.chart.api.Range;
 import org.clueminer.chart.api.Tracker;
 import org.clueminer.chart.base.ChartPropertiesImpl;
 import org.clueminer.chart.renderer.Line;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.events.DatasetEvent;
 import org.clueminer.events.DatasetListener;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Component should be used for simple preview of data, optimized for displaying
@@ -33,6 +34,7 @@ import org.clueminer.events.DatasetListener;
  * @author Tomas Barton
  * @param <E> type of base data type
  */
+@ServiceProvider(service = Plotter.class)
 public class PreviewFrame<E extends Instance> extends JPanel implements ChartConfig, DatasetListener, Serializable, Plotter<E> {
 
     private static final long serialVersionUID = 6847417134740120657L;

@@ -33,12 +33,17 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.InstCollection;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Plot for rendering timeseries data.
+ *
+ * Low number position service are returned first.
  *
  * @author deric
  * @param <E>
  */
+@ServiceProvider(service = Plotter.class, position = 10)
 public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> {
 
     private Chart chart;
