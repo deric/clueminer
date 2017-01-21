@@ -31,6 +31,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.row.IntegerDataRow;
 import org.clueminer.hts.api.HtsInstance;
 import org.clueminer.math.Interpolator;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -178,7 +179,7 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     }
 
     @Override
-    public Plotter getPlotter() {
+    public Plotter getPlotter(Props props) {
         FluorescencePlot plot = new FluorescencePlot();
         // add a line plot to the PlotPanel
         plot.addLinePlot(getName(), parent.getTimePointsArray(), this.arrayCopy());

@@ -25,6 +25,7 @@ import org.clueminer.io.importer.api.AttributeDraft;
 import org.clueminer.io.importer.api.Container;
 import org.clueminer.io.importer.api.InstanceDraft;
 import org.clueminer.math.Vector;
+import org.clueminer.utils.Props;
 
 /**
  * A container for wrapping data during import without strong typing.
@@ -255,7 +256,7 @@ public class InstanceDraftImpl implements InstanceDraft {
     }
 
     @Override
-    public Plotter getPlotter() {
+    public Plotter getPlotter(Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

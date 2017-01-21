@@ -27,6 +27,7 @@ import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Stats;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -164,7 +165,7 @@ public class GenomeSequence extends AbstractInstance<Double> {
     }
 
     @Override
-    public Plotter getPlotter() {
+    public Plotter getPlotter(Props props) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
