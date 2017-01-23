@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.dataset.plot;
+package org.clueminer.math.plot;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -30,7 +30,6 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Basic timeseries chart
  *
- * TODO: GUI component should not be part of basic data structures module
  *
  * @author Tomas Barton
  * @param <E>

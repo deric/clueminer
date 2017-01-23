@@ -27,11 +27,13 @@ import javax.swing.JComponent;
 import org.clueminer.attributes.AttributeFactoryImpl;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.AttributeBuilder;
+import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.InstanceBuilder;
+import org.clueminer.dataset.api.Plotter;
+import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.dataset.api.StatsNum;
-import org.math.plot.Plot2DPanel;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -393,24 +395,16 @@ public class SampleDataset<E extends Instance> extends AbstractDataset<E> implem
 
     @Override
     public JComponent getPlotter() {
-        Plot2DPanel plot = new Plot2DPanel();
-
-        double[] x = new double[this.size()];
-        double[] y = new double[this.size()];
-        // Dump.printMatrix(data.length,data[0].length,data,2,5);
-        int k = 5;
-        for (int j = 0; j < this.size(); j++) {
-            x[j] = get(j, k);
+        PlotterFactory factory = PlotterFactory.getInstance();
+        for (Plotter p : factory.getAll()) {
+            if (p.isSupported(DataType.DISCRETE)) {
+                for (E inst : this) {
+                    p.addInstance(inst);
+                }
+                return (JComponent) p;
+            }
         }
-
-        k = 0;
-        for (int j = 0; j < this.size(); j++) {
-            //Attribute ta =  dataset.getAttribute(j);
-            y[j] = get(j, k);
-
-        }
-        plot.addScatterPlot(getName(), x, y);
-        return plot;
+        throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
 
     @Override
