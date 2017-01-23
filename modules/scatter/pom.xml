@@ -129,11 +129,6 @@
             <artifactId>math-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-core</artifactId>
-            <version>1.2.2</version>
-        </dependency>
     </dependencies>
 
     <build>

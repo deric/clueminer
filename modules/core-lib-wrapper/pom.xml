@@ -29,6 +29,12 @@
                         <publicPackage>org.apache.logging.log4j.*</publicPackage>
                         <publicPackage>org.slf4j.impl.*</publicPackage>
                         <publicPackage>org.slf4j.*</publicPackage>
+                        <publicPackage>smile.core.*</publicPackage>
+                        <publicPackage>smile.math.*</publicPackage>
+                        <publicPackage>smile.stat.*</publicPackage>
+                        <publicPackage>smile.stat.distribution.*</publicPackage>
+                        <publicPackage>smile.neighbor.*</publicPackage>
+                        <publicPackage>smile.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -90,6 +96,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${clueminer.slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-math</artifactId>
+            <version>1.2.2</version>
         </dependency>
     </dependencies>
     <properties>
