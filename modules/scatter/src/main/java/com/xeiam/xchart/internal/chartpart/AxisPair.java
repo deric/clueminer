@@ -47,10 +47,9 @@ public class AxisPair implements ChartPart {
     /**
      * Constructor
      *
-     * @param the parent chartPainter
+     * @param chartPainter the parent
      */
     public AxisPair(ChartPainter chartPainter) {
-
         this.chartPainter = chartPainter;
 
         // add axes
@@ -137,36 +136,30 @@ public class AxisPair implements ChartPart {
 
     @Override
     public void paint(Graphics2D g) {
-
         yAxis.paint(g);
         xAxis.paint(g);
     }
 
     @Override
     public Rectangle getBounds() {
-
         return null; // should never be called
     }
 
     @Override
     public ChartPainter getChartPainter() {
-
         return chartPainter;
     }
 
     // Getters /////////////////////////////////////////////////
     public Map<String, Series> getSeriesMap() {
-
         return seriesMap;
     }
 
     public Axis getXAxis() {
-
         return xAxis;
     }
 
     public Axis getYAxis() {
-
         return yAxis;
     }
 

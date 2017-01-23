@@ -18,6 +18,7 @@ package org.clueminer.plot;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
+import com.xeiam.xchart.Series;
 import com.xeiam.xchart.XChartPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -33,6 +34,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.InstCollection;
+import org.clueminer.kdtree.KDTree;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -48,11 +50,14 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
 
     private Chart chart;
     private Collection<? extends Date> yAxis;
-    private HashSet<Integer> instances = new HashSet<>(10);
+    private final HashSet<Integer> instances = new HashSet<>(10);
     private XChartPanel chartPanel;
+    private KDTree<E> kdTree;
 
     public TimeXPlot() {
         initComponents(400, 400);
+        // 2-D space
+        kdTree = new KDTree(2);
     }
 
     private void initComponents(int width, int height) {
@@ -65,6 +70,8 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
         chartPanel = new XChartPanel(chart);
+        PlotMouseListener ml = new PlotMouseListener(chart);
+        chartPanel.addMouseListener(ml);
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -126,8 +133,9 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         if (!instances.contains(instance.getIndex())) {
             StringBuilder sb = new StringBuilder();
             sb.append(inst.getIndex()).append(" - ").append(clusterName);
-            chart.addSeries(sb.toString(), yAxis, new InstCollection(instance));
+            Series s = chart.addSeries(sb.toString(), yAxis, new InstCollection(instance));
             instances.add(instance.getIndex());
+            //kd-tree update
         }
     }
 

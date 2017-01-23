@@ -33,6 +33,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.io.csv.CsvLoader;
+import org.clueminer.plot.PlotMouseListener;
 import org.openide.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +111,8 @@ public class XChartPanelTest<E extends Instance> extends JFrame {
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
         XChartPanel chartPanel = new XChartPanel(chart);
+        PlotMouseListener ml = new PlotMouseListener(chart);
+        chartPanel.addMouseListener(ml);
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;

@@ -126,13 +126,20 @@ public class Series {
 
             double value = 0.0;
 
-            if (axisType == AxisType.Number) {
-                value = ((Number) dataPoint).doubleValue();
-            } else if (axisType == AxisType.Date) {
-                Date date = (Date) dataPoint;
-                value = date.getTime();
-            } else if (axisType == AxisType.String) {
-                return new double[]{Double.NaN, Double.NaN};
+            if (null != axisType) {
+                switch (axisType) {
+                    case Number:
+                        value = ((Number) dataPoint).doubleValue();
+                        break;
+                    case Date:
+                        Date date = (Date) dataPoint;
+                        value = date.getTime();
+                        break;
+                    case String:
+                        return new double[]{Double.NaN, Double.NaN};
+                    default:
+                        break;
+                }
             }
             if (value < min) {
                 min = value;
@@ -177,7 +184,6 @@ public class Series {
      * @param seriesLineStyle
      */
     public Series setLineStyle(SeriesLineStyle seriesLineStyle) {
-
         stroke = SeriesLineStyle.getBasicStroke(seriesLineStyle);
         return this;
     }
@@ -186,9 +192,9 @@ public class Series {
      * Set the line style of the series
      *
      * @param basicStroke
+     * @return
      */
     public Series setLineStyle(BasicStroke basicStroke) {
-
         stroke = basicStroke;
         return this;
     }
@@ -197,9 +203,9 @@ public class Series {
      * Set the line color of the series
      *
      * @param seriesColor
+     * @return
      */
     public Series setLineColor(SeriesColor seriesColor) {
-
         strokeColor = seriesColor.getColor();
         return this;
     }
@@ -232,7 +238,6 @@ public class Series {
      * @param seriesColor
      */
     public Series setMarkerColor(SeriesColor seriesColor) {
-
         this.markerColor = seriesColor.getColor();
         return this;
     }
@@ -243,93 +248,75 @@ public class Series {
      * @param color
      */
     public Series setMarkerColor(java.awt.Color color) {
-
         this.markerColor = color;
         return this;
     }
 
     public SeriesType getSeriesType() {
-
         return seriesType;
     }
 
     public void setSeriesType(SeriesType seriesType) {
-
         this.seriesType = seriesType;
     }
 
     public Collection<?> getXData() {
-
         return xData;
     }
 
     public Collection<? extends Number> getYData() {
-
         return yData;
     }
 
     public Collection<? extends Number> getErrorBars() {
-
         return errorBars;
     }
 
     public double getXMin() {
-
         return xMin;
     }
 
     public double getXMax() {
-
         return xMax;
     }
 
     public double getYMin() {
-
         return yMin;
     }
 
     public double getYMax() {
-
         return yMax;
     }
 
     public BasicStroke getStroke() {
-
         return stroke;
     }
 
     public Marker getMarker() {
-
         return marker;
     }
 
     public Color getStrokeColor() {
-
         return strokeColor;
     }
 
     public Color getMarkerColor() {
-
         return markerColor;
     }
 
     public Color getFillColor() {
-
         return fillColor;
     }
 
     public void setFillColor(Color fillColor) {
-
         this.fillColor = fillColor;
     }
 
     public String getName() {
-
         return name;
     }
 
     public void replaceData(Collection<?> newXData, Collection<? extends Number> newYData, Collection<? extends Number> newErrorBars) {
-
         // Sanity check
         if (newErrorBars != null && newErrorBars.size() != newYData.size()) {
             throw new IllegalArgumentException("errorbars and Y-Axis sizes are not the same!!!");
@@ -345,7 +332,6 @@ public class Series {
     }
 
     private void calculateMinMax() {
-
         // xData
         double[] xMinMax = findMinMax(xData, xAxisType);
         xMin = xMinMax[0];
@@ -354,7 +340,7 @@ public class Series {
         // System.out.println(xMax);
 
         // yData
-        double[] yMinMax = null;
+        double[] yMinMax;
         if (errorBars == null) {
             yMinMax = findMinMax(yData, yAxisType);
         } else {

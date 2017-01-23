@@ -102,7 +102,6 @@ public class Chart {
      * @param g
      */
     public void paint(Graphics2D g) {
-
         chartPainter.paint(g);
     }
 
@@ -115,7 +114,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData) {
-
         return chartPainter.getAxisPair().addSeries(seriesName, xData, yData, null);
     }
 
@@ -129,7 +127,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, Collection<?> xData, Collection<? extends Number> yData, Collection<? extends Number> errorBars) {
-
         return chartPainter.getAxisPair().addSeries(seriesName, xData, yData, errorBars);
     }
 
@@ -142,7 +139,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, double[] xData, double[] yData) {
-
         return addSeries(seriesName, xData, yData, null);
     }
 
@@ -156,7 +152,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, double[] xData, double[] yData, double[] errorBars) {
-
         List<Double> xDataNumber = null;
         if (xData != null) {
             xDataNumber = new ArrayList<>();
@@ -188,7 +183,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, int[] xData, int[] yData) {
-
         return addSeries(seriesName, xData, yData, null);
     }
 
@@ -202,7 +196,6 @@ public class Chart {
      * @return A Series object that you can set properties on
      */
     public Series addSeries(String seriesName, int[] xData, int[] yData, int[] errorBars) {
-
         List<Double> xDataNumber = null;
         if (xData != null) {
             xDataNumber = new ArrayList<>();
@@ -249,7 +242,6 @@ public class Chart {
      * @param title
      */
     public void setYAxisTitle(String title) {
-
         chartPainter.getAxisPair().getYAxis().getAxisTitle().setText(title);
     }
 
@@ -272,7 +264,6 @@ public class Chart {
     }
 
     public Map<String, Series> getSeriesMap() {
-
         return chartPainter.getAxisPair().getSeriesMap();
     }
 

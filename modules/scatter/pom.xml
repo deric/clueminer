@@ -57,6 +57,11 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>clustering-dist</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dataset-api</artifactId>
             <version>${project.version}</version>
         </dependency>

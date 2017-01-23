@@ -29,7 +29,6 @@ public class ChartPainter {
 
     private int width;
     private int height;
-
     private final StyleManager styleManager;
 
     // Chart Parts
@@ -45,7 +44,6 @@ public class ChartPainter {
      * @param height
      */
     public ChartPainter(int width, int height) {
-
         this.width = width;
         this.height = height;
 
@@ -63,7 +61,6 @@ public class ChartPainter {
      * @param height
      */
     public void paint(Graphics2D g, int width, int height) {
-
         this.width = width;
         this.height = height;
         paint(g);
@@ -73,7 +70,6 @@ public class ChartPainter {
      * @param g
      */
     public void paint(Graphics2D g) {
-
         // calc axis min and max
         axisPair.getXAxis().resetMinMax();
         axisPair.getYAxis().resetMinMax();
@@ -122,7 +118,6 @@ public class ChartPainter {
      * @return
      */
     public ChartTitle getChartTitle() {
-
         return chartTitle;
     }
 
@@ -132,7 +127,6 @@ public class ChartPainter {
      * @return
      */
     public Legend getChartLegend() {
-
         return chartLegend;
     }
 
@@ -142,7 +136,6 @@ public class ChartPainter {
      * @return
      */
     public AxisPair getAxisPair() {
-
         return axisPair;
     }
 
@@ -152,17 +145,14 @@ public class ChartPainter {
      * @return
      */
     public Plot getPlot() {
-
         return plot;
     }
 
     public int getWidth() {
-
         return width;
     }
 
     public int getHeight() {
-
         return height;
     }
 
@@ -172,7 +162,6 @@ public class ChartPainter {
      * @return the style manager
      */
     public StyleManager getStyleManager() {
-
         return styleManager;
     }
 }

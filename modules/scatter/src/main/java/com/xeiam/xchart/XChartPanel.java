@@ -63,6 +63,10 @@ public class XChartPanel extends BPanel {
      */
     public XChartPanel(final Chart chart) {
         this.chart = chart;
+        initialize();
+    }
+
+    private void initialize() {
         reqSize = new Dimension(chart.getWidth(), chart.getHeight());
         realSize = reqSize;
         setMinimumSize(reqSize);
@@ -119,6 +123,7 @@ public class XChartPanel extends BPanel {
         //TODO: update subcomponents size?
     }
 
+    @Override
     public boolean isAntiAliasing() {
         return true;
     }
