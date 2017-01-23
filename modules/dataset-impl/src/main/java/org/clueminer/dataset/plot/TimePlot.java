@@ -93,4 +93,14 @@ public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter
         return type == DataType.TIMESERIES;
     }
 
+    @Override
+    public E[] instanceAt(double[] coord, int maxK) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void focus(E instance) {
+        //
+    }
+
 }

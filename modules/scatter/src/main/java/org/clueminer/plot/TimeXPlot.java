@@ -27,6 +27,8 @@ import java.awt.Insets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JPanel;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.DataType;
@@ -34,8 +36,9 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.InstCollection;
-import org.clueminer.kdtree.KDTree;
 import org.openide.util.lookup.ServiceProvider;
+import smile.neighbor.LSH;
+import smile.neighbor.Neighbor;
 
 /**
  * Plot for rendering timeseries data.
@@ -52,12 +55,13 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     private Collection<? extends Date> yAxis;
     private final HashSet<Integer> instances = new HashSet<>(10);
     private XChartPanel chartPanel;
-    private KDTree<E> kdTree;
+    //used for reverse search - finding which point belongs to which instance
+    private LSH<E> lsh;
 
     public TimeXPlot() {
         initComponents(400, 400);
         // 2-D space
-        kdTree = new KDTree(2);
+        lsh = new LSH(2, 10, 50, 6.0);
     }
 
     private void initComponents(int width, int height) {
@@ -70,7 +74,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
         chartPanel = new XChartPanel(chart);
-        PlotMouseListener ml = new PlotMouseListener(chart);
+        PlotMouseListener ml = new PlotMouseListener(chart, this);
         chartPanel.addMouseListener(ml);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -136,6 +140,18 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
             Series s = chart.addSeries(sb.toString(), yAxis, new InstCollection(instance));
             instances.add(instance.getIndex());
             //kd-tree update
+            updateTree(instance);
+        }
+    }
+
+    private void updateTree(E instance) {
+        int i = 0;
+        for (Date d : yAxis) {
+            //2D coordinates
+            double[] key = new double[2];
+            key[0] = d.getTime();
+            key[1] = instance.get(i++);
+            lsh.put(key, instance);
         }
     }
 
@@ -157,6 +173,27 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     @Override
     public void setYBounds(double min, double max) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public E[] instanceAt(double[] coord, int maxK) {
+        List<Neighbor<double[], E>> neighbors = new LinkedList<>();
+        lsh.range(coord, maxK, neighbors);
+
+        int size = maxK < neighbors.size() ? maxK : neighbors.size();
+        E[] ret = (E[]) new Instance[size];
+        for (int i = 0; i < size; i++) {
+            ret[i] = neighbors.get(i).value;
+        }
+
+        return ret;
+    }
+
+    @Override
+    public void focus(E instance) {
+        if (instance != null) {
+            this.setToolTipText(instance.getName());
+        }
     }
 
 }

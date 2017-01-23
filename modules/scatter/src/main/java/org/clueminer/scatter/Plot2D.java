@@ -26,14 +26,15 @@ import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
 import javax.swing.JPanel;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.DataType;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Typically used for visualization of low-dimensional data.
@@ -55,7 +56,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     private Collection<Double> xData;
     private Collection<Double> yData;
     private Collection<Double> eData;
-    private static final Logger LOG = Logger.getLogger(Plot2D.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Plot2D.class);
     private ColorGenerator cg;
 
     public Plot2D() {
@@ -122,7 +123,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     @Override
     public void addInstance(E inst, String clusterName) {
         if (inst == null) {
-            LOG.warning("null instance for plotting. skipping");
+            LOG.warn("null instance for plotting. skipping");
             return;
         }
         if (chart == null) {
@@ -179,6 +180,16 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     @Override
     public boolean isSupported(DataType type) {
         return type == DataType.DISCRETE;
+    }
+
+    @Override
+    public E[] instanceAt(double[] coord, int maxK) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void focus(E instance) {
+        //
     }
 
 }

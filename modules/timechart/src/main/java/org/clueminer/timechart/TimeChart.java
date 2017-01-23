@@ -1,8 +1,8 @@
 package org.clueminer.timechart;
 
 import javax.swing.JPanel;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.DataType;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 
 /**
@@ -51,6 +51,16 @@ public class TimeChart<E extends Instance> extends JPanel implements Plotter<E> 
 
     @Override
     public boolean isSupported(DataType type) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public E[] instanceAt(double[] coord, int maxK) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void focus(E instance) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

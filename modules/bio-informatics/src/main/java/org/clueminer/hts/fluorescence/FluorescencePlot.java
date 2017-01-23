@@ -65,4 +65,9 @@ public class FluorescencePlot<E extends Instance> extends Plot2DPanel implements
     public boolean isSupported(DataType type) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public E[] instanceAt(double[] coord, int maxK) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

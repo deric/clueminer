@@ -33,6 +33,7 @@ import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.fixtures.TimeseriesFixture;
 import org.clueminer.io.csv.CsvLoader;
+import org.clueminer.kdtree.KDTree;
 import org.clueminer.plot.PlotMouseListener;
 import org.openide.util.Exceptions;
 import org.slf4j.Logger;
@@ -45,12 +46,12 @@ import org.slf4j.LoggerFactory;
 public class XChartPanelTest<E extends Instance> extends JFrame {
 
     private static Logger LOG = LoggerFactory.getLogger(XChartPanelTest.class);
-    private XChartPanel scatter;
     private Chart chart;
     private Collection<? extends Date> yAxis;
     private HashSet<Integer> instances = new HashSet<>(10);
     private static final TimeseriesFixture TF = new TimeseriesFixture();
     private static Timeseries<ContinuousInstance> data01;
+    private KDTree<E> kdTree;
 
     public XChartPanelTest() throws IOException {
         setLayout(new GridBagLayout());
@@ -59,6 +60,7 @@ public class XChartPanelTest<E extends Instance> extends JFrame {
         yAxis = data.getTimePointsCollection();
         LOG.info("y axis {} points", yAxis.size());
         LOG.info("loaded {} ts attributes", data.attributeCount());
+        kdTree = new KDTree(2);
         for (ContinuousInstance inst : data) {
             addInstance(inst, inst.getName());
         }
@@ -111,7 +113,7 @@ public class XChartPanelTest<E extends Instance> extends JFrame {
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
         XChartPanel chartPanel = new XChartPanel(chart);
-        PlotMouseListener ml = new PlotMouseListener(chart);
+        PlotMouseListener ml = new PlotMouseListener(chart, null);
         chartPanel.addMouseListener(ml);
 
         GridBagConstraints c = new GridBagConstraints();
