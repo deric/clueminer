@@ -25,6 +25,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -190,14 +191,14 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public E[] instanceAt(double[] coord, int maxK) {
+    public List<E> instanceAt(double[] coord, int maxK) {
         List<Neighbor<double[], E>> neighbors = new LinkedList<>();
         lsh.range(coord, maxK, neighbors);
 
         int size = maxK < neighbors.size() ? maxK : neighbors.size();
-        E[] ret = (E[]) new Instance[size];
+        List<E> ret = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            ret[i] = neighbors.get(i).value;
+            ret.add(neighbors.get(i).value);
         }
 
         return ret;

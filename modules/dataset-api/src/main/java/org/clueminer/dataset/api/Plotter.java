@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Universal interface for dataset/cluster visualization.
@@ -123,7 +124,7 @@ public interface Plotter<E extends Instance> extends Serializable {
      * @param maxK  maximum number of returned instances
      * @return array of closest items
      */
-    E[] instanceAt(double[] coord, int maxK);
+    List<E> instanceAt(double[] coord, int maxK);
 
     /**
      * Focus on given instance. Depending on implementation plotter might highlight
