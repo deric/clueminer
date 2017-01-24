@@ -243,7 +243,6 @@
         <module>modules/chameleon</module>
         <module>modules/partitioning-api</module>
         <module>modules/partitioning-impl</module>
-        <module>modules/clustering-preview</module>
         <module>modules/graph-alg</module>
         <module>modules/evaluation-plot</module>
         <module>modules/meta-h2</module>

@@ -191,6 +191,16 @@
             <artifactId>clustering-struct</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>math-plot</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -200,10 +210,13 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>org.clueminer.attrstats</publicPackage>
                         <publicPackage>org.clueminer.clustering.explorer</publicPackage>
                         <publicPackage>org.clueminer.clustering.gui</publicPackage>
                         <publicPackage>org.clueminer.clustering.gui.colors</publicPackage>
                         <publicPackage>org.clueminer.clustering.gui.dlg</publicPackage>
+                        <publicPackage>org.clueminer.clustering.preview</publicPackage>
+                        <publicPackage>org.clueminer.clustering.selection</publicPackage>
                         <publicPackage>org.clueminer.colors</publicPackage>
                         <publicPackage>org.clueminer.dendrogram</publicPackage>
                         <publicPackage>org.clueminer.dendrogram.gui</publicPackage>
@@ -212,6 +225,8 @@
                         <publicPackage>org.clueminer.dgram.eval</publicPackage>
                         <publicPackage>org.clueminer.dgram.vis</publicPackage>
                         <publicPackage>org.clueminer.flow</publicPackage>
+                        <publicPackage>org.clueminer.properties</publicPackage>
+                        <publicPackage>org.clueminer.visualize</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
