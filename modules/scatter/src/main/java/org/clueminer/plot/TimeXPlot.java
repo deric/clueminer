@@ -24,12 +24,16 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JPanel;
+import javax.swing.ToolTipManager;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Instance;
@@ -37,6 +41,8 @@ import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.InstCollection;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import smile.neighbor.LSH;
 import smile.neighbor.Neighbor;
 
@@ -57,6 +63,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     private XChartPanel chartPanel;
     //used for reverse search - finding which point belongs to which instance
     private LSH<E> lsh;
+    private static final Logger LOG = LoggerFactory.getLogger(TimeXPlot.class);
 
     public TimeXPlot() {
         initComponents(400, 400);
@@ -64,8 +71,15 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         lsh = new LSH(2, 10, 50, 6.0);
     }
 
+    public TimeXPlot(int width, int height) {
+        initComponents(width, height);
+        // 2-D space
+        lsh = new LSH(2, 10, 50, 6.0);
+    }
+
     private void initComponents(int width, int height) {
         setLayout(new GridBagLayout());
+        ToolTipManager.sharedInstance().registerComponent(this);
         // Create Chart
         chart = new ChartBuilder().width(width).height(height).build();
         chart.getStyleManager().setLegendVisible(false);
@@ -190,9 +204,48 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public void focus(E instance) {
+    public String getToolTipText(MouseEvent event) {
+        String tip = null;
+//        Point p = event.getPoint();
+
+        // No tip from the renderer get our own tip
+        if (tip == null) {
+            tip = getToolTipText();
+        }
+
+        return tip;
+    }
+
+    private void displayToolTip(String text, MouseEvent event) {
+        final ToolTipManager ttm = ToolTipManager.sharedInstance();
+        final int oldDelay = ttm.getInitialDelay();
+        final String oldText = this.getToolTipText(event);
+        this.setToolTipText(text);
+        ttm.setInitialDelay(0);
+        ttm.setDismissDelay(1000);
+
+        MouseEvent evt = new MouseEvent(this, 0, 0, 0,
+                event.getX(), event.getY(), // X-Y of the mouse for the tool tip
+                0, false);
+
+        ttm.mouseMoved(evt);
+
+
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ttm.setInitialDelay(oldDelay);
+                setToolTipText(oldText);
+            }
+        }, ttm.getDismissDelay());
+    }
+
+    @Override
+    public void focus(E instance, MouseEvent e) {
         if (instance != null) {
-            this.setToolTipText(instance.getName());
+            //this.setToolTipText("tooltip " + instance.getName());
+            LOG.info("focused {}: {}", instance.getName(), e);
+            displayToolTip("tooltip " + instance.getName(), e);
         }
     }
 

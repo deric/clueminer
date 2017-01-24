@@ -172,7 +172,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -189,11 +188,6 @@
         <dependency>
             <groupId>org.clueminer</groupId>
             <artifactId>clustering-struct</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dataset-io</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

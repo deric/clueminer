@@ -1,5 +1,6 @@
 package org.clueminer.timechart;
 
+import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Instance;
@@ -60,7 +61,7 @@ public class TimeChart<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public void focus(E instance) {
+    public void focus(E instance, MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

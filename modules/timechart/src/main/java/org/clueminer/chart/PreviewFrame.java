@@ -18,6 +18,7 @@ package org.clueminer.chart;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -272,7 +273,7 @@ public class PreviewFrame<E extends Instance> extends JPanel implements ChartCon
     }
 
     @Override
-    public void focus(E instance) {
+    public void focus(E instance, MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

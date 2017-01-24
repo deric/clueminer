@@ -92,7 +92,7 @@ public class TimeXPlotTest<E extends Instance> extends JFrame {
     private void initComponents(int width, int height) {
         setLayout(new GridBagLayout());
         // Create Chart
-        plot = new TimeXPlot();
+        plot = new TimeXPlot(width, height);
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;

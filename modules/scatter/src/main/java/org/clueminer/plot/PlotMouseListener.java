@@ -45,6 +45,10 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
     @Override
     public void mouseClicked(MouseEvent e) {
         LOG.debug("mouse clicked");
+        focusOn(e);
+    }
+
+    private void focusOn(MouseEvent e) {
         double[] pos = chart.translate(e.getPoint());
         LOG.debug("got position [{}, {}]", pos[0], pos[1]);
         E[] neighbors = plotter.instanceAt(pos, 5);
@@ -53,12 +57,14 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
             E neighbor = neighbors[i];
             LOG.debug("inst {}, {}: {}", i, neighbor.getName(), neighbor.asArray());
         }
-
+        if (neighbors.length > 0) {
+            plotter.focus(neighbors[0], e);
+        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        LOG.debug("mouse pressed {}", e.getPoint());
+        focusOn(e);
     }
 
     @Override
@@ -68,14 +74,12 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        double[] pos = chart.translate(e.getPoint());
-        LOG.debug("mouse moved [{}, {}]", pos[0], pos[1]);
+        //mouse entering the component
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        double[] pos = chart.translate(e.getPoint());
-        LOG.debug("mouse exited [{}, {}]", pos[0], pos[1]);
+        //mouse exited the component
     }
 
     @Override
@@ -85,6 +89,7 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        focusOn(e);
         LOG.debug("mouse moooved {}", e);
     }
 

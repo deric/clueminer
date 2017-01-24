@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagLayout;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.JPanel;
@@ -188,7 +189,7 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     }
 
     @Override
-    public void focus(E instance) {
+    public void focus(E instance, MouseEvent e) {
         //
     }
 

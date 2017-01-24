@@ -18,6 +18,7 @@ package org.clueminer.dataset.api;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.io.Serializable;
 
 /**
@@ -129,6 +130,7 @@ public interface Plotter<E extends Instance> extends Serializable {
      * given data or display tooltip/status message.
      *
      * @param instance to focus
+     * @param e        mouse position
      */
-    void focus(E instance);
+    void focus(E instance, MouseEvent e);
 }
