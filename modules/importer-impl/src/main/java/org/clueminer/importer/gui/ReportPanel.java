@@ -22,7 +22,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -108,22 +107,18 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
         fillingThreads = new ThreadGroup("Report Panel Issues");
         controller = Lookup.getDefault().lookup(ImportController.class);
         //controller = new ImportControllerImpl();
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                @Override
-                public void run() {
-                    issuesOutline = new org.netbeans.swing.outline.Outline();
-                    initComponents();
-                    tab1ScrollPane.setViewportView(issuesOutline);
-                    initIcons();
-                    initPreview();
-                    initImporters();
-                    initProcessorsUI();
-                }
-            });
-        } catch (InterruptedException | InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                issuesOutline = new org.netbeans.swing.outline.Outline();
+                initComponents();
+                tab1ScrollPane.setViewportView(issuesOutline);
+                initIcons();
+                initPreview();
+                initImporters();
+                initProcessorsUI();
+            }
+        });
 
     }
 

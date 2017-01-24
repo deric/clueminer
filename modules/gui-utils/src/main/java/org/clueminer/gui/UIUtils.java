@@ -26,7 +26,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.lang.reflect.InvocationTargetException;
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
@@ -421,7 +420,7 @@ public final class UIUtils {
             tableHeader.printAll(tableScreenshotGraphics);
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         tableHeader.printAll(tableScreenshotGraphics);
                     }
@@ -439,7 +438,7 @@ public final class UIUtils {
             printSrc.printAll(tableScreenshotGraphics);
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         printSrc.printAll(tableScreenshotGraphics);
                     }
@@ -490,13 +489,8 @@ public final class UIUtils {
         if (SwingUtilities.isEventDispatchThread()) {
             r.run();
         } else {
-            try {
-                SwingUtilities.invokeAndWait(r);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //waiting is problematic
+            SwingUtilities.invokeLater(r);
         }
     }
 
@@ -517,7 +511,7 @@ public final class UIUtils {
             if (SwingUtilities.isEventDispatchThread()) {
                 screenshotPerformer.run();
             } else {
-                SwingUtilities.invokeAndWait(screenshotPerformer);
+                SwingUtilities.invokeLater(screenshotPerformer);
             }
         } catch (Exception e) {
             return null;
