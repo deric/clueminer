@@ -41,19 +41,16 @@ public class AxisTickLabels implements ChartPart {
      * @param axisTick
      */
     protected AxisTickLabels(AxisTick axisTick) {
-
         this.axisTick = axisTick;
     }
 
     @Override
     public Rectangle2D getBounds() {
-
         return bounds;
     }
 
     @Override
     public void paint(Graphics2D g) {
-
         g.setFont(getChartPainter().getStyleManager().getAxisTickLabelsFont());
 
         g.setColor(getChartPainter().getStyleManager().getAxisTickLabelsColor());
@@ -65,12 +62,10 @@ public class AxisTickLabels implements ChartPart {
             double yOffset = axisTick.getAxis().getPaintZone().getY();
             double height = axisTick.getAxis().getPaintZone().getHeight();
             double maxTickLabelWidth = 0;
-            Map<Double, TextLayout> axisLabelTextLayouts = new HashMap<Double, TextLayout>();
+            Map<Double, TextLayout> axisLabelTextLayouts = new HashMap<>();
 
             for (int i = 0; i < axisTick.getTickLabels().size(); i++) {
-
                 String tickLabel = axisTick.getTickLabels().get(i);
-                // System.out.println("** " + tickLabel);
                 double tickLocation = axisTick.getTickLocations().get(i);
                 double flippedTickLocation = yOffset + height - tickLocation;
 
@@ -87,7 +82,6 @@ public class AxisTickLabels implements ChartPart {
             }
 
             for (Double tickLocation : axisLabelTextLayouts.keySet()) {
-
                 TextLayout axisLabelTextLayout = axisLabelTextLayouts.get(tickLocation);
                 Shape shape = axisLabelTextLayout.getOutline(null);
                 Rectangle2D tickLabelBounds = shape.getBounds();

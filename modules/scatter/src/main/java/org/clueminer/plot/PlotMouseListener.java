@@ -21,7 +21,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.List;
+import java.util.Collection;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.slf4j.Logger;
@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
  */
 public class PlotMouseListener<E extends Instance> extends MouseAdapter implements MouseListener, MouseMotionListener {
 
-    private Chart chart;
-    private Plotter<E> plotter;
+    private final Chart chart;
+    private final Plotter<E> plotter;
     private static final Logger LOG = LoggerFactory.getLogger(PlotMouseListener.class);
 
     public PlotMouseListener(Chart chart, Plotter<E> plotter) {
@@ -52,13 +52,13 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
     private void focusOn(MouseEvent e) {
         double[] pos = chart.translate(e.getPoint());
         LOG.debug("got position [{}, {}]", pos[0], pos[1]);
-        List<E> neighbors = plotter.instanceAt(pos, 5);
+        Collection<E> neighbors = plotter.instanceAt(pos, 5);
         LOG.debug("found {}", neighbors.size());
         for (E neighbor : neighbors) {
             LOG.debug("inst {}: {}", neighbor.getName(), neighbor.asArray());
         }
-        if (neighbors.size() > 0) {
-            plotter.focus(neighbors.get(0), e);
+        if (!neighbors.isEmpty()) {
+            plotter.focus(neighbors, e);
         }
     }
 

@@ -216,7 +216,6 @@ public class Series {
      * @param color
      */
     public Series setLineColor(java.awt.Color color) {
-
         strokeColor = color;
         return this;
     }
@@ -227,7 +226,6 @@ public class Series {
      * @param seriesMarker
      */
     public Series setMarker(SeriesMarker seriesMarker) {
-
         this.marker = seriesMarker.getMarker();
         return this;
     }

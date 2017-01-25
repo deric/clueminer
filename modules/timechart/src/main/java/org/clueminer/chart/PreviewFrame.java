@@ -20,7 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -269,12 +269,12 @@ public class PreviewFrame<E extends Instance> extends JPanel implements ChartCon
     }
 
     @Override
-    public List<E> instanceAt(double[] coord, int maxK) {
+    public Collection<E> instanceAt(double[] coord, int maxK) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void focus(E instance, MouseEvent e) {
+    public void focus(Collection<E> instance, MouseEvent e) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

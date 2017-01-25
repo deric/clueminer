@@ -19,7 +19,7 @@ package org.clueminer.math.plot;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.util.Collection;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.DataType;
 import org.clueminer.dataset.api.Instance;
@@ -95,12 +95,12 @@ public class TimePlot<E extends Instance> extends Plot2DPanel implements Plotter
     }
 
     @Override
-    public List<E> instanceAt(double[] coord, int maxK) {
+    public Collection<E> instanceAt(double[] coord, int maxK) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void focus(E instance, MouseEvent e) {
+    public void focus(Collection<E> instance, MouseEvent e) {
         //
     }
 

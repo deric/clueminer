@@ -39,7 +39,7 @@ public class AxisTickBarChartCalculator extends AxisTickCalculator {
      * @param workingSpace
      * @param minValue
      * @param maxValue
-     * @param styleManager
+     * @param chart
      */
     public AxisTickBarChartCalculator(Direction axisDirection, double workingSpace, double minValue, double maxValue, ChartPainter chart) {
 
@@ -56,7 +56,7 @@ public class AxisTickBarChartCalculator extends AxisTickCalculator {
         double margin = Utils.getTickStartOffset(workingSpace, tickSpace); // in plot space double gridStep = getGridStepForDecimal(tickSpace);
 
         // get all categories
-        List<Object> categories = new ArrayList<Object>();
+        List<Object> categories = new ArrayList<>();
 
         Series firstSeries = chartPainter.getAxisPair().getSeriesMap().values().iterator().next(); // we use this to check all series have the exact same length and values
         for (Series series : chartPainter.getAxisPair().getSeriesMap().values()) {
@@ -73,12 +73,20 @@ public class AxisTickBarChartCalculator extends AxisTickCalculator {
                 }
 
                 Object x = null;
-                if (chartPainter.getAxisPair().getXAxis().getAxisType() == AxisType.Number) {
-                    x = next;
-                } else if (chartPainter.getAxisPair().getXAxis().getAxisType() == AxisType.Date) {
-                    x = (double) (((Date) next).getTime());
-                } else if (chartPainter.getAxisPair().getXAxis().getAxisType() == AxisType.String) {
-                    x = next;
+                if (null != chartPainter.getAxisPair().getXAxis().getAxisType()) {
+                    switch (chartPainter.getAxisPair().getXAxis().getAxisType()) {
+                        case Number:
+                            x = next;
+                            break;
+                        case Date:
+                            x = (double) (((Date) next).getTime());
+                            break;
+                        case String:
+                            x = next;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 if (!categories.contains(x)) {
                     categories.add(x);

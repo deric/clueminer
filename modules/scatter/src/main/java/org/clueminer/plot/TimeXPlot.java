@@ -191,7 +191,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public List<E> instanceAt(double[] coord, int maxK) {
+    public Collection<E> instanceAt(double[] coord, int maxK) {
         List<Neighbor<double[], E>> neighbors = new LinkedList<>();
         lsh.range(coord, maxK, neighbors);
 
@@ -242,11 +242,11 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     }
 
     @Override
-    public void focus(E instance, MouseEvent e) {
+    public void focus(Collection<E> instance, MouseEvent e) {
         if (instance != null) {
             //this.setToolTipText("tooltip " + instance.getName());
-            LOG.info("focused {}: {}", instance.getName(), e);
-            displayToolTip("tooltip " + instance.getName(), e);
+            //LOG.info("focused {}: {}", instance.getName(), e);
+            displayToolTip("tooltip " + instance.iterator().next(), e);
         }
     }
 

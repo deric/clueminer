@@ -140,6 +140,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>com.xeiam.xchart.*</publicPackage>
+                        <publicPackage>org.clueminer.plot</publicPackage>
                         <publicPackage>org.clueminer.scatter</publicPackage>
                         <publicPackage>org.clueminer.scatter.matrix</publicPackage>
                     </publicPackages>

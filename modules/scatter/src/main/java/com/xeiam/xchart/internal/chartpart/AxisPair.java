@@ -37,10 +37,10 @@ public class AxisPair implements ChartPart {
     /** parent */
     private final ChartPainter chartPainter;
 
-    private Map<String, Series> seriesMap = new LinkedHashMap<>();
+    private final Map<String, Series> seriesMap = new LinkedHashMap<>();
 
-    private Axis xAxis;
-    private Axis yAxis;
+    private final Axis xAxis;
+    private final Axis yAxis;
 
     private SeriesColorMarkerLineStyleCycler seriesColorMarkerLineStyleCycler = new SeriesColorMarkerLineStyleCycler();
 
@@ -150,7 +150,6 @@ public class AxisPair implements ChartPart {
         return chartPainter;
     }
 
-    // Getters /////////////////////////////////////////////////
     public Map<String, Series> getSeriesMap() {
         return seriesMap;
     }

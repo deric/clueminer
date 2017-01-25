@@ -27,7 +27,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import javax.swing.JPanel;
 import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
@@ -185,12 +184,12 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     }
 
     @Override
-    public List<E> instanceAt(double[] coord, int maxK) {
+    public Collection<E> instanceAt(double[] coord, int maxK) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void focus(E instance, MouseEvent e) {
+    public void focus(Collection<E> instance, MouseEvent e) {
         //
     }
 
