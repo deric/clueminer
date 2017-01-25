@@ -24,27 +24,30 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.DataType;
-import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.InstCollection;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import smile.neighbor.LSH;
+import smile.neighbor.KDTree;
 import smile.neighbor.Neighbor;
 
 /**
@@ -56,29 +59,28 @@ import smile.neighbor.Neighbor;
  * @param <E>
  */
 @ServiceProvider(service = Plotter.class, position = 10)
-public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> {
+public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements Plotter<E> {
 
     private Chart chart;
     private Collection<? extends Date> yAxis;
     private final HashSet<Integer> instances = new HashSet<>(10);
     private XChartPanel chartPanel;
-    //used for reverse search - finding which point belongs to which instance
-    private LSH<E> lsh;
     private static final Logger LOG = LoggerFactory.getLogger(TimeXPlot.class);
+    private ReentrantLock lock;
+    private KDTree<E> tree;
+    private double cursorRadius = -1;
+    private Timeseries<E> dataset;
 
     public TimeXPlot() {
         initComponents(400, 400);
-        // 2-D space
-        lsh = new LSH(2, 10, 50, 6.0);
     }
 
     public TimeXPlot(int width, int height) {
         initComponents(width, height);
-        // 2-D space
-        lsh = new LSH(2, 10, 50, 6.0);
     }
 
     private void initComponents(int width, int height) {
+        lock = new ReentrantLock();
         setLayout(new GridBagLayout());
         ToolTipManager.sharedInstance().registerComponent(this);
         // Create Chart
@@ -144,7 +146,7 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
     @Override
     public void addInstance(E instance, String clusterName) {
         ContinuousInstance inst = (ContinuousInstance) instance;
-        Timeseries dataset = (Timeseries) inst.getParent();
+        dataset = (Timeseries) inst.getParent();
         if (yAxis == null) {
             yAxis = dataset.getTimePointsCollection();
         }
@@ -154,19 +156,6 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
             sb.append(inst.getIndex()).append(" - ").append(clusterName);
             Series s = chart.addSeries(sb.toString(), yAxis, new InstCollection(instance));
             instances.add(instance.getIndex());
-            //kd-tree update
-            updateTree(instance);
-        }
-    }
-
-    private void updateTree(E instance) {
-        int i = 0;
-        for (Date d : yAxis) {
-            //2D coordinates
-            double[] key = new double[2];
-            key[0] = d.getTime();
-            key[1] = instance.get(i++);
-            lsh.put(key, instance);
         }
     }
 
@@ -190,18 +179,60 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    private double computeCursorRadius() {
+        double radius;
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension dim = toolkit.getBestCursorSize(12, 30);
+
+        Rectangle rect = new Rectangle(0, 0, dim.width, dim.height);
+        Rectangle.Double rectTrans = chart.translateSelection(rect);
+        radius = 4 * Math.sqrt(Math.pow(rectTrans.width, 2) + Math.pow(rectTrans.height, 2));
+        LOG.debug("cursor radius {}", radius);
+
+        return radius;
+    }
+
+    /**
+     * Initialize tree used for finding points on grid
+     */
+    private void initializeTree() {
+        lock.lock();
+        try {
+            PlotSearcher<E> worker = new PlotSearcher<>(dataset, instances);
+            worker.execute();
+            tree = worker.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            LOG.debug("background worker interrupted {}", ex);
+        } finally {
+            lock.unlock();
+        }
+    }
+
     @Override
     public Collection<E> instanceAt(double[] coord, int maxK) {
         List<Neighbor<double[], E>> neighbors = new LinkedList<>();
-        lsh.range(coord, maxK, neighbors);
-
         int size = maxK < neighbors.size() ? maxK : neighbors.size();
-        List<E> ret = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            ret.add(neighbors.get(i).value);
+        if (cursorRadius < 0) {
+            cursorRadius = computeCursorRadius();
+        }
+        if (tree == null) {
+            initializeTree();
+        } else {
+            tree.range(coord, cursorRadius, neighbors);
         }
 
-        return ret;
+        HashMap<String, E> ret = new HashMap<>(size);
+        Neighbor<double[], E> nn;
+        for (int i = 0; i < size; i++) {
+            nn = neighbors.get(i);
+            if (!ret.containsKey(nn.value.getName())) {
+                ret.put(nn.value.getName(), nn.value);
+            }
+            LOG.debug("key: {}", nn.key);
+            LOG.debug("found {}", nn.value.getFullName());
+        }
+
+        return ret.values();
     }
 
     @Override
@@ -230,7 +261,6 @@ public class TimeXPlot<E extends Instance> extends JPanel implements Plotter<E> 
                 0, false);
 
         ttm.mouseMoved(evt);
-
 
         new Timer().schedule(new TimerTask() {
             @Override
