@@ -196,15 +196,16 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
      * Initialize tree used for finding points on grid
      */
     private void initializeTree() {
-        lock.lock();
-        try {
-            PlotSearcher<E> worker = new PlotSearcher<>(dataset, instances);
-            worker.execute();
-            tree = worker.get();
-        } catch (InterruptedException | ExecutionException ex) {
-            LOG.debug("background worker interrupted {}", ex);
-        } finally {
-            lock.unlock();
+        if (lock.tryLock()) {
+            try {
+                PlotSearcher<E> worker = new PlotSearcher<>(dataset, instances);
+                worker.execute();
+                tree = worker.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                LOG.debug("background worker interrupted {}", ex);
+            } finally {
+                lock.unlock();
+            }
         }
     }
 

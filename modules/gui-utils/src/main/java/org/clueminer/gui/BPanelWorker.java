@@ -71,8 +71,13 @@ public class BPanelWorker extends SwingWorker<BufferedImage, Integer> {
         }
         panel.drawComponent(g);
         this.setProgress(100);
-        LOG.trace("component drawn");
+        LOG.debug("component drawn");
         return bufferedImage;
+    }
+
+    @Override
+    protected void done() {
+        panel.repaint();
     }
 
 }

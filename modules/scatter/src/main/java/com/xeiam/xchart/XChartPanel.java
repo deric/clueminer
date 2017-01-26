@@ -55,6 +55,7 @@ public class XChartPanel extends BPanel {
     private String saveAsString = "Save As...";
     private final static Logger LOG = LoggerFactory.getLogger(XChartPanel.class);
     private Dimension minSize;
+    private boolean initialized = false;
 
     /**
      * Constructor
@@ -64,6 +65,7 @@ public class XChartPanel extends BPanel {
     public XChartPanel(final Chart chart) {
         this.chart = chart;
         initialize();
+        this.initialized = true;
     }
 
     private void initialize() {
@@ -115,7 +117,7 @@ public class XChartPanel extends BPanel {
 
     @Override
     public boolean hasData() {
-        return chart != null;
+        return chart != null && initialized;
     }
 
     @Override

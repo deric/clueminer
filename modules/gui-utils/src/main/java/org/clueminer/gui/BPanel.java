@@ -26,7 +26,6 @@ import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +143,7 @@ public abstract class BPanel extends JPanel {
             g.setComposite(AlphaComposite.Src);
         }
         render(g);
-        g.dispose();
+        //g.dispose();
     }
 
     @Override
@@ -189,6 +188,10 @@ public abstract class BPanel extends JPanel {
                 }
             }
 
+            if (bufferedImage == null) {
+                return;
+            }
+
             //cached image
             g.drawImage(bufferedImage,
                     0, 0,
@@ -201,16 +204,16 @@ public abstract class BPanel extends JPanel {
         recalculate();
 
         //invoke painting from EDT thread
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                bufferedImage = null;
-                validate();
-                createBufferedGraphics();
-                revalidate();
-                repaint();
-            }
-        });
+        /* SwingUtilities.invokeLater(new Runnable() {
+         * @Override
+         * public void run() { */
+        //bufferedImage = null;
+        //validate();
+        createBufferedGraphics();
+        //revalidate();
+        //repaint();
+        /* }
+         * }); */
     }
 
     public Dimension getRealSize() {
