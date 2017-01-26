@@ -24,6 +24,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
@@ -113,36 +114,14 @@ public abstract class BPanel extends JPanel {
             return;
         }
 
-        if (fitToSpace) {
-            if (realSize.width <= 0 || realSize.height <= 0) {
-                return;
-            }
-            //create smaller image, then upscale or downscale
-            bufferedImage = new BufferedImage(realSize.width, realSize.height, BufferedImage.TYPE_INT_ARGB);
-        } else {
-            if (reqSize.width <= 0 || reqSize.height <= 0) {
-                return;
-            }
-            bufferedImage = new BufferedImage(reqSize.width, reqSize.height, BufferedImage.TYPE_INT_ARGB);
+        try {
+            BPanelWorker worker = new BPanelWorker(this);
+            worker.execute();
+            bufferedImage = worker.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            //Exceptions.printStackTrace(ex);
+            LOG.debug("failed to render BPanel: ", ex);
         }
-        LOG.trace("creating buffered graphics");
-        g = bufferedImage.createGraphics();
-        //this.setOpaque(false);
-        // clear the panel
-        //g.setColor(getBackground());
-        if (preserveAlpha) {
-            this.setOpaque(false);
-            g.setComposite(AlphaComposite.Clear);
-        } else {
-            g.setComposite(AlphaComposite.Src);
-            if (fitToSpace) {
-                g.fillRect(0, 0, realSize.width, realSize.width);
-            } else {
-                g.fillRect(0, 0, reqSize.width, reqSize.width);
-            }
-        }
-        drawComponent(g);
-        LOG.trace("componet drawn");
     }
 
     /**
