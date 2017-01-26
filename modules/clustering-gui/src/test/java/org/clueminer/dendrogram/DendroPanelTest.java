@@ -16,6 +16,7 @@
  */
 package org.clueminer.dendrogram;
 
+import com.google.common.collect.ImmutableMap;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -27,10 +28,8 @@ import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.DgViewer;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.report.MemInfo;
 import org.clueminer.utils.Props;
@@ -39,17 +38,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Should serve for testing DendroView component
  *
  * @author deric
  */
-public class DendroView extends JFrame {
+public class DendroPanelTest extends JFrame {
 
-    private DendroViewer frame;
-    private DendroToolbar toolbar;
+    private HacDendroPanel frame;
     private static final Logger LOG = LoggerFactory.getLogger(DendroView.class);
 
-    public DendroView() {
+    public DendroPanelTest() {
         load();
     }
 
@@ -67,7 +64,7 @@ public class DendroView extends JFrame {
         MemInfo mem = new MemInfo();
         Clustering clust = exec.clusterRows(data, prop);
         mem.report();
-        frame.setClustering(clust, true);
+        frame.setDataset(data);
     }
 
     // this function will be run from the EDT
@@ -93,7 +90,13 @@ public class DendroView extends JFrame {
     }
 
     private void initComponents() {
-        frame = new DgViewer();
+        ImmutableMap<String, Dataset<? extends Instance>> map = new ImmutableMap.Builder<String, Dataset<? extends Instance>>()
+                .put("school", FakeDatasets.schoolData())
+                .put("iris", FakeDatasets.irisDataset())
+                .put("US arrests", FakeDatasets.usArrestData())
+                .build();
+
+        frame = new HacDendroPanel(map);
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
@@ -106,12 +109,6 @@ public class DendroView extends JFrame {
         c.insets = new Insets(0, 0, 0, 0);
         add((Component) frame, c);
 
-        toolbar = new DendroToolbar(frame);
-        c.gridy = 0;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0;
-        add(toolbar, c);
-        pack();
     }
 
 }

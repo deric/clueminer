@@ -19,6 +19,7 @@ package org.clueminer.gui;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutionException;
 import javax.swing.SwingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,22 @@ public class BPanelWorker extends SwingWorker<BufferedImage, Integer> {
     private final BPanel panel;
     private static final Logger LOG = LoggerFactory.getLogger(BPanelWorker.class);
 
+    /**
+     * Swing Worker uses by default 10 background threads that are being recycled
+     * for computing purposes.
+     *
+     * @param panel
+     */
     public BPanelWorker(BPanel panel) {
         this.panel = panel;
     }
 
+    /**
+     * Swing components should not be accessed from this thread.
+     *
+     * @return
+     * @throws Exception
+     */
     @Override
     protected BufferedImage doInBackground() throws Exception {
         BufferedImage bufferedImage = null;
@@ -71,13 +84,20 @@ public class BPanelWorker extends SwingWorker<BufferedImage, Integer> {
         }
         panel.drawComponent(g);
         this.setProgress(100);
-        LOG.debug("component drawn");
         return bufferedImage;
     }
 
     @Override
     protected void done() {
-        panel.repaint();
+        //after finishing we can safely retrieved result
+        try {
+            panel.bufferedImage = get();
+            //should be called only from EDT thread
+            panel.repaint();
+        } catch (InterruptedException | ExecutionException ex) {
+            //Exceptions.printStackTrace(ex);
+            LOG.debug("failed to render BPanel: ", ex);
+        }
     }
 
 }

@@ -24,7 +24,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.dendrogram.DendroPane;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 
@@ -132,13 +131,8 @@ public abstract class AbstractAnnotation extends JPanel {
     public void resetCache() {
         updateSize();
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                createBufferedGraphics();
-                repaint();
-            }
-        });
+        createBufferedGraphics();
+        repaint();
 
     }
 

@@ -24,7 +24,6 @@ import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,14 +112,8 @@ public abstract class BPanel extends JPanel {
             return;
         }
 
-        try {
-            BPanelWorker worker = new BPanelWorker(this);
-            worker.execute();
-            bufferedImage = worker.get();
-        } catch (InterruptedException | ExecutionException ex) {
-            //Exceptions.printStackTrace(ex);
-            LOG.debug("failed to render BPanel: ", ex);
-        }
+        BPanelWorker worker = new BPanelWorker(this);
+        worker.execute();
     }
 
     /**
