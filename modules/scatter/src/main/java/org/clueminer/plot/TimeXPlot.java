@@ -72,14 +72,18 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
     private Timeseries<E> dataset;
 
     public TimeXPlot() {
-        initComponents(400, 400);
+        initComponents(400, 400, true);
     }
 
     public TimeXPlot(int width, int height) {
-        initComponents(width, height);
+        initComponents(width, height, true);
     }
 
-    private void initComponents(int width, int height) {
+    public TimeXPlot(int width, int height, boolean enableMouse) {
+        initComponents(width, height, enableMouse);
+    }
+
+    private void initComponents(int width, int height, boolean enableMouse) {
         lock = new ReentrantLock();
         setLayout(new GridBagLayout());
         ToolTipManager.sharedInstance().registerComponent(this);
@@ -91,8 +95,10 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
         chart.getStyleManager().setDatePattern("MM-dd HH:mm");
 
         chartPanel = new XChartPanel(chart);
-        PlotMouseListener ml = new PlotMouseListener(chart, this);
-        chartPanel.addMouseListener(ml);
+        if (enableMouse) {
+            PlotMouseListener ml = new PlotMouseListener(chart, this);
+            chartPanel.addMouseListener(ml);
+        }
 
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
@@ -279,6 +285,10 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
             //LOG.info("focused {}: {}", instance.getName(), e);
             displayToolTip("tooltip " + instance.iterator().next(), e);
         }
+    }
+
+    public JPanel getChartPanel() {
+        return chartPanel;
     }
 
 }
