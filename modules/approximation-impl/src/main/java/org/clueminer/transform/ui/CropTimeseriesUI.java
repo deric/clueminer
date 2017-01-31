@@ -53,8 +53,8 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putDouble("crop_start", start);
-        params.putDouble("crop_end", end);
+        params.putDouble(CropTimeseries.CROP_START, start);
+        params.putDouble(CropTimeseries.CROP_END, end);
         return params;
     }
 

@@ -16,10 +16,13 @@
  */
 package org.clueminer.transform.ui;
 
+import org.clueminer.attributes.TimePointAttribute;
 import org.clueminer.dataset.api.ContinuousInstance;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowNode;
+import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -37,6 +40,8 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
     public static final String NAME = "crop timeseries";
 
     public static final String PROP_NAME = "crop";
+    public static final String CROP_START = "crop_start";
+    public static final String CROP_END = "crop_end";
 
     public CropTimeseries() {
         inputs = new Class[]{Timeseries.class};
@@ -70,6 +75,7 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
         if (transform == null) {
             //run analysis
             transform = cropData(data, props);
+            data.addChild(transformation, (Dataset) transform);
         }
         LOG.info("output dataset has {} attributes", transform.attributeCount());
         ret[0] = transform;
@@ -77,7 +83,68 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
     }
 
     private Timeseries<? extends ContinuousInstance> cropData(Timeseries<? extends ContinuousInstance> data, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        double startPos = props.getDouble(CROP_START, 0.0);
+        double endPos = props.getDouble(CROP_END, 0.0);
+
+        if (startPos == endPos) {
+            LOG.info("no cropping. missing start and end");
+            return data;
+        }
+        int start = findTimepoint(startPos, 0, data);
+        int end = findTimepoint(endPos, start, data);
+        if (start < 0 || end < 0) {
+            LOG.info("no cropping. Invalid start and end marks");
+            return data;
+        }
+        LOG.info("start = {}, end = {}", start, end);
+
+        TimePoint[] timePoints = data.getTimePoints();
+        int size = end - start;
+
+        TimePointAttribute[] pointsNew = new TimePointAttribute[size];
+        //hardlink references from source array to destination array
+        System.arraycopy(timePoints, start, pointsNew, 0, size);
+
+        long startTime = pointsNew[0].getTimestamp();
+        for (int i = 0; i < size; i++) {
+            pointsNew[i].setTimestamp(pointsNew[i].getTimestamp() - startTime);
+        }
+
+        //relative time
+        double time, endTime = pointsNew[pointsNew.length - 1].getTimestamp();
+        //precomputed value for faster chart rendering
+        for (int i = 0; i < size; i++) {
+            //we do care how far are items from each other, but not absolute time
+            time = pointsNew[i].getTimestamp();
+            pointsNew[i].setPosition(time / endTime);
+        }
+
+        Timeseries<? extends ContinuousInstance> output = (Timeseries<? extends ContinuousInstance>) data.duplicate();
+        output.setTimePoints(pointsNew);
+        for (int i = 0; i < data.size(); i++) {
+            ContinuousInstance inst = (ContinuousInstance) data.get(i).duplicate();
+            output.add(inst.crop(start, end));
+        }
+
+        return output;
+    }
+
+    private int findTimepoint(double pos, int from, Timeseries<? extends ContinuousInstance> data) {
+        TimePoint[] tp = data.getTimePoints();
+        double delta, minDelta = Double.MAX_VALUE;
+        int minPos = -1;
+        for (int i = from; i < tp.length; i++) {
+            if (pos == tp[i].getPosition()) {
+                return i;
+            }
+            delta = Math.abs(pos - tp[i].getPosition());
+            if (delta < minDelta) {
+                minDelta = delta;
+                minPos = i;
+            }
+        }
+
+        return minPos;
     }
 
 }
