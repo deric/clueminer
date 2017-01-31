@@ -52,6 +52,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private Rectangle rectangle;
     private final ReentrantLock lock = new ReentrantLock();
     private final CropTimeseriesUI flowUI;
+    private double prevStart = Double.NaN;
 
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
@@ -93,7 +94,6 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
      * @param rect
      */
     private void drawRectangle(Graphics2D g, Rectangle rect) {
-
         g.setStroke(dashed);
         g.setColor(Color.GRAY);
         g.draw(rect);
@@ -118,6 +118,13 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
         g.fillRect(x, y, rect.x - x, h);
         //right size
         g.fillRect(rect.x + rect.width, y, w - rect.x - x, h);
+
+        Rectangle2D.Double transRect = plot.getChartPanel().translateSelection(rect);
+        if (prevStart != transRect.x) {
+            flowUI.setStart(transRect.x);
+        }
+        prevStart = transRect.x;
+        flowUI.setEnd(transRect.x + transRect.width);
     }
 
     @Override

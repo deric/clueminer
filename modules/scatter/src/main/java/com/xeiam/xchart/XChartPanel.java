@@ -20,6 +20,7 @@ import com.xeiam.xchart.VectorGraphicsEncoder.VectorGraphicsFormat;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -330,5 +331,9 @@ public class XChartPanel extends BPanel {
 
     public Rectangle2D.Double getPlotArea() {
         return chart.getPlotArea();
+    }
+
+    public Rectangle.Double translateSelection(Rectangle rect) {
+        return chart.translateSelection(rect);
     }
 }

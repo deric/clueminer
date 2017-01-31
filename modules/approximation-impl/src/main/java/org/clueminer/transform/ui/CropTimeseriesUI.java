@@ -71,7 +71,7 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
         c.weightx = 0.95;
         c.weighty = 0.95;
         c.fill = GridBagConstraints.BOTH;
-        plot = new TimeSelectionPlot();
+        plot = new TimeSelectionPlot(this);
         add(plot, c);
     }
 

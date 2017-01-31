@@ -45,7 +45,6 @@ public class Chart {
      * @param height
      */
     public Chart(int width, int height) {
-
         chartPainter = new ChartPainter(width, height);
     }
 
@@ -57,7 +56,6 @@ public class Chart {
      * @param chartTheme
      */
     public Chart(int width, int height, ChartTheme chartTheme) {
-
         this(width, height, chartTheme.newInstance(chartTheme));
     }
 
@@ -69,7 +67,6 @@ public class Chart {
      * @param theme  instance of Theme class
      */
     public Chart(int width, int height, Theme theme) {
-
         chartPainter = new ChartPainter(width, height);
         chartPainter.getStyleManager().setTheme(theme);
     }
@@ -80,7 +77,6 @@ public class Chart {
      * @param chartBuilder
      */
     public Chart(ChartBuilder chartBuilder) {
-
         this(chartBuilder.width, chartBuilder.height, chartBuilder.chartTheme);
         setChartTitle(chartBuilder.title);
         setXAxisTitle(chartBuilder.xAxisTitle);
@@ -94,7 +90,6 @@ public class Chart {
      * @param height
      */
     public void paint(Graphics2D g, int width, int height) {
-
         chartPainter.paint(g, width, height);
     }
 
