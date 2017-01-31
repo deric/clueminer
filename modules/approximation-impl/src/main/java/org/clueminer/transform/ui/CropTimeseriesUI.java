@@ -19,14 +19,20 @@ package org.clueminer.transform.ui;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.Collection;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.FlowPanel;
+import org.clueminer.project.api.Project;
+import org.clueminer.project.api.ProjectController;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Props;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -37,6 +43,8 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     private TimeSelectionPlot plot;
     private JTextField tfStart;
     private JTextField tfEnd;
+    private double start;
+    private double end;
 
     public CropTimeseriesUI() {
         initComponents();
@@ -45,6 +53,8 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     @Override
     public Props getParams() {
         Props params = new Props();
+        params.putDouble("crop_start", start);
+        params.putDouble("crop_end", end);
         return params;
     }
 
@@ -73,6 +83,24 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
         c.fill = GridBagConstraints.BOTH;
         plot = new TimeSelectionPlot(this);
         add(plot, c);
+
+        this.addComponentListener(new ComponentAdapter() {
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+                if (pc != null) {
+                    Project proj = pc.getCurrentProject();
+                    if (proj != null) {
+                        Collection<? extends Timeseries> allData = proj.getLookup().lookupAll(Timeseries.class);
+                        //TODO: handle multiple datasets
+                        for (Timeseries t : allData) {
+                            setDataset(t);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private JPanel formFieldsPanel() {
@@ -99,10 +127,12 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     }
 
     public void setStart(double start) {
+        this.start = start;
         tfStart.setText(String.format("%.2f", start));
     }
 
     public void setEnd(double end) {
+        this.end = end;
         tfEnd.setText(String.format("%.2f", end));
     }
 
