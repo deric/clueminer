@@ -51,8 +51,10 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private Point start;
     private Rectangle rectangle;
     private final ReentrantLock lock = new ReentrantLock();
+    private final CropTimeseriesUI flowUI;
 
-    public TimeSelectionPlot() {
+    public TimeSelectionPlot(CropTimeseriesUI parent) {
+        this.flowUI = parent;
         initComponents();
     }
 

@@ -16,13 +16,16 @@
  */
 package org.clueminer.transform.ui;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.FlowPanel;
+import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Props;
 
 /**
@@ -32,6 +35,8 @@ import org.clueminer.utils.Props;
 public class CropTimeseriesUI extends JPanel implements FlowPanel {
 
     private TimeSelectionPlot plot;
+    private JTextField tfStart;
+    private JTextField tfEnd;
 
     public CropTimeseriesUI() {
         initComponents();
@@ -61,16 +66,44 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
         c.gridy = 0;
         add(new JLabel("Select data area:"), c);
         c.gridy = 1;
+        add(formFieldsPanel(), c);
+        c.gridy = 2;
         c.weightx = 0.95;
         c.weighty = 0.95;
         c.fill = GridBagConstraints.BOTH;
         plot = new TimeSelectionPlot();
         add(plot, c);
+    }
 
+    private JPanel formFieldsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        tfStart = new JTextField(5);
+        panel.add(new JLabel("Start:"));
+        panel.add(tfStart);
+        panel.add(new JLabel("End:"));
+        tfEnd = new JTextField(5);
+        panel.add(tfEnd);
+
+        return panel;
     }
 
     public void setDataset(Timeseries<? extends ContinuousInstance> dataset) {
-        plot.setDataset(dataset);
+        if (dataset != null) {
+            plot.setDataset(dataset);
+
+            TimePoint[] tp = dataset.getTimePoints();
+            setStart(tp[0].getPosition());
+            setEnd(tp[tp.length - 1].getPosition());
+        }
+    }
+
+    public void setStart(double start) {
+        tfStart.setText(String.format("%.2f", start));
+    }
+
+    public void setEnd(double end) {
+        tfEnd.setText(String.format("%.2f", end));
     }
 
 }
