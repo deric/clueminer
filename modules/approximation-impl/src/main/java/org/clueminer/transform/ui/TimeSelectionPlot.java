@@ -50,7 +50,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private static final Logger LOG = LoggerFactory.getLogger(TimeSelectionPlot.class);
     private Point start;
     private Rectangle rectangle;
-    private ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lock = new ReentrantLock();
 
     public TimeSelectionPlot() {
         initComponents();
@@ -84,12 +84,38 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
         }
     }
 
-    private void drawRectangle(Graphics2D g, Rectangle rectangle) {
+    /**
+     * Draws selection rectangle
+     *
+     * @param g
+     * @param rect
+     */
+    private void drawRectangle(Graphics2D g, Rectangle rect) {
+
         g.setStroke(dashed);
         g.setColor(Color.GRAY);
-        g.draw(rectangle);
+        g.draw(rect);
+
+        /**
+         * +----------------+
+         * | +-----------+ |
+         * | | excluded_ | |
+         * | | __area___ | |
+         * | +-----------+ |
+         * +---------------+
+         */
+        //instead of filling the rectangle we fill the surrounding (thus dimm it a bit)
+        Rectangle2D.Double plotArea = plot.getChartPanel().getPlotArea();
         g.setColor(new Color(255, 255, 255, 150));
-        g.fill(rectangle);
+        int x = (int) plotArea.x;
+        int y = (int) plotArea.y;
+        int w = (int) plotArea.width;
+        int h = (int) plotArea.height;
+
+        //left side
+        g.fillRect(x, y, rect.x - x, h);
+        //right size
+        g.fillRect(rect.x + rect.width, y, w - rect.x - x, h);
     }
 
     @Override
