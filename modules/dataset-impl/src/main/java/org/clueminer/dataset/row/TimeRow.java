@@ -284,8 +284,12 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     }
 
     @Override
-    public void crop(int begin, int size) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TimeRow crop(int begin, int end) {
+        TimeRow inst = new TimeRow(this.klass, end - begin);
+        for (int i = begin; i < end; i++) {
+            inst.set(i, this.getValue(i));
+        }
+        return inst;
     }
 
     @Override

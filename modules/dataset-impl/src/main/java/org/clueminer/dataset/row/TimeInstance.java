@@ -166,14 +166,12 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
     }
 
     @Override
-    public void crop(int begin, int size) {
-        DataItem[] dataNew = new DataItem[size];
-        last = 0;
-        //from array, start pos, target, position in copy, length
-        System.arraycopy(data, begin, dataNew, 0, size);
-        data = dataNew;
-        last = size;
-        resetMinMax();
+    public TimeInstance crop(int begin, int end) {
+        TimeInstance inst = new TimeInstance(end - begin);
+        for (int i = begin; i < end; i++) {
+            inst.set(i, this.getValue(i));
+        }
+        return inst;
     }
 
     /**

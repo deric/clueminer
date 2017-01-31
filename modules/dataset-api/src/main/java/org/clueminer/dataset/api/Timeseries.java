@@ -57,4 +57,5 @@ public interface Timeseries<E extends ContinuousInstance> extends Dataset<E> {
      * @return
      */
     double getMax();
+
 }

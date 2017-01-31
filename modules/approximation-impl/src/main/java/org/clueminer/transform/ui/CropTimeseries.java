@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * @author deric
  */
 @ServiceProvider(service = FlowNode.class)
-public class CropTimeseries extends AbsFlowNode implements FlowNode {
+public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode implements FlowNode {
 
     private final Logger LOG = LoggerFactory.getLogger(DatasetTransformationFlow.class);
     private Timeseries<? extends ContinuousInstance> transform;
@@ -59,7 +59,7 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
         checkInputs(inputs);
         Object[] ret = new Object[1];
 
-        Timeseries<? extends ContinuousInstance> data = (Timeseries<? extends ContinuousInstance>) inputs[0];
+        Timeseries<E> data = (Timeseries<E>) inputs[0];
         LOG.info("dataset size: {}", data.size());
         LOG.info("dataset has {} attributes", data.attributeCount());
 
@@ -71,7 +71,7 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
         //make sure we don't have old data
         transform = null;
         //check if there's preloaded dataset available
-        transform = (Timeseries<? extends ContinuousInstance>) data.getChild(transformation);
+        transform = (Timeseries<E>) data.getChild(transformation);
         if (transform == null) {
             //run analysis
             transform = cropData(data, props);
@@ -82,7 +82,7 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
         return ret;
     }
 
-    private Timeseries<? extends ContinuousInstance> cropData(Timeseries<? extends ContinuousInstance> data, Props props) {
+    private Timeseries<E> cropData(Timeseries<E> data, Props props) {
         double startPos = props.getDouble(CROP_START, 0.0);
         double endPos = props.getDouble(CROP_END, 0.0);
 
@@ -119,14 +119,14 @@ public class CropTimeseries extends AbsFlowNode implements FlowNode {
             pointsNew[i].setPosition(time / endTime);
         }
 
-        Timeseries<? extends ContinuousInstance> output = (Timeseries<? extends ContinuousInstance>) data.duplicate();
+        Timeseries<E> output = (Timeseries<E>) data.duplicate();
         output.setTimePoints(pointsNew);
         for (int i = 0; i < data.size(); i++) {
-            ContinuousInstance inst = (ContinuousInstance) data.get(i).duplicate();
-            output.add(inst.crop(start, end));
+            E inst = (E) data.get(i).crop(start, end);
+            output.add(inst);
         }
 
-        return output;
+        return (Timeseries<E>) output;
     }
 
     private int findTimepoint(double pos, int from, Timeseries<? extends ContinuousInstance> data) {

@@ -38,7 +38,15 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
 
     double getStdDev();
 
-    void crop(int begin, int size);
+    /**
+     * Crop given Instance to a smaller subset that should returned as a deep
+     * copy.
+     *
+     * @param begin first index
+     * @param end   last index
+     * @return
+     */
+    ContinuousInstance crop(int begin, int end);
 
     /**
      * Normalize data to given time point at index

@@ -278,7 +278,6 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
         throw new RuntimeException("No visualization found for data type " + this.getClass().getName());
     }
 
-
     @Override
     public Double getValue(int index) {
         return get(index);
@@ -354,8 +353,12 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     }
 
     @Override
-    public void crop(int begin, int size) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public XYInstance crop(int begin, int end) {
+        XYInstance inst = new XYInstance(end - begin);
+        for (int i = begin; i < end; i++) {
+            inst.set(i, this.getValue(i));
+        }
+        return inst;
     }
 
     @Override

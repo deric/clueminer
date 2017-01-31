@@ -123,7 +123,7 @@ public class FluorescenceInstance extends IntegerDataRow implements ContinuousIn
     }
 
     @Override
-    public void crop(int begin, int size) {
+    public FluorescenceInstance crop(int begin, int size) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
