@@ -287,7 +287,7 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
         }
     }
 
-    public JPanel getChartPanel() {
+    public XChartPanel getChartPanel() {
         return chartPanel;
     }
 

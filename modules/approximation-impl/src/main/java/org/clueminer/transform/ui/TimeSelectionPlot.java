@@ -17,7 +17,9 @@
 package org.clueminer.transform.ui;
 
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,6 +27,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
+import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.gui.BPanel;
@@ -46,6 +50,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private static final Logger LOG = LoggerFactory.getLogger(TimeSelectionPlot.class);
     private Point start;
     private Rectangle rectangle;
+    private ReentrantLock lock = new ReentrantLock();
 
     public TimeSelectionPlot() {
         initComponents();
@@ -74,7 +79,28 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     @Override
     public void render(Graphics2D g) {
+        if (rectangle != null) {
+            drawRectangle(g, rectangle);
+        }
+    }
 
+    private void drawRectangle(Graphics2D g, Rectangle rectangle) {
+        g.setStroke(dashed);
+        g.setColor(Color.GRAY);
+        g.draw(rectangle);
+        g.setColor(new Color(255, 255, 255, 150));
+        g.fill(rectangle);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        lock.lock();
+        try {
+            super.paint(g);
+            render((Graphics2D) g);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -90,7 +116,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     @Override
     public void recalculate() {
-
+        realSize = plot.getSize();
     }
 
     @Override
@@ -100,18 +126,22 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        //
+        resetCache();
         if (start != null) {
             Point end = e.getPoint();
-            rectangle = new Rectangle(start, new Dimension(end.x - start.x, end.y - start.y));
-            LOG.info("got area {}", rectangle);
+            Rectangle2D.Double plotArea = plot.getChartPanel().getPlotArea();
+            rectangle = new Rectangle(start.x, (int) plotArea.y + 1, end.x - start.x, (int) plotArea.height + 1);
+
+            if (bufferedImage != null) {
+                Graphics2D g = bufferedImage.createGraphics();
+                g.drawImage(bufferedImage, 0, 0, null);
+            }
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         start = e.getPoint();
-        LOG.info("moooved {}", e);
     }
 
 }

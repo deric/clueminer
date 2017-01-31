@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -325,5 +326,9 @@ public class XChartPanel extends BPanel {
         resetCache();
 
         return series;
+    }
+
+    public Rectangle2D.Double getPlotArea() {
+        return chart.getPlotArea();
     }
 }
