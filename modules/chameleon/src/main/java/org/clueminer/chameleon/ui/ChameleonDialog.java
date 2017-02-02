@@ -34,6 +34,7 @@ import org.clueminer.distance.api.DistanceFactory;
 import org.clueminer.graph.adjacencyList.AdjListGraph;
 import org.clueminer.graph.api.AbsGraphConvertor;
 import org.clueminer.graph.api.GraphConvertorFactory;
+import static org.clueminer.graph.api.GraphConvertorFactory.INCLUDE_EDGES;
 import org.clueminer.graph.api.GraphStorageFactory;
 import org.clueminer.graph.knn.KnnInitializator;
 import org.clueminer.neighbor.KnnFactory;
@@ -155,6 +156,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         lbSharedNN = new javax.swing.JLabel();
         tfSharedNN = new javax.swing.JTextField();
         cbKestim = new javax.swing.JComboBox<>();
+        jLabel17 = new javax.swing.JLabel();
+        comboIncludeEdges = new javax.swing.JComboBox<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbDistance, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.text")); // NOI18N
         lbDistance.setToolTipText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbDistance.toolTipText")); // NOI18N
@@ -480,6 +483,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         cbKestim.setModel(new DefaultComboBoxModel(initKEstim()));
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel17, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.jLabel17.text")); // NOI18N
+
+        comboIncludeEdges.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "any", "bidirect" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -512,9 +519,13 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                                             .addComponent(comboCutoff, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lbSharedNN)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lbSharedNN)
+                                            .addComponent(jLabel17))
                                         .addGap(18, 18, 18)
-                                        .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(comboIncludeEdges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -699,11 +710,15 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbSharedNN)
-                            .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(comboIncludeEdges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(50, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
 
         lbMultiplier.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbMultiplier.AccessibleContext.accessibleDescription")); // NOI18N
@@ -843,6 +858,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JComboBox<String> comboEdge;
     private javax.swing.JComboBox<String> comboGraphConvertor;
     private javax.swing.JComboBox comboGraphStorage;
+    private javax.swing.JComboBox<String> comboIncludeEdges;
     private javax.swing.JComboBox<String> comboKnn;
     private javax.swing.JComboBox comboMerger;
     private javax.swing.JComboBox comboMoObjective;
@@ -856,6 +872,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -925,7 +942,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         if (!chkBoxAutoK.isSelected()) {
             params.putInt(Chameleon.K, sliderK.getValue());
-        }else{
+        } else {
             params.put(ChameleonConfig.K_ESTIMATOR, cbKestim.getSelectedItem());
         }
         if (!chkBoxAutoMaxPSize.isSelected()) {
@@ -957,7 +974,6 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
             params.put(Chameleon.SIM_MEASURE, (String) comboSimilarity.getSelectedItem());
         }
 
-
         String name = (String) comboPartitioning.getSelectedItem();
         if (name.equals("hMETIS + FF") || name.equals("hMETIS")) {
             params.put("ctype", cbCoarsening.getSelectedItem().toString());
@@ -973,6 +989,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         }
         params.put(Chameleon.PARTITIONING, name);
+        params.put(INCLUDE_EDGES, comboIncludeEdges.getSelectedItem());
 
         name = (String) comboBisection.getSelectedItem();
         params.put(Chameleon.BISECTION, name);
