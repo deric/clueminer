@@ -313,6 +313,9 @@ public class Chart {
         //rectangle with
         Rectangle2D bounds = chartPainter.getPlot().getBounds();
 
+        if (bounds == null) {
+            return pos;
+        }
         Axis xAxis = chartPainter.getAxisPair().getXAxis();
         Axis yAxis = chartPainter.getAxisPair().getYAxis();
 
