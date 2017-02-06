@@ -23,7 +23,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.dataset.impl.AttrHashDataset;
 import static org.junit.Assert.assertEquals;
-import org.junit.Before;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -33,16 +33,12 @@ import org.netbeans.api.progress.ProgressHandle;
  */
 public class DatasetTransformationTest extends TsTest {
 
-    private static DatasetTransformation subject;
-    private Timeseries<ContinuousInstance> simple;
+    protected static DatasetTransformation subject;
+    protected Timeseries<ContinuousInstance> simple;
 
     public DatasetTransformationTest() throws IOException {
         subject = new DatasetTransformation();
         simple = loadData01();
-    }
-
-    @Before
-    public void setUp() {
     }
 
     @Test
@@ -54,11 +50,13 @@ public class DatasetTransformationTest extends TsTest {
         ph.start(degree * simple.size());
         subject.analyze(simple, output, ph);
 
+        double sum = 0.0;
         for (int i = 0; i < output.attributeCount(); i++) {
             //check that all attributes were assigned some value
-            //System.out.println("attr [" + i + "] = " + output.get(0, i));
-            assertEquals(true, output.get(0, i) != 0.0);
+            sum += output.get(0, i);
         }
+        //it's quite unlikely that the sum would be 0
+        assertNotEquals(0.0, sum);
         for (int i = 0; i < output.size(); i++) {
             System.out.println(i + ": " + output.get(i));
         }

@@ -56,7 +56,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
-        initComponents();
+        //we can't initialize plot without data
     }
 
     private void initComponents() {
@@ -75,6 +75,8 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     public void setDataset(Timeseries<? extends ContinuousInstance> dataset) {
         this.dataset = dataset;
+        this.removeAll();
+        initComponents();
         for (ContinuousInstance inst : dataset) {
             plot.addInstance(inst);
         }

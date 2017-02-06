@@ -43,7 +43,7 @@ public interface ContinuousInstance<E extends Number> extends Instance<E> {
      * copy.
      *
      * @param begin first index
-     * @param end   last index
+     * @param end   last index that is included
      * @return
      */
     ContinuousInstance crop(int begin, int end);

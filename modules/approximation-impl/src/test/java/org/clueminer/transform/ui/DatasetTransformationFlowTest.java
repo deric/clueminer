@@ -32,7 +32,6 @@ public class DatasetTransformationFlowTest extends TsTest {
 
     private final DatasetTransformationFlow subject;
 
-
     public DatasetTransformationFlowTest() {
         subject = new DatasetTransformationFlow();
     }
@@ -60,5 +59,6 @@ public class DatasetTransformationFlowTest extends TsTest {
         assertEquals(1, d.size());
         assertEquals(9, d.attributeCount());
     }
+
 
 }

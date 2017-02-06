@@ -34,6 +34,8 @@ import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -49,6 +51,7 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
     private Iterator<E> it;
     private final Class<E> klass;
     private double defaultValue = Double.NaN;
+    private static final Logger LOG = LoggerFactory.getLogger(TimeRow.class);
 
     public TimeRow(Class<E> klass, int capacity) {
         data = (E[]) Array.newInstance(klass, capacity);
@@ -285,9 +288,9 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
 
     @Override
     public TimeRow crop(int begin, int end) {
-        TimeRow inst = new TimeRow(this.klass, end - begin);
-        for (int i = begin; i < end; i++) {
-            inst.set(i, this.getValue(i));
+        TimeRow inst = new TimeRow(this.klass, end - begin + 1);
+        for (int i = begin; i <= end; i++) {
+            inst.set(i - begin, this.getValue(i));
         }
         return inst;
     }

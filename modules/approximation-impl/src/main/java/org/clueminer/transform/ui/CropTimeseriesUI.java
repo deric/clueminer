@@ -33,6 +33,8 @@ import org.clueminer.project.api.ProjectController;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -45,6 +47,7 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     private JTextField tfEnd;
     private double start;
     private double end;
+    private static final Logger LOG = LoggerFactory.getLogger(CropTimeseriesUI.class);
 
     public CropTimeseriesUI() {
         initComponents();
@@ -90,9 +93,11 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
             public void componentShown(ComponentEvent e) {
                 ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
                 if (pc != null) {
+                    LOG.info("current project {}", pc.getCurrentProject().getName());
                     Project proj = pc.getCurrentProject();
                     if (proj != null) {
                         Collection<? extends Timeseries> allData = proj.getLookup().lookupAll(Timeseries.class);
+                        LOG.debug("found {} timeseries", allData.size());
                         //TODO: handle multiple datasets
                         for (Timeseries t : allData) {
                             setDataset(t);

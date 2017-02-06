@@ -73,8 +73,7 @@ public class CropTimeseriesTest extends TsTest {
         assertTrue(out[0] instanceof Timeseries);
         Timeseries d = (Timeseries) out[0];
         assertEquals(1, d.size());
-        //no cropping at all
-        assertEquals(15, d.attributeCount());
+        assertEquals(5, d.attributeCount());
     }
 
 }

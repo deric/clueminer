@@ -167,9 +167,9 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
 
     @Override
     public TimeInstance crop(int begin, int end) {
-        TimeInstance inst = new TimeInstance(end - begin);
-        for (int i = begin; i < end; i++) {
-            inst.set(i, this.getValue(i));
+        TimeInstance inst = new TimeInstance(end - begin + 1);
+        for (int i = begin; i <= end; i++) {
+            inst.set(i - begin, this.getValue(i));
         }
         return inst;
     }

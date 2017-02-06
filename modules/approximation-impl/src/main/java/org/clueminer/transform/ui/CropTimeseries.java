@@ -99,7 +99,7 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         LOG.info("start = {}, end = {}", start, end);
 
         TimePoint[] timePoints = data.getTimePoints();
-        int size = end - start;
+        int size = end - start + 1;
 
         TimePointAttribute[] pointsNew = new TimePointAttribute[size];
         //hardlink references from source array to destination array
@@ -117,8 +117,10 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
             //we do care how far are items from each other, but not absolute time
             time = pointsNew[i].getTimestamp();
             pointsNew[i].setPosition(time / endTime);
+            LOG.debug("attribute {}, pos {}", i, time);
         }
-
+        LOG.info("cropping data to interval [{},{}]", start, end);
+        LOG.info("input data size: {}", data.size());
         Timeseries<E> output = (Timeseries<E>) data.duplicate();
         output.setTimePoints(pointsNew);
         for (int i = 0; i < data.size(); i++) {
@@ -129,6 +131,14 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         return (Timeseries<E>) output;
     }
 
+    /**
+     * Searches for timepoint with closest position
+     *
+     * @param pos
+     * @param from start index for search
+     * @param data
+     * @return
+     */
     private int findTimepoint(double pos, int from, Timeseries<? extends ContinuousInstance> data) {
         TimePoint[] tp = data.getTimePoints();
         double delta, minDelta = Double.MAX_VALUE;
@@ -138,7 +148,7 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
                 return i;
             }
             delta = Math.abs(pos - tp[i].getPosition());
-            if (delta < minDelta) {
+            if (delta <= minDelta) {
                 minDelta = delta;
                 minPos = i;
             }

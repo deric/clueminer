@@ -355,8 +355,8 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     @Override
     public XYInstance crop(int begin, int end) {
         XYInstance inst = new XYInstance(end - begin);
-        for (int i = begin; i < end; i++) {
-            inst.set(i, this.getValue(i));
+        for (int i = begin; i <= end; i++) {
+            inst.set(i - begin, this.getValue(i));
         }
         return inst;
     }

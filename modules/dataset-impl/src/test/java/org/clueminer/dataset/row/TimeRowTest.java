@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.dataset.row;
 
 import java.util.Iterator;
@@ -9,7 +25,6 @@ import org.clueminer.dataset.impl.TimeseriesDataset;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Dump;
 import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,17 +37,13 @@ import org.junit.Test;
 public class TimeRowTest {
 
     private static TimeRow subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public TimeRowTest() {
     }
 
     @BeforeClass
     public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
     }
 
     @Before
@@ -48,32 +59,23 @@ public class TimeRowTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of item method, of class TimeRow.
-     */
     @Test
     public void testItem() {
-        assertEquals(1.0, subject.item(0).doubleValue(), delta);
-        assertEquals(5.0, subject.item(1).doubleValue(), delta);
+        assertEquals(1.0, subject.item(0).doubleValue(), DELTA);
+        assertEquals(5.0, subject.item(1).doubleValue(), DELTA);
     }
 
-    /**
-     * Test of getFullName method, of class TimeRow.
-     */
     @Test
     public void testGetFullName() {
         subject.setName("foo");
         assertEquals("foo", subject.getName());
     }
 
-    /**
-     * Test of put method, of class TimeRow.
-     */
     @Test
     public void testPut() {
         int size = subject.size();
         subject.put(123.0);
-        assertEquals(123.0, subject.get(subject.size() - 1), delta);
+        assertEquals(123.0, subject.get(subject.size() - 1), DELTA);
         assertEquals(size + 1, subject.size());
     }
 
@@ -99,7 +101,7 @@ public class TimeRowTest {
      */
     @Test
     public void testValue() {
-        assertEquals(1.0, subject.value(0), delta);
+        assertEquals(1.0, subject.value(0), DELTA);
     }
 
     /**
@@ -111,13 +113,13 @@ public class TimeRowTest {
         int index = 0;
         double prev = subject.get(index);
         subject.set(index, prev + 1);
-        assertEquals(prev + 1, subject.get(index), delta);
+        assertEquals(prev + 1, subject.get(index), DELTA);
 
         //setting value on a null position
         index = 5;
         prev = 123;
         subject.set(index, prev);
-        assertEquals(prev, subject.get(index), delta);
+        assertEquals(prev, subject.get(index), DELTA);
     }
 
     @Test
@@ -162,8 +164,8 @@ public class TimeRowTest {
      */
     @Test
     public void testGet() {
-        assertEquals(1.0, subject.get(0), delta);
-        assertEquals(5.0, subject.get(1), delta);
+        assertEquals(1.0, subject.get(0), DELTA);
+        assertEquals(5.0, subject.get(1), DELTA);
     }
 
     /**
@@ -201,16 +203,15 @@ public class TimeRowTest {
         }
     }
 
-    /**
-     * Test of crop method, of class TimeRow.
-     */
     @Test
     public void testCrop() {
+        TimeRow test = instance(15);
+        assertEquals(15, test.size());
+        //last index is included aswell
+        TimeRow cropped = test.crop(5, 10);
+        assertEquals(6, cropped.size());
     }
 
-    /**
-     * Test of normalize method, of class TimeRow.
-     */
     @Test
     public void testNormalize() {
     }
@@ -224,7 +225,7 @@ public class TimeRowTest {
         double[] copy = subject.arrayCopy();
         int i = 0;
         for (double d : copy) {
-            assertEquals(d, expected[i], delta);
+            assertEquals(d, expected[i], DELTA);
             i++;
         }
     }
@@ -238,14 +239,11 @@ public class TimeRowTest {
         int i = 0;
         Iterator<Double> it = subject.iterator();
         while (it.hasNext()) {
-            assertEquals(it.next(), expected[i], delta);
+            assertEquals(it.next(), expected[i], DELTA);
             i++;
         }
     }
 
-    /**
-     * Test of size method, of class TimeRow.
-     */
     @Test
     public void testSize() {
         assertEquals(4, subject.size());
@@ -261,7 +259,7 @@ public class TimeRowTest {
         double[] copy = res.arrayCopy();
         int i = 0;
         for (double d : copy) {
-            assertEquals(d, expected[i], delta);
+            assertEquals(d, expected[i], DELTA);
             i++;
         }
     }
@@ -286,7 +284,7 @@ public class TimeRowTest {
     @Test
     public void testSetDefaultValue() {
         subject.setDefaultValue(-1.0);
-        assertEquals(-1.0, subject.get(-1), delta);
+        assertEquals(-1.0, subject.get(-1), DELTA);
     }
 
     @Test
@@ -295,18 +293,18 @@ public class TimeRowTest {
         subject.setMetaNum(meta);
 
         double[] foo = subject.getMetaNum();
-        assertEquals(meta[0], foo[0], delta);
-        assertEquals(meta[1], foo[1], delta);
+        assertEquals(meta[0], foo[0], DELTA);
+        assertEquals(meta[1], foo[1], DELTA);
     }
 
     @Test
     public void testMin() {
-        assertEquals(1.0, subject.getMin(), delta);
+        assertEquals(1.0, subject.getMin(), DELTA);
     }
 
     @Test
     public void testMax() {
-        assertEquals(5.0, subject.getMax(), delta);
+        assertEquals(5.0, subject.getMax(), DELTA);
     }
 
     @Test
@@ -318,9 +316,18 @@ public class TimeRowTest {
         subject.put(4.0);
         subject.put(5.0);
 
-        assertEquals(1.5811388300841898, subject.getStdDev(), delta);
+        assertEquals(1.5811388300841898, subject.getStdDev(), DELTA);
         //biased (without n-1 correction)
-        assertEquals(1.4142135623730951, subject.statistics(StatsNum.STD_BIA), delta);
+        assertEquals(1.4142135623730951, subject.statistics(StatsNum.STD_BIA), DELTA);
+    }
+
+    private TimeRow instance(int size) {
+        TimeRow row = new TimeRow(Double.class, size);
+        Random rand = new Random();
+        for (int i = 0; i < size; i++) {
+            row.put(rand.nextDouble());
+        }
+        return row;
     }
 
 }
