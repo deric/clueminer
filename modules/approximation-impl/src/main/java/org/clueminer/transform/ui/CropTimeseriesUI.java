@@ -19,9 +19,12 @@ package org.clueminer.transform.ui;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.Collection;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -45,6 +48,7 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     private TimeSelectionPlot plot;
     private JTextField tfStart;
     private JTextField tfEnd;
+    private JButton btnScan;
     private double start;
     private double end;
     private static final Logger LOG = LoggerFactory.getLogger(CropTimeseriesUI.class);
@@ -85,27 +89,36 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
         c.weighty = 0.95;
         c.fill = GridBagConstraints.BOTH;
         plot = new TimeSelectionPlot(this);
-        add(plot, c);
 
         this.addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentShown(ComponentEvent e) {
-                ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-                if (pc != null) {
-                    LOG.info("current project {}", pc.getCurrentProject().getName());
-                    Project proj = pc.getCurrentProject();
-                    if (proj != null) {
-                        Collection<? extends Timeseries> allData = proj.getLookup().lookupAll(Timeseries.class);
-                        LOG.debug("found {} timeseries", allData.size());
-                        //TODO: handle multiple datasets
-                        for (Timeseries t : allData) {
-                            setDataset(t);
-                        }
-                    }
-                }
+                scanForData();
+            }
+
+            public void componentResized(ComponentEvent e) {
+                plot.sizeUpdated(getSize());
             }
         });
+        add(plot, c);
+    }
+
+    private void scanForData() {
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+        if (pc != null) {
+            LOG.info("current project {}", pc.getCurrentProject().getName());
+            Project proj = pc.getCurrentProject();
+            if (proj != null) {
+                Collection<? extends Timeseries> allData = proj.getLookup().lookupAll(Timeseries.class);
+                LOG.debug("found {} timeseries", allData.size());
+                //TODO: handle multiple datasets
+                for (Timeseries t : allData) {
+                    setDataset(t);
+                }
+                repaint();
+            }
+        }
     }
 
     private JPanel formFieldsPanel() {
@@ -117,6 +130,14 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
         panel.add(new JLabel("End:"));
         tfEnd = new JTextField(5);
         panel.add(tfEnd);
+        btnScan = new JButton("Scan for data");
+        btnScan.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scanForData();
+            }
+        });
+        panel.add(btnScan);
 
         return panel;
     }

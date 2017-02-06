@@ -57,6 +57,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
         //we can't initialize plot without data
+        setSize(new Dimension(800, 600));
     }
 
     private void initComponents() {
@@ -153,7 +154,9 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
 
     @Override
     public void recalculate() {
-        realSize = plot.getSize();
+        if (plot != null) {
+            realSize = plot.getSize();
+        }
     }
 
     @Override
