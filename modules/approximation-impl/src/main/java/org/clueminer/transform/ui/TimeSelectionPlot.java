@@ -53,15 +53,25 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private final ReentrantLock lock = new ReentrantLock();
     private final CropTimeseriesUI flowUI;
     private double prevStart = Double.NaN;
+    private javax.swing.Box.Filler filler1;
 
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
         //we can't initialize plot without data
+        setLayout(new GridBagLayout());
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        c.ipadx = 359;
+        c.ipady = 253;
+        c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        c.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(filler1, c);
         setMinimumSize(new Dimension(800, 600));
     }
 
     private void initComponents() {
-        setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1.0;
         c.weighty = 1.0;
