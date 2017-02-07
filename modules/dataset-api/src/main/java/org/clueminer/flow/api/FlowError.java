@@ -16,39 +16,19 @@
  */
 package org.clueminer.flow.api;
 
-import org.clueminer.utils.Props;
-
 /**
- * Basic element of data processing pipeline.
+ * Generic error encountered during flow processing.
  *
  * @author deric
  */
-public interface FlowNode {
+public class FlowError extends RuntimeException {
 
-    String getName();
+    public FlowError(String message) {
+        super(message);
+    }
 
-    Object[] getInputs();
+    public FlowError(Throwable cause) {
+        super(cause);
+    }
 
-    Object[] getOutputs();
-
-    /**
-     * Execute node's operation
-     *
-     * @param inputs array of input data
-     * @param props  key-value configuration
-     * @return
-     */
-    Object[] execute(Object[] inputs, Props props) throws FlowError;
-
-    /**
-     * GUI which will be embedded into another dialog (should not contain any
-     * OK/Cancel buttons)
-     *
-     * @return
-     */
-    FlowPanel getPanel();
-
-    void setProps(Props props);
-
-    Props getProps();
 }

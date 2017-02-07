@@ -21,6 +21,7 @@ import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.AbsFlowNode;
+import org.clueminer.flow.api.FlowError;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.types.TimePoint;
 import org.clueminer.utils.Props;
@@ -55,7 +56,7 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
     }
 
     @Override
-    public Object[] execute(Object[] inputs, Props props) {
+    public Object[] execute(Object[] inputs, Props props) throws FlowError {
         checkInputs(inputs);
         Object[] ret = new Object[1];
 

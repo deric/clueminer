@@ -61,13 +61,13 @@ public abstract class AbsFlowNode implements FlowNode {
 
     protected void checkInputs(Object[] in) {
         if (in.length != inputs.length) {
-            throw new RuntimeException("expected " + inputs.length + " input(s), got " + in.length);
+            throw new FlowError("expected " + inputs.length + " input(s), got " + in.length);
         }
         //type check
         int i = 0;
         for (Object obj : in) {
             if (!inputs[i].isInstance(obj)) {
-                throw new RuntimeException("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
+                throw new FlowError("expected " + inputs[i].toString() + " input(s), got " + obj.getClass().toString());
             }
             i++;
         }

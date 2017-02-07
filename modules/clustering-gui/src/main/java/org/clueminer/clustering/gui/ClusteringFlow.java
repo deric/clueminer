@@ -37,6 +37,7 @@ import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.AbsFlowNode;
+import org.clueminer.flow.api.FlowError;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -95,7 +96,7 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
     }
 
     @Override
-    public Object[] execute(Object[] inputs, Props params) {
+    public Object[] execute(Object[] inputs, Props params) throws FlowError {
         checkInputs(inputs);
         Object[] ret = new Object[2];
         Dataset<E> dataset = (Dataset<E>) inputs[0];

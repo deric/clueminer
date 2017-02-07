@@ -57,7 +57,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
         //we can't initialize plot without data
-        setSize(new Dimension(800, 600));
+        setMinimumSize(new Dimension(800, 600));
     }
 
     private void initComponents() {

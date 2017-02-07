@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.flow.api.AbsFlowNode;
+import org.clueminer.flow.api.FlowError;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -54,7 +55,7 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
     }
 
     @Override
-    public Object[] execute(Object[] input, Props params) {
+    public Object[] execute(Object[] input, Props params) throws FlowError {
         checkInputs(input);
         Object[] ret = new Object[1];
 
@@ -63,7 +64,7 @@ public class DatasetTransformationFlow extends AbsFlowNode implements FlowNode {
         LOG.info("dataset has {} attributes", data.attributeCount());
 
         if (data.isEmpty() || data.attributeCount() == 0) {
-            throw new RuntimeException("dataset is empty!");
+            throw new FlowError("dataset is empty!");
         }
         String transformation = params.get(PROP_NAME, "");
 

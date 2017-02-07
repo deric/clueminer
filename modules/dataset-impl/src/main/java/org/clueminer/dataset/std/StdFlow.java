@@ -19,6 +19,7 @@ package org.clueminer.dataset.std;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.AbsFlowNode;
+import org.clueminer.flow.api.FlowError;
 import org.clueminer.flow.api.FlowNode;
 import org.clueminer.std.Scaler;
 import org.clueminer.utils.Props;
@@ -36,7 +37,7 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
 
     private static final Logger LOG = LoggerFactory.getLogger(StdFlow.class);
     public static final String NAME = "data normalization";
-    private DataScaler ds;
+    private final DataScaler ds;
 
     public StdFlow() {
         ds = new DataScaler();
@@ -51,7 +52,7 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
     }
 
     @Override
-    public Object[] execute(Object[] inputs, Props params) {
+    public Object[] execute(Object[] inputs, Props params) throws FlowError {
         checkInputs(inputs);
         Object[] ret = new Object[1];
         String method = params.get("std", Scaler.NONE);

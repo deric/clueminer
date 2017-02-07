@@ -16,6 +16,7 @@
  */
 package org.clueminer.transform.ui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -71,6 +72,7 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     }
 
     private void initComponents() {
+        setMinimumSize(new Dimension(800, 600));
         setLayout(new GridBagLayout());
 
         GridBagConstraints c = new GridBagConstraints();
@@ -116,6 +118,8 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
                 for (Timeseries t : allData) {
                     setDataset(t);
                 }
+                revalidate();
+                validate();
                 repaint();
             }
         }
@@ -124,11 +128,11 @@ public class CropTimeseriesUI extends JPanel implements FlowPanel {
     private JPanel formFieldsPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        tfStart = new JTextField(5);
+        tfStart = new JTextField(10);
         panel.add(new JLabel("Start:"));
         panel.add(tfStart);
         panel.add(new JLabel("End:"));
-        tfEnd = new JTextField(5);
+        tfEnd = new JTextField(10);
         panel.add(tfEnd);
         btnScan = new JButton("Scan for data");
         btnScan.addActionListener(new ActionListener() {
