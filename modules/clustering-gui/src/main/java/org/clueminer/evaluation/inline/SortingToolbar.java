@@ -25,9 +25,11 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.evaluation.gui.EvaluatorComboBox;
 import static org.clueminer.evaluation.inline.InlinePanel.NONE;
-import org.clueminer.export.sorting.SortingExporter;
+import org.clueminer.export.api.ClusteringExport;
+import org.clueminer.export.api.ClusteringExporterFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -38,7 +40,7 @@ import org.openide.util.NbBundle;
  *
  * @author deric
  */
-public class SortingToolbar extends JToolBar {
+public class SortingToolbar<E extends Instance> extends JToolBar {
 
     private JComboBox comboEvaluatorX;
     private JComboBox comboEvaluatorY;
@@ -117,7 +119,8 @@ public class SortingToolbar extends JToolBar {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                SortingExporter exp = new SortingExporter();
+                ClusteringExporterFactory cef = ClusteringExporterFactory.getInstance();
+                ClusteringExport<E> exp = (ClusteringExport<E>) cef.getProvider("Export to CSV");
                 exp.setDataset(plot.getDataset());
                 //  exp.setResults(plot.getResults());
                 exp.setClusterings(plot.getClusterings());

@@ -197,7 +197,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>export-impl</artifactId>
+            <artifactId>io-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

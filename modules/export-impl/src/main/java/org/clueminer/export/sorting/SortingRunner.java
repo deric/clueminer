@@ -16,11 +16,13 @@
  */
 package org.clueminer.export.sorting;
 
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.prefs.Preferences;
@@ -74,7 +76,8 @@ public class SortingRunner implements Runnable {
             sb = new StringBuilder();
             h = new StringBuilder();
             int i = 0;
-            for (Map.Entry<String, Double> score : exp.getResults().entrySet()) {
+            Object2DoubleOpenHashMap<String> results = exp.getResults();
+            for (Map.Entry<String, Double> score : results.entrySet()) {
                 if (i > 0) {
                     sb.append(",");
                     h.append(separator);
@@ -103,7 +106,8 @@ public class SortingRunner implements Runnable {
 
             fw.write("\n");
 
-            for (Clustering c : exp.getClusterings()) {
+            Collection<? extends Clustering> col = exp.getClusterings();
+            for (Clustering c : col) {
                 sb = new StringBuilder();
                 sb.append(c.getEvaluationTable().getScore(exp.getEvaluator()));
                 sb.append(separator);

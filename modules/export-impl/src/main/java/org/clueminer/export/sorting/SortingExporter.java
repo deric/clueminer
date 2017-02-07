@@ -26,6 +26,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.export.api.ClusteringExport;
 import org.clueminer.export.impl.AbstractExporter;
 import org.netbeans.api.progress.ProgressHandle;
 
@@ -33,7 +34,7 @@ import org.netbeans.api.progress.ProgressHandle;
  *
  * @author Tomas Barton
  */
-public class SortingExporter extends AbstractExporter {
+public class SortingExporter<E extends Instance> extends AbstractExporter implements ClusteringExport<E> {
 
     public static final String title = "Export to CSV";
     public static final String ext = ".csv";
@@ -113,7 +114,7 @@ public class SortingExporter extends AbstractExporter {
         return dataset;
     }
 
-    public void setDataset(Dataset<? extends Instance> dataset) {
+    public void setDataset(Dataset<E> dataset) {
         this.dataset = dataset;
     }
 

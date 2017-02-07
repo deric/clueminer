@@ -23,13 +23,13 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.utils.ImageExporter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Utilities;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
@@ -114,7 +114,7 @@ public class DendroToolbar extends JToolBar {
                 //exportDialog.destroy();
 
                 if (dd.getValue() == DialogDescriptor.OK_OPTION) {
-                    ClusteringExport exp = exportDialog.getExporter();
+                    ClusteringExportGui exp = exportDialog.getExporter();
                     exp.setViewer(viewer);
                     exp.export();
                 }

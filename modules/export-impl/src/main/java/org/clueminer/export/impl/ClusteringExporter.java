@@ -5,14 +5,14 @@ import java.util.prefs.Preferences;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
  * @author Tomas Barton
  */
-public abstract class ClusteringExporter extends AbstractExporter implements ClusteringExport {
+public abstract class ClusteringExporter extends AbstractExporter implements ClusteringExportGui {
 
     protected DendroViewer viewer;
     protected DendrogramMapping mapping;

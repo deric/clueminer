@@ -6,16 +6,16 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusteringExport.class)
-public class CsvExporter extends ClusteringExporter implements ActionListener, ClusteringExport {
+@ServiceProvider(service = ClusteringExportGui.class)
+public class CsvExporter extends ClusteringExporter implements ActionListener, ClusteringExportGui {
 
     private CsvOptions options;
     public static final String title = "Export to CSV";

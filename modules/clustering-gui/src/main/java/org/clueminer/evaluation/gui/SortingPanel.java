@@ -29,14 +29,17 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
-import org.clueminer.export.sorting.SortingExporter;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.clueminer.export.api.ClusteringExport;
+import org.clueminer.export.api.ClusteringExporterFactory;
 import org.openide.util.ImageUtilities;
 
 /**
  *
  * @author Tomas Barton
  */
-public class SortingPanel extends JPanel {
+public class SortingPanel<E extends Instance> extends JPanel {
 
     private static final long serialVersionUID = 8757022805479436474L;
 
@@ -94,8 +97,9 @@ public class SortingPanel extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                SortingExporter exp = new SortingExporter();
-                exp.setDataset(plot.getDataset());
+                ClusteringExporterFactory cef = ClusteringExporterFactory.getInstance();
+                ClusteringExport<E> exp = (ClusteringExport<E>) cef.getProvider("Export to CSV");
+                exp.setDataset((Dataset<E>) plot.getDataset());
                 exp.setResults(plot.getResults());
                 exp.setClusterings(plot.getClusterings());
                 exp.setReference(plot.cLeft.getEvaluator());

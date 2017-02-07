@@ -5,17 +5,17 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.ClusteringExporter;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
  * @author Tomas Barton
  */
-@ServiceProvider(service = ClusteringExport.class)
-public class NewickExporter extends ClusteringExporter implements ClusteringExport {
+@ServiceProvider(service = ClusteringExportGui.class)
+public class NewickExporter extends ClusteringExporter implements ClusteringExportGui {
 
     public static final String title = "Export to Newick";
     public static final String ext = ".nwk";

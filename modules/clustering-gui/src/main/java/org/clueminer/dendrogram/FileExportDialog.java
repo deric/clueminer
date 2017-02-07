@@ -24,7 +24,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.factory.ClusteringExportFactory;
-import org.clueminer.clustering.gui.ClusteringExport;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
@@ -78,14 +78,14 @@ public class FileExportDialog extends JPanel {
         c.weighty = 1;
         c.fill = GridBagConstraints.BOTH;
         String expName = (String) cbType.getSelectedItem();
-        ClusteringExport exporter = factory.getProvider(expName);
+        ClusteringExportGui exporter = factory.getProvider(expName);
         optPanel = exporter.getOptions();
         add(optPanel, c);
     }
 
-    public ClusteringExport getExporter() {
+    public ClusteringExportGui getExporter() {
         String expName = (String) cbType.getSelectedItem();
-        ClusteringExport exporter = ClusteringExportFactory.getInstance().getProvider(expName);
+        ClusteringExportGui exporter = ClusteringExportFactory.getInstance().getProvider(expName);
         return exporter;
     }
 

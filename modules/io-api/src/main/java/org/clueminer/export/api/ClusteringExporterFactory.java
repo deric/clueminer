@@ -14,40 +14,40 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering.api.factory;
+package org.clueminer.export.api;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
-import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
- * @author Tomas Barton
+ * @author deric
+ * @param <E>
  */
-public class ClusteringExportFactory extends ServiceFactory<ClusteringExportGui> {
+public class ClusteringExporterFactory<E extends Instance> extends ServiceFactory<ClusteringExport<E>> {
 
-    private static ClusteringExportFactory instance;
+    private static ClusteringExporterFactory instance;
 
-    public static ClusteringExportFactory getInstance() {
+    public static ClusteringExporterFactory getInstance() {
         if (instance == null) {
-            instance = new ClusteringExportFactory();
+            instance = new ClusteringExporterFactory();
         }
         return instance;
     }
 
-    private ClusteringExportFactory() {
+    private ClusteringExporterFactory() {
         providers = new LinkedHashMap<>();
-        Collection<? extends ClusteringExportGui> list = Lookup.getDefault().lookupAll(ClusteringExportGui.class);
-        for (ClusteringExportGui c : list) {
+        Collection<? extends ClusteringExport> list = Lookup.getDefault().lookupAll(ClusteringExport.class);
+        for (ClusteringExport c : list) {
             providers.put(c.getName(), c);
         }
-        sort();
     }
 
     @Override
-    public ClusteringExportGui[] getAllArray() {
-        return providers.values().toArray(new ClusteringExportGui[0]);
+    public ClusteringExport[] getAllArray() {
+        return providers.values().toArray(new ClusteringExport[0]);
     }
 }

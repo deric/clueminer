@@ -216,7 +216,6 @@
         <module>modules/export-impl</module>
         <module>modules/project-api</module>
         <module>modules/project-impl</module>
-        <module>modules/importer-api</module>
         <module>modules/perspective-api</module>
         <module>modules/perspective-impl</module>
         <module>modules/approximation-api</module>
@@ -252,6 +251,7 @@
         <module>modules/metis</module>
         <module>modules/core-lib-wrapper</module>
         <module>meta-engine</module>
+        <module>modules/io-api</module>
     </modules>
     <reporting>
         <plugins>

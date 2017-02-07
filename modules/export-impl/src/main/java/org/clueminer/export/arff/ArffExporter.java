@@ -22,18 +22,18 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
-import org.clueminer.clustering.gui.ClusteringExport;
 import org.clueminer.export.impl.ClusteringExporter;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  * Export clustering into ARFF format with cluster assignment as labels
  *
  * @author deric
  */
-@ServiceProvider(service = ClusteringExport.class)
-public class ArffExporter extends ClusteringExporter implements ActionListener, ClusteringExport {
+@ServiceProvider(service = ClusteringExportGui.class)
+public class ArffExporter extends ClusteringExporter implements ActionListener, ClusteringExportGui {
 
     public static final String title = "Export to ARFF (cluster number as label)";
     public static final String ext = ".arff";

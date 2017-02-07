@@ -27,7 +27,7 @@ import org.netbeans.api.progress.ProgressHandle;
  *
  * @author Tomas Barton
  */
-public interface ClusteringExport extends ExporterGUI {
+public interface ClusteringExportGui extends ExporterGUI {
 
     /**
      * Creates Runnable object for performing the export
