@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.swing.Box.Filler;
 import org.clueminer.dataset.api.ContinuousInstance;
 import org.clueminer.dataset.api.Timeseries;
 import org.clueminer.gui.BPanel;
@@ -53,13 +54,13 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
     private final ReentrantLock lock = new ReentrantLock();
     private final CropTimeseriesUI flowUI;
     private double prevStart = Double.NaN;
-    private javax.swing.Box.Filler filler1;
+    private final Filler filler;
 
     public TimeSelectionPlot(CropTimeseriesUI parent) {
         this.flowUI = parent;
         //we can't initialize plot without data
         setLayout(new GridBagLayout());
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -67,7 +68,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
         c.ipady = 253;
         c.anchor = java.awt.GridBagConstraints.NORTHWEST;
         c.insets = new java.awt.Insets(6, 6, 0, 0);
-        add(filler1, c);
+        add(filler, c);
         setMinimumSize(new Dimension(800, 600));
     }
 
@@ -79,7 +80,7 @@ public class TimeSelectionPlot extends BPanel implements MouseMotionListener {
         c.gridy = 0;
         c.fill = GridBagConstraints.BOTH;
 
-        plot = new TimeXPlot(800, 600, false);
+        plot = new TimeXPlot(800, 600, false, true);
         add(plot, c);
         plot.getChartPanel().addMouseMotionListener(this);
     }

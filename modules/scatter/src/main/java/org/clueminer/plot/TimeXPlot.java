@@ -18,7 +18,6 @@ package org.clueminer.plot;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
-import com.xeiam.xchart.Series;
 import com.xeiam.xchart.XChartPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -28,7 +27,6 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -62,7 +60,6 @@ import smile.neighbor.Neighbor;
 public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements Plotter<E> {
 
     private Chart chart;
-    private Collection<? extends Date> yAxis;
     private final HashSet<Integer> instances = new HashSet<>(10);
     private XChartPanel chartPanel;
     private static final Logger LOG = LoggerFactory.getLogger(TimeXPlot.class);
@@ -70,20 +67,25 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
     private KDTree<E> tree;
     private double cursorRadius = -1;
     private Timeseries<E> dataset;
+    /**
+     * Whether display position of timepoint or date (when false)
+     */
+    private boolean useTimepointPosition;
 
     public TimeXPlot() {
-        initComponents(400, 400, true);
+        initComponents(400, 400, true, true);
     }
 
     public TimeXPlot(int width, int height) {
-        initComponents(width, height, true);
+        initComponents(width, height, true, true);
     }
 
-    public TimeXPlot(int width, int height, boolean enableMouse) {
-        initComponents(width, height, enableMouse);
+    public TimeXPlot(int width, int height, boolean enableMouse, boolean useTimepointPosition) {
+        initComponents(width, height, enableMouse, useTimepointPosition);
     }
 
-    private void initComponents(int width, int height, boolean enableMouse) {
+    private void initComponents(int width, int height, boolean enableMouse, boolean useTimepointPosition) {
+        this.useTimepointPosition = useTimepointPosition;
         lock = new ReentrantLock();
         setLayout(new GridBagLayout());
         ToolTipManager.sharedInstance().registerComponent(this);
@@ -153,14 +155,16 @@ public class TimeXPlot<E extends ContinuousInstance> extends JPanel implements P
     public void addInstance(E instance, String clusterName) {
         ContinuousInstance inst = (ContinuousInstance) instance;
         dataset = (Timeseries) inst.getParent();
-        if (yAxis == null) {
-            yAxis = dataset.getTimePointsCollection();
-        }
         //make sure we don't add same data twice
         if (!instances.contains(instance.getIndex())) {
             StringBuilder sb = new StringBuilder();
             sb.append(inst.getIndex()).append(" - ").append(clusterName);
-            Series s = chart.addSeries(sb.toString(), yAxis, new InstCollection(instance));
+            if (useTimepointPosition) {
+                chart.addSeries(sb.toString(), dataset.getTimePointsArray(), instance.asArray());
+            } else {
+                chart.addSeries(sb.toString(), dataset.getTimePointsCollection(), new InstCollection(instance));
+            }
+
             instances.add(instance.getIndex());
         }
     }
