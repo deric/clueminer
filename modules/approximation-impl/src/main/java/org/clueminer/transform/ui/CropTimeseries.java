@@ -69,13 +69,15 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         if (data.isEmpty() || data.attributeCount() == 0) {
             throw new RuntimeException("dataset is empty!");
         }
-        String transformation = props.get(PROP_NAME, "");
+        String transformation = props.toJson();
 
         //make sure we don't have old data
         transform = null;
         //check if there's preloaded dataset available
+        LOG.info("checking for cached {}", transformation);
         transform = (Timeseries<E>) data.getChild(transformation);
         if (transform == null) {
+            LOG.debug("Cache miss. computing crop");
             //run analysis
             transform = cropData(data, props);
             data.addChild(transformation, (Dataset) transform);
@@ -111,16 +113,10 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         long startTime = pointsNew[0].getTimestamp();
         for (int i = 0; i < size; i++) {
             pointsNew[i].setTimestamp(pointsNew[i].getTimestamp() - startTime);
-        }
-
-        //relative time
-        double time, endTime = pointsNew[pointsNew.length - 1].getTimestamp();
-        //precomputed value for faster chart rendering
-        for (int i = 0; i < size; i++) {
-            //we do care how far are items from each other, but not absolute time
-            time = pointsNew[i].getTimestamp();
-            pointsNew[i].setPosition(time / endTime);
-            LOG.debug("attribute {}, pos {}", i, time);
+            //subtract position of point where crop starts
+            LOG.debug("orig attribute {}, pos {}", i, timePoints[start + i].getPosition());
+            pointsNew[i].setPosition(pointsNew[i].getPosition() - timePoints[start].getPosition());
+            LOG.debug("new attribute {}, pos {}", i, pointsNew[i].getPosition());
         }
         LOG.info("cropping data to interval [{},{}]", start, end);
         LOG.info("input data size: {}", data.size());
