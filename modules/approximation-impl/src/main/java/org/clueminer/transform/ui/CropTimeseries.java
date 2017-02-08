@@ -30,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * From given input timeseries dataset will create a new one that represents
+ * original data subset.
  *
  * @author deric
  */
@@ -128,6 +130,8 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
             E inst = (E) data.get(i).crop(start, end);
             output.add(inst);
         }
+        //make sure the original data is accessible
+        output.setParent(data);
 
         return (Timeseries<E>) output;
     }
