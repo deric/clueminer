@@ -111,12 +111,11 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         System.arraycopy(timePoints, start, pointsNew, 0, size);
 
         long startTime = pointsNew[0].getTimestamp();
+        double cropStartPos = timePoints[start].getPosition();
         for (int i = 0; i < size; i++) {
             pointsNew[i].setTimestamp(pointsNew[i].getTimestamp() - startTime);
             //subtract position of point where crop starts
-            LOG.debug("orig attribute {}, pos {}", i, timePoints[start + i].getPosition());
-            pointsNew[i].setPosition(pointsNew[i].getPosition() - timePoints[start].getPosition());
-            LOG.debug("new attribute {}, pos {}", i, pointsNew[i].getPosition());
+            pointsNew[i].setPosition(timePoints[start + i].getPosition() - cropStartPos);
         }
         LOG.info("cropping data to interval [{},{}]", start, end);
         LOG.info("input data size: {}", data.size());
@@ -124,6 +123,7 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         output.setTimePoints(pointsNew);
         for (int i = 0; i < data.size(); i++) {
             E inst = (E) data.get(i).crop(start, end);
+            inst.setParent(output);
             output.add(inst);
         }
         //make sure the original data is accessible
