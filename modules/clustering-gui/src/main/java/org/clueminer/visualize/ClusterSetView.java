@@ -100,10 +100,8 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         if (clust == null) {
             return;
         }
-        if (clust.size() != clusterNum) {
-            //remove all components
-            this.removeAll();
-        }
+        //remove all components
+        this.removeAll();
 
         clusterNum = clust.size();
         LOG.debug("got {} clusters", clusterNum);
