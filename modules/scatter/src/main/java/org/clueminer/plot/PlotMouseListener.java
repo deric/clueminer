@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author deric
+ * @param <E> type of plotted line
  */
 public class PlotMouseListener<E extends Instance> extends MouseAdapter implements MouseListener, MouseMotionListener {
 
@@ -54,9 +55,6 @@ public class PlotMouseListener<E extends Instance> extends MouseAdapter implemen
         LOG.debug("got position [{}, {}]", pos[0], pos[1]);
         Collection<E> neighbors = plotter.instanceAt(pos, 5);
         LOG.debug("found {}", neighbors.size());
-        for (E neighbor : neighbors) {
-            LOG.debug("inst {}: {}", neighbor.getName(), neighbor.asArray());
-        }
         if (!neighbors.isEmpty()) {
             plotter.focus(neighbors, e);
         }
