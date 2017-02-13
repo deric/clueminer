@@ -178,6 +178,7 @@ public abstract class AbstractDataset<E extends Instance> extends ArrayList<E> i
             children = new HashMap<>(5);
         }
         children.put(key, dataset);
+        dataset.setParent(parent);
     }
 
     @Override

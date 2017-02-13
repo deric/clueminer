@@ -182,6 +182,7 @@ public abstract class BaseDataset<E extends Instance> implements Dataset<E> {
             children = new HashMap<>(5);
         }
         children.put(key, dataset);
+        dataset.setParent(parent);
     }
 
     @Override
