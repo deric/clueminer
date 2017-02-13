@@ -389,13 +389,15 @@ public class Chart {
     }
 
     public Rectangle2D.Double getPlotArea() {
+        Rectangle.Double res = new Rectangle.Double();
         Rectangle2D bounds = chartPainter.getPlot().getBounds();
 
-        Rectangle.Double res = new Rectangle.Double();
-        res.x = bounds.getX();
-        res.y = bounds.getY();
-        res.width = bounds.getWidth();
-        res.height = bounds.getHeight();
+        if (bounds != null) {
+            res.x = bounds.getX();
+            res.y = bounds.getY();
+            res.width = bounds.getWidth();
+            res.height = bounds.getHeight();
+        }
         return res;
     }
 
