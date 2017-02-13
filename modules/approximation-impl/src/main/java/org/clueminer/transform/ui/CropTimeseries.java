@@ -63,11 +63,10 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         Object[] ret = new Object[1];
 
         Timeseries<E> data = (Timeseries<E>) inputs[0];
-        LOG.info("dataset size: {}", data.size());
-        LOG.info("dataset has {} attributes", data.attributeCount());
+        LOG.info("dataset {}, size: {}, attributes: {}", data.getName(), data.size(), data.attributeCount());
 
         if (data.isEmpty() || data.attributeCount() == 0) {
-            throw new RuntimeException("dataset is empty!");
+            throw new FlowError("dataset is empty!");
         }
         String transformation = props.toJson();
 
@@ -107,20 +106,20 @@ public class CropTimeseries<E extends ContinuousInstance> extends AbsFlowNode im
         int size = end - start + 1;
 
         TimePointAttribute[] pointsNew = new TimePointAttribute[size];
-        //hardlink references from source array to destination array
-        System.arraycopy(timePoints, start, pointsNew, 0, size);
-
-        long startTime = pointsNew[0].getTimestamp();
+        long startTime = timePoints[start].getTimestamp();
         double cropStartPos = timePoints[start].getPosition();
-        for (int i = 0; i < size; i++) {
-            pointsNew[i].setTimestamp(pointsNew[i].getTimestamp() - startTime);
+        TimePoint ref;
+        for (int i = 0; i < pointsNew.length; i++) {
+            ref = timePoints[start + i];
             //subtract position of point where crop starts
-            pointsNew[i].setPosition(timePoints[start + i].getPosition() - cropStartPos);
+            pointsNew[i] = new TimePointAttribute(i, ref.getTimestamp() - startTime, ref.getPosition() - cropStartPos);
         }
+
         LOG.info("cropping data to interval [{},{}]", start, end);
         LOG.info("input data size: {}", data.size());
         Timeseries<E> output = (Timeseries<E>) data.duplicate();
         output.setTimePoints(pointsNew);
+        output.setName(output.getName() + "_crop");
         for (int i = 0; i < data.size(); i++) {
             E inst = (E) data.get(i).crop(start, end);
             inst.setParent(output);

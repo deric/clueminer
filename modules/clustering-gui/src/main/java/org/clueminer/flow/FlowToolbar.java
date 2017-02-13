@@ -63,7 +63,7 @@ public class FlowToolbar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 btnRun.setEnabled(false);
-                run(container.getNodes());
+                run(container.getNodes().clone());
             }
         });
 

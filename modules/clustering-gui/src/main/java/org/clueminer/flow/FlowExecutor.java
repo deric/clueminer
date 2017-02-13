@@ -16,6 +16,7 @@
  */
 package org.clueminer.flow;
 
+import java.util.Collection;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -31,8 +32,9 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author deric
+ * @param <E> base row type
  */
-public class FlowExecutor implements Runnable {
+public class FlowExecutor<E extends Instance> implements Runnable {
 
     private ProjectController pc;
     private final Node[] list;
@@ -49,11 +51,21 @@ public class FlowExecutor implements Runnable {
     public void run() {
         LOG.info("started data-mining process");
         Project project = pc.getCurrentProject();
-        Dataset<? extends Instance> dataset = project.getLookup().lookup(Dataset.class);
-        if (dataset != null) {
-            LOG.info("using dataset {}", dataset.getName());
-        } else {
-            LOG.error("missing dataset!");
+        Dataset<E> dataset = null;
+        Collection<? extends Dataset<E>> allData = (Collection<? extends Dataset<E>>) project.getLookup().lookupAll(Dataset.class);
+        LOG.debug("{} datasets in lookup", allData.size());
+        for (Dataset<E> d : allData) {
+            if (d != null) {
+                if (d.hasParent()) {
+                    LOG.debug("dataset has parent {}", d.getParent().getName());
+                } else {
+                    LOG.info("using dataset {} with {} attributes", d.getName(), d.attributeCount());
+                    dataset = d;
+                }
+            } else {
+                LOG.error("missing dataset!");
+                throw new FlowError("missing dataset!");
+            }
         }
         LOG.info("process includes {} steps", list.length);
         Object[] inputs = new Object[]{dataset};
