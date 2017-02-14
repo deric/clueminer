@@ -143,7 +143,8 @@ public class EpsNN<E extends Instance> implements GraphConvertor<E> {
     public void buildGraph(Graph graph, Dataset<E> dataset, Props params, List<E> noise) {
         GraphBuilder gb = graph.getFactory();
 
-        HashSet<Integer> hash = new HashSet<>(noise.size());
+        int size = noise != null ? noise.size() : 50;
+        HashSet<Integer> hash = new HashSet<>(size);
         for (E inst : noise) {
             hash.add(inst.getIndex());
         }
