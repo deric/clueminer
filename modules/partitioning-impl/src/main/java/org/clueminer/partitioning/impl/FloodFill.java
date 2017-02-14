@@ -34,7 +34,7 @@ public class FloodFill {
     /**
      * Finds disconnected subgraphs in the given graph
      *
-     * @param g Graph to find subgraphs in
+     * @param g            Graph to find subgraphs in
      * @param maxPartition expected size of max. partition
      * @return Lists of nodes in different subgraphs
      */
@@ -42,10 +42,11 @@ public class FloodFill {
         graph = g;
         marked = new boolean[graph.getNodeCount()];
 
+        //micro-optimization
+        //Arrays.fill(marked, false);
         for (Node node : graph.getNodes()) {
             marked[graph.getIndex(node)] = false;
         }
-
         boolean allMarked = false;
         int clusterCounter = 0;
         result = new ArrayList<>();

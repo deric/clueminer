@@ -56,6 +56,12 @@ public class RecursiveBisection implements Partitioning {
         return "Recursive bisection";
     }
 
+    /**
+     * @param max    expected maximum partition size (for memory allocation)
+     * @param g
+     * @param params
+     * @return connected subgraphs
+     */
     @Override
     public ArrayList<ArrayList<Node>> partition(int max, Graph g, Props params) {
         maxNodesInCluster = max;
