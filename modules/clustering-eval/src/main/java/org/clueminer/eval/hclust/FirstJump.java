@@ -41,15 +41,6 @@ public class FirstJump implements CutoffStrategy {
         return name;
     }
 
-    @Override
-    public double findCutoff(HierarchicalResult hclust, Props params) {
-        double res;
-
-        res = tryJumps(hclust);
-
-        return res;
-    }
-
     /**
      * Look for first jump several times higher than the average. If no jump
      * exists, decrease the threshold and repeat.
@@ -57,15 +48,18 @@ public class FirstJump implements CutoffStrategy {
      * @param hclust
      * @return
      */
-    public double tryJumps(HierarchicalResult hclust) {
+    @Override
+    public double findCutoff(HierarchicalResult hclust, Props params) {
+        double result = 0;
         double average = computeAverageHeight(hclust);
         for (int i = start; i >= 0; i /= factor) {
-            double result = findFirstJump(hclust, average * i);
+            result = findFirstJump(hclust, average * i);
             if (result != 0) {
                 return result;
             }
         }
-        return 0;
+
+        return result;
     }
 
     /**
