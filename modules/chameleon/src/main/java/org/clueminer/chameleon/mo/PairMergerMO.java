@@ -82,7 +82,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
             throw new RuntimeException("you must specify at least 2 objectives");
         }
         MergeEvaluationFactory mef = MergeEvaluationFactory.getInstance();
-        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.name));
+        eval = mef.getProvider(pref.get(Chameleon.SORT_OBJECTIVE, ShatovskaSimilarity.NAME));
 
         //initialize queue
         initQueue(pref);

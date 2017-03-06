@@ -24,20 +24,20 @@ import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Pair;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Does not improve performance as expected
  *
  * @author deric
  */
-@Deprecated
-public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
+@ServiceProvider(service = MergeEvaluation.class)
+public class Ch2<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "BBK2";
+    public static final String NAME = "Ch2";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -53,13 +53,15 @@ public class BBK2<E extends Instance> extends AbstractSimilarity<E> implements M
         int j = y.getClusterId();
         double ec1 = x.getEdgeCount();
         double ec2 = y.getEdgeCount();
+        //give higher similarity to pair of clusters where one cluster is formed by single item (we want to get rid of them)
+        if (ec1 == 0 || ec2 == 0) {
+            return gps.getECL(i, j) * params.getDouble(Chameleon.INDIVIDUAL_MULTIPLIER, 1000) * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), interconnectivityPriority);
+        }
 
-        double gamma = gps.getCnt(i, j) / (Math.min(ec1, ec2) + 1);
-        double ics = Math.max(Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL()), 1.0);
-        double cls = gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2) + (y.getACL() * ec2) / (ec1 + ec2));
-        double val = gamma
-                * Math.pow(cls, closenessPriority)
-                * Math.pow(ics, interconnectivityPriority);
+        double val = (gps.getCnt(i, j) / (Math.min(ec1, ec2)))
+                * Math.pow((gps.getECL(i, j) / ((x.getACL() * ec1) / (ec1 + ec2)
+                        + (y.getACL() * ec2) / (ec1 + ec2))), closenessPriority)
+                * Math.pow((Math.min(x.getACL(), y.getACL()) / Math.max(x.getACL(), y.getACL())), interconnectivityPriority);
 
         return val;
     }

@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeEvaluation.class)
 public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Standard-fixed";
+    public static final String NAME = "Standard-fixed";
     private final Interconnectivity<E> interconnectivity;
     private final Closeness<E> closeness;
 
@@ -45,7 +45,7 @@ public class RiRcSimilarity<E extends Instance> extends AbstractSimilarity<E> im
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

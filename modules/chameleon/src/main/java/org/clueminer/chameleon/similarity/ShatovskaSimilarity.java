@@ -40,11 +40,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = MergeEvaluation.class)
 public class ShatovskaSimilarity<E extends Instance> extends AbstractSimilarity<E> implements MergeEvaluation<E> {
 
-    public static final String name = "Shatovska";
+    public static final String NAME = "Shatovska";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

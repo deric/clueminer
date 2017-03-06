@@ -53,7 +53,7 @@ public class ChameleonTest {
         pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         final Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.NAME);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
         //TODO: graph storage influences dendrogram height?
@@ -93,7 +93,7 @@ public class ChameleonTest {
         pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         final Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.NAME);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
         pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
         //TODO: graph storage influences dendrogram height?
@@ -111,7 +111,7 @@ public class ChameleonTest {
         pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         Chameleon ch = new Chameleon();
         pref.putInt(Chameleon.K, 5);
-        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.name);
+        pref.put(Chameleon.SIM_MEASURE, RiRcSimilarity.NAME);
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 0.5);
         //putting 1 disable this optimization
         pref.putInt(Chameleon.INDIVIDUAL_MULTIPLIER, 1);
