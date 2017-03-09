@@ -367,27 +367,30 @@ public class Chart {
      */
     public Point2D positionOnCanvas(double x, double y) {
         Rectangle2D bounds = chartPainter.getPlot().getBounds();
+        Point2D res = new Point2D.Double();
 
-        StyleManager styleManager = chartPainter.getStyleManager();
+        if (bounds != null) {
+            StyleManager styleManager = chartPainter.getStyleManager();
+            double xMin = chartPainter.getAxisPair().getXAxis().getMin();
+            double xMax = chartPainter.getAxisPair().getXAxis().getMax();
 
-        double xMin = chartPainter.getAxisPair().getXAxis().getMin();
-        double xMax = chartPainter.getAxisPair().getXAxis().getMax();
+            double yMin = chartPainter.getAxisPair().getYAxis().getMin();
+            double yMax = chartPainter.getAxisPair().getYAxis().getMax();
 
-        double yMin = chartPainter.getAxisPair().getYAxis().getMin();
-        double yMax = chartPainter.getAxisPair().getYAxis().getMax();
+            // X-Axis
+            double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
+            double xLeftMargin = Utils.getTickStartOffset((int) bounds.getWidth(), xTickSpace);
 
-        // X-Axis
-        double xTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getWidth();
-        double xLeftMargin = Utils.getTickStartOffset((int) bounds.getWidth(), xTickSpace);
+            // Y-Axis
+            double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
+            double yTopMargin = Utils.getTickStartOffset((int) bounds.getHeight(), yTickSpace);
 
-        // Y-Axis
-        double yTickSpace = styleManager.getAxisTickSpacePercentage() * bounds.getHeight();
-        double yTopMargin = Utils.getTickStartOffset((int) bounds.getHeight(), yTickSpace);
+            double xTransform = xLeftMargin + ((x - xMin) / (xMax - xMin) * xTickSpace);
+            double yTransform = bounds.getHeight() - (yTopMargin + (y - yMin) / (yMax - yMin) * yTickSpace);
 
-        double xTransform = xLeftMargin + ((x - xMin) / (xMax - xMin) * xTickSpace);
-        double yTransform = bounds.getHeight() - (yTopMargin + (y - yMin) / (yMax - yMin) * yTickSpace);
-
-        return new Point2D.Double(bounds.getX() + xTransform, bounds.getY() + yTransform);
+            res.setLocation(bounds.getX() + xTransform, bounds.getY() + yTransform);
+        }
+        return res;
     }
 
     public Rectangle2D.Double getPlotArea() {
