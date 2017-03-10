@@ -23,13 +23,14 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Method for finding largest gap in the dendrogram tree.
  *
  * @author Tomas Bruna
  */
 @ServiceProvider(service = CutoffStrategy.class)
 public class FirstJump implements CutoffStrategy {
 
-    public static final String name = "FirstJump";
+    public static final String NAME = "FirstJump";
 
     // Values with best average performance found by several experiments
     // Values 100 and 2 give much better results on specific datasets but not on average
@@ -38,7 +39,7 @@ public class FirstJump implements CutoffStrategy {
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**

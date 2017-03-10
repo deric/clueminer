@@ -327,7 +327,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
                 }
             } while (added == 0 && k < kdTree.size());
             if (k > kdTree.size()) {
-                LOG.warn("could not find nearest neighbors for cluster {}, tried k = {}", cluster.getClusterId(), k);
+                LOG.trace("could not find nearest neighbors for cluster {}, tried k = {}", cluster.getClusterId(), k);
             }
             //LOG.info("added {} nn", added);
 
