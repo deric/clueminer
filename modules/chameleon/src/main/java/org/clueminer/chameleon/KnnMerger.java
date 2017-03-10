@@ -17,17 +17,21 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
+import org.clueminer.chameleon.similarity.CLS;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.kdtree.KDTree;
 import org.clueminer.kdtree.KeyDuplicateException;
 import org.clueminer.kdtree.KeySizeException;
+import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
@@ -44,14 +48,32 @@ import org.slf4j.LoggerFactory;
  * @param <E>
  */
 @ServiceProvider(service = Merger.class)
-public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merger<E> {
+public class KnnMerger<E extends Instance> extends PairMerger<E> implements Merger<E> {
 
     public static final String NAME = "k-NN merger";
+    protected KDTree<GraphCluster<E>> kdTree;
     private static final Logger LOG = LoggerFactory.getLogger(KnnMerger.class);
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params, ArrayList<E> noise) {
+        this.graph = graph;
+        this.bisection = bisection;
+        blacklist = new HashSet<>();
+        clusters = createClusters(clusterList, bisection, params);
+        assignNodesToCluters(clusters);
+        computeExternalProperties(clusters);
+        if (noise == null) {
+            noise = new ArrayList<>();
+        }
+        prefilter(clusters, noise, params);
+        LOG.debug("creating tree with {} clusters and {} noisy points ", clusters.size(), noise.size());
+        nodes = initiateTree(clusters, noise);
+        return noise;
     }
 
     @Override
@@ -66,6 +88,70 @@ public class KnnMerger<E extends Instance> extends FastMerger<E> implements Merg
             }
         }
         //renumberClusters(clusters, noise);
+    }
+
+    /**
+     * Using only k would cause problems on some datasets, e.g. 3-spiral
+     *
+     * @param pref
+     * @return
+     */
+    private int getK(Props pref) {
+        return 2 * pref.getInt("k", 15);
+    }
+
+    /**
+     * Initialize cluster pairs based on its nearest-neighbors. We don't compute
+     * full similarity matrix.
+     *
+     * @param numClusters
+     * @param pref
+     * @return
+     */
+    @Override
+    protected int buildQueue(int numClusters, Props pref) {
+        int k = getK(pref);
+        int capacity = k * numClusters;
+        pq = initQueue(capacity);
+        double sim;
+        //number of nearest clusters that we evaluate
+
+        //AbstractSimilarity as = (AbstractSimilarity) evaluation;
+        //GraphPropertyStore gps = as.getGraphPropertyStore(clusters.get(0));
+        int maxClusterId = clusters.size();
+        CLS<E> closeness = new CLS<>();
+
+        E centroid;
+        for (GraphCluster<E> a : clusters) {
+            try {
+                //find nearest neighbors
+                centroid = a.getCentroid();
+                if (centroid == null) {
+                    throw new RuntimeException("no centroid of cluster " + a.toString());
+                }
+                List<GraphCluster<E>> nn = kdTree.nearest(centroid, k);
+                //for each NN compute their similarities
+                for (GraphCluster<E> b : nn) {
+                    if (a.getClusterId() != b.getClusterId()) {
+                        sim = evaluation.score(a, b, pref);
+                        if (sim > 0) {
+                            pq.add(new PairValue<>(a, b, sim));
+                        } else {
+                            sim = closeness.score(a, b, pref);
+                            if (sim > 0) {
+                                //System.out.println("CLS (" + a.getClusterId() + "," + b.getClusterId() + ") = " + sim);
+                                pq.add(new PairValue<>(a, b, sim));
+                            }
+                            //System.out.println("excluding pair " + a + ", " + b);
+                        }
+                        //gps.dump();
+                    }
+                }
+            } catch (KeySizeException | IllegalArgumentException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return maxClusterId;
     }
 
     @Override
