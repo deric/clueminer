@@ -35,6 +35,8 @@ import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -80,6 +82,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * Distance measure used by the k-NN algorithm
      */
     protected Distance dm;
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractMerger.class);
 
     @Override
     public ArrayList<E> initialize(ArrayList<ArrayList<Node<E>>> clusterList, Graph<E> graph, Bisection bisection, Props params) {
@@ -301,9 +304,11 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
             cnt = cnt1 + cnt2;
             if (cnt > 0) {
                 ecl = eic / cnt;
+                //LOG.debug("left = {}, right = {}, IC = {}, CL = {}, size = {}", i, cluster.getClusterId(), eic, ecl, cnt);
+                gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
             }
-            gps.set(i, cluster.getClusterId(), eic, ecl, cnt);
         }
+        //LOG.debug("-----------");
         removeGraphPropertyStore(c1);
         removeGraphPropertyStore(c2);
     }

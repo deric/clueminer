@@ -162,11 +162,25 @@ public class GraphPropertyStore {
         }
     }
 
+    /**
+     * Interconnectivity
+     *
+     * @param i
+     * @param j
+     * @return
+     */
     public double getEIC(int i, int j) {
         ExtProp r = get(i, j);
         return r.EIC;
     }
 
+    /**
+     * Closeness
+     *
+     * @param i
+     * @param j
+     * @return
+     */
     public double getECL(int i, int j) {
         ExtProp r = get(i, j);
         return r.ECL;
