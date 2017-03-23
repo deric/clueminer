@@ -263,9 +263,10 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
             return true;
         }
         attr = container.getAttribute(attrIndex);
-        AttributeRole role = guessAttrType(attr.getName(), attr);
-        LOG.info("column ''{}'' doesn't look like a type information. guessing type to: {}", column, role);
-
+        if (attr != null) {
+            AttributeRole role = guessAttrType(attr.getName(), attr);
+            LOG.info("column ''{}'' doesn't look like a type information. guessing type to: {}", column, role);
+        }
         return false;
     }
 
