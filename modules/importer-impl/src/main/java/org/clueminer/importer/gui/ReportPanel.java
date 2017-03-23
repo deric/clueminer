@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.swing.ButtonGroup;
@@ -99,6 +100,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
     private static final Logger LOG = LoggerFactory.getLogger(ReportPanel.class);
     private FileObject currentFile;
     private static final RequestProcessor RP = new RequestProcessor("Preloading file");
+    private CountDownLatch initLatch = new CountDownLatch(1);
 
     /**
      * Creates new form ReportPanel
@@ -117,6 +119,7 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
                 initPreview();
                 initImporters();
                 initProcessorsUI();
+                initLatch.countDown();
             }
         });
 
@@ -135,7 +138,12 @@ public class ReportPanel extends javax.swing.JPanel implements AnalysisListener,
             Report report = container.getReport();
             //currentReader = container.getLoader().getLineReader();
             report.pruneReport(ISSUES_LIMIT);
-            fillIssues(report);
+            try {
+                initLatch.await();
+                fillIssues(report);
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
             fillReport(report);
         }
 
