@@ -254,7 +254,7 @@ public class CsvImporter<E extends InstanceDraft> extends AbstractLineImporter<E
             //attr = getAttribute(attrIndex);
             attr = container.getAttribute(attrIndex);
             // TODO: type has value "java.lang.Double" but we're passing "double"
-            if (!attr.getJavaType().equals(res)) {
+            if (attr != null && !attr.getJavaType().equals(res)) {
                 LOG.info("type changed {} from {} to {}", container.getAttribute(attrIndex).getName(), attr.getJavaType(), type);
                 report.logIssue(new Issue(container.getAttribute(attrIndex).getName() + "type changed from " + type + " to " + attr.getJavaType(), Issue.Level.INFO));
                 attr.setJavaType(res);
