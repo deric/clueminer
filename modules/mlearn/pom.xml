@@ -82,7 +82,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>importer-api</artifactId>
+            <artifactId>io-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
