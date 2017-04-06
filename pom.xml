@@ -224,7 +224,6 @@
         <module>modules/gnuplot</module>
         <module>modules/dataset-benchmark</module>
         <module>modules/mlearn</module>
-        <module>modules/importer-api</module>
         <module>modules/importer-impl</module>
         <module>modules/clustering-evolution</module>
         <module>modules/timechart</module>
