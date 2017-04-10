@@ -416,6 +416,10 @@ public class DynamicTreeData implements DendroTreeData {
         if (node.isLeaf()) {
             return node.getPosition();
         }
+        if (node == node.getLeft() || node == node.getRight()) {
+            throw new RuntimeException("Recursion detected. " + node.toString()
+                    + " references to L: " + node.getLeft().toString() + ", R: " + node.getRight().toString());
+        }
         //System.out.println(node.getId() + "L: " + node.getLeft() + ", R: " + node.getRight());
         double position = (updatePositions(node.getLeft()) + updatePositions(node.getRight())) / 2.0;
         node.setPosition(position);

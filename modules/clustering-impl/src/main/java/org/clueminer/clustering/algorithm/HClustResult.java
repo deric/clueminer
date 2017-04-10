@@ -354,8 +354,12 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
                 assign[node.getId()] = c.getClusterId();
             }
         } else {
-            subtreeToCluster(node.getLeft(), c, assign);
-            subtreeToCluster(node.getRight(), c, assign);
+            if (node == node.getLeft() || node == node.getRight()) {
+                LOG.warn("Recursion detected! {}, L: {}, R: {}", node.toString(), node.getLeft().toString(), node.getRight().toString());
+            } else {
+                subtreeToCluster(node.getLeft(), c, assign);
+                subtreeToCluster(node.getRight(), c, assign);
+            }
         }
     }
 
