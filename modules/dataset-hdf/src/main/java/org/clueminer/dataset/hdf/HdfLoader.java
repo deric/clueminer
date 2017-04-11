@@ -24,6 +24,12 @@ import java.util.Arrays;
 import ncsa.hdf.hdf5lib.H5;
 import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_ACC_RDONLY;
 import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_ALL;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_ATTR;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_DATASET;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_DATATYPE;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_FILE;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_GROUP;
+import static ncsa.hdf.hdf5lib.HDF5Constants.H5F_OBJ_LOCAL;
 import static ncsa.hdf.hdf5lib.HDF5Constants.H5P_DEFAULT;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -78,6 +84,14 @@ public class HdfLoader<E extends Instance> implements DatasetLoader<E> {
                 status = H5.H5Fget_obj_ids(file_id, H5F_OBJ_ALL, nObjs, ids);
                 LOG.debug("object ids {}", Arrays.toString(ids));
 
+                long s = H5.H5Pget_nprops(plist);
+                LOG.debug("property list size: {}", s);
+
+                for (int obj : ids) {
+                    int objtype = H5.H5Gget_objtype_by_idx(obj, 0);
+                    LOG.debug("obj type {}", type2str(objtype));
+                }
+
                 //H5.H5Dget_space(0);
             } else {
                 LOG.warn("Dataset {} seems to be empty", name);
@@ -97,6 +111,26 @@ public class HdfLoader<E extends Instance> implements DatasetLoader<E> {
         }
 
         return success;
+    }
+
+    private String type2str(int type) {
+        if (type == H5F_OBJ_GROUP) {
+            return "group";
+        } else if (type == H5F_OBJ_FILE) {
+            return "file";
+        } else if (type == H5F_OBJ_DATATYPE) {
+            return "datatype";
+        } else if (type == H5F_OBJ_DATASET) {
+            return "dataset";
+        } else if (type == H5F_OBJ_ALL) {
+            return "all";
+        } else if (type == H5F_OBJ_ATTR) {
+            return "attr";
+        } else if (type == H5F_OBJ_LOCAL) {
+            return "local";
+        } else {
+            return "unknown";
+        }
     }
 
     @Override
