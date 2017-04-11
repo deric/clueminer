@@ -42,7 +42,7 @@ public class ARFFHandlerTest<E extends Instance> {
 
     private static ARFFHandler arff;
     private static CommonFixture tf;
-    private static double DELTA = 1e-9;
+    private static final double DELTA = 1e-9;
 
     @BeforeClass
     public static void setUpClass() {
@@ -68,11 +68,6 @@ public class ARFFHandlerTest<E extends Instance> {
         assertTrue(arff.isValidAttributeDefinition("@Attribute F22 {0,1}"));
     }
 
-    /**
-     * Test of load method, of class ARFFHandler.
-     *
-     * @throws java.lang.Exception
-     */
     @Test
     public void testLoad_File_Dataset() throws Exception {
         //load wine

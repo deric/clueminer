@@ -93,6 +93,15 @@ Debian/Ubuntu:
 apt install r-cran-rjava
 ```
 
+## HDF support
+
+Library `libjhdf5` is needed to be present on library path.
+
+Debian/Ubuntu:
+```
+apt install libjhdf5
+```
+
 ## OpenGL support
 
 For OpenGL visualizations you'll need native extensions

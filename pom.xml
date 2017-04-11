@@ -252,6 +252,7 @@
         <module>modules/core-lib-wrapper</module>
         <module>meta-engine</module>
         <module>modules/io-api</module>
+        <module>modules/dataset-hdf</module>
     </modules>
     <reporting>
         <plugins>

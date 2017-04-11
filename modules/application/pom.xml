@@ -233,6 +233,11 @@
             <artifactId>meta-engine</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dataset-hdf</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

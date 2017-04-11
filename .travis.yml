@@ -13,6 +13,7 @@ addons:
   apt:
     packages:
       - r-cran-rjava
+      - libjhdf5-jni
 env:
   - DISPLAY=:99.0
 branches:

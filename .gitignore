@@ -33,3 +33,5 @@ logs/
 /modules/dendrogram/nbproject/
 /modules/approximation-impl/nbproject/
 /modules/clustering-gui/nbproject/
+/modules/dataset-hdf/dataset-hdf/nbproject/
+/modules/dataset-hdf/nbproject/
