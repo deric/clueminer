@@ -36,7 +36,7 @@
         <clueminer.guava.version>19.0</clueminer.guava.version>
         <clueminer.gson.version>2.6.2</clueminer.gson.version>
         <clueminer.maven-jar.version>2.6</clueminer.maven-jar.version>
-        <clueminer.slf4j.version>1.7.21</clueminer.slf4j.version>
+        <clueminer.slf4j.version>1.7.25</clueminer.slf4j.version>
     </properties>
     <parent>
         <groupId>org.sonatype.oss</groupId>

@@ -61,7 +61,7 @@ public class FlowView extends TreeTableView {
             public void drop(DropTargetDropEvent dtde) {
                 try {
                     FlowNode flow = (FlowNode) dtde.getTransferable().getTransferData(FlowFlavor.FLOW_NODE);
-                    FlowNodeContainer dataNode = new FlowNodeContainer(flow);
+                    FlowNodeContainer dataNode = new FlowNodeContainer(flow, container);
                     //ExplorerManager.find(getParent()).getRootContext().getChildren().add(new Node[]{dataNode});
                     container.add(dataNode);
                 } catch (Exception e) {
@@ -74,5 +74,10 @@ public class FlowView extends TreeTableView {
 
         setDropTarget(dt);
     }
+
+    public NodeContainer getContainer() {
+        return container;
+    }
+
 
 }

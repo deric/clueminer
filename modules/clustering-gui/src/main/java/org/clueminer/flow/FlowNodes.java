@@ -19,6 +19,7 @@ package org.clueminer.flow;
 import java.util.Collection;
 import org.clueminer.flow.api.FlowNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-public class FlowNodes extends Children.SortedArray {
+public class FlowNodes extends Children.SortedArray implements FlowNodeModel {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodes.class);
 
@@ -41,9 +42,19 @@ public class FlowNodes extends Children.SortedArray {
         FlowNodeContainer[] cont = new FlowNodeContainer[res.size()];
         int i = 0;
         for (FlowNode fn : res) {
-            cont[i++] = new FlowNodeContainer(fn);
+            cont[i++] = new FlowNodeContainer(fn, this);
         }
         add(cont);
+    }
+
+    @Override
+    public boolean add(FlowNodeContainer node) {
+        return add(new Node[]{node});
+    }
+
+    @Override
+    public boolean remove(FlowNodeContainer node) {
+        return remove(new Node[]{node});
     }
 
 }

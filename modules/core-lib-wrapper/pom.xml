@@ -29,6 +29,8 @@
                         <publicPackage>org.apache.logging.log4j.*</publicPackage>
                         <publicPackage>org.slf4j.impl.*</publicPackage>
                         <publicPackage>org.slf4j.*</publicPackage>
+                        <publicPackage>org.slf4j.spi.*</publicPackage>
+                        <publicPackage>org.slf4j.helpers.*</publicPackage>
                         <publicPackage>smile.core.*</publicPackage>
                         <publicPackage>smile.math.*</publicPackage>
                         <publicPackage>smile.stat.*</publicPackage>
@@ -90,7 +92,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.7</version>
+            <version>2.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

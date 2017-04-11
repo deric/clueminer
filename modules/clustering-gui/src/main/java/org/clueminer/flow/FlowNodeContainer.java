@@ -47,9 +47,11 @@ public class FlowNodeContainer extends AbstractNode implements Transferable, Com
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeContainer.class);
     private final DataFlavor[] flavors = new DataFlavor[]{FlowFlavor.FLOW_NODE};
+    private final FlowNodeModel model;
 
-    public FlowNodeContainer(FlowNode fn) {
+    public FlowNodeContainer(FlowNode fn, FlowNodeModel model) {
         super(Children.LEAF, Lookups.singleton(fn));
+        this.model = model;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FlowNodeContainer extends AbstractNode implements Transferable, Com
 
     @Override
     public Action[] getActions(boolean popup) {
-        return new Action[]{new PropertiesAction()};
+        return new Action[]{new DeleteAction(), new PropertiesAction()};
     }
 
     /*
@@ -158,6 +160,25 @@ public class FlowNodeContainer extends AbstractNode implements Transferable, Com
                 //update flow configuration
                 fn.setProps(nodePanel.getParams());
             }
+        }
+    }
+
+    public FlowNodeContainer getNode() {
+        return this;
+    }
+
+    private class DeleteAction extends AbstractAction {
+
+        public DeleteAction() {
+            putValue(NAME, NbBundle.getMessage(FlowNodeContainer.class, "FlowNodeContainer.actions.Delete.name"));
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            FlowNode fn = getData();
+
+            model.remove(getNode());
+
         }
     }
 

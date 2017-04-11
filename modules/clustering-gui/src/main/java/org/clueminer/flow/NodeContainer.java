@@ -26,7 +26,7 @@ import org.openide.nodes.Node;
  *
  * @author deric
  */
-public class NodeContainer extends Index.ArrayChildren {
+public class NodeContainer extends Index.ArrayChildren implements FlowNodeModel {
 
     private List<Node> list = new ArrayList<>();
 
@@ -46,6 +46,16 @@ public class NodeContainer extends Index.ArrayChildren {
 
     public void add(Node n) {
         add(new Node[]{n});
+    }
+
+    @Override
+    public boolean add(FlowNodeContainer node) {
+        return add(new Node[]{node});
+    }
+
+    @Override
+    public boolean remove(FlowNodeContainer node) {
+        return remove(new Node[]{node});
     }
 
 }
