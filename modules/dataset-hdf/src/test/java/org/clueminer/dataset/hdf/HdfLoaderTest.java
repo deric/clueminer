@@ -16,10 +16,11 @@
  */
 package org.clueminer.dataset.hdf;
 
-import java.io.File;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
+import org.clueminer.fixtures.MLearnFixture;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,6 +31,7 @@ import org.junit.Test;
 public class HdfLoaderTest {
 
     private HdfLoader subject;
+    private static final MLearnFixture MF = new MLearnFixture();
 
     @Before
     public void setUp() {
@@ -38,9 +40,8 @@ public class HdfLoaderTest {
 
     @Test
     public void testLoad_File_Dataset() throws Exception {
-        File file = new File("/home/deric/_bench/the_matrix_scenes.hdf5");
         Dataset<Instance> output = new ArrayDataset(100, 50);
-        boolean ret = subject.load(file, output);
+        boolean ret = subject.load(MF.hdfSample(), output);
         assertTrue("expected dataset load to be successful", ret);
     }
 
