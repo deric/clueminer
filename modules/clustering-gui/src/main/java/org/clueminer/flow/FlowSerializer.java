@@ -16,18 +16,27 @@
  */
 package org.clueminer.flow;
 
-import java.io.Serializable;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  *
  * @author deric
  */
-public interface FlowNodeModel extends Serializable {
+public class FlowSerializer {
 
-    boolean add(FlowNodeContainer node);
-
-    boolean remove(FlowNodeContainer node);
-
-    String serialize();
+    public static void write(File file, String content) throws IOException {
+        BufferedWriter bw = null;
+        try (FileWriter fw = new FileWriter(file)) {
+            bw = new BufferedWriter(fw);
+            bw.write(content);
+        } finally {
+            if (bw != null) {
+                bw.close();
+            }
+        }
+    }
 
 }

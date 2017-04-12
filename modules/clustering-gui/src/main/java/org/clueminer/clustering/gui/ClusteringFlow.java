@@ -39,6 +39,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.flow.api.AbsFlowNode;
 import org.clueminer.flow.api.FlowError;
 import org.clueminer.flow.api.FlowNode;
+import org.clueminer.gui.msg.MessageUtil;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -212,6 +213,11 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         params.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         LOG.info("clustering {}", params.toString());
+        updateAlgorithm(params);
+        if (algorithm == null) {
+            MessageUtil.error("No clustering algorithm was specified!");
+            throw new FlowError("missing clustering algorithm");
+        }
         AgglomerativeClustering aggl = (AgglomerativeClustering) algorithm;
         LOG.info("algorithm is {}", algorithm.getName());
         LOG.info("dataset: {}", dataset.getName());

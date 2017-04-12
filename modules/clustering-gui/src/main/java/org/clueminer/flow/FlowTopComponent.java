@@ -18,6 +18,10 @@ package org.clueminer.flow;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
+import org.clueminer.gui.msg.MessageUtil;
+import org.clueminer.utils.FileUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -26,6 +30,8 @@ import org.openide.explorer.ExplorerUtils;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Top component which displays something.
@@ -60,6 +66,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
     private FlowView treeView;
     private FlowNodeFactory factory;
     private NodeContainer container = new NodeContainer();
+    private Logger LOG = LoggerFactory.getLogger(FlowTopComponent.class);
 
     public FlowTopComponent() {
         initComponents();
@@ -123,13 +130,26 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
-        // TODO store your settings
+        LOG.debug("saving current flow");
+        try {
+            FlowSerializer.write(latestFlow(), container.serialize());
+        } catch (IOException ex) {
+            MessageUtil.error("Failed to save current flow process", ex);
+        }
     }
 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
-        // TODO read your settings according to their version
+        if(latestFlow().exists()){
+            //load flow
+            LOG.debug("found flow");
+        }
     }
+
+    private File latestFlow(){
+        return new File(FileUtils.appFolder() + "latest_flow.json");
+    }
+
 
     @Override
     public ExplorerManager getExplorerManager() {

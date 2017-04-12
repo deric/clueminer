@@ -16,7 +16,9 @@
  */
 package org.clueminer.flow;
 
+import com.google.gson.Gson;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import org.openide.nodes.Index;
@@ -28,7 +30,7 @@ import org.openide.nodes.Node;
  */
 public class NodeContainer extends Index.ArrayChildren implements FlowNodeModel {
 
-    private List<Node> list = new ArrayList<>();
+    private final List<Node> list = new ArrayList<>();
 
 
     @Override
@@ -56,6 +58,15 @@ public class NodeContainer extends Index.ArrayChildren implements FlowNodeModel 
     @Override
     public boolean remove(FlowNodeContainer node) {
         return remove(new Node[]{node});
+    }
+
+    @Override
+    public String serialize() {
+        Gson gson = new Gson();
+        HashMap<String, String> data = new HashMap<>();
+        data.put("version", "1.0");
+
+        return gson.toJson(data);
     }
 
 }

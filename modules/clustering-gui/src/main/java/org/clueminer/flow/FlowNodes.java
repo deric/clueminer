@@ -57,4 +57,9 @@ public class FlowNodes extends Children.SortedArray implements FlowNodeModel {
         return remove(new Node[]{node});
     }
 
+    @Override
+    public String serialize() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
