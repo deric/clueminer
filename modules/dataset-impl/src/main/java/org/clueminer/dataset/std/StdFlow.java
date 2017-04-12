@@ -62,6 +62,7 @@ public class StdFlow<E extends Instance> extends AbsFlowNode implements FlowNode
         Dataset<E> dataset = (Dataset<E>) inputs[0];
         Dataset<E> norm = ds.standartize(dataset, method, logscale);
         ret[0] = norm;
+        LOG.debug("output dataset  {}x{}", dataset.size(), dataset.attributeCount());
         LOG.info("finished normalization");
         return ret;
     }

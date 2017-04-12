@@ -1,10 +1,24 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.export.impl;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -17,6 +31,8 @@ import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -30,7 +46,7 @@ public abstract class AbstractExporter implements ActionListener {
     protected DialogDescriptor dialog = null;
     protected File defaultFolder = null;
     protected FileFilter fileFilter;
-    private static final Logger logger = Logger.getLogger(AbstractExporter.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractExporter.class);
 
     public abstract String getName();
 
@@ -87,7 +103,7 @@ public abstract class AbstractExporter implements ActionListener {
             NotifyDescriptor d
                     = new NotifyDescriptor.Message("No data for export", NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(d);
-            logger.warning("missing data for export");
+            LOG.warn("missing data for export");
             return;
         }
         String folder = pref.get(prefKey, null);
@@ -136,14 +152,14 @@ public abstract class AbstractExporter implements ActionListener {
     protected void createTask(final File file, Preferences pref, final ProgressHandle ph) {
         task = RP.create(getRunner(file, pref, ph));
         //task.addTaskListener(analysis);
-        logger.log(Level.INFO, "starting export to {0}", file.getAbsolutePath());
+        LOG.info("starting export to {}", file.getAbsolutePath());
         task.addTaskListener(new TaskListener() {
             @Override
             public void taskFinished(org.openide.util.Task task) {
                 //make sure that we get rid of the ProgressHandle
                 //when the task is finished
                 ph.finish();
-                logger.log(Level.INFO, "export to {0} finished", file.getAbsolutePath());
+                LOG.info("export to {} finished", file.getAbsolutePath());
             }
         });
         task.schedule(0);

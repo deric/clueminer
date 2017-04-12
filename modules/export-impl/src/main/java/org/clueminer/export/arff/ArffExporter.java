@@ -36,7 +36,7 @@ import org.clueminer.clustering.gui.ClusteringExportGui;
 public class ArffExporter extends ClusteringExporter implements ActionListener, ClusteringExportGui {
 
     public static final String title = "Export to ARFF (cluster number as label)";
-    public static final String ext = ".arff";
+    public static final String EXT = ".arff";
 
     @Override
     public String getName() {
@@ -75,7 +75,7 @@ public class ArffExporter extends ClusteringExporter implements ActionListener, 
 
     @Override
     public String getExtension() {
-        return ext;
+        return EXT;
     }
 
     @Override

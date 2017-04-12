@@ -6,9 +6,9 @@ import java.util.prefs.Preferences;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.gui.ClusteringExportGui;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.lookup.ServiceProvider;
-import org.clueminer.clustering.gui.ClusteringExportGui;
 
 /**
  *
@@ -19,7 +19,7 @@ public class CsvExporter extends ClusteringExporter implements ActionListener, C
 
     private CsvOptions options;
     public static final String title = "Export to CSV";
-    public static final String ext = ".csv";
+    public static final String EXT = ".csv";
 
     public CsvExporter() {
     }
@@ -64,7 +64,7 @@ public class CsvExporter extends ClusteringExporter implements ActionListener, C
 
     @Override
     public String getExtension() {
-        return ext;
+        return EXT;
     }
 
     @Override

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.export.evolution;
 
 import java.io.File;
@@ -20,7 +36,7 @@ public class EvolutionCsvExporter extends AbstractExporter implements EvolutionE
     private static final String name = "CSV";
     private CsvEvolutionOptions options;
     private Evolution evolution;
-    private static final String ext = ".csv";
+    private static final String EXT = ".csv";
 
     @Override
     public String getName() {
@@ -53,7 +69,7 @@ public class EvolutionCsvExporter extends AbstractExporter implements EvolutionE
                 @Override
                 public boolean accept(File file) {
                     String filename = file.getName();
-                    return file.isDirectory() || filename.endsWith(ext);
+                    return file.isDirectory() || filename.endsWith(EXT);
                 }
 
                 @Override
