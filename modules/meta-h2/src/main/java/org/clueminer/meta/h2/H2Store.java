@@ -75,7 +75,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     }
 
     public static String getDbDir() {
-        return FileUtils.LocalFolder() + File.separatorChar + "db";
+        return FileUtils.appFolder() + File.separatorChar + "db";
     }
 
     @Override

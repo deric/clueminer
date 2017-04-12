@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -32,7 +33,7 @@ import org.openide.util.NbBundle;
  */
 public final class FileUtils {
 
-    public static String LocalFolder() {
+    public static String appFolder() {
         String result = System.getProperty("user.home") + File.separator
                 + NbBundle.getMessage(
                         FileUtils.class,
@@ -41,42 +42,32 @@ public final class FileUtils {
         return result;
     }
 
-    public static String LogFolder() {
-        String result = LocalFolder() + File.separator + "log";
+    public static String logFolder() {
+        String result = appFolder() + File.separator + "logs";
         ensureFolder(result);
         return result;
     }
 
-    public static String LogFile() {
-        String result = LogFolder() + File.separator + "log.txt";
+    public static String logFile() {
+        String result = logFolder() + File.separator + "clueminer.log";
         createFile(result);
         return result;
     }
 
-    public static String ErrorFile() {
-        String result = LogFolder() + File.separator + "err.txt";
+    public static String errorFile() {
+        String result = logFolder() + File.separator + "error.log";
         createFile(result);
         return result;
     }
 
-    public static String SettingsFolder() {
-        String result = LocalFolder() + File.separator + "settings";
+    public static String settingsFolder() {
+        String result = appFolder() + File.separator + "settings";
         ensureFolder(result);
-        return result;
-    }
-
-    public static String UserFile() {
-        String result = SettingsFolder() + File.separator + "user.xml";
-        return result;
-    }
-
-    public static String RegisterFile() {
-        String result = SettingsFolder() + File.separator + "registred.xml";
         return result;
     }
 
     public static String cacheFolder() {
-        String result = LocalFolder() + File.separator + "cache";
+        String result = appFolder() + File.separator + "cache";
         ensureFolder(result);
         return result;
     }
@@ -92,18 +83,14 @@ public final class FileUtils {
     }
 
     public static String getHistoryFolder() {
-        String result = LocalFolder() + File.separator + "history";
+        String result = appFolder() + File.separator + "history";
         ensureFolder(result);
         return result;
     }
 
-    public static File samplesFile() {
-        String result = LocalFolder() + File.separator + "samples.xml";
-        return new File(result);
-    }
 
     public static String templatesFolder() {
-        String result = LocalFolder() + File.separator + "templates";
+        String result = appFolder() + File.separator + "templates";
         ensureFolder(result);
         return result;
     }
@@ -135,7 +122,7 @@ public final class FileUtils {
         try {
             FileObject file = FileUtil.createData(f);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Exceptions.printStackTrace(ex);
         }
     }
 
