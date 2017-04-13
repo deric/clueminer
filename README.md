@@ -99,7 +99,7 @@ Library `libjhdf5` is needed to be present on library path.
 
 Debian/Ubuntu:
 ```
-apt install libjhdf5
+apt install libjhdf5-jni
 ```
 
 ## OpenGL support
