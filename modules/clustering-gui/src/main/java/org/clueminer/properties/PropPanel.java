@@ -97,7 +97,9 @@ public class PropPanel extends JPanel {
             Node.PropertySet[] sets = node.getPropertySets();
             int i = 0;
             for (Node.PropertySet set : sets) {
-                i = addSet(set, i);
+                if (set != null) {
+                    i = addSet(set, i);
+                }
             }
             validate();
             repaint();
