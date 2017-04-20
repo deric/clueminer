@@ -13,7 +13,9 @@ Prerequisites:
    * Java 8 or newer
    * Maven
 
+   * on Debian/Ubuntu Linux:
 
+            apt install maven libjhdf5 git
             git clone git://github.com/deric/clueminer.git
             cd clueminer
             git submodule init
