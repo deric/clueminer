@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -33,6 +32,8 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Instead of using this implementation directly it is better to create new
@@ -62,7 +63,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     private final transient AbstractLookup lookup;
     private String name;
     private int id;
-    private static final Logger LOGGER = Logger.getLogger(ClusterList.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterList.class);
 
     public ClusterList() {
         //some default capacity, to avoid problems with zero array size
@@ -432,7 +433,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
 
     @Override
     public boolean remove(int idx) {
-        if (idx > n || idx < 0) {
+        if (idx >= n || idx < 0) {
             return false;
         }
         if (data[idx] != null) {
@@ -505,7 +506,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         if (d != null) {
             c.setAttributes(d.getAttributes());
         } else {
-            LOGGER.warning("missing dataset, can't setup attributes");
+            LOG.warn("missing dataset, can't setup attributes");
         }
         put(clusterId, c);
         return c;
@@ -517,7 +518,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     @Override
     public C createCluster() {
         int attrSize = guessAttrCnt();
-        C c = (C) new BaseCluster<E>(5, attrSize);
+        C c = (C) new BaseCluster<>(5, attrSize);
         int clusterId = size();
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
@@ -545,7 +546,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     @Override
     public C createCluster(int clusterId, int capacity, String name) {
         int attrSize = guessAttrCnt();
-        C c = (C) new BaseCluster<E>(capacity, attrSize);
+        C c = (C) new BaseCluster<>(capacity, attrSize);
         c.setClusterId(clusterId);
         c.setName(name);
         put(clusterId, c);

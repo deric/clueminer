@@ -45,7 +45,7 @@ public class BaseClusterTest {
 
     private static Dataset<Instance> irisData;
     private static Clustering<Instance, Cluster<Instance>> irisClusters;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     @Before
     public void setUp() {
@@ -100,24 +100,15 @@ public class BaseClusterTest {
         assertEquals(4, subject.attributeCount());
     }
 
-    /**
-     * Test of add method, of class BaseCluster.
-     */
     @Test
     public void testAdd() {
     }
 
-    /**
-     * Test of contains method, of class BaseCluster.
-     */
     @Test
     public void testContains() {
         //assertEquals(true, irisClusters.contains(irisClusters.get(0)));
     }
 
-    /**
-     * Test of setClusterId method, of class BaseCluster.
-     */
     @Test
     public void testSetClusterId() {
         Cluster x = new BaseCluster(1);
@@ -126,27 +117,18 @@ public class BaseClusterTest {
         assertEquals(99, x.getClusterId());
     }
 
-    /**
-     * Test of getClusterId method, of class BaseCluster.
-     */
     @Test
     public void testGetClusterId() {
         //cluster ID start from 0 (programmers readable)
         assertEquals(0, irisClusters.get(0).getClusterId());
     }
 
-    /**
-     * Test of getColor method, of class BaseCluster.
-     */
     @Test
     public void testGetColor() {
         Cluster x = new BaseCluster(1);
         assertNull(x.getColor());
     }
 
-    /**
-     * Test of setColor method, of class BaseCluster.
-     */
     @Test
     public void testSetColor() {
         Cluster x = new BaseCluster(1);
@@ -155,9 +137,6 @@ public class BaseClusterTest {
         assertEquals(c, x.getColor());
     }
 
-    /**
-     * Test of getCentroid method, of class BaseCluster.
-     */
     @Test
     public void testGetCentroid() {
         Cluster a = irisClusters.get(0);
@@ -175,8 +154,8 @@ public class BaseClusterTest {
         a.builder().create(new double[]{2, 2});
         assertEquals(2, a.attributeCount());
         //centroid should be [2, 3]
-        assertEquals(2, a.getCentroid().get(0), delta);
-        assertEquals(2, a.getCentroid().get(1), delta);
+        assertEquals(2, a.getCentroid().get(0), DELTA);
+        assertEquals(2, a.getCentroid().get(1), DELTA);
     }
 
     @Test
@@ -189,17 +168,14 @@ public class BaseClusterTest {
         a.builder().create(new double[]{4, 0});
         assertEquals(2, a.attributeCount());
         //centroid should be [2, 3]
-        assertEquals(3, a.getCentroid().get(0), delta);
-        assertEquals(1, a.getCentroid().get(1), delta);
+        assertEquals(3, a.getCentroid().get(0), DELTA);
+        assertEquals(1, a.getCentroid().get(1), DELTA);
         //after adding instance centroid must be recomputed
         a.builder().create(new double[]{6, 1});
-        assertEquals(4, a.getCentroid().get(0), delta);
-        assertEquals(1, a.getCentroid().get(1), delta);
+        assertEquals(4, a.getCentroid().get(0), DELTA);
+        assertEquals(1, a.getCentroid().get(1), DELTA);
     }
 
-    /**
-     * Test of countMutualElements method, of class BaseCluster.
-     */
     @Test
     public void testCountMutualElements() {
         Cluster a = irisClusters.get(0);
@@ -209,9 +185,6 @@ public class BaseClusterTest {
         assertEquals(50, a.countMutualElements(a));
     }
 
-    /**
-     * Test of toString method, of class BaseCluster.
-     */
     @Test
     public void testToString() {
     }

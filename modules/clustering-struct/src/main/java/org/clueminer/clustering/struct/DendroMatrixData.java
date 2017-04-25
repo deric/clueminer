@@ -19,7 +19,6 @@ package org.clueminer.clustering.struct;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
@@ -27,6 +26,8 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data used for rendering dendrogram, might contain rows and columns clustering
@@ -45,7 +46,7 @@ public class DendroMatrixData<E extends Instance, C extends Cluster<E>> implemen
     private double mid = 0;
     private HierarchicalResult rowsResult;
     private HierarchicalResult colsResult;
-    private static final Logger log = Logger.getLogger(DendroMatrixData.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(DendroMatrixData.class);
 
     public DendroMatrixData() {
 
@@ -286,11 +287,11 @@ public class DendroMatrixData<E extends Instance, C extends Cluster<E>> implemen
     @Override
     public void printMappedMatix(int d) {
         if (!hasRowsClustering()) {
-            log.severe("missing row clustering");
+            LOG.error("missing row clustering");
             return;
         }
         if (!hasColumnsClustering()) {
-            log.severe("missing column clustering");
+            LOG.error("missing column clustering");
             return;
         }
         DecimalFormat format = new DecimalFormat();

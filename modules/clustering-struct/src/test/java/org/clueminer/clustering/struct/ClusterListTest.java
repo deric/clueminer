@@ -48,7 +48,7 @@ import org.openide.util.Exceptions;
 public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
 
     private static ClusterList subject;
-    private static final CommonFixture tf = new CommonFixture();
+    private static final CommonFixture CF = new CommonFixture();
     private static final double DELTA = 1e-9;
     private static Dataset<? extends Instance> irisCache;
 
@@ -172,6 +172,22 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
             clust.builder().create(new double[]{1.0, 1.0});
             clust.builder().create(new double[]{1.0, 0.0});
             clust.builder().create(new double[]{1.0, 2.0});
+        }
+
+        return clusters;
+    }
+
+    private Clustering<E, C> createClusters(int size) {
+        Clustering<E, C> clusters = new ClusterList<>(size);
+        assertEquals(0, clusters.size());
+        instanceIter(clusters);
+        for (int i = 0; i < size; i++) {
+            Cluster clust = clusters.createCluster();
+            clust.attributeBuilder().create("x", "NUMERIC");
+            clust.attributeBuilder().create("y", "NUMERIC");
+            clust.builder().create(new double[]{2.0 * i, 7 * i});
+            clust.builder().create(new double[]{0.5 * i, 6 * i});
+            clust.builder().create(new double[]{1.0, 0.0});
         }
 
         return clusters;
@@ -423,6 +439,28 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
         assertEquals(3, c1.size());
         //another cluster with ID 0 will be present
         assertEquals(0, c1.get(0).getClusterId());
+
+        //c1.remove(2);
+        for (Cluster<E> a : c1) {
+            System.out.println(a);
+            //assertNotNull(a);
+            //assertNotEquals(0, a.size());
+        }
+    }
+
+    @Test
+    public void testRemove2() {
+        Clustering<E, C> c1 = createClusters(10);
+        assertEquals(10, c1.size());
+        assertTrue(c1.remove(5));
+        assertTrue(c1.remove(6));
+//        c1.remove(7);
+
+        for (Cluster<E> a : c1) {
+            System.out.println(a);
+            //assertNotNull(a);
+            //assertNotEquals(0, a.size());
+        }
     }
 
     @Test
@@ -495,7 +533,7 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
             irisCache = new ArrayDataset(150, 4);
             ARFFHandler arff = new ARFFHandler();
             try {
-                arff.load(tf.irisArff(), irisCache, 4);
+                arff.load(CF.irisArff(), irisCache, 4);
             } catch (ParserError ex) {
                 Exceptions.printStackTrace(ex);
             }
