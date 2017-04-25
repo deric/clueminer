@@ -51,7 +51,6 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
     protected MergeEvaluation evaluation;
     private ArrayList<E> noise;
     private static final Logger LOG = LoggerFactory.getLogger(NDMerger.class);
-    private int removedClusters = 0;
 
     public static final String NAME = "ND merger";
 
@@ -90,12 +89,10 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
             clusterId += ret;
         }
 
-
         if (noise.size() > 0) {
             LOG.debug("curr dendrogram nodes: {}, clusters: {}, last cluster ID: {}", nodes.length, clusters.size(), clusterId);
             // remove empty tree nodes
-          nodes[clusters.size() - 1].level(); //update node levels
-               LOG.debug("last node in tree: {}", nodes[clusters.size() - 1]);
+            LOG.debug("last node in tree: {}", nodes[clusters.size() - 1]);
             DendroNode[] tmp = new DendroNode[clusters.size() + 1];
             LOG.debug("updated dendrogram nodes: {}", tmp.length);
             System.arraycopy(nodes, 0, tmp, 0, tmp.length);
@@ -105,8 +102,8 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
             nodes[nodes.length - 1].setLevel(0);
             result.setNoise(noise);
             /* GraphCluster<E> cnoise = new GraphCluster(noise, graph, clusterId, bisection, pref);
-               cnoise.setName(Algorithm.OUTLIER_LABEL);
-            clusters.add(cnoise); */
+             * cnoise.setName(Algorithm.OUTLIER_LABEL);
+             * clusters.add(cnoise); */
         }
         finalize(clusters, pq, dataset);
 
@@ -135,31 +132,31 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
     protected int singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
-        while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
-            curr = pq.poll();
+        while (blacklist.contains(i) || blacklist.contains(j)) {
+            if (!pq.isEmpty()) {
+                curr = pq.poll();
+            } else {
+                LOG.warn("emptied queue earlier than expected");
+                return 0;
+            }
             i = curr.A.getClusterId();
             j = curr.B.getClusterId();
         }
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        //in case of empty queue
-        if (blacklist.contains(i) || blacklist.contains(j)) {
-            return 0;
-        }
         double x, y;
-        GraphCluster<E> potentialNoise;
-        int noiseId;
+        GraphCluster<E> potentialNoise, notNoise;
         if (curr.A.getACL() > curr.B.getACL()) {
             x = curr.A.getACL();
             y = curr.B.getACL();
             potentialNoise = curr.A;
-            noiseId = i;
+            notNoise = curr.B;
         } else {
             x = curr.B.getACL();
             y = curr.A.getACL();
             potentialNoise = curr.B;
-            noiseId = j;
+            notNoise = curr.A;
         }
         if (y > 0) {
             double ratio = x / y;
@@ -167,15 +164,12 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
 
             // check for noisy clusters
             if (ratio > 2.0) {
-                // mark noisy cluster as processed
-                blacklist.add(noiseId);
-                for (E inst : potentialNoise) {
-                    noise.add(inst);
-                    //clusters.getNoise().add(inst);
-                }
-                LOG.debug(">> removing cluster {}, size: {}", noiseId, potentialNoise.size());
+                LOG.debug(">> noise weight A: {} B: {}", curr.A.getACL(), curr.B.getACL());
+                LOG.debug(">> cluster {} ({}) marked as noise, not noise: {} ({})",
+                        potentialNoise.getClusterId(), potentialNoise.getACL(), notNoise.getClusterId(), notNoise.getACL());
+                addToNoise(potentialNoise, potentialNoise.getClusterId());
+                addIntoQueue(notNoise, pref);
                 //clusters.remove(noiseId);
-                removedClusters++;
                 return 0;
             } else {
                 merge(i, j, curr, pref, newClusterId);
@@ -185,6 +179,16 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
             merge(i, j, curr, pref, newClusterId);
             return 1;
         }
+    }
+
+    private void addToNoise(GraphCluster<E> potentialNoise, int noiseId) {
+        // mark noisy cluster as processed
+        blacklist.add(noiseId);
+        for (E inst : potentialNoise) {
+            noise.add(inst);
+            //clusters.getNoise().add(inst);
+        }
+        LOG.debug(">> removing cluster {}, size: {}", noiseId, potentialNoise.size());
     }
 
     private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
