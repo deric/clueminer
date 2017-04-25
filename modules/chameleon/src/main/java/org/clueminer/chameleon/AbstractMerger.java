@@ -301,7 +301,6 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
             eic2 = gps.getEIC(c2.getClusterId(), i);
             cnt2 = gps.getCnt(c2.getClusterId(), i);
 
-            ecl = 0;
             eic = eic1 + eic2;
 
             cnt = cnt1 + cnt2;
@@ -346,7 +345,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         }
         height += 1 / sim;
         newNode.setHeight(height);
-        newNode.setLevel(level++);
+        //node level is not incemented with each merge!
+        //newNode.setLevel(level++);
         nodes[clusters.size() - 1] = newNode;
     }
 
@@ -363,7 +363,8 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         }
         height += 1 / sim;
         newNode.setHeight(height);
-        newNode.setLevel(level++);
+        //node level is not incemented with each merge!
+        //newNode.setLevel(level++);
         nodes[clusters.size() - 1] = newNode;
     }
 
