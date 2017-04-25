@@ -426,7 +426,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         if (data[idx] != null && data[idx].equals(cluster)) {
             return remove(idx);
         } else {
-            System.out.println("failed to remove " + cluster.getClusterId());
+            LOG.error("failed to remove {}", cluster.getClusterId());
         }
         return false;
     }
@@ -437,16 +437,18 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
             return false;
         }
         if (data[idx] != null) {
-            if (n == 0) {
+            if (idx < (n - 1)) {
+                //swap item with the last one
+                data[idx] = data[n - 1];
+                name2id.remove(data[n - 1].getName());
+                data[n - 1] = null;
+                data[idx].setClusterId(idx);
+                data[idx].setName("cluster " + (idx + 1));
+            } else {
                 data[idx] = null;
-                return true;
             }
-            data[idx] = data[n - 1];
-            name2id.remove(data[n - 1].getName());
-            data[n - 1] = null;
             n--;
-            data[idx].setClusterId(idx);
-            data[idx].setName("cluster " + (idx + 1));
+
             return true;
         }
         return false;
@@ -498,7 +500,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     @Override
     public C createCluster(int clusterId) {
         int attrSize = guessAttrCnt();
-        C c = (C) new BaseCluster<E>(5, attrSize);
+        C c = (C) new BaseCluster<>(5, attrSize);
         c.setClusterId(clusterId);
         c.setName("cluster " + (clusterId + 1));
         //some validity measures needs to access attribute properties

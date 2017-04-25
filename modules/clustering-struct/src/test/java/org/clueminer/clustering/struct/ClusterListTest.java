@@ -32,12 +32,16 @@ import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.utils.Props;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -51,6 +55,8 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
     private static final CommonFixture CF = new CommonFixture();
     private static final double DELTA = 1e-9;
     private static Dataset<? extends Instance> irisCache;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterListTest.class);
 
     @Before
     public void setUp() {
@@ -440,27 +446,41 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
         //another cluster with ID 0 will be present
         assertEquals(0, c1.get(0).getClusterId());
 
-        //c1.remove(2);
+        c1.remove(2);
         for (Cluster<E> a : c1) {
-            System.out.println(a);
-            //assertNotNull(a);
-            //assertNotEquals(0, a.size());
+            assertNotNull(a);
+            assertNotEquals(0, a.size());
         }
     }
 
     @Test
     public void testRemove2() {
-        Clustering<E, C> c1 = createClusters(10);
-        assertEquals(10, c1.size());
+        int n = 10;
+        Clustering<E, C> c1 = createClusters(n);
+        assertEquals(n, c1.size());
+        LOG.debug("{} clusters", n);
+        for (Cluster<E> a : c1) {
+            LOG.debug("{}", a.toString());
+            assertNotNull(a);
+            assertNotEquals(0, a.size());
+        }
+        assertEquals(n, c1.size());
+        assertTrue(c1.remove(0));
+        LOG.debug("first {}", c1.get(0));
+        assertEquals(n - 1, c1.size());
         assertTrue(c1.remove(5));
         assertTrue(c1.remove(6));
-//        c1.remove(7);
-
+        assertFalse(c1.remove(7));
+        LOG.debug("7 clusters");
         for (Cluster<E> a : c1) {
-            System.out.println(a);
-            //assertNotNull(a);
-            //assertNotEquals(0, a.size());
+            LOG.debug("{}", a.toString());
+            assertNotNull(a);
+            assertNotEquals(0, a.size());
         }
+
+        Clustering<E, C> c2 = createClusters(1);
+        c2.remove(0);
+        assertEquals(0, c2.size());
     }
 
     @Test
