@@ -255,7 +255,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         }
         noise = m.initialize(partitioningResult, g, bisectionAlg, pref, noise);
         HierarchicalResult result = m.getHierarchy(dataset, pref);
-        result.setNoise(noise);
+        if (noise != null) {
+            result.setNoise(noise);
+        }
         time.endMeasure();
         LOG.info("ch2 clustering (without graph construction) took {} ms", time.formatMs());
         pref.put(PropType.PERFORMANCE, "time", time.timeInSec());

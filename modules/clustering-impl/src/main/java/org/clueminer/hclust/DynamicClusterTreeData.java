@@ -95,17 +95,7 @@ public class DynamicClusterTreeData extends DynamicTreeData {
             mapping[i] = instance.getIndex();
             i++;
             resizeIfNeeded(i);
-            //System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
-        }
-    }
-
-    private void resizeIfNeeded(int i) {
-        if (i >= mapping.length) {
-            int req = (int) (i * 1.618);
-            if (req <= i) {
-                req = i + 1;
-            }
-            ensureCapacity(req);
+            //      System.out.println((i - 1) + " -> " + mapping[(i - 1)]);
         }
     }
 

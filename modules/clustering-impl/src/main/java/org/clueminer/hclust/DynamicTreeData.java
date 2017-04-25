@@ -44,7 +44,7 @@ public class DynamicTreeData implements DendroTreeData {
      *
      * @param root
      * @param hintSize estimated number number of nodes (doesn't have to be
-     * accurate)
+     *                 accurate)
      */
     public DynamicTreeData(DendroNode root, int hintSize) {
         this.root = root;
@@ -331,13 +331,7 @@ public class DynamicTreeData implements DendroTreeData {
                 node = stack.pop();
                 if (node.isLeaf()) {
                     node.setPosition(i);
-                    if (i >= mapping.length) {
-                        int req = (int) (i * 1.618);
-                        if (req <= i) {
-                            req = i + 1;
-                        }
-                        ensureCapacity(req);
-                    }
+                    resizeIfNeeded(i);
                     leaves[i] = node;
                     mapping[i] = node.getIndex();
                     i++;
@@ -349,6 +343,16 @@ public class DynamicTreeData implements DendroTreeData {
         //trim arrays only to required capacity
         ensureCapacity(i);
         return mapping;
+    }
+
+    protected void resizeIfNeeded(int i) {
+        if (i >= mapping.length) {
+            int req = (int) (i * 1.618);
+            if (req <= i) {
+                req = i + 1;
+            }
+            ensureCapacity(req);
+        }
     }
 
     @Override

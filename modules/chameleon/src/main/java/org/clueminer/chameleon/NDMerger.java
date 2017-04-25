@@ -17,7 +17,6 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
@@ -84,21 +83,19 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
         int i = 0;
         //number of initial clusters
         //for (int i = 0; i < numClusters - 1; i++) {
+        int ret;
         while (!pq.isEmpty() && i < numClusters - 1) {
-            i += singleMerge(pq.poll(), pref, clusterId);
-            clusterId++;
+            ret = singleMerge(pq.poll(), pref, clusterId);
+            i += ret;
+            clusterId += ret;
         }
 
-        finalize(clusters, pq, dataset);
 
         if (noise.size() > 0) {
-            LOG.debug("curr dendrogram nodes: {}, clusters: {}", nodes.length, clusters.size());
-            LOG.debug("noise size: {}, dendrogram nodes {}", noise.size(), 2 * clusters.size());
+            LOG.debug("curr dendrogram nodes: {}, clusters: {}, last cluster ID: {}", nodes.length, clusters.size(), clusterId);
             // remove empty tree nodes
-            System.out.println("nodes: " + Arrays.toString(nodes));
-
-            LOG.debug("last node in tree: {}", nodes[clusters.size() - 1]);
-            LOG.debug("next empty?: {}", nodes[clusters.size()]);
+          nodes[clusters.size() - 1].level(); //update node levels
+               LOG.debug("last node in tree: {}", nodes[clusters.size() - 1]);
             DendroNode[] tmp = new DendroNode[clusters.size() + 1];
             LOG.debug("updated dendrogram nodes: {}", tmp.length);
             System.arraycopy(nodes, 0, tmp, 0, tmp.length);
@@ -106,18 +103,20 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
             nodes[nodes.length - 1] = new DClusterLeaf(clusters.size(), noise);
             nodes[nodes.length - 1].setHeight(0);
             nodes[nodes.length - 1].setLevel(0);
-            System.out.println("nodes: " + Arrays.toString(nodes));
             result.setNoise(noise);
+            /* GraphCluster<E> cnoise = new GraphCluster(noise, graph, clusterId, bisection, pref);
+               cnoise.setName(Algorithm.OUTLIER_LABEL);
+            clusters.add(cnoise); */
         }
+        finalize(clusters, pq, dataset);
 
         LOG.debug("creating tree with {} leaves", nodes.length);
-        LOG.debug("tree root: {}", nodes[nodes.length - 2]);
+        //LOG.debug("tree root: {}, root level: {}", nodes[nodes.length - 2], nodes[nodes.length - 2].level());
 
         //getGraphPropertyStore(clusters.get(0)).dump();
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[nodes.length - 2], dataset.size());
         int[] mapping = treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[nodes.length - 1]);
-        LOG.debug("dataset size: {}, mapping size: {}", dataset.size(), mapping.length);
-        System.out.println("mapping: " + Arrays.toString(mapping));
+        LOG.debug("dataset size: {}, mapping size: {}, noise size: {}", dataset.size(), mapping.length, noise.size());
 
         treeData.updatePositions(treeData.getRoot());
         result.setTreeData(treeData);
@@ -144,8 +143,10 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        //LOG.debug("merging {} A: {} B: {}", curr.getValue(), curr.A.getClusterId(), curr.B.getClusterId());
-        LOG.debug("avg weight A: {} B: {}", curr.A.getACL(), curr.B.getACL());
+        //in case of empty queue
+        if (blacklist.contains(i) || blacklist.contains(j)) {
+            return 0;
+        }
         double x, y;
         GraphCluster<E> potentialNoise;
         int noiseId;
@@ -172,7 +173,8 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
                     noise.add(inst);
                     //clusters.getNoise().add(inst);
                 }
-                clusters.remove(noiseId);
+                LOG.debug(">> removing cluster {}, size: {}", noiseId, potentialNoise.size());
+                //clusters.remove(noiseId);
                 removedClusters++;
                 return 0;
             } else {
@@ -186,6 +188,8 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
     }
 
     private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+        LOG.debug("merging A: {} B: {} -> {}", curr.A.getClusterId(), curr.B.getClusterId(), newClusterId);
+        LOG.debug("avg weight A: {} B: {}", curr.A.getACL(), curr.B.getACL());
         blacklist.add(i);
         blacklist.add(j);
         //normal data

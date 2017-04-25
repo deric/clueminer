@@ -35,6 +35,9 @@ import org.clueminer.partitioning.api.Partitioning;
 import org.clueminer.partitioning.impl.FiducciaMattheyses;
 import org.clueminer.partitioning.impl.RecursiveBisection;
 import org.clueminer.utils.Props;
+import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +52,7 @@ public class NDMergerTest<E extends Instance> {
     private static final Logger LOG = LoggerFactory.getLogger(NDMergerTest.class);
 
     @Test
-    public void testUsArrest() {
+    public void testIris() {
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.irisDataset();
         KNNGraphBuilder knn = new KNNGraphBuilder();
         int k = 3;
@@ -72,24 +75,16 @@ public class NDMergerTest<E extends Instance> {
         HierarchicalResult result = merger.getHierarchy(dataset, pref);
         Clustering<E, Cluster<E>> clust = result.getClustering();
 
-        int sum = 0;
-        for (Cluster c : clust) {
-            if (c != null) {
-                sum += c.size();
-            }
-        }
-        LOG.info("instances = " + sum);
-        // assertEquals(dataset.size(), clust.instancesCount());
         DendroTreeData tree = result.getTreeData();
         LOG.debug("tree: ");
         tree.print();
         Clustering<E, Cluster<E>> c = result.getClustering();
+        assertEquals(dataset.size(), clust.instancesCount());
         //assertEquals(dataset.size(), c.instancesCount());
         //we don't want empty clusters
         for (Cluster<E> a : c) {
-            System.out.println(a);
-            //assertNotNull(a);
-            //Assert.assertNotEquals(0, a.size());
+            assertNotNull(a);
+            Assert.assertNotEquals(0, a.size());
         }
     }
 

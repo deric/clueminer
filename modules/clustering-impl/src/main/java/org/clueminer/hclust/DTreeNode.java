@@ -109,17 +109,16 @@ public class DTreeNode implements DendroNode {
     public int level() {
         if (level == -1) {
             if (hasLeft() && hasRight()) {
-                return 1 + Math.max(getLeft().level(), getRight().level());
+                level = 1 + Math.max(getLeft().level(), getRight().level());
             } else if (hasLeft() && !hasRight()) {
-                return 1 + getLeft().level();
+                level = 1 + getLeft().level();
             } else if (!hasLeft() && hasRight()) {
-                return 1 + getRight().level();
+                level = 1 + getRight().level();
             } else {
-                return 0;
+                level = 0;
             }
-        } else {
-            return level;
         }
+        return level;
     }
 
     @Override
