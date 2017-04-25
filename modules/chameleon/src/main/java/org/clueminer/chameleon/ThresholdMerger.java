@@ -166,7 +166,7 @@ public class ThresholdMerger<E extends Instance> extends AbstractMerger<E> {
     }
 
     @Override
-    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq, Dataset<E> dataset) {
         //nothing to do
     }
 

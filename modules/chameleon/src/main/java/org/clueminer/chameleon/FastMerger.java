@@ -233,7 +233,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
      * @param newClusterId
      */
     @Override
-    protected void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+    protected int singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
@@ -271,6 +271,7 @@ public class FastMerger<E extends Instance> extends PairMerger<E> implements Mer
         /* } else {
          * System.out.println("rejected sigmaA = " + sigmaA + ", " + sigmaB + " dist= " + dist);
          * } */
+        return 1;
     }
 
     @Override

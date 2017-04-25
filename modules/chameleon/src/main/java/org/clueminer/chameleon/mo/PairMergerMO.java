@@ -264,7 +264,7 @@ public class PairMergerMO<E extends Instance, C extends GraphCluster<E>, P exten
     }
 
     @Override
-    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq, Dataset<E> dataset) {
         //nothing to do
     }
 

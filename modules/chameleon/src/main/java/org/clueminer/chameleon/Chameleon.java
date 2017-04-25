@@ -246,7 +246,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
         if (!m.isMultiObjective()) {
             similarityMeasure = pref.get(SIM_MEASURE, BBK1.NAME);
             MergeEvaluation me = mef.getProvider(similarityMeasure);
-            ((PairMerger) m).setMergeEvaluation(me);
+            ((AbstractMerger) m).setMergeEvaluation(me);
         } else {
             PairMergerMO mo = (PairMergerMO) m;
             mo.clearObjectives();

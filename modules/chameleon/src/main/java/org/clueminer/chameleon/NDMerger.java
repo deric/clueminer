@@ -17,17 +17,19 @@
 package org.clueminer.chameleon;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.algorithm.HClustResult;
-import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.MergeEvaluation;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
-import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Node;
+import org.clueminer.hclust.DClusterLeaf;
 import org.clueminer.hclust.DynamicClusterTreeData;
 import org.clueminer.partitioning.api.Merger;
 import org.clueminer.utils.PairValue;
@@ -37,20 +39,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class merges two clusters in one merge. Two most similar clusters among
- * all pairs are merged at each step.
+ * Merger with built in noise detection
  *
- * @author Tomas Bruna
+ * @author deric
  * @param <E>
  */
 @ServiceProvider(service = Merger.class)
-public class PairMerger<E extends Instance> extends AbstractMerger<E> implements Merger<E> {
+public class NDMerger<E extends Instance> extends PairMerger<E> implements Merger<E> {
 
     protected PriorityQueue<PairValue<GraphCluster<E>>> pq;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PairMerger.class);
+    protected MergeEvaluation evaluation;
+    private ArrayList<E> noise;
+    private static final Logger LOG = LoggerFactory.getLogger(NDMerger.class);
+    private int removedClusters = 0;
 
-    public static final String NAME = "pair merger";
+    public static final String NAME = "ND merger";
 
     @Override
     public String getName() {
@@ -74,24 +78,48 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         LOG.debug("built merging queue, last ID: {}", clusterId);
         height = 0;
         HierarchicalResult result = new HClustResult(dataset, pref);
+        noise = new ArrayList<>();
 
         level = 1;
         int i = 0;
         //number of initial clusters
         //for (int i = 0; i < numClusters - 1; i++) {
         while (!pq.isEmpty() && i < numClusters - 1) {
-            singleMerge(pq.poll(), pref, clusterId);
+            i += singleMerge(pq.poll(), pref, clusterId);
             clusterId++;
-            i++;
         }
 
         finalize(clusters, pq, dataset);
+
+        if (noise.size() > 0) {
+            LOG.debug("curr dendrogram nodes: {}, clusters: {}", nodes.length, clusters.size());
+            LOG.debug("noise size: {}, dendrogram nodes {}", noise.size(), 2 * clusters.size());
+            // remove empty tree nodes
+            System.out.println("nodes: " + Arrays.toString(nodes));
+
+            LOG.debug("last node in tree: {}", nodes[clusters.size() - 1]);
+            LOG.debug("next empty?: {}", nodes[clusters.size()]);
+            DendroNode[] tmp = new DendroNode[clusters.size() + 1];
+            LOG.debug("updated dendrogram nodes: {}", tmp.length);
+            System.arraycopy(nodes, 0, tmp, 0, tmp.length);
+            nodes = tmp;
+            nodes[nodes.length - 1] = new DClusterLeaf(clusters.size(), noise);
+            nodes[nodes.length - 1].setHeight(0);
+            nodes[nodes.length - 1].setLevel(0);
+            System.out.println("nodes: " + Arrays.toString(nodes));
+            result.setNoise(noise);
+        }
+
         LOG.debug("creating tree with {} leaves", nodes.length);
+        LOG.debug("tree root: {}", nodes[nodes.length - 2]);
 
         //getGraphPropertyStore(clusters.get(0)).dump();
         DendroTreeData treeData = new DynamicClusterTreeData(nodes[nodes.length - 2], dataset.size());
-        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[nodes.length - 1]);
-        //treeData.updatePositions(treeData.getRoot());
+        int[] mapping = treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[nodes.length - 1]);
+        LOG.debug("dataset size: {}, mapping size: {}", dataset.size(), mapping.length);
+        System.out.println("mapping: " + Arrays.toString(mapping));
+
+        treeData.updatePositions(treeData.getRoot());
         result.setTreeData(treeData);
         return result;
     }
@@ -102,8 +130,9 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
      * @param curr
      * @param pref
      * @param newClusterId
-     * @return 1 when merge was successful
+     * @return 1 when merge is successful
      */
+    @Override
     protected int singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
@@ -112,12 +141,54 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
             i = curr.A.getClusterId();
             j = curr.B.getClusterId();
         }
-        blacklist.add(i);
-        blacklist.add(j);
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        //System.out.println("merging: " + curr.getValue() + " A: " + curr.A.getClusterId() + " B: " + curr.B.getClusterId());
+        //LOG.debug("merging {} A: {} B: {}", curr.getValue(), curr.A.getClusterId(), curr.B.getClusterId());
+        LOG.debug("avg weight A: {} B: {}", curr.A.getACL(), curr.B.getACL());
+        double x, y;
+        GraphCluster<E> potentialNoise;
+        int noiseId;
+        if (curr.A.getACL() > curr.B.getACL()) {
+            x = curr.A.getACL();
+            y = curr.B.getACL();
+            potentialNoise = curr.A;
+            noiseId = i;
+        } else {
+            x = curr.B.getACL();
+            y = curr.A.getACL();
+            potentialNoise = curr.B;
+            noiseId = j;
+        }
+        if (y > 0) {
+            double ratio = x / y;
+            LOG.debug("CL ratio {}", ratio);
+
+            // check for noisy clusters
+            if (ratio > 2.0) {
+                // mark noisy cluster as processed
+                blacklist.add(noiseId);
+                for (E inst : potentialNoise) {
+                    noise.add(inst);
+                    //clusters.getNoise().add(inst);
+                }
+                clusters.remove(noiseId);
+                removedClusters++;
+                return 0;
+            } else {
+                merge(i, j, curr, pref, newClusterId);
+                return 1; //
+            }
+        } else {
+            merge(i, j, curr, pref, newClusterId);
+            return 1;
+        }
+    }
+
+    private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+        blacklist.add(i);
+        blacklist.add(j);
+        //normal data
         //clonning won't be necessary if we don't wanna recompute RCL for clusters that were merged
         //LinkedList<Node> clusterNodes = (LinkedList<Node>) curr.A.getNodes().clone();
         //WARNING: we copy nodes from previous clusters (we save memory, but
@@ -131,7 +202,6 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         addIntoTree(curr, pref);
         updateExternalProperties(newCluster, curr.A, curr.B);
         addIntoQueue(newCluster, pref);
-        return 1;
     }
 
     protected void merged(PairValue<GraphCluster<E>> curr) {
@@ -211,34 +281,8 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         return queue;
     }
 
-    /**
-     * Returns lists of nodes in each cluster. Used only for graph printing, the
-     * real result is stored in the tree.
-     *
-     * @return
-     */
-    private ArrayList<ArrayList<Node<E>>> getResult() {
-        ArrayList<ArrayList<Node<E>>> result = new ArrayList<>();
-        for (int i = 0; i < clusters.size(); i++) {
-            if (blacklist.contains(i)) {
-                continue;
-            }
-            result.add(clusters.get(i).getNodes());
-        }
-        return result;
-    }
-
-    private Clustering getClusterResult() {
-        Clustering output = Clusterings.newList(clusters.size());
-        int i = 0;
-        for (GraphCluster<E> g : clusters) {
-            Cluster<E> cluster = output.createCluster(i++, g.getNodeCount());
-            for (Node<E> node : g.getNodes()) {
-                cluster.add(node.getInstance());
-            }
-            output.add(cluster);
-        }
-        return output;
+    public void setMergeEvaluation(MergeEvaluation eval) {
+        this.evaluation = eval;
     }
 
     @Override
@@ -273,14 +317,13 @@ public class PairMerger<E extends Instance> extends AbstractMerger<E> implements
         return noise;
     }
 
-    @Override
     public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq, Dataset<E> dataset) {
-        //nothing to do
+        // when noise present
+        renumberClusters(clusters, noise);
     }
 
     @Override
     public boolean isMultiObjective() {
         return false;
     }
-
 }

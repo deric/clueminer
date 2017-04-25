@@ -22,8 +22,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.MergeEvaluation;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.factory.Clusterings;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.graph.api.Edge;
@@ -82,6 +84,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * Distance measure used by the k-NN algorithm
      */
     protected Distance dm;
+    protected MergeEvaluation evaluation;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMerger.class);
 
     @Override
@@ -117,7 +120,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param clusters
      * @param pq
      */
-    public abstract void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq);
+    public abstract void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq, Dataset<E> dataset);
 
     protected double computeMedianCl(Clustering<E, GraphCluster<E>> clusters) {
         double connectivities[] = new double[clusters.size()];
@@ -372,6 +375,10 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
     @Override
     public void setDistanceMeasure(Distance dm) {
         this.dm = dm;
+    }
+
+    public void setMergeEvaluation(MergeEvaluation eval) {
+        this.evaluation = eval;
     }
 
 }

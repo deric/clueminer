@@ -24,6 +24,7 @@ import org.clueminer.chameleon.similarity.CLS;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
@@ -155,7 +156,7 @@ public class KnnMerger<E extends Instance> extends PairMerger<E> implements Merg
     }
 
     @Override
-    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq) {
+    public void finalize(Clustering<E, GraphCluster<E>> clusters, PriorityQueue<PairValue<GraphCluster<E>>> pq, Dataset<E> dataset) {
         int i, j;
         PairValue<GraphCluster<E>> curr;
         Cluster<E> noise = clusters.getNoise();
@@ -229,7 +230,7 @@ public class KnnMerger<E extends Instance> extends PairMerger<E> implements Merg
      * @param newClusterId
      */
     @Override
-    protected void singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
+    protected int singleMerge(PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
         int i = curr.A.getClusterId();
         int j = curr.B.getClusterId();
         while (!pq.isEmpty() && (blacklist.contains(i) || blacklist.contains(j))) {
@@ -238,7 +239,7 @@ public class KnnMerger<E extends Instance> extends PairMerger<E> implements Merg
             j = curr.B.getClusterId();
         }
         merge(i, j, curr, pref, newClusterId);
-
+        return 1;
     }
 
     private void merge(int i, int j, PairValue<GraphCluster<E>> curr, Props pref, int newClusterId) {
