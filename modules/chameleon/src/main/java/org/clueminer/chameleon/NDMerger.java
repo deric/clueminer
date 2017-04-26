@@ -148,11 +148,11 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
         double x, y, tmp;
         GraphCluster<E> potentialNoise, notNoise;
 
-        //double ec1 = curr.A.getEdgeCount();
-        //double ec2 = curr.B.getEdgeCount();
+        double ec1 = curr.A.getEdgeCount();
+        double ec2 = curr.B.getEdgeCount();
         //double common = gps.getCnt(i, j);
-        x = curr.A.getACL();
-        y = curr.B.getACL();
+        x = curr.A.getDistanceSum() / ec1;
+        y = curr.B.getDistanceSum() / ec2;
         if (x > y) {
             potentialNoise = curr.A;
             notNoise = curr.B;

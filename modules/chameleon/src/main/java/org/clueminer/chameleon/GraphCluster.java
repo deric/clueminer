@@ -38,6 +38,7 @@ import org.clueminer.dataset.api.InstanceBuilder;
 import org.clueminer.dataset.impl.AttributeCollection;
 import org.clueminer.dataset.impl.BaseDataset;
 import org.clueminer.dataset.impl.DoubleArrayFactory;
+import org.clueminer.graph.api.AbsGraphConvertor;
 import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.EdgeType;
 import org.clueminer.graph.api.Graph;
@@ -99,6 +100,8 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
     private Graph graph;
     private DataType dataType;
 
+    private double distanceSum = -1;
+
     private String name;
 
     public GraphCluster(ArrayList<Node<E>> n, Graph g, int index, Bisection bisection, Props props) {
@@ -122,9 +125,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
      *
      */
     protected void computeBisectionProperties() {
-        if (graph == null) {
-            graph = buildGraphFromCluster(graphNodes, parentGraph);
-        }
+        checkGraph();
         //If bisection cannot be done, set values to 1
         if (graph.getNodeCount() == 1) {
             ICL = IIC = 1;
@@ -173,14 +174,7 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
      * Computes average weight of all edges in the graph
      */
     protected void computeAverageCloseness() {
-        if (graph == null) {
-            if (parentGraph.suppportReferences()) {
-                graph = buildGraphFromCluster(graphNodes, parentGraph);
-            } else {
-                graph = copyGraphFromCluster(graphNodes, parentGraph);
-            }
-        }
-
+        checkGraph();
         double sum = 0;
         if (edgeCount == 0) {
             ACL = 0;
@@ -202,6 +196,40 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
         }
 
         ACL = sum / edgeCount;
+    }
+
+    private void checkGraph() {
+        if (graph == null) {
+            if (parentGraph.suppportReferences()) {
+                graph = buildGraphFromCluster(graphNodes, parentGraph);
+            } else {
+                graph = copyGraphFromCluster(graphNodes, parentGraph);
+            }
+        }
+
+    }
+
+    public double getDistanceSum() {
+        if (distanceSum == -1) {
+            checkGraph();
+            String distEdge = props.get(AbsGraphConvertor.DIST_TO_EDGE, "INVERSE");
+            double sum = 0.0;
+            if ("INVERSE".equals(distEdge)) {
+                for (Edge e : graph.getEdges()) {
+                    sum += 1.0 / e.getWeight();
+                }
+            } else {
+                for (Edge e : graph.getEdges()) {
+                    sum += e.getWeight();
+                }
+            }
+            distanceSum = sum;
+        }
+        return distanceSum;
+    }
+
+    public void setDistanceSum(double dist) {
+        this.distanceSum = dist;
     }
 
     /**
