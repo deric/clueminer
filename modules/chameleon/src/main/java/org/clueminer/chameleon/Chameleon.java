@@ -113,6 +113,10 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     @Param(name = Chameleon.SHARED_NN_FACTOR, description = "Factor of multiplying shared neighbors")
     public double sharedNNfactor;
 
+    public static final String NOISE_RATIO = "noise_ratio";
+    @Param(name = Chameleon.NOISE_RATIO, description = "Ratio needed to mark cluster as noise")
+    public double noiseRatio;
+
     /**
      * Algorithm for merging clusters
      */

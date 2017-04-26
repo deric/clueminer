@@ -741,4 +741,12 @@ public class GraphCluster<E extends Instance> extends BaseDataset<E> implements 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    public GraphPropertyStore getGraphPropertyStore() {
+        GraphPropertyStore gps = graph.getLookup().lookup(GraphPropertyStore.class);
+        if (gps == null) {
+            throw new RuntimeException("graph property store was not found");
+        }
+        return gps;
+    }
+
 }

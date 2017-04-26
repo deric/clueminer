@@ -85,6 +85,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      */
     protected Distance dm;
     protected MergeEvaluation evaluation;
+    protected GraphPropertyStore gps;
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMerger.class);
 
     @Override
@@ -196,7 +197,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
      * @param clusters
      */
     public void computeExternalProperties(Clustering<E, GraphCluster<E>> clusters) {
-        GraphPropertyStore gps = new GraphPropertyStore(clusters.size());
+        gps = new GraphPropertyStore(clusters.size());
         int firstClusterID, secondClusterID;
         for (Edge edge : graph.getEdges()) {
             firstClusterID = nodeToCluster[graph.getIndex(edge.getSource())];

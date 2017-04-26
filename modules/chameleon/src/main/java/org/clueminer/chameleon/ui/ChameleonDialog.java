@@ -155,8 +155,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboKnn = new javax.swing.JComboBox<>();
         lbEdgeValue = new javax.swing.JLabel();
         comboEdge = new javax.swing.JComboBox<>();
-        lbSharedNN = new javax.swing.JLabel();
-        tfSharedNN = new javax.swing.JTextField();
+        lbNoiseRatio = new javax.swing.JLabel();
+        tfNoiseRatio = new javax.swing.JTextField();
         cbKestim = new javax.swing.JComboBox<>();
         jLabel17 = new javax.swing.JLabel();
         comboIncludeEdges = new javax.swing.JComboBox<>();
@@ -480,9 +480,10 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
 
         comboEdge.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "INVERSE", "DISTANCE", "LOG2" }));
 
-        org.openide.awt.Mnemonics.setLocalizedText(lbSharedNN, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbSharedNN.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(lbNoiseRatio, org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.lbNoiseRatio.text")); // NOI18N
 
-        tfSharedNN.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfSharedNN.text")); // NOI18N
+        tfNoiseRatio.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        tfNoiseRatio.setText(org.openide.util.NbBundle.getMessage(ChameleonDialog.class, "ChameleonDialog.tfNoiseRatio.text")); // NOI18N
 
         cbKestim.setModel(new DefaultComboBoxModel(initKEstim()));
 
@@ -526,12 +527,12 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                                             .addComponent(comboDistance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(lbSharedNN)
+                                            .addComponent(lbNoiseRatio)
                                             .addComponent(jLabel17))
                                         .addGap(18, 18, 18)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(comboIncludeEdges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                            .addComponent(tfNoiseRatio, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -723,8 +724,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
                             .addComponent(comboEdge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbSharedNN)
-                            .addComponent(tfSharedNN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lbNoiseRatio)
+                            .addComponent(tfNoiseRatio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -908,8 +909,8 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JLabel lbMaxPartitionSize;
     private javax.swing.JLabel lbMerger;
     private javax.swing.JLabel lbMultiplier;
+    private javax.swing.JLabel lbNoiseRatio;
     private javax.swing.JLabel lbPriority;
-    private javax.swing.JLabel lbSharedNN;
     private javax.swing.JRadioButton radioNoiseDBSCAN;
     private javax.swing.JRadioButton radioNoiseInternal;
     private javax.swing.JRadioButton radioNoiseNone;
@@ -921,11 +922,11 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
     private javax.swing.JTextField tfK;
     private javax.swing.JTextField tfLimit;
     private javax.swing.JTextField tfMaxPSize;
+    private javax.swing.JTextField tfNoiseRatio;
     private javax.swing.JTextField tfNoiseThreshold;
     private javax.swing.JTextField tfNruns;
     private javax.swing.JTextField tfPareto;
     private javax.swing.JTextField tfPriority;
-    private javax.swing.JTextField tfSharedNN;
     private javax.swing.JTextField tfUb;
     private javax.swing.JTextField tfVcycles;
     // End of variables declaration//GEN-END:variables
@@ -967,7 +968,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         params.putDouble(Chameleon.INDIVIDUAL_MULTIPLIER, Double.valueOf(tfIndividualMultiplier.getText()));
         params.putDouble(Chameleon.NOISE_DETECTION, Double.valueOf(tfNoiseThreshold.getText()));
         params.putDouble(Chameleon.INTERCONNECTIVITY_PRIORITY, Double.valueOf(tfInterconnectivy.getText()));
-        params.putDouble(Chameleon.SHARED_NN_FACTOR, Double.valueOf(tfSharedNN.getText()));
+        params.putDouble(Chameleon.NOISE_RATIO, Double.valueOf(tfNoiseRatio.getText()));
 
         if (radioNoiseNone.isSelected()) {
             params.putInt(Chameleon.NOISE_DETECTION, Chameleon.NOISE_NONE);

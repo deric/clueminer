@@ -145,30 +145,36 @@ public class NDMerger<E extends Instance> extends PairMerger<E> implements Merge
         if (i == j) {
             throw new RuntimeException("Cannot merge two same clusters");
         }
-        double x, y;
+        double x, y, tmp;
         GraphCluster<E> potentialNoise, notNoise;
-        if (curr.A.getACL() > curr.B.getACL()) {
-            x = curr.A.getACL();
-            y = curr.B.getACL();
+
+        //double ec1 = curr.A.getEdgeCount();
+        //double ec2 = curr.B.getEdgeCount();
+        //double common = gps.getCnt(i, j);
+        x = curr.A.getACL();
+        y = curr.B.getACL();
+        if (x > y) {
             potentialNoise = curr.A;
             notNoise = curr.B;
         } else {
-            x = curr.B.getACL();
-            y = curr.A.getACL();
+            tmp = x;
+            x = y;
+            y = tmp;
             potentialNoise = curr.B;
             notNoise = curr.A;
         }
         if (y > 0) {
             double ratio = x / y;
+            double noiseRatioThreshold = pref.getDouble(Chameleon.NOISE_RATIO, 10.0);
             LOG.debug("CL ratio {}", ratio);
 
             // check for noisy clusters
-            if (ratio > 2.0) {
-                LOG.debug(">> noise weight A: {} B: {}", curr.A.getACL(), curr.B.getACL());
+            if (ratio > noiseRatioThreshold) {
+                LOG.debug(">> noise weight A: {} B: {}", x, y);
                 LOG.debug(">> cluster {} ({}) marked as noise, not noise: {} ({})",
-                        potentialNoise.getClusterId(), potentialNoise.getACL(), notNoise.getClusterId(), notNoise.getACL());
+                        potentialNoise.getClusterId(), x, notNoise.getClusterId(), y);
                 addToNoise(potentialNoise, potentialNoise.getClusterId());
-                addIntoQueue(notNoise, pref);
+                //addIntoQueue(notNoise, pref);
                 //clusters.remove(noiseId);
                 return 0;
             } else {
