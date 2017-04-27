@@ -21,22 +21,27 @@ import org.clueminer.clustering.api.ExternalEvaluator;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Normalized Mutual Information as defined by Kvalseth (1987)
+ * Normalized Mutual Information as defined by Kvalseth (1987). Mutual information
+ * is normalized by an average of entropies.
  *
  * T. O. Kvalseth. Entropy and correlation: Some comments. Systems, Man and
  * Cybernetics, IEEE Transactions on, 17(3):517–519, 1987.
  *
+ * Fred, Ana L.N., Jain, Anil K.: Robust Data Clustering. Proceedings of
+ * IEEE Computer Society Conference on Computer Vision and Pattern
+ * Recognition, CVPR, (3):128-136, 2003.
+ *
  * @author deric
  */
 @ServiceProvider(service = ExternalEvaluator.class)
-public class NMIsum extends NMIbase implements ClusterEvaluation {
+public class NMIavg extends NMIbase implements ClusterEvaluation {
 
-    private static final String name = "NMI-sum";
+    private static final String NAME = "NMI-avg";
     private static final long serialVersionUID = -8838355537225622273L;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

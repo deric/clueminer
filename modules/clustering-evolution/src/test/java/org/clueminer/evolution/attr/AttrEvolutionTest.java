@@ -40,7 +40,7 @@ import org.clueminer.eval.BIC;
 import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.JaccardIndex;
-import org.clueminer.eval.external.NMIsum;
+import org.clueminer.eval.external.NMIavg;
 import org.clueminer.evolution.utils.ConsoleDump;
 import org.clueminer.utils.FileUtils;
 import org.junit.AfterClass;
@@ -112,7 +112,7 @@ public class AttrEvolutionTest {
         test.setAlgorithm(new KMeans());
         test.setEvaluator(new BIC());
         test.setEvaluator(new RatkowskyLance());
-        ExternalEvaluator ext = new NMIsum();
+        ExternalEvaluator ext = new NMIavg();
         test.setExternal(ext);
         //collect data from evolution
         GnuplotWriter gw = new GnuplotWriter(test, benchmarkFolder, "iris-evolution");

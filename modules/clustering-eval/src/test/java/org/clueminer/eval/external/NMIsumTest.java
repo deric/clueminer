@@ -44,7 +44,7 @@ public class NMIsumTest extends ExternalTest {
     public NMIsumTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-        subject = new NMIsum();
+        subject = new NMIavg();
     }
 
     /**

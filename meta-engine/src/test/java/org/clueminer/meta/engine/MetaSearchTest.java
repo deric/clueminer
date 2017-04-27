@@ -22,7 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.external.NMIsum;
+import org.clueminer.eval.external.NMIavg;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
@@ -68,7 +68,7 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         assertNotNull(ranking);
         //there should be always 1.0 key (best solution)
         assertTrue(ranking.containsKey(1.0));
-        q.printRanking(new NMIsum());
+        q.printRanking(new NMIavg());
         HashSet<Integer> ids = new HashSet<>(q.size());
         for (Clustering<E, C> c : ranking.values()) {
             //for computing ranking correlations we need unique id's
