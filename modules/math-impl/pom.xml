@@ -51,6 +51,11 @@
             <artifactId>core-lib-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>all</artifactId>
+            <version>0.30</version>
+        </dependency>
     </dependencies>
 
     <build>
