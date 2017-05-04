@@ -37,6 +37,8 @@ import static java.lang.Math.log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import smile.math.distance.Distance;
 import smile.math.distance.EuclideanDistance;
 
@@ -44,11 +46,13 @@ import smile.math.distance.EuclideanDistance;
  *
  * @author deric
  * @author Leif Jonsson
+ * @author Laurens van der Maaten
  */
 public class BHTSNE implements TSNE {
 
     protected final Distance distance = new EuclideanDistance();
     protected volatile boolean abort = false;
+    private static final Logger LOG = LoggerFactory.getLogger(BHTSNE.class);
 
     @Override
     public double[][] tsne(TSNEConfig config) {
@@ -92,7 +96,7 @@ public class BHTSNE implements TSNE {
             PrincipalComponentAnalysis pca = new PrincipalComponentAnalysis();
             Xin = pca.pca(Xin, parameterObject.getInitialDims());
             D = parameterObject.getInitialDims();
-            System.out.println("X:Shape after PCA is = " + Xin.length + " x " + Xin[0].length);
+            LOG.debug("X:Shape after PCA is = {}x{}", Xin.length, Xin[0].length);
         }
 
         double[] X = flatten(Xin);
@@ -100,13 +104,13 @@ public class BHTSNE implements TSNE {
         int no_dims = parameterObject.getOutputDims();
 
         double[] Y = new double[N * no_dims];
-        System.out.println("X:Shape is = " + N + " x " + D);
+        LOG.debug("X:Shape is = {}x{}", N, D);
         // Determine whether we are using an exact algorithm
         double perplexity = parameterObject.getPerplexity();
         if (N - 1 < 3 * perplexity) {
             throw new IllegalArgumentException("Perplexity too large for the number of data points!\n");
         }
-        System.out.printf("Using no_dims = %d, perplexity = %f, and theta = %f\n", no_dims, perplexity, parameterObject.getTheta());
+        LOG.debug("Using no_dims = {}, perplexity = {}, and theta = {}", no_dims, perplexity, parameterObject.getTheta());
 
         // Set learning parameters
         double total_time = 0;
@@ -123,7 +127,7 @@ public class BHTSNE implements TSNE {
         }
 
         // Normalize input data (to prevent numerical problems)
-        System.out.println("Computing input similarities...");
+        LOG.debug("Computing input similarities...");
         long start = System.currentTimeMillis();
         //zeroMean(X, N, D);
         double max_X = .0;
@@ -153,7 +157,7 @@ public class BHTSNE implements TSNE {
             computeGaussianPerplexity(X, N, D, P, perplexity);
 
             // Symmetrize input similarities
-            System.out.println("Symmetrizing...");
+            LOG.debug("Symmetrizing...");
             int nN = 0;
             for (int n = 0; n < N; n++) {
                 int mN = 0;
@@ -212,9 +216,9 @@ public class BHTSNE implements TSNE {
 
         // Perform main training loop
         if (exact) {
-            System.out.printf("Done in %4.2f seconds!\nLearning embedding...\n", (end - start) / 1000.0);
+            LOG.debug("Done in {} seconds!\nLearning embedding...", (end - start) / 1000.0);
         } else {
-            System.out.printf("Done in %4.2f seconds (sparsity = %f)!\nLearning embedding...\n", (end - start) / 1000.0, (double) row_P[N] / ((double) N * (double) N));
+            LOG.debug("Done in {} seconds (sparsity = {})!\nLearning embedding...", (end - start) / 1000.0, (double) row_P[N] / ((double) N * (double) N));
         }
         start = System.currentTimeMillis();
         for (int iter = 0; iter < parameterObject.getMaxIter() && !abort; iter++) {
@@ -261,10 +265,10 @@ public class BHTSNE implements TSNE {
                     err_string = "" + C;
                 }
                 if (iter == 0) {
-                    System.out.printf("Iteration %d: error is %s\n", iter + 1, err_string);
+                    LOG.debug("Iteration {}: error is {}", iter + 1, err_string);
                 } else {
                     total_time += (end - start) / 1000.0;
-                    System.out.printf("Iteration %d: error is %s (50 iterations in %4.2f seconds)\n", iter, err_string, (end - start) / 1000.0);
+                    LOG.debug("Iteration {}: error is {} (50 iterations in {} seconds)", iter, err_string, (end - start) / 1000.0);
                 }
                 start = System.currentTimeMillis();
             }
@@ -272,7 +276,7 @@ public class BHTSNE implements TSNE {
         end = System.currentTimeMillis();
         total_time += (end - start) / 1000.0;
 
-        System.out.printf("Fitting performed in %4.2f seconds.\n", total_time);
+        LOG.debug("Fitting performed in {} seconds.", total_time);
         return expand(Y, N, no_dims);
     }
 
@@ -506,7 +510,7 @@ public class BHTSNE implements TSNE {
     // Compute input similarities with a fixed perplexity using ball trees
     void computeGaussianPerplexity(double[] X, int N, int D, int[] _row_P, int[] _col_P, double[] _val_P, double perplexity, int K) {
         if (perplexity > K) {
-            System.out.println("Perplexity should be lower than K!");
+            LOG.warn("Perplexity should be lower than K!");
         }
 
         // Allocate the memory we need
@@ -525,7 +529,7 @@ public class BHTSNE implements TSNE {
         }
 
         // Build ball tree on data set
-        VpTree<DataPoint> tree = new VpTree<DataPoint>(distance);
+        VpTree<DataPoint> tree = new VpTree<>(distance);
         final DataPoint[] obj_X = new DataPoint[N];
         for (int n = 0; n < N; n++) {
             double[] row = MatrixOps.extractRowFromFlatMatrix(X, n, D);
@@ -544,13 +548,13 @@ public class BHTSNE implements TSNE {
         //			TreePrinter printer = new TreePrinter(pp);
         //			printer.printTreeHorizontal(tree.getRoot());
         // Loop over all points to find nearest neighbors
-        System.out.println("Building tree...");
+        LOG.debug("Building tree...");
         List<DataPoint> indices = new ArrayList<>();
         List<Double> distances = new ArrayList<>();
         for (int n = 0; n < N; n++) {
 
             if (n % 10000 == 0) {
-                System.out.printf(" - point %d of %d\n", n, N);
+                LOG.debug(" - point {} of {}", n, N);
             }
 
             // Find nearest neighbors
@@ -984,6 +988,4 @@ public class BHTSNE implements TSNE {
     public void abort() {
         abort = true;
     }
-
-
 }
