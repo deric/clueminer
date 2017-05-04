@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.ThreadLocalRandom;
+import smile.math.distance.Distance;
+import smile.math.distance.EuclideanDistance;
 
 public class VpTree<StorageType> {
 
@@ -139,7 +141,7 @@ public class VpTree<StorageType> {
     }
 
     public double distance(DataPoint dataPoint1, DataPoint dataPoint2) {
-        return distance.distance(dataPoint1, dataPoint2);
+        return distance.d(dataPoint1, dataPoint2);
     }
 
     private void swap(DataPoint[] items, int idx1, int idx2) {

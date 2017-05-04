@@ -81,7 +81,7 @@ public class MatrixOpsTest {
     @Test
     public void timeTransposesNist() {
         MatrixOps mo = new MatrixOps();
-        double[][] matrix = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist2500_X.txt"), " ");
+        double[][] matrix = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist100_X.txt"), " ");
         int rows = matrix.length;
         int cols = matrix[0].length;
         double[][] trmatrix = new double[cols][rows];
@@ -123,8 +123,8 @@ public class MatrixOpsTest {
     @Test
     public void timeScalarMultNist() {
         MatrixOps mo = new MatrixOps();
-        double[][] matrix1 = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist2500_X.txt"), " ");
-        double[][] matrix2 = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist2500_X.txt"), " ");
+        double[][] matrix1 = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist100_X.txt"), " ");
+        double[][] matrix2 = MatrixUtils.simpleRead2DMatrix(new File("src/test/resources/datasets/mnist100_X.txt"), " ");
         int rows = matrix1.length;
         int cols = matrix1[0].length;
         int noLaps = 300;
