@@ -50,11 +50,11 @@ public interface TSNEConfig {
 
     void setTheta(double theta);
 
-    boolean silent();
+    boolean isSilent();
 
     void setSilent(boolean silent);
 
-    boolean printError();
+    boolean isPrintError();
 
     void setPrintError(boolean print_error);
 

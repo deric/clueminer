@@ -59,9 +59,7 @@ public class BHTSNE implements TSNE {
         int noCols = x[0].length;
         double[] flat = new double[x.length * x[0].length];
         for (int i = 0; i < x.length; i++) {
-            for (int j = 0; j < x[i].length; j++) {
-                flat[i * noCols + j] = x[i][j];
-            }
+            System.arraycopy(x[i], 0, flat, i * noCols, x[i].length);
         }
         return flat;
     }
@@ -250,11 +248,11 @@ public class BHTSNE implements TSNE {
             }
 
             // Print out progress
-            if (((iter > 0 && iter % 50 == 0) || iter == parameterObject.getMaxIter() - 1) && !parameterObject.silent()) {
+            if (((iter > 0 && iter % 50 == 0) || iter == parameterObject.getMaxIter() - 1) && !parameterObject.isSilent()) {
                 end = System.currentTimeMillis();
                 String err_string = "not_calculated";
-                if (parameterObject.printError()) {
-                    double C = .0;
+                if (parameterObject.isPrintError()) {
+                    double C;
                     if (exact) {
                         C = evaluateError(P, Y, N, no_dims);
                     } else {

@@ -41,7 +41,7 @@ public class DistanceComparator implements Comparator<DataPoint> {
 
     @Override
     public int compare(DataPoint o1, DataPoint o2) {
-        return dist.d(o1, refItem) < dist.d(o2, refItem) ? -1
-               : (dist.d(o1, refItem) > dist.d(o2, refItem) ? 1 : 0);
+        return dist.d(o1.data, refItem.data) < dist.d(o2.data, refItem.data) ? -1
+               : (dist.d(o1.data, refItem.data) > dist.d(o2.data, refItem.data) ? 1 : 0);
     }
 }

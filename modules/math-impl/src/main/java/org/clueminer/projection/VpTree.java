@@ -141,7 +141,7 @@ public class VpTree<StorageType> {
     }
 
     public double distance(DataPoint dataPoint1, DataPoint dataPoint2) {
-        return distance.d(dataPoint1, dataPoint2);
+        return distance.d(dataPoint1.data, dataPoint2.data);
     }
 
     private void swap(DataPoint[] items, int idx1, int idx2) {
