@@ -51,6 +51,11 @@
             <artifactId>core-lib-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.ejml</groupId>
+            <artifactId>all</artifactId>
+            <version>0.30</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -64,6 +69,7 @@
                         <publicPackage>org.clueminer.interpolation</publicPackage>
                         <publicPackage>org.clueminer.math.impl</publicPackage>
                         <publicPackage>org.clueminer.math.matrix</publicPackage>
+                        <publicPackage>org.clueminer.projection</publicPackage>
                         <publicPackage>org.clueminer.std</publicPackage>
                     </publicPackages>
                 </configuration>

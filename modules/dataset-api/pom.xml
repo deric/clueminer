@@ -70,6 +70,7 @@
                         <publicPackage>org.clueminer.exception</publicPackage>
                         <publicPackage>org.clueminer.flow.api</publicPackage>
                         <publicPackage>org.clueminer.neighbor</publicPackage>
+                        <publicPackage>org.clueminer.projection</publicPackage>
                         <publicPackage>org.clueminer.types</publicPackage>
                         <publicPackage>org.clueminer.utils</publicPackage>
                     </publicPackages>
