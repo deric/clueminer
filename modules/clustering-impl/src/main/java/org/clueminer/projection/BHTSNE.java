@@ -37,8 +37,8 @@ import static java.lang.Math.log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import org.clueminer.distance.EuclideanDistance;
-import org.clueminer.distance.api.Distance;
+import smile.math.distance.Distance;
+import smile.math.distance.EuclideanDistance;
 
 /**
  *

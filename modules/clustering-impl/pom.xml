@@ -154,6 +154,7 @@
                         <publicPackage>org.clueminer.exec</publicPackage>
                         <publicPackage>org.clueminer.hclust</publicPackage>
                         <publicPackage>org.clueminer.hclust.linkage</publicPackage>
+                        <publicPackage>org.clueminer.projection</publicPackage>
                         <publicPackage>org.clueminer.utils</publicPackage>
                     </publicPackages>
                 </configuration>
