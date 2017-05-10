@@ -129,7 +129,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     }
 
     private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIDefaults defaults = UIManager.getLookAndFeelDefaults();
         fontColor = defaults.getColor("infoText");
@@ -355,6 +354,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     @Override
     public void render(Graphics2D g) {
+        this.g = g;
         double xmin, xmax, xmid, ymin, ymax, ymid;
 
         if (compInternal.getEvaluator() instanceof MoEvaluator) {
@@ -503,7 +503,11 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      * @return
      */
     private int stringWidth(Font f, Graphics2D g2, String str) {
-        return (int) (f.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+        if (f != null && g2 != null && g2.getFontRenderContext() != null) {
+            return (int) (f.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+        } else {
+            return 10;
+        }
     }
 
     /**
@@ -517,10 +521,10 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private int drawXLabel(Graphics2D g2, String label, int xmax, int ymid) {
         g2.setColor(fontColor);
         g2.setFont(defaultFont);
-        int strWidth = stringWidth(defaultFont, g, label);
+        int strWidth = stringWidth(defaultFont, g2, label);
         int x = xmax - strWidth - 5;
-        int y = (int) (ymid - defaultFont.getSize() - g.getFontMetrics().getDescent() * 2.0);
-        g.drawString(label, x, y);
+        int y = (int) (ymid - defaultFont.getSize() - g2.getFontMetrics().getDescent() * 2.0);
+        g2.drawString(label, x, y);
         return x;
     }
 
@@ -531,7 +535,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         int strWidth = stringWidth(defaultFont, g2, label);
         int y = ymax - strHeight;
         int x = (int) (xmid - strWidth / 2.0);
-        g.drawString(label, x, y);
+        g2.drawString(label, x, y);
         return x;
     }
 
