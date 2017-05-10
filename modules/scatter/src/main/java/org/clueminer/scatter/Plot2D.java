@@ -56,7 +56,6 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     private int attrY = 1;
     private Collection<Double> xData;
     private Collection<Double> yData;
-    private Collection<Double> eData;
     private static final Logger LOG = LoggerFactory.getLogger(Plot2D.class);
     private ColorGenerator cg;
 
@@ -131,14 +130,13 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
             chart = createChart();
             xData = new ArrayList<>();
             yData = new ArrayList<>();
-            eData = new ArrayList<>();
             addDataPoint(inst);
             //TODO: find appropriate name for the series
             data = chart.addSeries(clusterName, xData, yData);
             data.setMarkerColor(cg.next());
         } else {
             addDataPoint(inst);
-            data.replaceData(xData, yData, eData);
+            data.replaceData(xData, yData, null);
         }
         revalidate();
         repaint();
@@ -147,7 +145,6 @@ public class Plot2D<E extends Instance, T extends Number> extends JPanel impleme
     private void addDataPoint(E instance) {
         xData.add(instance.get(attrX));
         yData.add(instance.get(attrY));
-        eData.add(Double.MIN_VALUE);
     }
 
     @Override

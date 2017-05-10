@@ -276,13 +276,11 @@ public class XChartTheme implements Theme {
     // Bar Charts ///////////////////////////////
     @Override
     public double getBarWidthPercentage() {
-
         return 0.9;
     }
 
     @Override
     public boolean isBarsOverlapped() {
-
         return false;
     }
 
@@ -302,13 +300,12 @@ public class XChartTheme implements Theme {
     // Error Bars ///////////////////////////////
     @Override
     public Color getErrorBarsColor() {
-
-        return ChartColor.getAWTColor(ChartColor.BLACK);
+        return Color.LIGHT_GRAY;
+        //return ChartColor.getAWTColor(ChartColor.BLACK);
     }
 
     @Override
     public boolean isErrorBarsColorSeriesColor() {
-
         return false;
     }
 
