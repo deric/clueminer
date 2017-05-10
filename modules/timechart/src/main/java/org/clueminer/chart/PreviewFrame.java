@@ -244,7 +244,7 @@ public class PreviewFrame<E extends Instance> extends JPanel implements ChartCon
         visible.setTimePoints(ts.getTimePoints());
 
         chartData.setVisible(ts);
-        System.out.println("visible data: " + dataset.size());
+        //System.out.println("visible data: " + dataset.size());
         previewPanel.revalidate();
     }
 

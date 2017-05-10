@@ -28,8 +28,11 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Exportable;
 
 /**
+ * 2D data projection
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 public class VisualizePanel<E extends Instance, C extends Cluster<E>> extends JPanel implements Exportable {
 

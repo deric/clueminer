@@ -92,7 +92,6 @@ public class ClusterAlgPanel<E extends Instance> extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String curr = (String) cbData.getSelectedItem();
-                System.out.println("setting dataset to :" + curr);
                 if (curr.equals(dataset.getName())) {
                     currDataset = dataset;
                 } else {
