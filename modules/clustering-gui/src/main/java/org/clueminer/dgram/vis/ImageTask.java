@@ -21,6 +21,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
@@ -31,15 +32,13 @@ import org.clueminer.dataset.api.Instance;
 public class ImageTask<E extends Instance, C extends Cluster<E>> {
 
     private final Clustering<E, C> clustering;
-    private final int width;
-    private final int height;
+    private final Props prop;
     private final DendrogramVisualizationListener listener;
     private final DendrogramMapping mapping;
 
-    public ImageTask(Clustering<E, C> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public ImageTask(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         this.clustering = clustering;
-        this.width = width;
-        this.height = height;
+        this.prop = prop;
         this.listener = listener;
         this.mapping = mapping;
     }
@@ -49,11 +48,11 @@ public class ImageTask<E extends Instance, C extends Cluster<E>> {
     }
 
     public int getWidth() {
-        return width;
+        return prop.getInt("vis_width", 300);
     }
 
     public int getHeight() {
-        return height;
+        return prop.getInt("vis_height", 300);
     }
 
     public DendrogramVisualizationListener getListener() {

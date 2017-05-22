@@ -64,7 +64,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private String[] initInternalEvaluator() {
         InternalEvaluatorFactory<E, C> ef = InternalEvaluatorFactory.getInstance();
         List<String> list = ef.getProviders();
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -84,6 +84,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         cbInternal = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        cbVisualize = new javax.swing.JComboBox<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbFunc, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbFunc.text")); // NOI18N
 
@@ -102,6 +104,10 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
 
         cbInternal.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
 
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.jLabel3.text")); // NOI18N
+
+        cbVisualize.setModel(new DefaultComboBoxModel(initVisualization()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,12 +119,16 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                     .addComponent(rbExternal)
                     .addComponent(rbInternal)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(lbFunc))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(lbFunc)))
+                            .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbVisualize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(151, Short.MAX_VALUE))
@@ -140,7 +150,10 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(cbVisualize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -148,11 +161,19 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cbEval;
     private javax.swing.JComboBox cbInternal;
+    private javax.swing.JComboBox<String> cbVisualize;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel lbFunc;
     private javax.swing.JRadioButton rbExternal;
     private javax.swing.JRadioButton rbInternal;
     // End of variables declaration//GEN-END:variables
+
+    private Object[] initVisualization() {
+        InternalEvaluatorFactory<E, C> ef = InternalEvaluatorFactory.getInstance();
+        List<String> list = ef.getProviders();
+        return list.toArray(new String[0]);
+    }
 
 }

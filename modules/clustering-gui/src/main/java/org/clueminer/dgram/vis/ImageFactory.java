@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import org.openide.util.RequestProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,10 +90,10 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
         workers = newWorkers;
     }
 
-    public void generateImage(Clustering<E, C> clustering, int width, int height, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public void generateImage(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         //ensure at least one worker
         ensure(1);
-        ImageTask task = new ImageTask(clustering, width, height, listener, mapping);
+        ImageTask task = new ImageTask(clustering, prop, listener, mapping);
         queue.add(task);
         if (workers.length == 0) {
             throw new RuntimeException("no workers are running");

@@ -7,8 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.aggl.HCLW;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringType;
@@ -53,7 +53,10 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         clustering.lookupAdd(dendroData);
 
         DGramVis<E, C> dgram = new DGramVis();
-        Image image = dgram.generate(clustering, 300, 300, this);
+        Props prop = new Props();
+        prop.put("vis_width", 300);
+        prop.put("vis_height", 300);
+        Image image = dgram.generate(clustering, prop, this);
         picLabel = new JLabel(new ImageIcon(image));
 
         add(picLabel);
@@ -82,7 +85,6 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
             }
         });
     }
-
 
     @Override
     public void previewUpdated(final Image preview) {

@@ -48,7 +48,7 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
     private static final Logger LOG = LoggerFactory.getLogger(DGramVis.class);
     private static final RequestProcessor RP = new RequestProcessor("Clustering");
 
-    public Image generate(final Clustering<E, C> clustering, final int width, final int height, final DendrogramVisualizationListener listener) {
+    public Image generate(final Clustering<E, C> clustering, final Props prop, final DendrogramVisualizationListener listener) {
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         if (mapping == null) {
             LOG.warn("missing mapping, can't generate preview");
@@ -58,26 +58,26 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
         } else {
             //don't generate columns mapping
             /*
-             if (!mapping.hasColumnsClustering()) {
-             RP.post(new Runnable() {
-             @Override
-             public void run() {
-             Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
-             Props params = clustering.getParams();
-             AgglomerativeClustering algorithm = new HC();
-
-             Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
-             params.put(AlgParams.CLUSTERING_TYPE, false);
-             HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
-             mapping.setColsResult(colsResult);
-             mapping.setDataset(dataset);
-             generateImage(clustering, width, height, listener, mapping);
-             }
-             });
-
-             }*/
+             * if (!mapping.hasColumnsClustering()) {
+             * RP.post(new Runnable() {
+             * @Override
+             * public void run() {
+             * Dataset<? extends Instance> dataset = clustering.getLookup().lookup(Dataset.class);
+             * Props params = clustering.getParams();
+             * AgglomerativeClustering algorithm = new HC();
+             *
+             * Matrix input = Scaler.standartize(dataset.arrayCopy(), params.get("std", Scaler.NONE), params.getBoolean("log-scale", false));
+             * params.put(AlgParams.CLUSTERING_TYPE, false);
+             * HierarchicalResult colsResult = algorithm.hierarchy(input, dataset, params);
+             * mapping.setColsResult(colsResult);
+             * mapping.setDataset(dataset);
+             * generateImage(clustering, width, height, listener, mapping);
+             * }
+             * });
+             *
+             * } */
             //add task to queue
-            ImageFactory.getInstance().generateImage(clustering, width, height, listener, mapping);
+            ImageFactory.getInstance().generateImage(clustering, prop, listener, mapping);
 
             return loading();
         }
@@ -85,9 +85,9 @@ public class DGramVis<E extends Instance, C extends Cluster<E>> {
         /**
          * TODO implement structure generation
          */
-        /*       DgViewer viewer = new DgViewer();
-         viewer.setDataset(null);
-         viewer.setClustering(clustering);*/
+        /* DgViewer viewer = new DgViewer();
+         * viewer.setDataset(null);
+         * viewer.setClustering(clustering); */
     }
 
     private DendrogramMapping createMapping(Clustering<E, C> clustering) {
