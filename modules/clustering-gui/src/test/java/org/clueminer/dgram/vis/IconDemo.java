@@ -2,6 +2,10 @@ package org.clueminer.dgram.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,6 +17,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.struct.DendroMatrixData;
 import org.clueminer.dataset.api.Dataset;
@@ -33,9 +38,9 @@ import org.openide.util.Exceptions;
 public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame implements DendrogramVisualizationListener<E, C> {
 
     private static final long serialVersionUID = -8493251992060371012L;
-    private final JLabel picLabel;
+    private JLabel picLabel;
 
-    public IconDemo() {
+    public IconDemo() throws TimeoutException {
         setLayout(new BorderLayout());
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         Matrix input = new JMatrix(dataset.arrayCopy());
@@ -52,15 +57,21 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         Clustering<E, C> clustering = FakeClustering.iris();
         clustering.lookupAdd(dendroData);
 
-        DGramVis<E, C> dgram = new DGramVis();
         Props prop = new Props();
         prop.put("vis_width", 300);
         prop.put("vis_height", 300);
-        Image image = dgram.generate(clustering, prop, this);
-        picLabel = new JLabel(new ImageIcon(image));
-
-        add(picLabel);
-
+        final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
+        Image image;
+        try {
+            image = future.get(3, TimeUnit.SECONDS);
+            picLabel = new JLabel(new ImageIcon(image));
+            add(picLabel);
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     // this function will be run from the EDT

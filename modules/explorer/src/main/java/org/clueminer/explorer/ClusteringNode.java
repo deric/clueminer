@@ -22,6 +22,8 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -33,6 +35,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.DGramVis;
+import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.EvaluatorProperty;
 import org.clueminer.utils.Props;
@@ -96,10 +99,22 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
                 //ensure that for each clustering we submit exatctly one task
                 rendering = true;
                 //image should be updated asynchronously when image is generated
-                DGramVis dg = new DGramVis();
-                dg.generate(clustering, prop, this);
+
+                final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+                if (mapping == null) {
+                    LOG.warn("missing mapping, can't generate preview");
+                } else {
+                    Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
+                    if (future.isDone()) {
+                        return future.get();
+                    }
+
+                }
+
                 //image is rendering, wait for it...
-                return DGramVis.loading();
+                return ImageFactory.loading();
+            } catch (InterruptedException | ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
             } finally {
                 lock.unlock();
             }

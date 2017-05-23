@@ -25,6 +25,8 @@ import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dgram.eval.SilhouettePlot;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Worker has instances of GUI components needed for rendering. Only one image
@@ -39,9 +41,8 @@ public class DendrogramRenderer<R extends Image> implements ClusteringVisualizat
 
     private final Heatmap heatmap;
     private final SilhouettePlot silhoulette;
-    private boolean running = true;
     private static final String NAME = "Dendrogram";
-    private VisualizationTask task;
+    private static final Logger LOG = LoggerFactory.getLogger(DendrogramRenderer.class);
 
     public DendrogramRenderer() {
         heatmap = new Heatmap();
@@ -54,7 +55,7 @@ public class DendrogramRenderer<R extends Image> implements ClusteringVisualizat
     }
 
     @Override
-    public R generateImage() {
+    public R generateImage(VisualizationTask task) {
         heatmap.setData(task.getMapping());
         silhoulette.setClustering(task.getMapping().getRowsResult(), task.getClustering());
 
@@ -70,6 +71,7 @@ public class DendrogramRenderer<R extends Image> implements ClusteringVisualizat
         g.drawImage(img, 0, 0, null);
         // 1px to separate silhoulette from heatmap
         g.drawImage(imgSil, dendroWidth + space, 0, null);
+        LOG.debug("finished rendering clustering preview");
 
         DendrogramVisualizationListener listener = task.getListener();
         if (listener != null) {
@@ -77,29 +79,6 @@ public class DendrogramRenderer<R extends Image> implements ClusteringVisualizat
             listener.previewUpdated(combined);
         }
         return (R) img;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void stop() {
-        this.running = true;
-    }
-
-    @Override
-    public R call() throws Exception {
-        R img = null;
-        while (isRunning()) {
-            VisualizationTask task = ImageFactory.getInstance().getTask();
-            img = generateImage();
-        }
-        return img;
-    }
-
-    @Override
-    public void setTask(VisualizationTask task) {
-        this.task = task;
     }
 
 }

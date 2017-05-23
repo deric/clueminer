@@ -17,7 +17,6 @@
 package org.clueminer.clustering.gui;
 
 import java.awt.Image;
-import java.util.concurrent.Callable;
 
 /**
  * Interface for
@@ -25,7 +24,7 @@ import java.util.concurrent.Callable;
  * @author deric
  * @param <R> resulting type
  */
-public interface ClusteringVisualization<R extends Image> extends Callable<R> {
+public interface ClusteringVisualization<R extends Image> {
 
     /**
      * Unique method identifier
@@ -34,8 +33,6 @@ public interface ClusteringVisualization<R extends Image> extends Callable<R> {
      */
     String getName();
 
-    void setTask(VisualizationTask task);
-
-    R generateImage();
+    R generateImage(VisualizationTask task);
 
 }

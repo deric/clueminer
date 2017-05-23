@@ -16,6 +16,8 @@
  */
 package org.clueminer.clustering.gui;
 
+import java.awt.Image;
+import java.util.concurrent.Callable;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -29,18 +31,20 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public class VisualizationTask<E extends Instance, C extends Cluster<E>> {
+public class VisualizationTask<E extends Instance, C extends Cluster<E>, R extends Image> implements Callable<R> {
 
     private final Clustering<E, C> clustering;
     private final Props prop;
     private final DendrogramVisualizationListener listener;
     private final DendrogramMapping mapping;
+    private final ClusteringVisualization<R> renderer;
 
-    public VisualizationTask(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public VisualizationTask(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping, ClusteringVisualization<R> renderer) {
         this.clustering = clustering;
         this.prop = prop;
         this.listener = listener;
         this.mapping = mapping;
+        this.renderer = renderer;
     }
 
     public Clustering<E, C> getClustering() {
@@ -61,6 +65,11 @@ public class VisualizationTask<E extends Instance, C extends Cluster<E>> {
 
     public DendrogramMapping getMapping() {
         return mapping;
+    }
+
+    @Override
+    public R call() throws Exception {
+        return renderer.generateImage(this);
     }
 
 }

@@ -17,9 +17,11 @@
 package org.clueminer.dgram.vis;
 
 import java.awt.Image;
+import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -30,6 +32,7 @@ import org.clueminer.clustering.gui.ClusteringVisualizationFactory;
 import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.openide.util.ImageUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +50,8 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private static final Logger LOG = LoggerFactory.getLogger(ImageFactory.class);
     private int workerCnt = 0;
     private ExecutorService executor = Executors.newFixedThreadPool(5);
+    private HashMap<String, ClusteringVisualization<Image>> renderers;
+
 
     public static ImageFactory getInstance() {
         if (instance == null) {
@@ -58,13 +63,11 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
 
     private ImageFactory(int workers) {
         initWorkers(workers);
+        renderers = new HashMap<>();
     }
 
     private void initWorkers(int numWorkers) {
         queue = new LinkedBlockingQueue<>();
-        executor = Executors.newFixedThreadPool(numWorkers);
-        workers = new DendrogramRenderer[numWorkers];
-        LOG.info("intializing {} workers", numWorkers);
         ensure(numWorkers);
     }
 
@@ -76,20 +79,19 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
         return instance;
     }
 
-    public void generateImage(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
-        //ensure at least one worker
-        ensure(1);
-        VisualizationTask task = new VisualizationTask(clustering, prop, listener, mapping);
-
-        ClusteringVisualizationFactory cf = ClusteringVisualizationFactory.getInstance();
-        ClusteringVisualization<Image> cv = cf.getProvider(prop.get("clustering.visualization", "Dendrogram"));
-
-        executor.submit(cv);
-
-        queue.add(task);
-        if (workers.length == 0) {
-            throw new RuntimeException("no workers are running");
+    public Future<? extends Image> generateImage(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+        String provider = prop.get("clustering.visualization", "Dendrogram");
+        ClusteringVisualization<Image> renderer;
+        if (!renderers.containsKey(provider)) {
+            ClusteringVisualizationFactory cf = ClusteringVisualizationFactory.getInstance();
+            renderer = cf.getProvider(provider);
+            renderers.put(provider, renderer);
+        } else {
+            renderer = renderers.get(provider);
         }
+
+        VisualizationTask task = new VisualizationTask(clustering, prop, listener, mapping, renderer);
+        return executor.submit(task);
     }
 
     protected boolean hasWork() {
@@ -107,17 +109,17 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     }
 
     /**
-     * Stop workers and free resources
+     * Loading icon, should be displayed when we are computing real image
+     *
+     * @return
      */
+    public static Image loading() {
+        return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
+    }
+
     public void shutdown() {
-        LOG.info("stopping {} workers", workerCnt);
-        if (workerCnt > 0) {
-            for (DendrogramRenderer worker : workers) {
-                if (worker != null) {
-                    worker.stop();
-                }
-                workerCnt--;
-            }
+        if (executor != null) {
+            executor.shutdown();
         }
     }
 
