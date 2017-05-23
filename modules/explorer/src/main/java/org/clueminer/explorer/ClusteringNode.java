@@ -86,6 +86,10 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     @Override
     public Image getIcon(int type) {
         if (image == null && rendering == false) {
+            Props prop = new Props();
+            prop.put("vis_width", 64);
+            prop.put("vis_height", 64);
+
             lock.lock();
             try {
                 Clustering clustering = getClustering();
@@ -93,7 +97,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
                 rendering = true;
                 //image should be updated asynchronously when image is generated
                 DGramVis dg = new DGramVis();
-                dg.generate(clustering, 64, 64, this);
+                dg.generate(clustering, prop, this);
                 //image is rendering, wait for it...
                 return DGramVis.loading();
             } finally {

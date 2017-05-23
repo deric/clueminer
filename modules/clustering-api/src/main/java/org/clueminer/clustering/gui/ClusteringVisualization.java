@@ -16,29 +16,26 @@
  */
 package org.clueminer.clustering.gui;
 
-import java.awt.Graphics;
-import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.Clustering;
-import org.clueminer.dataset.api.Instance;
+import java.awt.Image;
+import java.util.concurrent.Callable;
 
 /**
- * General interface for cluster visualization which could be looked up and then
- * exported.
+ * Interface for
  *
- * Previewer should be a paint-able graphic component (e.g. JPanel)
- *
- * @author Tomas Barton
- * @param <E>
- * @param <C>
+ * @author deric
+ * @param <R> resulting type
  */
-public interface ClusterPreviewer<E extends Instance, C extends Cluster<E>> {
-
-    void setClustering(Clustering<E, C> clustering);
+public interface ClusteringVisualization<R extends Image> extends Callable<R> {
 
     /**
-     * ClusterPreviewer should inherit from JComponent
+     * Unique method identifier
      *
-     * @param g
+     * @return the name
      */
-    void paint(Graphics g);
+    String getName();
+
+    void setTask(VisualizationTask task);
+
+    R generateImage();
+
 }

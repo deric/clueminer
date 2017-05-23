@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.dgram.vis;
+package org.clueminer.clustering.gui;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -29,14 +29,14 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public class ImageTask<E extends Instance, C extends Cluster<E>> {
+public class VisualizationTask<E extends Instance, C extends Cluster<E>> {
 
     private final Clustering<E, C> clustering;
     private final Props prop;
     private final DendrogramVisualizationListener listener;
     private final DendrogramMapping mapping;
 
-    public ImageTask(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
+    public VisualizationTask(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
         this.clustering = clustering;
         this.prop = prop;
         this.listener = listener;

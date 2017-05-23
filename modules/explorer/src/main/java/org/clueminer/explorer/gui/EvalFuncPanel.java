@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.clustering.gui.ClusteringVisualizationFactory;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -171,8 +172,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     // End of variables declaration//GEN-END:variables
 
     private Object[] initVisualization() {
-        InternalEvaluatorFactory<E, C> ef = InternalEvaluatorFactory.getInstance();
-        List<String> list = ef.getProviders();
+        ClusteringVisualizationFactory cv = ClusteringVisualizationFactory.getInstance();
+        List<String> list = cv.getProviders();
         return list.toArray(new String[0]);
     }
 

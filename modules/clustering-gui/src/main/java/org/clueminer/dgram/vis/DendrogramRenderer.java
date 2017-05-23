@@ -20,9 +20,11 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
+import org.clueminer.clustering.gui.ClusteringVisualization;
+import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dendrogram.gui.Heatmap;
 import org.clueminer.dgram.eval.SilhouettePlot;
-import org.openide.util.Exceptions;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Worker has instances of GUI components needed for rendering. Only one image
@@ -30,21 +32,29 @@ import org.openide.util.Exceptions;
  * too much memory.
  *
  * @author Tomas Barton
+ * @param <R>
  */
-public class ImageWorker implements Runnable {
+@ServiceProvider(service = ClusteringVisualization.class)
+public class DendrogramRenderer<R extends Image> implements ClusteringVisualization<R> {
 
     private final Heatmap heatmap;
     private final SilhouettePlot silhoulette;
     private boolean running = true;
-    private final ImageFactory factory;
+    private static final String NAME = "Dendrogram";
+    private VisualizationTask task;
 
-    public ImageWorker(ImageFactory imgFactory) {
+    public DendrogramRenderer() {
         heatmap = new Heatmap();
         silhoulette = new SilhouettePlot(true);
-        this.factory = imgFactory;
     }
 
-    public void generateImage(ImageTask task) {
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public R generateImage() {
         heatmap.setData(task.getMapping());
         silhoulette.setClustering(task.getMapping().getRowsResult(), task.getClustering());
 
@@ -66,18 +76,7 @@ public class ImageWorker implements Runnable {
             listener.clusteringFinished(task.getClustering());
             listener.previewUpdated(combined);
         }
-    }
-
-    @Override
-    public void run() {
-        while (isRunning()) {
-            try {
-                ImageTask task = factory.getTask();
-                generateImage(task);
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
+        return (R) img;
     }
 
     public boolean isRunning() {
@@ -86,6 +85,21 @@ public class ImageWorker implements Runnable {
 
     public void stop() {
         this.running = true;
+    }
+
+    @Override
+    public R call() throws Exception {
+        R img = null;
+        while (isRunning()) {
+            VisualizationTask task = ImageFactory.getInstance().getTask();
+            img = generateImage();
+        }
+        return img;
+    }
+
+    @Override
+    public void setTask(VisualizationTask task) {
+        this.task = task;
     }
 
 }
