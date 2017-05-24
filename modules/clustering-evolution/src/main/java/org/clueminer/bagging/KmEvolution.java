@@ -92,7 +92,7 @@ public class KmEvolution extends MoEvolution {
         System.out.println("crossover: " + getCrossoverProbability());
         moAlg = new NSGAIIBuilder(problem, crossover, mutation)
                 .setSelectionOperator(selection)
-                .setMaxIterations(this.getGenerations())
+                .setMaxEvaluations(this.getGenerations())
                 .setPopulationSize(this.getPopulationSize())
                 //.setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();

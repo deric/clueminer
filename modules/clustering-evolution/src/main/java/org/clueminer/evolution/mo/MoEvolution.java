@@ -151,7 +151,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         System.out.println("crossover: " + getCrossoverProbability());
         moAlg = new NSGAIIBuilder(problem, crossover, mutation)
                 .setSelectionOperator(selection)
-                .setMaxIterations(this.getGenerations())
+                .setMaxEvaluations(this.getGenerations())
                 .setPopulationSize(this.getPopulationSize())
                 //.setSolutionListEvaluator(new MultithreadedSolutionListEvaluator(8, problem))
                 .build();

@@ -117,12 +117,12 @@
         <dependency>
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-problem</artifactId>
-            <version>5.0</version>
+            <version>5.2</version>
         </dependency>
         <dependency>
             <groupId>org.uma.jmetal</groupId>
             <artifactId>jmetal-algorithm</artifactId>
-            <version>5.0</version>
+            <version>5.2</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
