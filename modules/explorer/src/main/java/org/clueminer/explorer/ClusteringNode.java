@@ -34,7 +34,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.vis.DGramVis;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.EvaluatorProperty;
@@ -120,7 +119,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
             }
         }
         if (image == null) {
-            return DGramVis.loading();
+            return ImageFactory.loading();
         }
         return image;
     }
