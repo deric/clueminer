@@ -119,7 +119,8 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
 
     public void shutdown() {
         if (executor != null) {
-            executor.shutdown();
+            //only wheen shutting down whole app
+            //executor.shutdown();
         }
     }
 
