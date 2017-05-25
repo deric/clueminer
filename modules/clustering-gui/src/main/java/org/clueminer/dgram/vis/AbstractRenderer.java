@@ -43,6 +43,8 @@ public abstract class AbstractRenderer<E extends Instance, C extends Cluster<E>,
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRenderer.class);
 
     protected int markerSize = 20;
+    protected int imgWidth = 600;
+    protected int imgHeight = 600;
 
     protected Chart createChart(VisualizationTask task, int width, int height) {
         Chart chart = new Chart(width, height, StyleManager.ChartTheme.XChart);

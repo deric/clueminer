@@ -299,11 +299,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     }
 
     public Image updateIcon(Props prop) {
-
         if (rendering == false) {
-            prop.put("vis_width", 64);
-            prop.put("vis_height", 64);
-
             lock.lock();
             try {
                 Clustering clustering = getClustering();

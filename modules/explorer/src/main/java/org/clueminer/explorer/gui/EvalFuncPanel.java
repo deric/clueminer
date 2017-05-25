@@ -66,6 +66,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         p.put("clustering.visualization", (String) cbVisualize.getSelectedItem());
         p.putInt("visualize.x_attr", cbX.getSelectedIndex());
         p.putInt("visualize.y_attr", cbY.getSelectedIndex());
+        p.putInt("visualize.img_width", Integer.valueOf((String) cbImgSize.getSelectedItem()));
+        p.putInt("visualize.img_height", Integer.valueOf((String) cbImgSize.getSelectedItem()));
     }
 
     private String[] initEvaluator() {
@@ -118,6 +120,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         cbX = new javax.swing.JComboBox<>();
         lbY = new javax.swing.JLabel();
         cbY = new javax.swing.JComboBox<>();
+        lbImgSIze = new javax.swing.JLabel();
+        cbImgSize = new javax.swing.JComboBox<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbFunc, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbFunc.text")); // NOI18N
 
@@ -147,6 +151,10 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         org.openide.awt.Mnemonics.setLocalizedText(lbY, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbY.text")); // NOI18N
 
         cbY.setModel(new DefaultComboBoxModel(initAttributes()));
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbImgSIze, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbImgSIze.text")); // NOI18N
+
+        cbImgSize.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "64", "128", "256", "512" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -178,7 +186,11 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                         .addGap(18, 18, 18)
                         .addComponent(lbY)
                         .addGap(18, 18, 18)
-                        .addComponent(cbY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbImgSIze)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbImgSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(151, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -208,13 +220,18 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                     .addComponent(cbX, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbY)
                     .addComponent(cbY, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbImgSIze)
+                    .addComponent(cbImgSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox cbEval;
+    private javax.swing.JComboBox<String> cbImgSize;
     private javax.swing.JComboBox cbInternal;
     private javax.swing.JComboBox<String> cbVisualize;
     private javax.swing.JComboBox<String> cbX;
@@ -223,6 +240,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel lbFunc;
+    private javax.swing.JLabel lbImgSIze;
     private javax.swing.JLabel lbX;
     private javax.swing.JLabel lbY;
     private javax.swing.JRadioButton rbExternal;

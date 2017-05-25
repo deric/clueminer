@@ -44,9 +44,6 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
 
     private static final String NAME = "Projection";
     private static final Logger LOG = LoggerFactory.getLogger(Projection2DRenderer.class);
-    private int markerSize = 10;
-    private int imgWidth = 600;
-    private int imgHeight = 600;
 
     public Projection2DRenderer() {
     }

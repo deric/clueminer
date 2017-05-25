@@ -53,11 +53,11 @@ public class VisualizationTask<E extends Instance, C extends Cluster<E>, R exten
     }
 
     public int getWidth() {
-        return prop.getInt("vis_width", 300);
+        return prop.getInt("visualize.img_width", 64);
     }
 
     public int getHeight() {
-        return prop.getInt("vis_height", 300);
+        return prop.getInt("visualize.img_height", 64);
     }
 
     public DendrogramVisualizationListener getListener() {
