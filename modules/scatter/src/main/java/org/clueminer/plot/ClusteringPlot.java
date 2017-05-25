@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.dgram.vis;
+package org.clueminer.plot;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.Series;
@@ -22,22 +22,17 @@ import com.xeiam.xchart.StyleManager;
 import com.xeiam.xchart.StyleManager.ChartTheme;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.plot.SimplePlot;
-import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,28 +70,6 @@ public class ClusteringPlot<E extends Instance, C extends Cluster<E>> extends JP
         revalidate();
         validate();
         repaint();
-    }
-
-    /**
-     * Generate image of given size
-     *
-     * @param width
-     * @param height
-     * @return
-     */
-    public Image generate(int width, int height) {
-        LOG.debug("generating image {}x{}", width, height);
-        BufferedImage image = new BufferedImage(currChart.getWidth(), currChart.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        currChart.paint(g);
-
-        if (image.getHeight() != height || image.getWidth() != width) {
-            image = Scalr.resize(image, Scalr.Method.SPEED,
-                    Scalr.Mode.AUTOMATIC,
-                    width, height, Scalr.OP_ANTIALIAS);
-        }
-        g.dispose();
-        return image;
     }
 
     private JPanel clusteringPlot(final Clustering<E, C> clustering) {

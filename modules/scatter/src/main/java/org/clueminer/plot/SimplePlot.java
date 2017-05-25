@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SimplePlot extends BPanel {
 
-    private final Chart chart;
+    private Chart chart;
     private final static Logger LOG = LoggerFactory.getLogger(SimplePlot.class);
     private Dimension minSize;
     private boolean initialized = false;
@@ -63,6 +63,10 @@ public class SimplePlot extends BPanel {
     public void setMinimumSize(Dimension size) {
         this.minSize = size;
         resetCache();
+    }
+
+    public void setChart(Chart chart) {
+        this.chart = chart;
     }
 
     @Override

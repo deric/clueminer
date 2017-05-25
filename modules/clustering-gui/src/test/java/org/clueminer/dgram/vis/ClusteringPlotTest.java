@@ -16,6 +16,7 @@
  */
 package org.clueminer.dgram.vis;
 
+import org.clueminer.plot.ClusteringPlot;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;

@@ -30,6 +30,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  * @param <E>
  * @param <C>
+ * @param <R> resulting image
  */
 public class VisualizationTask<E extends Instance, C extends Cluster<E>, R extends Image> implements Callable<R> {
 
@@ -65,6 +66,10 @@ public class VisualizationTask<E extends Instance, C extends Cluster<E>, R exten
 
     public DendrogramMapping getMapping() {
         return mapping;
+    }
+
+    public Props getProps() {
+        return prop;
     }
 
     @Override
