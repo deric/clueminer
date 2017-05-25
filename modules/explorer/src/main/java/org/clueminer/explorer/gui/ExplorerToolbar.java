@@ -60,7 +60,6 @@ public class ExplorerToolbar extends JToolBar {
     private ClusterAlgPanel algPanel;
     private EvolutionUI evoPanel;
     private Evolution evolution;
-    private String currentVisualization;
     private Props props;
 
     public ExplorerToolbar() {
@@ -100,7 +99,6 @@ public class ExplorerToolbar extends JToolBar {
                         if (hash != p.hashCode()) {
                             listener.updateThumbnails(p);
                         }
-                        currentVisualization = p.get("clustering.visualization");
                         listener.runClustering(alg, algPanel.getSelectedDataset(), p);
                     }
                 }
@@ -116,6 +114,7 @@ public class ExplorerToolbar extends JToolBar {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 if (listener != null) {
                     evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
+                    evolution.setConfig(props);
                     listener.evolutionAlgorithmChanged(evt);
                 }
             }

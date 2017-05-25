@@ -26,6 +26,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
@@ -36,6 +37,8 @@ public class VisualizeToolbar extends JToolBar {
 
     private JButton btnExport;
     private JButton btnScreenshot;
+    private JButton btnSettings;
+    private VisualizeSettings panelSettings;
     private final VisualizePanel viewer;
 
     public VisualizeToolbar(VisualizePanel frame) {
@@ -75,6 +78,23 @@ public class VisualizeToolbar extends JToolBar {
 
             }
         });
+        btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/settings16.png", false));
+        btnSettings.setToolTipText("Configure visualization");
+        btnSettings.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (panelSettings == null) {
+                    panelSettings = new VisualizeSettings();
+                }
+
+                DialogDescriptor dd = new DialogDescriptor(panelSettings, NbBundle.getMessage(VisualizeToolbar.class, "VisualizeSettings.title"));
+                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+
+                }
+            }
+        });
+        add(btnSettings);
 
     }
 
