@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.dgram.vis;
 
 import java.awt.BorderLayout;
@@ -35,12 +51,11 @@ import org.openide.util.Exceptions;
  * @param <E>
  * @param <C>
  */
-public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame implements DendrogramVisualizationListener<E, C> {
+public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> extends JFrame implements DendrogramVisualizationListener<E, C> {
 
-    private static final long serialVersionUID = -8493251992060371012L;
     private JLabel picLabel;
 
-    public IconDemo() throws TimeoutException {
+    public Projection2DRendererTest() throws TimeoutException {
         setLayout(new BorderLayout());
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
         Matrix input = new JMatrix(dataset.arrayCopy());
@@ -58,27 +73,26 @@ public class IconDemo<E extends Instance, C extends Cluster<E>> extends JFrame i
         clustering.lookupAdd(dendroData);
 
         Props prop = new Props();
-        prop.put("vis_width", 300);
-        prop.put("vis_height", 300);
+        prop.put("vis_width", 600);
+        prop.put("vis_height", 600);
+        prop.put("clustering.visualization", "Projection");
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
         Image image;
         try {
-            image = future.get(3, TimeUnit.SECONDS);
+            image = future.get(5, TimeUnit.SECONDS);
             picLabel = new JLabel(new ImageIcon(image));
             add(picLabel);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
 
     // this function will be run from the EDT
     private static void createAndShowGUI() throws Exception {
-        IconDemo frame = new IconDemo();
+        Projection2DRendererTest frame = new Projection2DRendererTest();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 500);
+        frame.setSize(600, 600);
         frame.setVisible(true);
     }
 

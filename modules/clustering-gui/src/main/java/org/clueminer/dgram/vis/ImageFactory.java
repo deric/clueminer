@@ -52,7 +52,6 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private ExecutorService executor = Executors.newFixedThreadPool(5);
     private HashMap<String, ClusteringVisualization<Image>> renderers;
 
-
     public static ImageFactory getInstance() {
         if (instance == null) {
             instance = new ImageFactory(5);
@@ -89,6 +88,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
         } else {
             renderer = renderers.get(provider);
         }
+        LOG.debug("using renderer {}", renderer.getName());
 
         VisualizationTask task = new VisualizationTask(clustering, prop, listener, mapping, renderer);
         return executor.submit(task);
