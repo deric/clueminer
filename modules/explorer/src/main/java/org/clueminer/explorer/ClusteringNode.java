@@ -88,35 +88,8 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     @Override
     public Image getIcon(int type) {
         if (image == null && rendering == false) {
-            Props prop = new Props();
-            prop.put("vis_width", 64);
-            prop.put("vis_height", 64);
-
-            lock.lock();
-            try {
-                Clustering clustering = getClustering();
-                //ensure that for each clustering we submit exatctly one task
-                rendering = true;
-                //image should be updated asynchronously when image is generated
-
-                final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
-                if (mapping == null) {
-                    LOG.warn("missing mapping, can't generate preview");
-                } else {
-                    Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
-                    if (future.isDone()) {
-                        return future.get();
-                    }
-
-                }
-
-                //image is rendering, wait for it...
-                return ImageFactory.loading();
-            } catch (InterruptedException | ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                lock.unlock();
-            }
+            Clustering clustering = getClustering();
+            updateIcon(clustering.getParams());
         }
         if (image == null) {
             return ImageFactory.loading();
@@ -325,6 +298,40 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         //not much to do
     }
 
+    public Image updateIcon(Props prop) {
+
+        if (rendering == false) {
+            prop.put("vis_width", 64);
+            prop.put("vis_height", 64);
+
+            lock.lock();
+            try {
+                Clustering clustering = getClustering();
+                //ensure that for each clustering we submit exatctly one task
+                rendering = true;
+                //image should be updated asynchronously when image is generated
+
+                final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+                Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
+                if (future.isDone()) {
+                    return future.get();
+                }
+                //image is rendering, wait for it...
+                return ImageFactory.loading();
+            } catch (InterruptedException | ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            LOG.warn("another icon update in progress");
+        }
+        if (image == null) {
+            return ImageFactory.loading();
+        }
+        return image;
+    }
+
     @Override
     public void previewUpdated(Image preview) {
         this.image = preview;
@@ -332,6 +339,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
             @Override
             public void run() {
+                rendering = false;
                 fireIconChange();
             }
         });

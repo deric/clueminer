@@ -351,6 +351,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
             for(Node n: children.getNodes()){
                 ClusteringNode cn = (ClusteringNode) n;
                 LOG.debug("clust {}", cn.getName());
+                cn.updateIcon(prop);
             }
         }
     }

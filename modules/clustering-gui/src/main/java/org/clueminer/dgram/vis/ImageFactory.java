@@ -117,6 +117,10 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
         return ImageUtilities.loadImage("org/clueminer/dendrogram/gui/spinner.gif", false);
     }
 
+    public static Image notSupported() {
+        return ImageUtilities.loadImage("org/clueminer/clustering/explorer/alert64.png", false);
+    }
+
     public void shutdown() {
         if (executor != null) {
             //only wheen shutting down whole app

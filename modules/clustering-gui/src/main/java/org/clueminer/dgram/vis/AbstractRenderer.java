@@ -44,8 +44,8 @@ public abstract class AbstractRenderer<E extends Instance, C extends Cluster<E>,
 
     protected int markerSize = 10;
 
-    protected Chart createChart(VisualizationTask task) {
-        Chart chart = new Chart(task.getWidth(), task.getHeight(), StyleManager.ChartTheme.XChart);
+    protected Chart createChart(VisualizationTask task, int width, int height) {
+        Chart chart = new Chart(width, height, StyleManager.ChartTheme.XChart);
         StyleManager sm = chart.getStyleManager();
         sm.setChartType(StyleManager.ChartType.Scatter);
 

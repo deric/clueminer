@@ -93,11 +93,12 @@ public class ExplorerToolbar extends JToolBar {
                     ClusteringAlgorithm alg = algPanel.getAlgorithm();
                     if (listener != null) {
                         Props p = algPanel.getProps();
-                        functionPanel.updateProps(p);
-                        if (currentVisualization != null) {
-                            if (currentVisualization != p.get("clustering.visualization")) {
-                                listener.updateThumbnails(p);
-                            }
+                        int hash = p.hashCode();
+                        if (functionPanel != null) {
+                            functionPanel.updateProps(p);
+                        }
+                        if (hash != p.hashCode()) {
+                            listener.updateThumbnails(p);
                         }
                         currentVisualization = p.get("clustering.visualization");
                         listener.runClustering(alg, algPanel.getSelectedDataset(), p);
@@ -198,13 +199,12 @@ public class ExplorerToolbar extends JToolBar {
                             listener.evaluatorChanged(eval);
                         }
                     }
+                    int hash = props.hashCode();
+                    functionPanel.updateProps(props);
 
-                    if (currentVisualization != null) {
-                        if (!currentVisualization.equals(props.get("clustering.visualization"))) {
-                            listener.updateThumbnails(props);
-                        }
+                    if (hash != props.hashCode()) {
+                        listener.updateThumbnails(props);
                     }
-                    currentVisualization = props.get("clustering.visualization");
                 }
             }
         });
