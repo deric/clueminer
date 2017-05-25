@@ -56,4 +56,9 @@ public interface ToolbarListener<E extends Instance> {
      */
     Dataset<E> getDataset();
 
+    /**
+     * Trigger update of all thumbnails
+     */
+    void updateThumbnails(Props prop);
+
 }

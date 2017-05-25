@@ -50,6 +50,7 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
 import org.openide.explorer.view.IconView;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Node;
 import org.openide.util.Cancellable;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
@@ -341,6 +342,17 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     public void setProject(Project project){
         this.project = project;
+    }
+
+    @Override
+    public void updateThumbnails(Props prop) {
+        if(children != null){
+            LOG.debug("explorer contains {} nodes", children.getNodesCount());
+            for(Node n: children.getNodes()){
+                ClusteringNode cn = (ClusteringNode) n;
+                LOG.debug("clust {}", cn.getName());
+            }
+        }
     }
 
 }

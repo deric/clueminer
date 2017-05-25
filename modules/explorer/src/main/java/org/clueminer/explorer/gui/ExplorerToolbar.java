@@ -60,9 +60,12 @@ public class ExplorerToolbar extends JToolBar {
     private ClusterAlgPanel algPanel;
     private EvolutionUI evoPanel;
     private Evolution evolution;
+    private String currentVisualization;
+    private Props props;
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
+        props = new Props();
         initComponents();
     }
 
@@ -90,6 +93,13 @@ public class ExplorerToolbar extends JToolBar {
                     ClusteringAlgorithm alg = algPanel.getAlgorithm();
                     if (listener != null) {
                         Props p = algPanel.getProps();
+                        functionPanel.updateProps(p);
+                        if (currentVisualization != null) {
+                            if (currentVisualization != p.get("clustering.visualization")) {
+                                listener.updateThumbnails(p);
+                            }
+                        }
+                        currentVisualization = p.get("clustering.visualization");
                         listener.runClustering(alg, algPanel.getSelectedDataset(), p);
                     }
                 }
@@ -130,6 +140,7 @@ public class ExplorerToolbar extends JToolBar {
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
                     Evolution ev = getEvolution();
                     evoPanel.updateAlgorithm(ev);
+                    ev.setConfig(props);
                     //start evolution right away
                     if (listener != null) {
                         listener.startEvolution(e, ev);
@@ -187,6 +198,13 @@ public class ExplorerToolbar extends JToolBar {
                             listener.evaluatorChanged(eval);
                         }
                     }
+
+                    if (currentVisualization != null) {
+                        if (!currentVisualization.equals(props.get("clustering.visualization"))) {
+                            listener.updateThumbnails(props);
+                        }
+                    }
+                    currentVisualization = props.get("clustering.visualization");
                 }
             }
         });
