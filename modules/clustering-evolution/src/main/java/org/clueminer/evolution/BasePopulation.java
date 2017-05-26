@@ -25,6 +25,7 @@ import org.clueminer.evolution.api.Population;
  * Simple population implementation.
  *
  * @author deric
+ * @param <I>
  */
 public class BasePopulation<I extends AbstractIndividual> extends AbstractPopulation<I> implements Population<I> {
 

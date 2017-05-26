@@ -18,7 +18,6 @@ package org.clueminer.evolution.eval;
 
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
@@ -26,6 +25,8 @@ import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,7 +39,7 @@ public class ObjectiveIndividual<I extends Individual<I, E, C>, E extends Instan
     protected static Random rand = new Random();
     protected Clustering<E, C> clustering;
     protected EvalGenom genom;
-    private static final Logger logger = Logger.getLogger(ObjectiveIndividual.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ObjectiveIndividual.class);
 
     public ObjectiveIndividual() {
 

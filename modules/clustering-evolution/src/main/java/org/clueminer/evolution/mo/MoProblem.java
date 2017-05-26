@@ -18,8 +18,6 @@ package org.clueminer.evolution.mo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -28,6 +26,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.problem.IntegerProblem;
 import org.uma.jmetal.solution.IntegerSolution;
 
@@ -40,7 +40,7 @@ public class MoProblem extends BaseIntProblem implements IntegerProblem {
     private static final long serialVersionUID = 5458227476117018712L;
 
     protected final MoEvolution evolution;
-    private static final Logger logger = Logger.getLogger(MoProblem.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MoProblem.class);
 
     public MoProblem(MoEvolution evolution) {
         this.evolution = evolution;
@@ -69,7 +69,7 @@ public class MoProblem extends BaseIntProblem implements IntegerProblem {
         for (Parameter p : params) {
             try {
                 mapping.put(i, p.getName());
-                logger.log(Level.INFO, "param {0}: {1}", new Object[]{i, p.getName()});
+                LOG.info("param {}: {}", i, p.getName());
                 lowerLimit[i] = 0;
                 switch (p.getType()) {
                     case STRING:
@@ -78,12 +78,12 @@ public class MoProblem extends BaseIntProblem implements IntegerProblem {
                         size = f.getAll().size();
                         upperLimit[i] = size - 1;
                         combinations *= size;
-                        logger.log(Level.INFO, "possible values: {0}", size);
+                        LOG.info("possible values: {}", size);
                         break;
                     case BOOLEAN:
                         upperLimit[i] = 1;
                         combinations *= 2;
-                        logger.log(Level.INFO, "possible values: {0}", 2);
+                        LOG.info("possible values: {}", 2);
                         break;
                     default:
                         throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
@@ -94,7 +94,7 @@ public class MoProblem extends BaseIntProblem implements IntegerProblem {
                 Exceptions.printStackTrace(ex);
             }
         }
-        logger.log(Level.INFO, "number of combinations = {0}", combinations);
+        LOG.info("number of combinations = {}", combinations);
         setNumberOfVariables(params.length);
     }
 

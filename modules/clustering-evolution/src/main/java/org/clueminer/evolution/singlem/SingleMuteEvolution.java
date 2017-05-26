@@ -19,8 +19,6 @@ package org.clueminer.evolution.singlem;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -32,6 +30,8 @@ import org.clueminer.evolution.attr.TournamentPopulation;
 import org.clueminer.evolution.multim.MultiMuteEvolution;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -44,8 +44,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
         extends MultiMuteEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
-    private static final String name = "single-mute";
-    private static final Logger logger = Logger.getLogger(SingleMuteEvolution.class.getName());
+    private static final String NAME = "single-mute";
+    private static final Logger LOG = LoggerFactory.getLogger(SingleMuteEvolution.class);
 
     public SingleMuteEvolution() {
         //cache normalized datasets
@@ -58,7 +58,7 @@ public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instan
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instan
 
     @Override
     public void run() {
-        logger.log(Level.INFO, "starting evolution {0}", this.getClass().getName());
+        LOG.info("starting evolution {}", this.getClass().getName());
         evolutionStarted(this);
         clean();
 
@@ -106,7 +106,7 @@ public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instan
                     }
                 } while (!current.isValid() && !this.isValid(current));
             }
-            logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
+            LOG.info("gen: {}, num children: {}", g, children.size());
 
             // sort them by fitness (thanks to Individual implements interface Comparable)
             Individual[] nextGen = children.toArray(new Individual[0]);
@@ -133,7 +133,7 @@ public class SingleMuteEvolution<I extends Individual<I, E, C>, E extends Instan
                 System.out.println("arraycopy: " + (populationSize - indsToCopy - 1) + ", p: " + (populationSize - 1));
                 System.arraycopy(nextGen, 0, population.getIndividuals(), populationSize - indsToCopy - 1, indsToCopy);
             } else {
-                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                LOG.warn("no new individuals in generation = {}", g);
                 //    throw new RuntimeException("no new individuals");
             }
             //sort whole population

@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -40,6 +38,8 @@ import org.clueminer.evolution.multim.MultiMuteIndividual;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.solution.Solution;
 
 /**
@@ -50,7 +50,7 @@ public class EvalEvolution<I extends Individual<I, E, C>, E extends Instance, C 
         extends MultiMuteEvolution<I, E, C> implements Runnable, EvolutionMO<I, E, C>, Lookup.Provider {
 
     private static final String name = "MOE";
-    private static final Logger logger = Logger.getLogger(EvalEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EvalEvolution.class);
     protected List<ClusterEvaluation<E, C>> objectives;
     private int numSolutions = 5;
     private boolean kLimit;
@@ -136,7 +136,7 @@ public class EvalEvolution<I extends Individual<I, E, C>, E extends Instance, C 
                 }
             }
 
-            logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
+            LOG.info("gen: {}, num children: {}", g, children.size());
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {
@@ -178,7 +178,7 @@ public class EvalEvolution<I extends Individual<I, E, C>, E extends Instance, C 
                 //TODO: old population should be sorted as well? take only part of the new population?
                 System.arraycopy(newIndsArr, 0, population.getIndividuals(), 0, indsToCopy);
             } else {
-                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                LOG.warn("no new individuals in generation = {}", g);
                 //    throw new RuntimeException("no new individuals");
             }
 
@@ -235,7 +235,7 @@ public class EvalEvolution<I extends Individual<I, E, C>, E extends Instance, C 
 
     protected void fireFinalResult(List<Solution> res) {
         SolTransformer trans = SolTransformer.getInstance();
-        List<OpSolution> solutions = trans.transform(res, new LinkedList<OpSolution>());
+        List<OpSolution> solutions = trans.transform(res, new LinkedList<>());
         if (solutions != null && solutions.size() > 0) {
             if (moListeners != null) {
                 for (OpListener listener : moListeners) {

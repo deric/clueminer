@@ -18,11 +18,9 @@ package org.clueminer.evolution.multim;
 
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusterLinkage;
@@ -38,6 +36,8 @@ import org.clueminer.evolution.BaseIndividual;
 import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +53,7 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
     protected static Random rand = new Random();
     protected Clustering<E, C> clustering;
     protected Props genom;
-    private static final Logger logger = Logger.getLogger(MultiMuteIndividual.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MultiMuteIndividual.class);
 
     public MultiMuteIndividual() {
 
@@ -182,11 +182,11 @@ public class MultiMuteIndividual<I extends Individual<I, E, C>, E extends Instan
      */
     @Override
     public Clustering<E, C> updateCustering() {
-        logger.log(Level.INFO, "starting clustering {0}", genom.toString());
+        LOG.info("starting clustering {}", genom.toString());
         clustering = ((MultiMuteEvolution) evolution).exec.clusterRows(evolution.getDataset(), genom);
         ClusterEvaluation eval = evolution.getExternal();
         if (eval != null) {
-            logger.log(Level.INFO, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
+            LOG.info("finished clustering, supervised score ({}): {}", eval.getName(), countFitness(eval));
         }
         return clustering;
     }

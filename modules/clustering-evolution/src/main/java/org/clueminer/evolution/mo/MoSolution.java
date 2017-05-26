@@ -21,10 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -39,6 +37,8 @@ import org.clueminer.oo.api.OpSolution;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.solution.IntegerSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.solution.impl.AbstractGenericSolution;
@@ -64,7 +64,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
     private int numberOfViolatedConstraints = 0;
     protected final JMetalRandom randomGenerator;
     protected Map<Object, Object> attributes;
-    private static final Logger logger = Logger.getLogger(MoSolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MoSolution.class);
     private static int counter = 0;
 
     public MoSolution(BaseIntProblem problem) {
@@ -84,7 +84,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
             value = randomGenerator.nextInt(problem.getLowerBound(i), problem.getUpperBound(i));
             setVariableValue(i, value, false);
         }
-        logger.log(Level.INFO, "created solution: {0}", genom.toString());
+        LOG.info("created solution: {}", genom.toString());
         updateCustering();
     }
 
@@ -103,7 +103,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
         algorithm = problem.getAlgorithm();
         objectives = new double[problem.getNumberOfObjectives()];
         genom = other.genom.clone();
-        logger.log(Level.INFO, "created solution: {0}", genom.toString());
+        LOG.info("created solution: {}", genom.toString());
 
         numberOfViolatedConstraints = 0;
         overallConstraintViolationDegree = 0.0;
@@ -204,7 +204,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
                     genom.put(param.getName(), list.get(value));
                     //check if configuration makes sense
                     while (!isValid()) {
-                        logger.log(Level.FINER, "mutated from {0}  with invalid value: {1}", new Object[]{param.getName(), list.get(value)});
+                        LOG.trace("mutated from {}  with invalid value: {}", param.getName(), list.get(value));
                         int newValue;
                         do {
                             newValue = randomGenerator.nextInt(problem.getLowerBound(id), problem.getUpperBound(id));
@@ -212,14 +212,14 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
                         genom.put(param.getName(), list.get(newValue));
                         value = newValue;
                     }
-                    logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), list.get(value)});
+                    LOG.trace("mutated {} to {}", param.getName(), list.get(value));
                     break;
                 case BOOLEAN:
-                    logger.log(Level.FINE, "mutated {0} to !{1}", new Object[]{param.getName(), value});
+                    LOG.trace("mutated {} to !{}", param.getName(), value);
                     genom.putBoolean(param.getName(), (value != 0));
                     break;
                 case INTEGER:
-                    logger.log(Level.FINE, "mutated {0} to {1}", new Object[]{param.getName(), value});
+                    LOG.trace("mutated {} to {}", param.getName(), value);
                     genom.putInt(param.getName(), value);
                     break;
                 default:
@@ -396,7 +396,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
 
     @Override
     public final Clustering<E, C> updateCustering() {
-        logger.log(Level.FINE, "starting clustering {0}", genom.toString());
+        LOG.debug("starting clustering {}", genom.toString());
         //count number of clustering algorithm executions
         counter++;
         clustering = problem.exec.clusterRows(problem.getDataset(), genom);
@@ -408,7 +408,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
 
         ClusterEvaluation<E, C> eval = problem.getExternal();
         if (eval != null) {
-            logger.log(Level.FINE, "finished clustering, supervised score ({0}): {1}", new Object[]{eval.getName(), countFitness(eval)});
+            LOG.debug("finished clustering, supervised score ({}): {}", eval.getName(), countFitness(eval));
         }
         return clustering;
     }

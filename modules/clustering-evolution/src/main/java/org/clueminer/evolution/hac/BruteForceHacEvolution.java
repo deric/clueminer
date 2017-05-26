@@ -1,11 +1,25 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.evolution.hac;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
@@ -28,6 +42,8 @@ import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Not really evolution, pretty much enumeration of all possible settings of
@@ -49,7 +65,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
     protected List<InternalEvaluator<E, C>> evaluators;
-    private static final Logger logger = Logger.getLogger(BruteForceHacEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BruteForceHacEvolution.class);
     protected int cnt;
     protected final FakePopulation<I> population = new FakePopulation<>();
 
@@ -84,10 +100,10 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
 
         if (ph != null) {
             int workunits = stdMethods * 2 * dist.size() * linkage.size() * cutoff.size() * evaluators.size();
-            logger.log(Level.INFO, "stds: {0}", stdMethods);
-            logger.log(Level.INFO, "distances: {0}", dist.size());
-            logger.log(Level.INFO, "linkages: {0}", linkage.size());
-            logger.log(Level.INFO, "evolution workunits: {0}", workunits);
+            LOG.info("stds: {}", stdMethods);
+            LOG.info("distances: {}", dist.size());
+            LOG.info("linkages: {}", linkage.size());
+            LOG.info("evolution workunits: {}", workunits);
             ph.start(workunits);
         }
         cnt = 0;

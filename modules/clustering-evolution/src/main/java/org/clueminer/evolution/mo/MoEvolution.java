@@ -20,8 +20,6 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -42,6 +40,8 @@ import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAII;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
@@ -66,14 +66,14 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         extends MultiMuteEvolution<I, E, C> implements Runnable, EvolutionMO<I, E, C>, Lookup.Provider {
 
     private static final String name = "MOE";
-    private static final Logger logger = Logger.getLogger(MoEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MoEvolution.class);
     protected List<ClusterEvaluation<E, C>> objectives;
     private int numSolutions = 5;
     private boolean kLimit;
     protected final transient ListenerList<OpListener> moListeners = new ListenerList<>();
 
     public MoEvolution() {
-        init(new ClusteringExecutorCached<E, C>());
+        init(new ClusteringExecutorCached<>());
     }
 
     public MoEvolution(Executor executor) {
@@ -128,14 +128,14 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         if (getNumObjectives() < 2) {
             throw new RuntimeException("provide at least 2 objectives. currently we have just" + getNumObjectives());
         }
-        logger.log(Level.INFO, "starting evolution {0}", getName());
-        logger.log(Level.INFO, "variables: {0}", problem.getNumberOfVariables());
-        logger.log(Level.INFO, "objectives: {0}", getNumObjectives());
-        logger.log(Level.INFO, "generations: {0}", getGenerations());
-        logger.log(Level.INFO, "population: {0}", getPopulationSize());
-        logger.log(Level.INFO, "requested solutions: {0}", getNumSolutions());
+        LOG.info("starting evolution {}", getName());
+        LOG.info("variables: {}", problem.getNumberOfVariables());
+        LOG.info("objectives: {}", getNumObjectives());
+        LOG.info("generations: {}", getGenerations());
+        LOG.info("population: {}", getPopulationSize());
+        LOG.info("requested solutions: {}", getNumSolutions());
         for (int i = 0; i < getNumObjectives(); i++) {
-            logger.log(Level.INFO, "objective {0}: {1}", new Object[]{i, getObjective(i).getName()});
+            LOG.info("objective {}: {}", i, getObjective(i).getName());
         }
         MoSolution.setSolutionsCount(0);
 
@@ -157,16 +157,16 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
                 .build();
 
         fireEvolutionStarted(this);
-        logger.info("starting evolution");
+        LOG.info("starting evolution");
         //AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(moAlg).execute();
         try {
             moAlg.run();
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "failed clustering with {0} & {1}", new Object[]{getObjective(0).getName(), getObjective(1).getName()});
+            LOG.error("failed clustering with {} & {}", getObjective(0).getName(), getObjective(1).getName());
             Exceptions.printStackTrace(e);
         }
         List<Solution> moPop = ((NSGAII) moAlg).getResult();
-        logger.log(Level.INFO, "result size: {0}", moPop.size());
+        LOG.info("result size: {}", moPop.size());
         fireFinalResult(moPop);
         int i = 0;
         for (Solution s : moPop) {
@@ -183,7 +183,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
         }
         //long computingTime = algorithmRunner.getComputingTime();
         //System.out.println("computing time: " + computingTime);
-        logger.log(Level.INFO, "explored solutions: {0}", MoSolution.getSolutionsCount());
+        LOG.info("explored solutions: {}", MoSolution.getSolutionsCount());
         /*
          * int numberOfDimensions = getNumObjectives();
          * Front frontA = new ArrayFront(numberOfPoints, numberOfDimensions);
@@ -204,7 +204,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
 
     private void fireResult(List<Solution> res) {
         SolTransformer trans = SolTransformer.getInstance();
-        List<OpSolution> solutions = trans.transform(res, new ArrayList<OpSolution>(res.size()));
+        List<OpSolution> solutions = trans.transform(res, new ArrayList<>(res.size()));
         int i = 0;
         Individual[] ind = new Individual[solutions.size()];
         for (OpSolution sol : solutions) {
@@ -247,7 +247,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
 
     protected void fireFinalResult(List<Solution> res) {
         SolTransformer trans = SolTransformer.getInstance();
-        List<OpSolution> solutions = trans.transform(res, new LinkedList<OpSolution>());
+        List<OpSolution> solutions = trans.transform(res, new LinkedList<>());
         if (solutions != null && solutions.size() > 0) {
             if (moListeners != null) {
                 for (OpListener listener : moListeners) {

@@ -17,8 +17,6 @@
 package org.clueminer.evolution.hac;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -40,6 +38,8 @@ import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +53,7 @@ public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C ex
         extends BruteForceHacEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String NAME = "Brute-force HAC (no dist)";
-    private static final Logger logger = Logger.getLogger(BFHACnoDist.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(BFHACnoDist.class);
 
     @Override
     public String getName() {
@@ -77,9 +77,9 @@ public class BFHACnoDist<I extends Individual<I, E, C>, E extends Instance, C ex
 
         if (ph != null) {
             int workunits = stdMethods * 2 * linkage.size() * cutoff.size() * evaluators.size();
-            logger.log(Level.INFO, "stds: {0}", stdMethods);
-            logger.log(Level.INFO, "linkages: {0}", linkage.size());
-            logger.log(Level.INFO, "evolution workunits: {0}", workunits);
+            LOG.info("stds: {}", stdMethods);
+            LOG.info("linkages: {}", linkage.size());
+            LOG.info("evolution workunits: {}", workunits);
             ph.start(workunits);
         }
         cnt = 0;

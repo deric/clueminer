@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.Cluster;
@@ -47,6 +45,8 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Evolutionary process performing multiple mutations during evolutionary step.
@@ -64,7 +64,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
     protected Executor<E, C> exec;
     protected List<Distance> dist;
     protected List<ClusterLinkage<E>> linkage;
-    private static final Logger logger = Logger.getLogger(MultiMuteEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MultiMuteEvolution.class);
     protected List<String> stds;
     protected final Random rand = new Random();
     protected ObjectOpenHashSet<String> tabu;
@@ -142,9 +142,9 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
     protected void printStarted() {
         if (ph != null) {
             int workunits = getGenerations();
-            logger.log(Level.INFO, "stds: {0}", stds.size());
-            logger.log(Level.INFO, "distances: {0}", dist.size());
-            logger.log(Level.INFO, "linkages: {0}", linkage.size());
+            LOG.info("stds: {}", stds.size());
+            LOG.info("distances: {}", dist.size());
+            LOG.info("linkages: {}", linkage.size());
             ph.start(workunits);
             ph.progress("starting " + getName() + "evolution...");
         }
@@ -187,7 +187,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
                 }
             }
 
-            logger.log(Level.INFO, "gen: {0}, num children: {1}", new Object[]{g, children.size()});
+            LOG.info("gen: {}, num children: {}", g, children.size());
             selected.clear();
             // merge new and old individuals
             for (int i = children.size(); i < population.size(); i++) {
@@ -229,7 +229,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
                 //TODO: old population should be sorted as well? take only part of the new population?
                 System.arraycopy(newIndsArr, 0, population.getIndividuals(), 0, indsToCopy);
             } else {
-                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                LOG.warn("no new individuals in generation = {}", g);
                 //    throw new RuntimeException("no new individuals");
             }
 

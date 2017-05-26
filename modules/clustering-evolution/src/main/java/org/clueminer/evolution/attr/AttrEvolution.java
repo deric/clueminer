@@ -22,8 +22,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -37,6 +35,8 @@ import org.clueminer.evolution.api.Pair;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -66,7 +66,7 @@ public class AttrEvolution<E extends Instance, C extends Cluster<E>> extends Bas
     private int k = 3;
 
     private static String name = "Attributes' evolution";
-    private static final Logger logger = Logger.getLogger(AttrEvolution.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(AttrEvolution.class);
 
     public AttrEvolution() {
         initEvolution();
@@ -181,7 +181,7 @@ public class AttrEvolution<E extends Instance, C extends Cluster<E>> extends Bas
                 //TODO: old population should be sorted as well? take only part of the new population?
                 System.arraycopy(newIndsArr, 0, pop.getIndividuals(), 0, indsToCopy);
             } else {
-                logger.log(Level.WARNING, "no new individuals in generation = {0}", g);
+                LOG.warn("no new individuals in generation = {}", g);
                 //    throw new RuntimeException("no new individuals");
             }
 
