@@ -37,6 +37,9 @@ import static java.lang.Math.log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import smile.math.distance.Distance;
@@ -48,11 +51,40 @@ import smile.math.distance.EuclideanDistance;
  * @author Leif Jonsson
  * @author Laurens van der Maaten
  */
-public class BHTSNE implements TSNE {
+@ServiceProvider(service = Projection.class)
+public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
 
     protected final Distance distance = new EuclideanDistance();
     protected volatile boolean abort = false;
     private static final Logger LOG = LoggerFactory.getLogger(BHTSNE.class);
+    private double[][] data;
+    private static final String NAME = "BHt-SNE";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void initialize(Dataset<E> dataset, int targetDims) {
+        double perplexity = 20.0;
+        int initialDims = 50;
+        TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
+        data = run(config);
+    }
+
+    @Override
+    public double[] transform(E instance) {
+        if (hasData()) {
+            return data[instance.getIndex()];
+        } else {
+            throw new RuntimeException("PCA data projection not available");
+        }
+    }
+
+    public boolean hasData() {
+        return data != null;
+    }
 
     @Override
     public double[][] tsne(TSNEConfig config) {

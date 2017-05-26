@@ -42,6 +42,7 @@ import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 
@@ -73,9 +74,10 @@ public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> 
         clustering.lookupAdd(dendroData);
 
         Props prop = new Props();
-        prop.put("visualize.img_width", 600);
-        prop.put("visualize.img_height", 600);
-        prop.put("clustering.visualization", "Projection");
+        prop.put(PropType.VISUAL, "img_width", 600);
+        prop.put(PropType.VISUAL, "img_height", 600);
+        prop.put(PropType.VISUAL, "visualization", "Projection");
+        prop.put(PropType.VISUAL, "projection", "BHt-SNE");
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
         Image image;

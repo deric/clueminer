@@ -38,12 +38,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  */
 @ServiceProvider(service = Projection.class)
-public class ParallelBHTSNE<E extends Instance> extends BHTSNE implements TSNE, Projection<E> {
+public class ParallelBHTSNE<E extends Instance> extends BHTSNE<E> implements TSNE, Projection<E> {
 
     private ForkJoinPool gradientPool;
     private ExecutorService gradientCalculationPool;
     private double[][] data;
-    private static final String NAME = "BHt-SNE";
+    private static final String NAME = "BHt-SNE-parallel";
 
     @Override
     public String getName() {
