@@ -20,8 +20,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -54,6 +52,8 @@ import org.clueminer.utils.StopWatch;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Use meta-features to select suitable (optimal) clustering algorithm.
@@ -68,7 +68,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         implements Runnable, Evolution<I, E, C>, Lookup.Provider, Callable<ParetoFrontQueue> {
 
     private static final String NAME = "Meta search";
-    private static final Logger LOGGER = Logger.getLogger(MetaSearch.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MetaSearch.class);
 
     protected final Executor exec;
     protected int gen;
@@ -163,7 +163,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
         if (ph != null) {
             int workunits = countClusteringJobs();
-            LOGGER.log(Level.INFO, "search workunits: {0}", workunits);
+            LOG.info("search workunits: {}", workunits);
             ph.start(workunits);
         }
 
@@ -173,11 +173,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         config.putInt("k", 5);
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
-        LOGGER.log(Level.INFO, "got {0} meta parameters", meta.size());
+        LOG.info("got {} meta parameters", meta.size());
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
         objectives.add(new PointBiserialNorm<>());
         objectives.add(new RatkowskyLance<>());
-        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new McClainRao<E, C>());
+        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new McClainRao<>());
 
         cnt = 0;
         landmark(dataset, queue);

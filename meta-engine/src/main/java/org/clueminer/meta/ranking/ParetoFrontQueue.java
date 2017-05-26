@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -35,6 +33,8 @@ import org.clueminer.eval.sort.DominanceComparator;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.sort.Heap;
 import org.clueminer.utils.Duple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Multi-level queue that maintains several (<code>maxFront</code>) fronts,
@@ -57,7 +57,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
     final HashSet<Integer> blacklist;
     private final ClusteringComparator<E, C> frontSorting;
     private int frontsRemoved = 0;
-    private static final Logger LOGGER = Logger.getLogger(ParetoFrontQueue.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(ParetoFrontQueue.class);
 
     public ParetoFrontQueue(int max, List<ClusterEvaluation<E, C>> objectives, ClusterEvaluation<E, C> eval3rd) {
         this.comparator = new DominanceComparator(objectives);
@@ -402,7 +402,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
                     score = eval.score(clustering);
                 } catch (ScoreException ex) {
                     score = Double.NaN;
-                    LOGGER.log(Level.WARNING, "failed to compute score {0}: {1}", new Object[]{eval.getName(), ex.getMessage()});
+                    LOG.warn("failed to compute score {}: {}", eval.getName(), ex.getMessage());
                 }
                 sb.append("rank ").append(rank).append(", ").append(eval.getName())
                         .append(": ").append(String.format("%.2f", score)).append(", ")
@@ -413,7 +413,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             rank = j + 2;
         }
         sb.append("excluded: ").append(excluded.size());
-        System.out.println(sb.toString());
+        LOG.debug("ranking: {}", sb);
     }
 
     /**
