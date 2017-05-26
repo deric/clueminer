@@ -52,6 +52,10 @@
                       <Component id="lbY" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="cbY" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="lbProjection" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="cbProjection" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="lbImgSIze" min="-2" max="-2" attributes="0"/>
@@ -59,7 +63,7 @@
                       <Component id="cbImgSize" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="151" max="32767" attributes="0"/>
+              <EmptySpace pref="88" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -93,6 +97,8 @@
                   <Component id="cbX" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lbY" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbY" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbProjection" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cbProjection" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -228,6 +234,23 @@
             <StringItem index="2" value="256"/>
             <StringItem index="3" value="512"/>
           </StringArray>
+        </Property>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lbProjection">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/clueminer/explorer/gui/Bundle.properties" key="EvalFuncPanel.lbProjection.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="cbProjection">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="new DefaultComboBoxModel(initProjection())" type="code"/>
         </Property>
       </Properties>
       <AuxValues>

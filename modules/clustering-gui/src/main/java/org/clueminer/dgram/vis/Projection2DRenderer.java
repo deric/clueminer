@@ -28,6 +28,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.projection.Projection;
 import org.clueminer.projection.ProjectionFactory;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
         Clustering<E, C> clustering = task.getClustering();
 
         ProjectionFactory pf = ProjectionFactory.getInstance();
-        String provider = prop.get("projection", "PCA");
+        String provider = prop.get(PropType.VISUAL, "projection", "PCA");
         LOG.debug("projection: {}", provider);
         Projection projection = pf.getProvider(provider);
         Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);

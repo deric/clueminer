@@ -28,15 +28,48 @@ import java.util.concurrent.ForkJoinPool;
 import static java.util.concurrent.ForkJoinTask.invokeAll;
 import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveAction;
+import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author deric
+ * @param <E>
  */
-public class ParallelBHTSNE extends BHTSNE implements TSNE {
+@ServiceProvider(service = Projection.class)
+public class ParallelBHTSNE<E extends Instance> extends BHTSNE implements TSNE, Projection<E> {
 
     private ForkJoinPool gradientPool;
     private ExecutorService gradientCalculationPool;
+    private double[][] data;
+    private static final String NAME = "BHt-SNE";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public void initialize(Dataset<E> dataset, int targetDims) {
+        double perplexity = 20.0;
+        int initialDims = 50;
+        TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
+        data = run(config);
+    }
+
+    @Override
+    public double[] transform(E instance) {
+        if (hasData()) {
+            return data[instance.getIndex()];
+        } else {
+            throw new RuntimeException("PCA data projection not available");
+        }
+    }
+
+    public boolean hasData() {
+        return data != null;
+    }
 
     class RecursiveGradientCalculator extends RecursiveAction {
 
