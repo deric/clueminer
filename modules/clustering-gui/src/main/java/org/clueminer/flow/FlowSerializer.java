@@ -28,14 +28,10 @@ import java.io.IOException;
 public class FlowSerializer {
 
     public static void write(File file, String content) throws IOException {
-        BufferedWriter bw = null;
+        BufferedWriter bw;
         try (FileWriter fw = new FileWriter(file)) {
             bw = new BufferedWriter(fw);
             bw.write(content);
-        } finally {
-            if (bw != null) {
-                bw.close();
-            }
         }
     }
 
