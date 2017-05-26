@@ -19,7 +19,7 @@ package org.clueminer.clustering.gui;
 import java.awt.Image;
 
 /**
- * Interface for
+ * Interface for clustering result visualization.
  *
  * @author deric
  * @param <R> resulting type

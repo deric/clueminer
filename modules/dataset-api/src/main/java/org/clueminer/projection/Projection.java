@@ -20,11 +20,19 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 
 /**
+ * A way of compressing data into smaller number of dimensions.
  *
  * @author deric
  * @param <E> row data type
  */
 public interface Projection<E extends Instance> {
+
+    /**
+     * An unique method name
+     *
+     * @return method identifier
+     */
+    String getName();
 
     /**
      * Compute projection into numDims

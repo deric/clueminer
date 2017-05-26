@@ -18,15 +18,24 @@ package org.clueminer.projection;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Principal Component Analysis (PCA) proxy
  *
  * @author deric
  * @param <E>
  */
+@ServiceProvider(service = Projection.class)
 public class ProjectionPCA<E extends Instance> implements Projection<E> {
 
     private double[][] data;
+    private static final String NAME = "PCA";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public void initialize(Dataset<E> dataset, int targetDims) {

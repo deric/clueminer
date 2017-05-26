@@ -24,32 +24,27 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.gui.ClusteringVisualization;
 import org.clueminer.clustering.gui.VisualizationTask;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.projection.Projection;
-import org.clueminer.projection.ProjectionFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Visualize only selected 2 dimensions
  *
  * @author deric
  * @param <E>
  * @param <C>
- * @param <R> resulting type
+ * @param <R>
  */
 @ServiceProvider(service = ClusteringVisualization.class)
-public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R extends Image>
+public class DimensionsRenderer<E extends Instance, C extends Cluster<E>, R extends Image>
         extends AbstractRenderer<E, C, R>
         implements ClusteringVisualization<R> {
 
-    private static final String NAME = "Projection";
-    private static final Logger LOG = LoggerFactory.getLogger(Projection2DRenderer.class);
-
-    public Projection2DRenderer() {
-    }
+    private static final String NAME = "Dimensions";
+    private static final Logger LOG = LoggerFactory.getLogger(DimensionsRenderer.class);
 
     @Override
     public String getName() {
@@ -74,36 +69,17 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
 
     protected void addData(Chart chart, VisualizationTask task) {
         Props prop = task.getProps();
+        int attrX = prop.getInt("visualize.x_attr", 0);
+        int attrY = prop.getInt("visualize.y_attr", 1);
         Clustering<E, C> clustering = task.getClustering();
 
-        ProjectionFactory pf = ProjectionFactory.getInstance();
-        String provider = prop.get("projection", "PCA");
-        LOG.debug("projection: {}", provider);
-        Projection projection = pf.getProvider(provider);
-        Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
-        if (dataset != null) {
-            //project into 2D
-            projection.initialize(dataset, 2);
-            LOG.debug("{} computed", provider);
-
-            double[] proj;
-            int idx;
-            for (Cluster<E> clust : clustering) {
-                if (clust.size() > 0) {
-                    double x[] = new double[clust.size()];
-                    double y[] = new double[clust.size()];
-                    for (int i = 0; i < clust.size(); i++) {
-                        proj = projection.transform(clust.get(i));
-                        x[i] = proj[0];
-                        y[i] = proj[1];
-                    }
-                    Series s = chart.addSeries(clust.getName(), x, y);
-                    s.setMarkerColor(clust.getColor());
-                }
+        for (Cluster<E> clust : clustering) {
+            if (clust.size() > 0) {
+                Series s = chart.addSeries(clust.getName(), clust.attrCollection(attrX), clust.attrCollection(attrY));
+                s.setMarkerColor(clust.getColor());
             }
-        } else {
-            LOG.error("missing dataset!");
         }
+
     }
 
 }

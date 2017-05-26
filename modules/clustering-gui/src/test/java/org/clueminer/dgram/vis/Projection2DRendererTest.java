@@ -73,8 +73,8 @@ public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> 
         clustering.lookupAdd(dendroData);
 
         Props prop = new Props();
-        prop.put("vis_width", 600);
-        prop.put("vis_height", 600);
+        prop.put("visualize.img_width", 600);
+        prop.put("visualize.img_height", 600);
         prop.put("clustering.visualization", "Projection");
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
         Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
