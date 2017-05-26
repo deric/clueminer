@@ -66,8 +66,6 @@ import org.slf4j.LoggerFactory;
 public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends AbstractNode implements DendrogramVisualizationListener<E, C> {
 
     private Image image;
-    DendrogramMapping mapping;
-    private boolean rendering = false;
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringNode.class);
     private final ReentrantLock lock = new ReentrantLock();
     private static final RequestProcessor RP = new RequestProcessor("clustering properties");
@@ -87,7 +85,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
      */
     @Override
     public Image getIcon(int type) {
-        if (image == null && rendering == false) {
+        if (image == null) {
             Clustering clustering = getClustering();
             updateIcon(clustering.getParams());
         }
@@ -299,29 +297,25 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     }
 
     public Image updateIcon(Props prop) {
-        if (rendering == false) {
-            lock.lock();
-            try {
-                Clustering clustering = getClustering();
-                //ensure that for each clustering we submit exatctly one task
-                rendering = true;
-                //image should be updated asynchronously when image is generated
+        lock.lock();
+        try {
+            Clustering clustering = getClustering();
+            //image should be updated asynchronously when image is generated
 
-                final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
-                Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
-                if (future.isDone()) {
-                    return future.get();
-                }
-                //image is rendering, wait for it...
-                return ImageFactory.loading();
-            } catch (InterruptedException | ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
-            } finally {
-                lock.unlock();
+            final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+            Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
+            if (future.isDone()) {
+                return future.get();
             }
-        } else {
-            LOG.warn("another icon update in progress");
+            //image is rendering, wait for it...
+            return ImageFactory.loading();
+        } catch (InterruptedException | ExecutionException ex) {
+            Exceptions.printStackTrace(ex);
+            image = ImageFactory.notSupported();
+        } finally {
+            lock.unlock();
         }
+
         if (image == null) {
             return ImageFactory.loading();
         }
@@ -335,7 +329,6 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
             @Override
             public void run() {
-                rendering = false;
                 fireIconChange();
             }
         });

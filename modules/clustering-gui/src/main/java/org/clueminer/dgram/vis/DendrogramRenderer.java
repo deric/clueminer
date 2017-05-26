@@ -19,6 +19,7 @@ package org.clueminer.dgram.vis;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.gui.ClusteringVisualization;
 import org.clueminer.clustering.gui.VisualizationTask;
@@ -56,8 +57,13 @@ public class DendrogramRenderer<R extends Image> implements ClusteringVisualizat
 
     @Override
     public R generateImage(VisualizationTask task) {
-        heatmap.setData(task.getMapping());
-        silhoulette.setClustering(task.getMapping().getRowsResult(), task.getClustering());
+        DendrogramMapping mapping = task.getMapping();
+        if (mapping == null) {
+            //probably not a hierarchical clustering, we can't generate dendrogram
+            return (R) ImageFactory.notSupported();
+        }
+        heatmap.setData(mapping);
+        silhoulette.setClustering(mapping.getRowsResult(), task.getClustering());
 
         // 1px space
         int space = 1;
