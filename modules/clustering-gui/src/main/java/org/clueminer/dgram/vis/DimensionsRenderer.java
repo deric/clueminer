@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.clustering.gui.ClusteringVisualization;
 import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class DimensionsRenderer<E extends Instance, C extends Cluster<E>, R exte
         addData(chart, task);
         Image img = generate(chart, task.getWidth(), task.getHeight());
         Props prop = task.getProps();
-        LOG.debug("generated image using attrs {}, {}", prop.getInt("visualize.x_attr", 0), prop.getInt("visualize.y_attr", 1));
+        LOG.debug("generated image using attrs {}, {}", prop.getInt(PropType.VISUAL, "x_attr", 0), prop.getInt(PropType.VISUAL, "y_attr", 1));
 
         DendrogramVisualizationListener listener = task.getListener();
         if (listener != null) {
@@ -69,8 +70,8 @@ public class DimensionsRenderer<E extends Instance, C extends Cluster<E>, R exte
 
     protected void addData(Chart chart, VisualizationTask task) {
         Props prop = task.getProps();
-        int attrX = prop.getInt("visualize.x_attr", 0);
-        int attrY = prop.getInt("visualize.y_attr", 1);
+        int attrX = prop.getInt(PropType.VISUAL, "x_attr", 0);
+        int attrY = prop.getInt(PropType.VISUAL, "y_attr", 1);
         Clustering<E, C> clustering = task.getClustering();
 
         for (Cluster<E> clust : clustering) {

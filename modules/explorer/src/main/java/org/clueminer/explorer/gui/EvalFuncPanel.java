@@ -29,6 +29,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Lookup;
 
@@ -63,11 +64,11 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     }
 
     public void updateProps(Props p) {
-        p.put("clustering.visualization", (String) cbVisualize.getSelectedItem());
-        p.putInt("visualize.x_attr", cbX.getSelectedIndex());
-        p.putInt("visualize.y_attr", cbY.getSelectedIndex());
-        p.putInt("visualize.img_width", Integer.valueOf((String) cbImgSize.getSelectedItem()));
-        p.putInt("visualize.img_height", Integer.valueOf((String) cbImgSize.getSelectedItem()));
+        p.put(PropType.VISUAL, "visualization", (String) cbVisualize.getSelectedItem());
+        p.put(PropType.VISUAL, "x_attr", cbX.getSelectedIndex());
+        p.put(PropType.VISUAL, "y_attr", cbY.getSelectedIndex());
+        p.put(PropType.VISUAL, "img_width", Integer.valueOf((String) cbImgSize.getSelectedItem()));
+        p.put(PropType.VISUAL, "img_height", Integer.valueOf((String) cbImgSize.getSelectedItem()));
     }
 
     private String[] initEvaluator() {

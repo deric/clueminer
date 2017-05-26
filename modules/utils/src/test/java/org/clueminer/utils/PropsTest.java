@@ -54,6 +54,13 @@ public class PropsTest {
 
     @Test
     public void testGetInt_String() {
+        String key = "an integer";
+        int val = 123;
+        subject.put(PropType.VISUAL, key, val);
+        assertEquals(true, subject.containsKey(key));
+
+        assertEquals(val, subject.getInt(PropType.VISUAL, key, 0));
+        assertEquals(val, subject.getInt(PropType.VISUAL, key));
     }
 
     @Test
@@ -175,35 +182,21 @@ public class PropsTest {
     }
 
     @Test
-    public void testPut_String_String() {
+    public void testLong() {
+        long val = 15l;
+        String key = "long number";
+        subject.put(key, val);
+        //store long, retrieve as int (with possible precision lost)
+        assertEquals(subject.getInt(key), 15);
     }
 
     @Test
-    public void testPut_3args_1() {
-    }
-
-    @Test
-    public void testPut_3args_2() {
-    }
-
-    @Test
-    public void testPutAll_Map() {
-    }
-
-    @Test
-    public void testPutAll_PropType_Map() {
-    }
-
-    @Test
-    public void testGet_String() {
-    }
-
-    @Test
-    public void testGet_String_String() {
-    }
-
-    @Test
-    public void testGet_3args() {
+    public void testIntFromString() {
+        String val = "25";
+        String key = "int as string";
+        subject.put(key, val);
+        //store long, retrieve as int (with possible precision lost)
+        assertEquals(subject.getInt(key), 25);
     }
 
     @Test
@@ -334,14 +327,15 @@ public class PropsTest {
         p.putDouble("double", 3.14519);
         p.putBoolean("bool", true);
 
-        assertEquals("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":\"123\"}", p.toJson());
+        assertEquals("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":123}", p.toJson());
 
     }
 
     @Test
     public void testFromJson() {
-        Props p = Props.fromJson("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":\"123\"}");
+        Props p = Props.fromJson("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":123}");
         assertEquals("x", p.get("foo"));
+        assertEquals(123, p.getInt("int"));
     }
 
 }

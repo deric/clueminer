@@ -62,7 +62,6 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
         addData(chart, task);
         Image img = generate(chart, task.getWidth(), task.getHeight());
         Props prop = task.getProps();
-        LOG.debug("generated image using attrs {}, {}", prop.getInt("visualize.x_attr", 0), prop.getInt("visualize.y_attr", 1));
 
         DendrogramVisualizationListener listener = task.getListener();
         if (listener != null) {
@@ -87,7 +86,6 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
             LOG.debug("{} computed", provider);
 
             double[] proj;
-            int idx;
             for (Cluster<E> clust : clustering) {
                 if (clust.size() > 0) {
                     double x[] = new double[clust.size()];

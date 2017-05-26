@@ -25,4 +25,5 @@ public enum PropType {
     MAIN, //influences result
     PERFORMANCE, //optimization
     VALIDATION, //metric store
+    VISUAL, //data visualization
 }

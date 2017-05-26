@@ -31,6 +31,7 @@ import org.clueminer.clustering.gui.ClusteringVisualization;
 import org.clueminer.clustering.gui.ClusteringVisualizationFactory;
 import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.ImageUtilities;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private static final Logger LOG = LoggerFactory.getLogger(ImageFactory.class);
     private int workerCnt = 0;
     private ExecutorService executor = Executors.newFixedThreadPool(5);
-    private HashMap<String, ClusteringVisualization<Image>> renderers;
+    private final HashMap<String, ClusteringVisualization<Image>> renderers;
 
     public static ImageFactory getInstance() {
         if (instance == null) {
@@ -74,12 +75,13 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
         if (workerCnt < workersNum) {
             executor = Executors.newFixedThreadPool(workersNum);
         }
+        workerCnt = workersNum;
 
         return instance;
     }
 
     public Future<? extends Image> generateImage(Clustering<E, C> clustering, Props prop, DendrogramVisualizationListener listener, DendrogramMapping mapping) {
-        String provider = prop.get("clustering.visualization", "Dendrogram");
+        String provider = prop.get(PropType.VISUAL, "visualization", "Dendrogram");
         ClusteringVisualization<Image> renderer;
         if (!renderers.containsKey(provider)) {
             ClusteringVisualizationFactory cf = ClusteringVisualizationFactory.getInstance();

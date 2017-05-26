@@ -97,7 +97,6 @@ public class ClusterAlgPanel<E extends Instance> extends JPanel {
                 } else {
                     currDataset = dataset.getChild(curr);
                 }
-                System.out.println("curr is: " + currDataset.getName());
             }
 
         });

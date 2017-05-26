@@ -106,6 +106,10 @@ public class Props implements Map<String, Object> {
         return store.put(pt, key, value);
     }
 
+    public Object put(PropType pt, String key, int value) {
+        return store.put(pt, key, value);
+    }
+
     public Object put(PropType pt, String key, boolean value) {
         return store.put(pt, key, value);
     }
@@ -222,7 +226,7 @@ public class Props implements Map<String, Object> {
     }
 
     public void putInt(String key, int i) {
-        put(key, String.valueOf(i));
+        put(key, i);
     }
 
     public int getInt(String key) {
@@ -238,9 +242,25 @@ public class Props implements Map<String, Object> {
     }
 
     public int getInt(String key, int def) {
-        String val = get(key, String.valueOf(def));
-        int ret = Integer.parseInt(val);
-        return ret;
+        Object val = get(PropType.MAIN, key, def);
+        return castInt(val);
+    }
+
+    private int castInt(Object val) {
+        if (val instanceof Long) {
+            return Math.toIntExact((long) val);
+        }
+        return (int) val;
+    }
+
+    public int getInt(PropType pt, String key, int def) {
+        Object val = get(pt, key, def);
+        return castInt(val);
+    }
+
+    public int getInt(PropType pt, String key) {
+        Object val = get(pt, key);
+        return castInt(val);
     }
 
     public boolean getBoolean(String key) {

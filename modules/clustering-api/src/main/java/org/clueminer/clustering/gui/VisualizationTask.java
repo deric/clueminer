@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 
 /**
@@ -53,11 +54,11 @@ public class VisualizationTask<E extends Instance, C extends Cluster<E>, R exten
     }
 
     public int getWidth() {
-        return prop.getInt("visualize.img_width", 64);
+        return prop.getInt(PropType.VISUAL, "img_width", 64);
     }
 
     public int getHeight() {
-        return prop.getInt("visualize.img_height", 64);
+        return prop.getInt(PropType.VISUAL, "img_height", 64);
     }
 
     public DendrogramVisualizationListener getListener() {
