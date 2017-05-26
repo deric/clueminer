@@ -62,7 +62,6 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
         Chart chart = createChart(task, imgWidth, imgHeight);
         addData(chart, task);
         Image img = generate(chart, task.getWidth(), task.getHeight());
-        Props prop = task.getProps();
 
         DendrogramVisualizationListener listener = task.getListener();
         if (listener != null) {

@@ -64,9 +64,9 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
 
     public ImageFactory ensure(int workersNum) {
         if (workerCnt < workersNum) {
-            executor = Executors.newFixedThreadPool(workersNum);
+            //executor = Executors.newFixedThreadPool(workersNum);
             //TODO: testing single thread case
-            //executor = Executors.newSingleThreadExecutor();
+            executor = Executors.newSingleThreadExecutor();
         }
         workerCnt = workersNum;
 

@@ -350,7 +350,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
             LOG.debug("explorer contains {} nodes", children.getNodesCount());
             for(Node n: children.getNodes()){
                 ClusteringNode cn = (ClusteringNode) n;
-                LOG.debug("updating clustring {} preview", cn.getName());
+                LOG.debug("updating clustering {} preview", cn.getName());
                 cn.updateIcon(prop);
             }
         }
