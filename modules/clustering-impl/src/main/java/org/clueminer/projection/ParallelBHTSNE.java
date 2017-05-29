@@ -30,6 +30,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveAction;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -307,7 +308,7 @@ public class ParallelBHTSNE<E extends Instance> extends BHTSNE<E> implements TSN
                 indices = res.getIndices();
                 n = res.getIndex();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
             }
 
             // Initialize some variables for binary search

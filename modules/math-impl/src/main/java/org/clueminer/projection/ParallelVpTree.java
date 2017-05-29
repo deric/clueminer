@@ -60,9 +60,9 @@ public class ParallelVpTree<StorageType> extends VpTree<StorageType> {
         return new ParallelTreeNode();
     }
 
-    class ParallelTreeNode extends VpTree<StorageType>.Node {
+    public class ParallelTreeNode extends VpTree<StorageType>.Node {
 
-        class TreeSearchResult {
+        public class TreeSearchResult {
 
             int n;
             List<Double> distances;
@@ -88,7 +88,7 @@ public class ParallelVpTree<StorageType> extends VpTree<StorageType> {
 
         }
 
-        class ParallelTreeSearcher implements Callable<TreeSearchResult> {
+        public class ParallelTreeSearcher implements Callable<TreeSearchResult> {
 
             Node node;
             Queue<HeapItem> heap;
