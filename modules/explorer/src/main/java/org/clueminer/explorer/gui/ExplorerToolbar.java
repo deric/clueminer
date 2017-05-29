@@ -26,18 +26,23 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.dataset.api.ColorGenerator;
+import org.clueminer.dataset.api.ColorGeneratorFactory;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionFactory;
 import org.clueminer.evolution.gui.EvolutionExport;
 import org.clueminer.evolution.gui.EvolutionUI;
 import org.clueminer.evolution.gui.EvolutionUIFactory;
 import org.clueminer.explorer.ToolbarListener;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -61,6 +66,7 @@ public class ExplorerToolbar extends JToolBar {
     private EvolutionUI evoPanel;
     private Evolution evolution;
     private Props props;
+    private static final Logger LOG = LoggerFactory.getLogger(ExplorerToolbar.class);
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
@@ -95,6 +101,15 @@ public class ExplorerToolbar extends JToolBar {
                         int hash = p.hashCode();
                         if (functionPanel != null) {
                             functionPanel.updateProps(p);
+                            if (p.containsKey("color_generator")) {
+                                ColorGenerator cg = alg.getColorGenerator();
+                                String color = (String) p.get(PropType.VISUAL, "color_generator");
+                                if (color != null && !color.equals(cg.getName())) {
+                                    LOG.debug("setting color generator {}", color);
+                                    cg = ColorGeneratorFactory.getInstance().getProvider(color);
+                                    alg.setColorGenerator(cg);
+                                }
+                            }
                         }
                         if (hash != p.hashCode()) {
                             listener.updateThumbnails(p);

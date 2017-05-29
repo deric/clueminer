@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.ClusteringVisualizationFactory;
+import org.clueminer.dataset.api.ColorGeneratorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.project.api.Project;
@@ -71,6 +72,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         p.put(PropType.VISUAL, "img_width", Integer.valueOf((String) cbImgSize.getSelectedItem()));
         p.put(PropType.VISUAL, "img_height", Integer.valueOf((String) cbImgSize.getSelectedItem()));
         p.put(PropType.VISUAL, "projection", cbProjection.getSelectedItem());
+        p.put(PropType.VISUAL, "color_generator", cbColorGen.getSelectedItem());
     }
 
     private String[] initEvaluator() {
@@ -127,6 +129,11 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         cbImgSize = new javax.swing.JComboBox<>();
         lbProjection = new javax.swing.JLabel();
         cbProjection = new javax.swing.JComboBox<>();
+        cbMo = new javax.swing.JRadioButton();
+        cbMo1 = new javax.swing.JComboBox<>();
+        cbMo2 = new javax.swing.JComboBox<>();
+        lbColor = new javax.swing.JLabel();
+        cbColorGen = new javax.swing.JComboBox<>();
 
         org.openide.awt.Mnemonics.setLocalizedText(lbFunc, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbFunc.text")); // NOI18N
 
@@ -165,6 +172,17 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
 
         cbProjection.setModel(new DefaultComboBoxModel(initProjection()));
 
+        buttonGroup1.add(cbMo);
+        org.openide.awt.Mnemonics.setLocalizedText(cbMo, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.cbMo.text")); // NOI18N
+
+        cbMo1.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
+
+        cbMo2.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
+
+        org.openide.awt.Mnemonics.setLocalizedText(lbColor, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.lbColor.text")); // NOI18N
+
+        cbColorGen.setModel(new DefaultComboBoxModel(initColorGenerator()));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -182,12 +200,19 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel2)
                                     .addComponent(lbFunc)))
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cbMo))
+                        .addGap(123, 123, 123)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbVisualize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbImgSIze)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbImgSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbVisualize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbX)
                         .addGap(18, 18, 18)
@@ -201,10 +226,15 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                         .addGap(18, 18, 18)
                         .addComponent(cbProjection, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbImgSIze)
+                        .addGap(42, 42, 42)
+                        .addComponent(cbMo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbMo2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbColor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbImgSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(88, Short.MAX_VALUE))
+                        .addComponent(cbColorGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(242, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,8 +254,14 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                     .addComponent(jLabel2)
                     .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbMo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(cbMo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbMo2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                     .addComponent(cbVisualize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -239,15 +275,23 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbImgSIze)
                     .addComponent(cbImgSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbColor)
+                    .addComponent(cbColorGen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JComboBox<String> cbColorGen;
     private javax.swing.JComboBox cbEval;
     private javax.swing.JComboBox<String> cbImgSize;
     private javax.swing.JComboBox cbInternal;
+    private javax.swing.JRadioButton cbMo;
+    private javax.swing.JComboBox<String> cbMo1;
+    private javax.swing.JComboBox<String> cbMo2;
     private javax.swing.JComboBox<String> cbProjection;
     private javax.swing.JComboBox<String> cbVisualize;
     private javax.swing.JComboBox<String> cbX;
@@ -255,6 +299,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel lbColor;
     private javax.swing.JLabel lbFunc;
     private javax.swing.JLabel lbImgSIze;
     private javax.swing.JLabel lbProjection;
@@ -291,6 +336,12 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private Object[] initProjection() {
         ProjectionFactory cv = ProjectionFactory.getInstance();
         List<String> list = cv.getProviders();
+        return list.toArray(new String[0]);
+    }
+
+    private Object[] initColorGenerator() {
+        ColorGeneratorFactory cg = ColorGeneratorFactory.getInstance();
+        List<String> list = cg.getProviders();
         return list.toArray(new String[0]);
     }
 

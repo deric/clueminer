@@ -30,6 +30,7 @@ import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
+import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.external.NMIsqrt;
@@ -115,6 +116,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
         associateLookup(ExplorerUtils.createLookup(mgr, getActionMap()));
         pc = Lookup.getDefault().lookup(ProjectController.class);
+        exec.setColorGenerator(new ColorBrewer());
 
         //maybe we want IconView
         //explorerPane.setViewportView(new BeanTreeView());
