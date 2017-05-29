@@ -104,7 +104,7 @@ public class ExplorerToolbar extends JToolBar {
                             if (p.containsKey("color_generator")) {
                                 ColorGenerator cg = alg.getColorGenerator();
                                 String color = (String) p.get(PropType.VISUAL, "color_generator");
-                                if (color != null && !color.equals(cg.getName())) {
+                                if (color != null && cg != null && !color.equals(cg.getName())) {
                                     LOG.debug("setting color generator {}", color);
                                     cg = ColorGeneratorFactory.getInstance().getProvider(color);
                                     alg.setColorGenerator(cg);
