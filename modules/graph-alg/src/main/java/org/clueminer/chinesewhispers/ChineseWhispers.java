@@ -37,12 +37,12 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Chinese Whispers is a clustering method used in network science named after
- * a famous whispering game. Clustering methods are basically used to identify
+ * Chinese Whispers is a clustering method used in network science named after a
+ * famous whispering game. Clustering methods are basically used to identify
  * communities of nodes or links in a given network. This algorithm was designed
  * by Chris Biemann and Sven Teresinak in 2005. The name comes from the fact
- * that the process can be modeled as a separation of communities where
- * the nodes send the same type of information to each other.
+ * that the process can be modeled as a separation of communities where the
+ * nodes send the same type of information to each other.
  *
  * @cite Chris Biemann,"Chinese Whispers- an Efficient Graph Clustering
  * Algorithm and its Applications to Natural Language Processing Problems" 2006
@@ -67,8 +67,8 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
 
     public static final String GRAPH_CONV = "graph_conv";
     @Param(name = ChineseWhispers.GRAPH_CONV,
-           factory = "org.clueminer.graph.api.GraphConvertorFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+            factory = "org.clueminer.graph.api.GraphConvertorFactory",
+            type = org.clueminer.clustering.params.ParamType.STRING)
     private GraphConvertor graphCon;
 
     private static final String CLS = "cw_cls";
@@ -80,6 +80,9 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
         graph = new AdjListGraph();
         String dist = props.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
