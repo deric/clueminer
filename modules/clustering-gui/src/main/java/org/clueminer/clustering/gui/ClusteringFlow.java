@@ -48,6 +48,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Node responsible for clustering algorithm execution.
  *
+ * Input: Dataset to cluster
+ *
+ * Outputs: <ul>
+ * <li>flat clustering </li>
+ * <li>2) hierarchical dendrogram (if available)</li>
+ * </ul>
+ *
  * @author deric
  * @param <E>
  * @param <C>
@@ -103,16 +110,10 @@ public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends Ab
         Dataset<E> dataset = (Dataset<E>) inputs[0];
         checkInput(dataset);
 
-        DendrogramMapping dendroData;
-        if (params.getObject(AlgParams.CLUSTERING_TYPE) == ClusteringType.ROWS_CLUSTERING) {
-            HierarchicalResult res = hclustRows(dataset, params);
-            dendroData = new DendrogramData(dataset, res);
-        } else {
-            dendroData = clusterAll(dataset, params);
-        }
-
-        ret[0] = clusterRows(dataset, params);
-        ret[1] = dendroData;
+        Clustering<E, C> clustering = clusterRows(dataset, params);
+        ret[0] = clustering;
+        //pass dendrogram if available
+        ret[1] = clustering.getLookup().lookup(DendrogramMapping.class);
         return ret;
     }
 
