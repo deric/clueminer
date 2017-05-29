@@ -60,6 +60,7 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
     private static final Logger LOG = LoggerFactory.getLogger(BHTSNE.class);
     private double[][] data;
     private static final String NAME = "BHt-SNE";
+    private Dataset<E> dataset;
 
     @Override
     public String getName() {
@@ -72,6 +73,7 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         int initialDims = 50;
         TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
         data = run(config);
+        this.dataset = dataset;
     }
 
     @Override

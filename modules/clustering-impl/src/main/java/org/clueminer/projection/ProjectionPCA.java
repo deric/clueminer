@@ -31,6 +31,7 @@ public class ProjectionPCA<E extends Instance> implements Projection<E> {
 
     private double[][] data;
     private static final String NAME = "PCA";
+    private Dataset<E> dataset;
 
     @Override
     public String getName() {
@@ -41,6 +42,7 @@ public class ProjectionPCA<E extends Instance> implements Projection<E> {
     public void initialize(Dataset<E> dataset, int targetDims) {
         PrincipalComponentAnalysis transform = new PrincipalComponentAnalysis();
         data = transform.pca(dataset.arrayCopy(), targetDims);
+        this.dataset = dataset;
     }
 
     @Override

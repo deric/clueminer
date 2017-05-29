@@ -20,6 +20,7 @@ import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.Series;
 import java.awt.Color;
 import java.awt.Image;
+import java.util.Collection;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramVisualizationListener;
@@ -27,10 +28,12 @@ import org.clueminer.clustering.gui.ClusteringVisualization;
 import org.clueminer.clustering.gui.VisualizationTask;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.project.api.ProjectController;
 import org.clueminer.projection.Projection;
 import org.clueminer.projection.ProjectionFactory;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
+import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,13 +84,18 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
         LOG.debug("projection: {}", provider);
         Projection projection = pf.getProvider(provider);
         Dataset<E> dataset = clustering.getLookup().lookup(Dataset.class);
+
+        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         if (dataset != null) {
-            //project into 2D
-            projection.initialize(dataset, 2);
-            LOG.debug("{} computed", provider);
+            projection = findCached(pc, projection);
+            if (!projection.hasData()) {
+                //project into 2D
+                LOG.debug("computing {} ", provider);
+                projection.initialize(dataset, 2);
+                pc.getCurrentProject().add(projection);
+            }
 
             double[] proj;
-            LOG.debug("clustering size: {}", clustering.size());
             for (Cluster<E> clust : clustering) {
                 if (clust.size() > 0) {
                     double x[] = new double[clust.size()];
@@ -109,6 +117,17 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
         } else {
             LOG.error("missing dataset!");
         }
+    }
+
+    private Projection findCached(ProjectController pc, Projection projection) {
+        Collection<? extends Projection> projections = pc.getCurrentProject().getLookup().lookupAll(Projection.class);
+        LOG.debug("found {} existing projections", projections.size());
+        for (Projection proj : projections) {
+            if (proj.getName().equals(projection.getName())) {
+                return proj;
+            }
+        }
+        return projection;
     }
 
 }

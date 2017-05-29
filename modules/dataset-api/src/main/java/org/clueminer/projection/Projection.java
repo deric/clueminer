@@ -49,4 +49,11 @@ public interface Projection<E extends Instance> {
      * @return vector in target space
      */
     double[] transform(E instance);
+
+    /**
+     *
+     * @return true when projection is already precomputed
+     */
+    boolean hasData();
+
 }

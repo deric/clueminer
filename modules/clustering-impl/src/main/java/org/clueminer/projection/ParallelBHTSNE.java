@@ -44,6 +44,7 @@ public class ParallelBHTSNE<E extends Instance> extends BHTSNE<E> implements TSN
     private ExecutorService gradientCalculationPool;
     private double[][] data;
     private static final String NAME = "BHt-SNE-parallel";
+    private Dataset<E> dataset;
 
     @Override
     public String getName() {
@@ -56,6 +57,7 @@ public class ParallelBHTSNE<E extends Instance> extends BHTSNE<E> implements TSN
         int initialDims = 50;
         TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
         data = run(config);
+        this.dataset = dataset;
     }
 
     @Override
