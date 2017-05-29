@@ -18,9 +18,6 @@ package org.clueminer.dgram.vis;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -79,15 +76,7 @@ public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> 
         prop.put(PropType.VISUAL, "visualization", "Projection");
         prop.put(PropType.VISUAL, "projection", "BHt-SNE");
         final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
-        Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
-        Image image;
-        try {
-            image = future.get(5, TimeUnit.SECONDS);
-            picLabel = new JLabel(new ImageIcon(image));
-            add(picLabel);
-        } catch (InterruptedException | ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
     }
 
     // this function will be run from the EDT
@@ -120,7 +109,12 @@ public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> 
 
             @Override
             public void run() {
-                picLabel.setIcon(new ImageIcon(preview));
+                if (picLabel == null) {
+                    picLabel = new JLabel(new ImageIcon(preview));
+                    add(picLabel);
+                } else {
+                    picLabel.setIcon(new ImageIcon(preview));
+                }
                 validate();
                 revalidate();
                 repaint();

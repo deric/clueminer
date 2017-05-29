@@ -17,7 +17,6 @@
 package org.clueminer.clustering.gui;
 
 import java.awt.Image;
-import java.util.concurrent.Callable;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
@@ -33,7 +32,7 @@ import org.clueminer.utils.Props;
  * @param <C>
  * @param <R> resulting image
  */
-public class VisualizationTask<E extends Instance, C extends Cluster<E>, R extends Image> implements Callable<R> {
+public class VisualizationTask<E extends Instance, C extends Cluster<E>, R extends Image> implements Runnable {
 
     private final Clustering<E, C> clustering;
     private final Props prop;
@@ -74,8 +73,8 @@ public class VisualizationTask<E extends Instance, C extends Cluster<E>, R exten
     }
 
     @Override
-    public R call() throws Exception {
-        return renderer.generateImage(this);
+    public void run() {
+        renderer.generateImage(this);
     }
 
 }

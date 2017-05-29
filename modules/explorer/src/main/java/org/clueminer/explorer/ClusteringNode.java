@@ -22,8 +22,6 @@ import java.awt.dnd.DnDConstants;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
@@ -298,23 +296,11 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
     public Image updateIcon(Props prop) {
         lock.lock();
-        try {
-            Clustering clustering = getClustering();
-            //image should be updated asynchronously when image is generated
-
-            final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
-            Future<? extends Image> future = ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
-            if (future.isDone()) {
-                return future.get();
-            }
-            //image is rendering, wait for it...
-            return ImageFactory.loading();
-        } catch (InterruptedException | ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
-            image = ImageFactory.notSupported();
-        } finally {
-            lock.unlock();
-        }
+        Clustering clustering = getClustering();
+        //image should be updated asynchronously when image is generated
+        final DendrogramMapping mapping = clustering.getLookup().lookup(DendrogramMapping.class);
+        ImageFactory.getInstance().generateImage(clustering, prop, this, mapping);
+        //image is rendering, wait for it...
 
         if (image == null) {
             return ImageFactory.loading();
@@ -324,11 +310,11 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
     @Override
     public void previewUpdated(Image preview) {
-        this.image = preview;
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
+                image = preview;
                 fireIconChange();
             }
         });

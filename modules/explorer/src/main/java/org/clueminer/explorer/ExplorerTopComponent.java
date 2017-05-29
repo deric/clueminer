@@ -32,7 +32,6 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionSO;
@@ -188,7 +187,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     }
 
     @Override
-    public void componentActivated(){
+    public void componentActivated() {
         pc.setCurrentProject(project);
     }
 
@@ -208,7 +207,6 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     public ExplorerManager getExplorerManager() {
         return mgr;
     }
-
 
     @Override
     public void resultChanged(LookupEvent ev) {
@@ -231,7 +229,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         }
         toolbar.evolutionFinished();
         //shutdown image workers
-        ImageFactory.getInstance().shutdown();
+        //ImageFactory.getInstance().shutdown();
     }
 
     @Override
@@ -340,15 +338,15 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         return dataset;
     }
 
-    public void setProject(Project project){
+    public void setProject(Project project) {
         this.project = project;
     }
 
     @Override
     public void updateThumbnails(Props prop) {
-        if(children != null){
+        if (children != null) {
             LOG.debug("explorer contains {} nodes", children.getNodesCount());
-            for(Node n: children.getNodes()){
+            for (Node n : children.getNodes()) {
                 ClusteringNode cn = (ClusteringNode) n;
                 LOG.debug("updating clustering {} preview", cn.getName());
                 cn.updateIcon(prop);
