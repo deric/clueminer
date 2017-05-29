@@ -55,7 +55,7 @@ public class ParallelSPTree extends SPTree {
     }
 
     @Override
-    double computeNonEdgeForces(int point_index, double theta, double[] neg_f, Object accumulator) {
+    public double computeNonEdgeForces(int point_index, double theta, double[] neg_f, Object accumulator) {
         Double sum_Q = (Double) accumulator;
         double input_sum_Q = sum_Q;
         double[] buff = new double[dimension];

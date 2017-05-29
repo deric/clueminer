@@ -255,7 +255,6 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         }
         start = System.currentTimeMillis();
         for (int iter = 0; iter < parameterObject.getMaxIter() && !abort; iter++) {
-            LOG.debug("iter {}", iter);
             if (exact) {
                 computeExactGradient(P, Y, N, no_dims, dY);
             } // Compute (approximate) gradient

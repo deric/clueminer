@@ -287,7 +287,7 @@ public class SPTree {
         return loc;
     }
 
-    int getDepth() {
+    public int getDepth() {
         if (is_leaf) {
             return 1;
         }
@@ -299,7 +299,7 @@ public class SPTree {
     }
 
     // Compute non-edge forces using Barnes-Hut algorithm
-    double computeNonEdgeForces(int point_index, double theta, double[] neg_f, Object accumulator) {
+    public double computeNonEdgeForces(int point_index, double theta, double[] neg_f, Object accumulator) {
         double[] sum_Q = (double[]) accumulator;
         double[] buff = new double[dimension];
         // Make sure that we spend no time on empty nodes or self-interactions
@@ -340,7 +340,7 @@ public class SPTree {
     }
 
     // Computes edge forces
-    void computeEdgeForces(int[] row_P, int[] col_P, double[] val_P, int N, double[] pos_f) {
+    public void computeEdgeForces(int[] row_P, int[] col_P, double[] val_P, int N, double[] pos_f) {
         // Loop over all edges in the graph
         double[] buff = new double[dimension];
         int ind1 = 0;

@@ -22,7 +22,7 @@ import static java.lang.Math.min;
  *
  * @author deric
  */
-class DataPoint {
+public class DataPoint {
 
     int index;
     double[] data;
