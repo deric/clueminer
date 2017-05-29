@@ -85,7 +85,12 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     public Image getIcon(int type) {
         if (image == null) {
             Clustering clustering = getClustering();
-            updateIcon(clustering.getParams());
+            if (lock.isLocked()) {
+                LOG.debug("image for {} is already being generated", getName());
+                return ImageFactory.loading();
+            } else {
+                updateIcon(clustering.getParams());
+            }
         }
         if (image == null) {
             return ImageFactory.loading();
@@ -316,6 +321,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
             public void run() {
                 image = preview;
                 fireIconChange();
+                lock.unlock();
             }
         });
     }
