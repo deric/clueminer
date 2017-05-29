@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -32,6 +33,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -208,6 +210,9 @@ public abstract class ResourceLoader {
     }
 
     public static String safeName(String name) {
+        if (name == null) {
+            return new BigInteger(130, new Random()).toString(32);
+        }
         String str = name.toLowerCase().replace(" ", "_");
         return str.replace("/", "-").replace("\\", "-");
     }
