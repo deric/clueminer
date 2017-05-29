@@ -50,12 +50,13 @@ import smile.math.distance.EuclideanDistance;
  * @author deric
  * @author Leif Jonsson
  * @author Laurens van der Maaten
+ * @param <E> data row type
  */
 @ServiceProvider(service = Projection.class)
 public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
 
     protected final Distance distance = new EuclideanDistance();
-    protected volatile boolean abort = false;
+    protected boolean abort = false;
     private static final Logger LOG = LoggerFactory.getLogger(BHTSNE.class);
     private double[][] data;
     private static final String NAME = "BHt-SNE";
@@ -1018,6 +1019,7 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
 
     @Override
     public void abort() {
+        LOG.debug("aborting...");
         abort = true;
     }
 }
