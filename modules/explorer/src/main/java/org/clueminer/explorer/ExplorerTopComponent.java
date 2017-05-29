@@ -356,4 +356,22 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         }
     }
 
+    @Override
+    public void comparatorChanged(ClustComparator compare, ClusterEvaluation[] evals) {
+        this.comparator = (ClustComparator) compare;
+        //comparator.setEvaluator(eval);
+        //comparator.setAscOrder(!eval.isMaximized());
+        children.setComparator(comparator);
+    }
+
+    @Override
+    public ClustComparator getComparator() {
+        return this.comparator;
+    }
+
+    @Override
+    public ClustSorted getSortedClusterings() {
+        return this.children;
+    }
+
 }

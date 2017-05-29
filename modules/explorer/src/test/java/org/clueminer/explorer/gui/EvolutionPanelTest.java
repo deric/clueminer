@@ -23,6 +23,7 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import org.clueminer.dendrogram.DendroToolbar;
+import org.openide.util.Exceptions;
 
 public class EvolutionPanelTest extends JFrame {
 
@@ -53,7 +54,7 @@ public class EvolutionPanelTest extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

@@ -22,6 +22,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -55,7 +56,7 @@ public class MoPanelTest extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
+                    Exceptions.printStackTrace(e);
                 }
             }
         });

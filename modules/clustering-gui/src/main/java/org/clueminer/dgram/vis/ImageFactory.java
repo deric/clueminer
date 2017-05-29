@@ -44,7 +44,7 @@ public class ImageFactory<E extends Instance, C extends Cluster<E>> {
     private static ImageFactory instance;
     private static final Logger LOG = LoggerFactory.getLogger(ImageFactory.class);
     private final HashMap<String, ClusteringVisualization<Image>> renderers;
-    private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
+    private static final RequestProcessor RP = new RequestProcessor("previews rendering", 5, false);
 
     public static ImageFactory getInstance() {
         if (instance == null) {

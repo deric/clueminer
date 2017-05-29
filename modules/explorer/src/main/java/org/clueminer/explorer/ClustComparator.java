@@ -30,6 +30,10 @@ public class ClustComparator implements Comparator<Node> {
     private ClusterEvaluation eval;
     private boolean ascOrder = false;
 
+    public ClustComparator(ClustSorted children) {
+        //
+    }
+
     public ClustComparator(ClusterEvaluation eval) {
         this.eval = eval;
     }

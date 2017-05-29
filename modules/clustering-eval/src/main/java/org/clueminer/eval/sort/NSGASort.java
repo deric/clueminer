@@ -105,7 +105,7 @@ public class NSGASort {
         rankedSubpopulations = new ArrayList<>();
         //0,1,2,....,i-1 are fronts, then i fronts
         for (int j = 0; j < i; j++) {
-            rankedSubpopulations.add(j, new ArrayList<Clustering>(front[j].size()));
+            rankedSubpopulations.add(j, new ArrayList<>(front[j].size()));
             it1 = front[j].iterator();
             while (it1.hasNext()) {
                 rankedSubpopulations.get(j).add(clusterings[it1.next()]);

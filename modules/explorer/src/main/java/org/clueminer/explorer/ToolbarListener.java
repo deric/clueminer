@@ -37,6 +37,14 @@ public interface ToolbarListener<E extends Instance> {
 
     void evaluatorChanged(ClusterEvaluation eval);
 
+    /**
+     * Comparator changed e.g. from single objective to multi-objective
+     *
+     * @param c
+     * @param evals
+     */
+    void comparatorChanged(final ClustComparator c, ClusterEvaluation[] evals);
+
     void runClustering(ClusteringAlgorithm alg, Dataset<E> dataset, Props props);
 
     /**
@@ -60,5 +68,14 @@ public interface ToolbarListener<E extends Instance> {
      * Trigger update of all thumbnails
      */
     void updateThumbnails(Props prop);
+
+    /**
+     * Retrieves comparator used for sorting
+     *
+     * @return current comparator
+     */
+    ClustComparator getComparator();
+
+    ClustSorted getSortedClusterings();
 
 }

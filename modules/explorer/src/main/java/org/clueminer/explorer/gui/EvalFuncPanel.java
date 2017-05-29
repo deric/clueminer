@@ -28,6 +28,9 @@ import org.clueminer.clustering.gui.ClusteringVisualizationFactory;
 import org.clueminer.dataset.api.ColorGeneratorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.explorer.ClustComparator;
+import org.clueminer.explorer.ClustComparatorMO;
+import org.clueminer.explorer.ClustSorted;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.projection.ProjectionFactory;
@@ -43,12 +46,18 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
 
     private static final long serialVersionUID = -3509452685974315163L;
 
+    private ClustComparator soComp;
+    private ClustComparatorMO moComp;
+
     /**
      * Creates new form EvalFuncPanel
      */
-    public EvalFuncPanel() {
+    public EvalFuncPanel(ClustSorted sortedClusterings) {
         initComponents();
         cbEval.setSelectedItem("NMI");
+        soComp = new ClustComparator(getEvaluator());
+        moComp = new ClustComparatorMO(sortedClusterings);
+        moComp.setEvaluator(getEvaluator());
 
         this.addComponentListener(new ComponentAdapter() {
 
@@ -129,7 +138,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         cbImgSize = new javax.swing.JComboBox<>();
         lbProjection = new javax.swing.JLabel();
         cbProjection = new javax.swing.JComboBox<>();
-        cbMo = new javax.swing.JRadioButton();
+        rbMo = new javax.swing.JRadioButton();
         cbMo1 = new javax.swing.JComboBox<>();
         cbMo2 = new javax.swing.JComboBox<>();
         lbColor = new javax.swing.JLabel();
@@ -172,8 +181,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
 
         cbProjection.setModel(new DefaultComboBoxModel(initProjection()));
 
-        buttonGroup1.add(cbMo);
-        org.openide.awt.Mnemonics.setLocalizedText(cbMo, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.cbMo.text")); // NOI18N
+        buttonGroup1.add(rbMo);
+        org.openide.awt.Mnemonics.setLocalizedText(rbMo, org.openide.util.NbBundle.getMessage(EvalFuncPanel.class, "EvalFuncPanel.rbMo.text")); // NOI18N
 
         cbMo1.setModel(new DefaultComboBoxModel(initInternalEvaluator()));
 
@@ -200,7 +209,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel2)
                                     .addComponent(lbFunc)))
-                            .addComponent(cbMo))
+                            .addComponent(rbMo))
                         .addGap(123, 123, 123)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbEval, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -254,7 +263,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
                     .addComponent(jLabel2)
                     .addComponent(cbInternal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbMo)
+                .addComponent(rbMo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbMo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -289,7 +298,6 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private javax.swing.JComboBox cbEval;
     private javax.swing.JComboBox<String> cbImgSize;
     private javax.swing.JComboBox cbInternal;
-    private javax.swing.JRadioButton cbMo;
     private javax.swing.JComboBox<String> cbMo1;
     private javax.swing.JComboBox<String> cbMo2;
     private javax.swing.JComboBox<String> cbProjection;
@@ -307,6 +315,7 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     private javax.swing.JLabel lbY;
     private javax.swing.JRadioButton rbExternal;
     private javax.swing.JRadioButton rbInternal;
+    private javax.swing.JRadioButton rbMo;
     // End of variables declaration//GEN-END:variables
 
     private Object[] initVisualization() {
@@ -343,6 +352,14 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
         ColorGeneratorFactory cg = ColorGeneratorFactory.getInstance();
         List<String> list = cg.getProviders();
         return list.toArray(new String[0]);
+    }
+
+    public ClustComparator getComparator() {
+        if (rbMo.isSelected()) {
+            return moComp;
+        } else {
+            return soComp;
+        }
     }
 
 }

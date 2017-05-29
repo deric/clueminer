@@ -203,10 +203,13 @@ public class ExplorerToolbar extends JToolBar {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (functionPanel == null) {
-                    functionPanel = new EvalFuncPanel();
+                    functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
                 }
                 DialogDescriptor dd = new DialogDescriptor(functionPanel, NbBundle.getMessage(ExplorerToolbar.class, "FunctionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    if (listener.getComparator().equals(functionPanel.getComparator())) {
+
+                    }
                     ClusterEvaluation eval = functionPanel.getEvaluator();
                     if (eval != null) {
                         if (listener != null) {

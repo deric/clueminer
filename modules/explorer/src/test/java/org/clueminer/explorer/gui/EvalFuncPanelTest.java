@@ -22,6 +22,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -55,14 +56,14 @@ public class EvalFuncPanelTest extends JFrame {
                 try {
                     createAndShowGUI();
                 } catch (Exception e) {
-                    System.err.println(e);
+                    Exceptions.printStackTrace(e);
                 }
             }
         });
     }
 
     private void initComponents() {
-        frame = new EvalFuncPanel();
+        frame = new EvalFuncPanel(null);
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.NORTHWEST;
         c.fill = GridBagConstraints.BOTH;
