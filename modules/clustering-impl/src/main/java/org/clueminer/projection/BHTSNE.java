@@ -137,7 +137,7 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         int no_dims = parameterObject.getOutputDims();
 
         double[] Y = new double[N * no_dims];
-        LOG.debug("X:Shape is = {}x{}", N, D);
+        LOG.debug("X:Shape is = {}x{}, exact = {}", N, D, exact);
         // Determine whether we are using an exact algorithm
         double perplexity = parameterObject.getPerplexity();
         if (N - 1 < 3 * perplexity) {
@@ -255,7 +255,7 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         }
         start = System.currentTimeMillis();
         for (int iter = 0; iter < parameterObject.getMaxIter() && !abort; iter++) {
-
+            LOG.debug("iter {}", iter);
             if (exact) {
                 computeExactGradient(P, Y, N, no_dims, dY);
             } // Compute (approximate) gradient

@@ -18,6 +18,7 @@ package org.clueminer.dgram.vis;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.Series;
+import java.awt.Color;
 import java.awt.Image;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
@@ -86,6 +87,7 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
             LOG.debug("{} computed", provider);
 
             double[] proj;
+            LOG.debug("clustering size: {}", clustering.size());
             for (Cluster<E> clust : clustering) {
                 if (clust.size() > 0) {
                     double x[] = new double[clust.size()];
@@ -96,7 +98,12 @@ public class Projection2DRenderer<E extends Instance, C extends Cluster<E>, R ex
                         y[i] = proj[1];
                     }
                     Series s = chart.addSeries(clust.getName(), x, y);
-                    s.setMarkerColor(clust.getColor());
+                    Color c = clust.getColor();
+                    if (c == null) {
+                        LOG.warn("missing cluster's color");
+                        c = Color.GRAY;
+                    }
+                    s.setMarkerColor(c);
                 }
             }
         } else {

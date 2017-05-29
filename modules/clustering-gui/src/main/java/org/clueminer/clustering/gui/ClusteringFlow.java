@@ -33,6 +33,7 @@ import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.struct.DendrogramData;
+import org.clueminer.colors.ColorBrewer;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
 public class ClusteringFlow<E extends Instance, C extends Cluster<E>> extends AbsFlowNode implements FlowNode {
 
     private static final String NAME = "clustering";
-    private ColorGenerator cg;
+    private ColorGenerator cg = new ColorBrewer();
     protected ClusteringAlgorithm<E, C> algorithm;
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringFlow.class);
 
