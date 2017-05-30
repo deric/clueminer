@@ -204,6 +204,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     public void add(int runId, Clustering<E, C> clustering) {
         //check that given run exists
         int datasetId = findRunsDataset(runId);
+        LOG.debug("adding {} to meta DB", clustering.fingerprint());
         addClustering(datasetId, clustering, runId);
     }
 
