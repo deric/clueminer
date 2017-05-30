@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.meta.h2;
 
 import java.io.File;
@@ -7,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -36,6 +51,8 @@ import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.tweak.HandleCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -48,8 +65,8 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     private Connection conn = null;
     private static final String dbName = "meta-db";
     private DBI dbi;
-    private static final String name = "H2 store";
-    private static final Logger logger = Logger.getLogger(H2Store.class.getName());
+    private static final String NAME = "H2 store";
+    private static final Logger LOG = LoggerFactory.getLogger(H2Store.class);
 
     public static H2Store getInstance() {
         if (instance == null) {
@@ -80,7 +97,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public DBI db() {
@@ -240,7 +257,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
                     h.execute(sb.toString());
                 }
             } else {
-                logger.severe("missing evaltable");
+                LOG.error("missing evaltable");
             }
         }
     }
