@@ -86,7 +86,6 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         if (image == null) {
             Clustering clustering = getClustering();
             if (lock.isLocked()) {
-                LOG.debug("image for {} is already being generated", getName());
                 return ImageFactory.loading();
             } else {
                 updateIcon(clustering.getParams());

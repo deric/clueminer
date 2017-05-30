@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.meta.view;
 
 import ca.odell.glazedlists.BasicEventList;
@@ -15,8 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,6 +49,8 @@ import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.project.api.ProjectController;
 import org.clueminer.project.api.Workspace;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -53,7 +69,7 @@ public class MetaPanel extends JPanel {
     private ClusterEvaluation evaluator;
     private JLabel lbResults;
     private Collection<? extends Clustering> clusterings;
-    private static final Logger logger = Logger.getLogger(MetaPanel.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MetaPanel.class);
     private Object2ObjectMap<String, MetaResult> map;
     private Int2ObjectOpenHashMap<MetaResult> chash;
     private int matched;
@@ -155,7 +171,7 @@ public class MetaPanel extends JPanel {
                 });
 
             } else {
-                logger.log(Level.SEVERE, "missing data, evo: {0}, eval: {1}, dataset: {2}", new Object[]{evo, evaluator, getDataset()});
+                LOG.warn("missing data, evo: {}, eval: {}, dataset: {}", evo, evaluator, getDataset());
             }
         }
     }
@@ -231,7 +247,7 @@ public class MetaPanel extends JPanel {
             }
         }
         lbResults.setText("matched " + matched + " / " + map.size() + " hash: " + hashMatch);
-        logger.log(Level.INFO, "clustering matched {0} records in meta-db", matched);
+        LOG.debug("clustering matched {} records in meta-db", matched);
     }
 
     private class QueryReloader implements ActionListener {
