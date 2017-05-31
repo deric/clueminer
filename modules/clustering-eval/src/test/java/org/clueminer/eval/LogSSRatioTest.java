@@ -28,7 +28,7 @@ import org.junit.Test;
 public class LogSSRatioTest {
 
     private final LogSSRatio subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public LogSSRatioTest() {
         subject = new LogSSRatio();
@@ -39,13 +39,13 @@ public class LogSSRatioTest {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
-        assertEquals(false, subject.isBetter(s1, s2));
-        assertEquals(false, subject.isBetter(s1, s3));
+        assertEquals(true, subject.isBetter(s1, s2));
+        assertEquals(true, subject.isBetter(s1, s3));
     }
 
     @Test
     public void testCompareScore() {
-        assertEquals(true, subject.isBetter(2, 20));
+        assertEquals(false, subject.isBetter(2, 20));
     }
 
     /**
@@ -58,7 +58,7 @@ public class LogSSRatioTest {
     @Test
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(3.40114842491597, score, delta);
+        assertEquals(3.40114842491597, score, DELTA);
     }
 
 }

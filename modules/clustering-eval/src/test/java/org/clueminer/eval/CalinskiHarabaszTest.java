@@ -55,16 +55,13 @@ public class CalinskiHarabaszTest {
         assertEquals(false, Double.isNaN(score));
     }
 
-    /**
-     * TODO: fix index computation
-     */
     @Test
     public void testIris() throws ScoreException {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
-        assertEquals(false, subject.isBetter(s1, s2));
-        assertEquals(false, subject.isBetter(s1, s3));
+        assertEquals(true, subject.isBetter(s1, s2));
+        assertEquals(true, subject.isBetter(s1, s3));
     }
 
     /**
@@ -72,7 +69,7 @@ public class CalinskiHarabaszTest {
      */
     @Test
     public void testCompareScore() {
-        assertEquals(true, subject.isBetter(2, 20));
+        assertEquals(false, subject.isBetter(2, 20));
     }
 
     /**
