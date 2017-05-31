@@ -121,7 +121,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         for (ClusteringAlgorithm alg : cf.getAll()) {
             execute(dataset, alg, queue);
         }
-        System.out.println(queue.stats());
+        LOG.debug("stats: {}", queue.stats());
         queue.printRanking(new NMIsqrt());
     }
 
@@ -205,7 +205,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private void fireResult(Clustering<E, C> clustering) {
-        I[] individuals = (I[]) new SimpleIndividual[]{new SimpleIndividual(clustering)};
+        I ind = (I) new SimpleIndividual(clustering);
+        I[] individuals = (I[]) new SimpleIndividual[1];
+        individuals[0] = ind;
+        //TODO we need to compute all properties first...
+        //fireIndividualCreated(ind);
         for (EvolutionListener listener : evoListeners) {
             listener.resultUpdate(individuals);
         }

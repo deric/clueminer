@@ -22,7 +22,7 @@ import java.util.EventListener;
  *
  * @author Tomas Barton
  */
-public interface UpdateFeed extends EventListener {
+public interface UpdateFeed<I extends Individual> extends EventListener {
 
     /**
      * Name should uniquely identify the type of storage/processing engine
@@ -45,6 +45,6 @@ public interface UpdateFeed extends EventListener {
      * @param runId
      * @param individual
      */
-    void individualCreated(int runId, Individual individual);
+    void individualCreated(int runId, I individual);
 
 }

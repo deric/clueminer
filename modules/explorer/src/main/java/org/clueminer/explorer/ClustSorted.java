@@ -106,6 +106,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
 
     @Override
     public void resultUpdate(Individual[] result) {
+        LOG.debug("received {} new individuals", result.length);
         //worst case hash set size
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
         int hash;

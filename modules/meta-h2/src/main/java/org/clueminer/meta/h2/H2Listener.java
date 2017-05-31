@@ -29,11 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class H2Listener implements UpdateFeed {
 
     private H2Store store;
-    public static final String name = "H2 store";
+    public static final String NAME = "H2 store";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
