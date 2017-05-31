@@ -32,11 +32,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class RogersTanimoto extends AbstractCountingPairs {
 
     private static final long serialVersionUID = 6547620533572167031L;
-    private static final String name = "Rogers-Tanimoto";
+    private static final String NAME = "Rogers-Tanimoto";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -51,6 +51,10 @@ public class RogersTanimoto extends AbstractCountingPairs {
         double den = pm.tp + 2 * (pm.fn + pm.fp) + pm.tn;
 
         return num / den;
+    }
+
+    public boolean isMaximized() {
+        return false;
     }
 
 }
