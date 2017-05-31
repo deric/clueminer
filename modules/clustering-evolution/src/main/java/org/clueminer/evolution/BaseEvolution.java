@@ -124,7 +124,8 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
         }
     }
 
-    protected void fireIndividualCreated(I individual) {
+    @Override
+    public void fireIndividualCreated(I individual) {
         for (UpdateFeed listener : metaListeners) {
             if (listener != null) {
                 listener.individualCreated(runId, individual);

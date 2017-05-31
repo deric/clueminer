@@ -34,6 +34,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.utils.HashEvaluationTable;
+import org.clueminer.evolution.api.Individual;
 import org.clueminer.gui.EvaluatorProperty;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
@@ -69,6 +70,8 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     private final ReentrantLock propertiesLock = new ReentrantLock();
     private static final RequestProcessor RP = new RequestProcessor("Clustering metrics", 5);
     private Sheet sheet;
+    private ClustSorted parent;
+    private Individual individual;
 
     public ClusteringNode(Clustering<E, C> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -213,6 +216,9 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
             public void taskFinished(Task task) {
                 LOG.info("finished computing properties for {}", clustering.fingerprint());
                 firePropertySetsChange(null, null);
+                if (parent != null) {
+                    parent.propertiesComputed(clustering, individual);
+                }
             }
         });
         taskMetrics.schedule(0);
@@ -341,5 +347,13 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
                 lock.unlock();
             }
         });
+    }
+
+    public void setParent(ClustSorted parent) {
+        this.parent = parent;
+    }
+
+    public void setIndividual(Individual individual) {
+        this.individual = individual;
     }
 }

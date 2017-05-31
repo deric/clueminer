@@ -215,7 +215,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         Collection<? extends Clustering> allClusterings = result.allInstances();
         for (Clustering c : allClusterings) {
             LOG.info("found clustering {}", c.fingerprint());
-            children.addUniqueClustering(c);
+            children.addUniqueClustering(c, null);
         }
     }
 
@@ -313,10 +313,10 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                 if (ct == ClusteringType.BOTH) {
                     DendrogramMapping mapping = exec.clusterAll(data, props);
                     clustering = mapping.getRowsClustering();
-                    children.addClustering(clustering);
+                    children.addClustering(clustering, null);
                 } else {
                     clustering = exec.clusterRows(data, props);
-                    children.addClustering(clustering);
+                    children.addClustering(clustering, null);
                 }
                 LOG.info("finished clustering dataset {} with algorithm {}",
                         data.getName(), alg.getName());

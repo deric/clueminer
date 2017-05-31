@@ -167,4 +167,6 @@ public interface Evolution<I extends Individual<I, E, C>, E extends Instance, C 
      * @return
      */
     boolean isValid(I individual);
+
+    void fireIndividualCreated(I individual);
 }

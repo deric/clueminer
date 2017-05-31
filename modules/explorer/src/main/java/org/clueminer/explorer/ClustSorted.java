@@ -27,6 +27,7 @@ import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.evolution.hac.SimpleIndividual;
 import org.clueminer.project.api.Project;
 import org.clueminer.project.api.ProjectController;
 import org.openide.nodes.Children;
@@ -47,6 +48,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
     private static final Logger LOG = LoggerFactory.getLogger(ClustSorted.class);
     private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
     private final Project project;
+    private Evolution evolution;
 
     public ClustSorted() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -56,6 +58,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
 
     @Override
     public void started(Evolution evolution) {
+        this.evolution = evolution;
     }
 
     @Override
@@ -71,24 +74,33 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
     @Override
     public void bestInGeneration(int generationNum, Population<? extends Individual> population, double external) {
         LOG.info("best in generation {}: {} ext: {}", generationNum, population.getAvgFitness(), external);
-        addClustering(population.getBestIndividual().getClustering());
+        Individual ind = population.getBestIndividual();
+        addClustering(ind.getClustering(), ind);
     }
 
-    public void addUniqueClustering(Clustering<E, C> clustering) {
+    public void addUniqueClustering(Clustering<E, C> clustering, Individual ind) {
         int hash = clustering.hashCode();
         //new clustering
         if (!map.containsValue(hash)) {
-            addClustering(clustering);
+            addClustering(clustering, ind);
         } else {
             LOG.info("ignoring {} clust: {}", hash, clustering.getName());
         }
     }
 
-    public void addClustering(Clustering<E, C> clustering) {
+    /**
+     * Individual is used when result was produced using some explorative method
+     *
+     * @param clustering
+     * @param ind        in case of evolution/automl
+     */
+    public void addClustering(Clustering<E, C> clustering, Individual ind) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
         nodesAry[0] = new ClusteringNode<>((Clustering<E, C>) clustering);
         map.put(nodesAry, clustering.hashCode());
         project.add(clustering);
+        nodesAry[0].setIndividual(ind);
+        nodesAry[0].setParent(this);
         nodesAry[0].createSheet();
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -110,12 +122,11 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         LOG.debug("received {} new individuals", result.length);
         //worst case hash set size
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
-        int hash;
 
         Clustering<E, C> c;
         for (Individual ind : result) {
             c = ind.getClustering();
-            addUniqueClustering(c);
+            addUniqueClustering(c, ind);
             if (!toKeep.contains(c)) {
                 toKeep.add(c);
             }
@@ -154,6 +165,15 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
                 map.clear();
             }
         });
+    }
+
+    public void propertiesComputed(Clustering<E, C> clustering, Individual individual) {
+        if (evolution != null) {
+            if (individual == null) {
+                individual = new SimpleIndividual(clustering);
+            }
+            evolution.fireIndividualCreated(individual);
+        }
     }
 
 }
