@@ -48,4 +48,7 @@ public class MirkinMetric extends AbstractCountingPairs {
         return 2 * (pm.fp + pm.fn);
     }
 
+    public boolean isMaximized() {
+        return false;
+    }
 }
