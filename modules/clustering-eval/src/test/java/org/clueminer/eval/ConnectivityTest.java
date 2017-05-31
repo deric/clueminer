@@ -42,7 +42,7 @@ public class ConnectivityTest {
     @Test
     public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
-        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
+        double scoreWorser = subject.score(FakeClustering.irisWrong5());
 
         System.out.println("better: " + scoreBetter);
         System.out.println("worser: " + scoreWorser);
@@ -52,16 +52,13 @@ public class ConnectivityTest {
     }
 
     @Test
-    public void testScore_3args() {
-    }
-
-    @Test
     public void testIsBetter() {
+        assertEquals(true, subject.isBetter(5, 2));
     }
 
     @Test
     public void testIsMaximized() {
-        assertEquals(false, subject.isMaximized());
+        assertEquals(true, subject.isMaximized());
     }
 
 }

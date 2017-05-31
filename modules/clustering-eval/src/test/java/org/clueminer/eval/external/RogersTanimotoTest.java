@@ -41,8 +41,8 @@ public class RogersTanimotoTest extends ExternalTest {
 
     @Test
     public void testCompareScore() {
-        //bigger is better
-        assertTrue(subject.isBetter(0.555, 0.12));
+        //bigger is better?
+        assertTrue(subject.isBetter(0.05, 0.12));
     }
 
     @Test

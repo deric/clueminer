@@ -78,12 +78,12 @@ public class Connectivity<E extends Instance, C extends Cluster<E>> extends Abst
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        return score1 < score2;
+        return score1 > score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     /**
