@@ -89,6 +89,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         nodesAry[0] = new ClusteringNode<>((Clustering<E, C>) clustering);
         map.put(nodesAry, clustering.hashCode());
         project.add(clustering);
+        nodesAry[0].createSheet();
 
         SwingUtilities.invokeLater(new Runnable() {
 

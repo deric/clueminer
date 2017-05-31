@@ -66,7 +66,9 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
     private Image image;
     private static final Logger LOG = LoggerFactory.getLogger(ClusteringNode.class);
     private final ReentrantLock lock = new ReentrantLock();
-    private static final RequestProcessor RP = new RequestProcessor("clustering properties");
+    private final ReentrantLock propertiesLock = new ReentrantLock();
+    private static final RequestProcessor RP = new RequestProcessor("Clustering metrics", 5);
+    private Sheet sheet;
 
     public ClusteringNode(Clustering<E, C> clusters) {
         super(Children.LEAF, Lookups.singleton(clusters));
@@ -165,13 +167,15 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         return true;
     }
 
-    private void computeClusterProperties(final Sheet sheet, final Clustering<E, C> clustering) {
+    private void computeClusterProperties(final Sheet sheet, final Clustering<E, C> clustering, final ReentrantLock lock) {
 
         final ProgressHandle ph = ProgressHandle.createHandle("Computing properties of " + clustering.getName());
 
         final RequestProcessor.Task taskMetrics = RP.create(new Runnable() {
             @Override
             public void run() {
+                //acquire lock in the same thread
+                propertiesLock.lock();
                 Sheet.Set set = sheet.get(Sheet.PROPERTIES);
                 if (set == null) {
                     set = Sheet.createPropertiesSet();
@@ -186,21 +190,28 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
                     sizeProp.setName("Size");
                     set.put(sizeProp);
 
+                    sheet.put(set);
+                    ph.start(3);
+                    algorithmSheet(clustering, sheet);
+                    ph.progress(1);
+                    internalSheet(clustering, sheet);
+                    ph.progress(2);
+                    externalSheet(clustering, sheet);
+                    ph.progress(3);
+                    ph.finish();
+
                 } catch (NoSuchMethodException ex) {
                     Exceptions.printStackTrace(ex);
+                } finally {
+                    lock.unlock();
                 }
-
-                sheet.put(set);
-                algorithmSheet(clustering, sheet);
-                internalSheet(clustering, sheet);
-                externalSheet(clustering, sheet);
             }
         });
 
         taskMetrics.addTaskListener(new TaskListener() {
             @Override
             public void taskFinished(Task task) {
-                LOG.info("finished computing properties");
+                LOG.info("finished computing properties for {}", clustering.fingerprint());
                 firePropertySetsChange(null, null);
             }
         });
@@ -210,10 +221,17 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
     @Override
     protected Sheet createSheet() {
-        Sheet sheet = Sheet.createDefault();
-        Clustering<E, C> clustering = getClustering();
-        if (clustering != null) {
-            computeClusterProperties(sheet, clustering);
+        if (sheet != null) {
+            return sheet;
+        }
+        if (!propertiesLock.isLocked()) {
+            sheet = Sheet.createDefault();
+            Clustering<E, C> clustering = getClustering();
+            if (clustering != null) {
+                computeClusterProperties(sheet, clustering, propertiesLock);
+            } else {
+                propertiesLock.unlock();
+            }
         }
         return sheet;
     }
