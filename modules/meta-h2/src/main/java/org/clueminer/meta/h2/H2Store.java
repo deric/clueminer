@@ -50,7 +50,6 @@ import org.openide.util.lookup.ServiceProvider;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.GeneratedKeys;
 import org.skife.jdbi.v2.Handle;
-import org.skife.jdbi.v2.tweak.HandleCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,16 +175,16 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
             dh.commit();
 
             /* getting all column names */
-            /*   Statement statement = dh.getConnection().createStatement();
-             ResultSet results = statement.executeQuery("SELECT * FROM results LIMIT 1");
-             ResultSetMetaData metadata = results.getMetaData();
-             int columnCount = metadata.getColumnCount();
-
-             HashSet<String> hash = new HashSet<>(columnCount);
-             for (int i = 1; i <= columnCount; i++) {
-             hash.add(metadata.getColumnName(i));
-             System.out.println("col " + i + ": " + metadata.getColumnName(i));
-             }*/
+ /* Statement statement = dh.getConnection().createStatement();
+             * ResultSet results = statement.executeQuery("SELECT * FROM results LIMIT 1");
+             * ResultSetMetaData metadata = results.getMetaData();
+             * int columnCount = metadata.getColumnCount();
+             *
+             * HashSet<String> hash = new HashSet<>(columnCount);
+             * for (int i = 1; i <= columnCount; i++) {
+             * hash.add(metadata.getColumnName(i));
+             * System.out.println("col " + i + ": " + metadata.getColumnName(i));
+             * } */
         }
     }
 
@@ -440,25 +439,41 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     @Override
     public Collection<MetaResult> findResults(Dataset<E> dataset, String evolutionaryAlgorithm, final ClusterEvaluation<E, C> score) {
         final int datasetId = fetchDataset(dataset);
-        final int evoId = fetchEvolution(evolutionaryAlgorithm);
         final String order = score.isMaximized() ? "DESC" : "ASC";
-        List<MetaResult> res = db().withHandle(new HandleCallback<List<MetaResult>>() {
-            @Override
-            public List<MetaResult> withHandle(Handle h) {
-                return h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r." + quoteVar(score.getName()) + " \"score\" FROM results AS r"
-                        + " LEFT JOIN templates t"
-                        + " ON r.template_id = t.id"
-                        + " LEFT JOIN partitionings p"
-                        + " ON r.partitioning_id = p.id"
-                        + " LEFT JOIN runs ru"
-                        + " ON r.run_id = ru.id"
-                        + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id"
-                        + " ORDER BY " + quoteVar(score.getName()) + " " + order)
-                        .bind("dataset_id", datasetId)
-                        .bind("evolution_id", evoId)
-                        .map(new MetaResultMapper()).list();
-            }
-        });
+        List<MetaResult> res;
+        if (evolutionaryAlgorithm == null) {
+            //all algorithms
+            res = db().withHandle(
+                    (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
+                            + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                            + " LEFT JOIN templates t"
+                            + " ON r.template_id = t.id"
+                            + " LEFT JOIN partitionings p"
+                            + " ON r.partitioning_id = p.id"
+                            + " LEFT JOIN runs ru"
+                            + " ON r.run_id = ru.id"
+                            + " WHERE r.dataset_id = :dataset_id"
+                            + " ORDER BY " + quoteVar(score.getName()) + " " + order)
+                            .bind("dataset_id", datasetId)
+                            .map(new MetaResultMapper()).list());
+        } else {
+            final int evoId = fetchEvolution(evolutionaryAlgorithm);
+            res = db().withHandle(
+                    (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
+                            + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                            + " LEFT JOIN templates t"
+                            + " ON r.template_id = t.id"
+                            + " LEFT JOIN partitionings p"
+                            + " ON r.partitioning_id = p.id"
+                            + " LEFT JOIN runs ru"
+                            + " ON r.run_id = ru.id"
+                            + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id"
+                            + " ORDER BY " + quoteVar(score.getName()) + " " + order)
+                            .bind("dataset_id", datasetId)
+                            .bind("evolution_id", evoId)
+                            .map(new MetaResultMapper()).list());
+        }
+
         return res;
     }
 

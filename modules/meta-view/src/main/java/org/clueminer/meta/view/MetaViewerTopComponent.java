@@ -19,8 +19,6 @@ package org.clueminer.meta.view;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
@@ -38,9 +36,11 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays something.
+ * Top component which displays data from meta-database
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.meta.view//MetaViewer//EN",
@@ -53,7 +53,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Registration(mode = "leftSlidingSide", openAtStartup = true)
 @ActionID(category = "Window", id = "org.clueminer.meta.view.MetaViewerTopComponent")
-@ActionReference(path = "Menu/Window" /*, position = 333 */)
+@ActionReference(path = "Menu/Window" /* , position = 333 */)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_MetaViewerAction",
         preferredID = "MetaViewerTopComponent"
@@ -68,7 +68,7 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
     private static final long serialVersionUID = -950662751709594103L;
     private final MetaPanel panel;
     private Lookup.Result<Clustering> result = null;
-    private static final Logger logger = Logger.getLogger(MetaViewerTopComponent.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(MetaViewerTopComponent.class);
 
     public MetaViewerTopComponent() {
         initComponents();
@@ -102,12 +102,12 @@ public final class MetaViewerTopComponent extends TopComponent implements Lookup
         pc.addWorkspaceListener(new WorkspaceListener() {
             @Override
             public void initialize(Workspace workspace) {
-                logger.log(Level.INFO, "meta-panel initialized");
+                LOG.debug("meta-panel initialized");
             }
 
             @Override
             public void select(final Workspace workspace) {
-                logger.log(Level.INFO, "meta-panel selected");
+                LOG.debug("meta-panel selected");
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override

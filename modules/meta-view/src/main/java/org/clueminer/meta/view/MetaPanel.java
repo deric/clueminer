@@ -72,6 +72,7 @@ public class MetaPanel extends JPanel {
     private Object2ObjectMap<String, MetaResult> map;
     private Int2ObjectOpenHashMap<MetaResult> chash;
     private int matched;
+    public static final String ALL_NAME = "-- all --";
 
     public MetaPanel() {
         this.resultsList = new BasicEventList<>();
@@ -160,6 +161,10 @@ public class MetaPanel extends JPanel {
             String evo = currentEvolution();
             evaluator = currentEvaluator();
             if (evo != null && evaluator != null && getDataset() != null) {
+                if (evo.equals(ALL_NAME)) {
+                    evo = null;
+                }
+
                 final Collection<MetaResult> col = storage.findResults(getDataset(), evo, evaluator);
 
                 SwingUtilities.invokeLater(new Runnable() {
@@ -208,7 +213,14 @@ public class MetaPanel extends JPanel {
         if (storage != null) {
             Collection<String> algs = storage.getEvolutionaryAlgorithms();
             if (algs.size() > 0) {
-                evolutions.setModel(new DefaultComboBoxModel<>(algs.toArray(new String[algs.size()])));
+                String[] algorithms = new String[algs.size() + 1];
+                algorithms[0] = ALL_NAME;
+                int i = 0;
+                for (String str : algs) {
+                    algorithms[i + 1] = str;
+                    i++;
+                }
+                evolutions.setModel(new DefaultComboBoxModel<>(algorithms));
             }
         }
     }
