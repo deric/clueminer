@@ -49,8 +49,11 @@ public interface CostFunction {
     int numObservation();
 
     /**
+     * Each method might require special model.
      *
-     * @return true with mo
+     * @param method
+     * @param measure
+     * @return true if model is trained and ready to evaluate
      */
-    boolean isModelReady();
+    boolean isModelReady(String method, CostMeasure measure);
 }

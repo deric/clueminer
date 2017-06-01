@@ -33,6 +33,7 @@ import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
+import org.clueminer.meta.api.CostMeasure;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
@@ -54,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A DB backend stored in local file on disk (no server daemon needed).
  *
  * @author Tomas Barton
  */
@@ -479,6 +481,11 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
     private String quoteVar(String var) {
         return "\"" + var + "\"";
+    }
+
+    @Override
+    public void insertCost(String method, CostMeasure measure, double value, Map<String, Double> parameters) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

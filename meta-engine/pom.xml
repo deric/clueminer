@@ -16,6 +16,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publicPackages>
+                        <publicPackage>org.clueminer.meta.cost</publicPackage>
                         <publicPackage>org.clueminer.meta.engine</publicPackage>
                         <publicPackage>org.clueminer.meta.features</publicPackage>
                         <publicPackage>org.clueminer.meta.ranking</publicPackage>
@@ -127,6 +128,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>core-lib-wrapper</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>project-api</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -21,6 +21,7 @@ import java.util.EventListener;
 /**
  *
  * @author Tomas Barton
+ * @param <I>
  */
 public interface UpdateFeed<I extends Individual> extends EventListener {
 

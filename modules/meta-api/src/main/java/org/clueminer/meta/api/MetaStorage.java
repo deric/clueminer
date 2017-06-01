@@ -17,6 +17,7 @@
 package org.clueminer.meta.api;
 
 import java.util.Collection;
+import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -89,4 +90,14 @@ public interface MetaStorage<E extends Instance, C extends Cluster<E>> {
      * @return
      */
     Collection<MetaResult> findResults(Dataset<E> dataset, String evolutionaryAlgorithm, ClusterEvaluation<E, C> score);
+
+    /**
+     * Store cost measurement
+     *
+     * @param method
+     * @param measure
+     * @param value
+     * @param parameters
+     */
+    void insertCost(String method, CostMeasure measure, double value, Map<String, Double> parameters);
 }
