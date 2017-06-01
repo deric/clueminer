@@ -44,6 +44,14 @@ public interface ResultModel {
             + ")")
     void createTable();
 
+    /**
+     * Each score is a column in results table.
+     *
+     * @param score
+     * @param partitionId
+     * @param datasetId
+     * @return
+     */
     @SqlQuery("SELECT :score from results WHERE partitioning_id = :pid AND dataset_id = :did")
     double score(@Bind("score") String score, @Bind("pid") int partitionId, @Bind("did") int datasetId);
 

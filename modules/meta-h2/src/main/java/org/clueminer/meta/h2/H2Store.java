@@ -16,6 +16,7 @@
  */
 package org.clueminer.meta.h2;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,6 +38,8 @@ import org.clueminer.meta.api.CostMeasure;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
+import org.clueminer.meta.h2.dao.CostMeasureModel;
+import org.clueminer.meta.h2.dao.CostModel;
 import org.clueminer.meta.h2.dao.DatasetModel;
 import org.clueminer.meta.h2.dao.EvolutionModel;
 import org.clueminer.meta.h2.dao.PartitioningModel;
@@ -64,9 +67,10 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
     private static H2Store instance;
     private Connection conn = null;
-    private static final String dbName = "meta-db";
+    private static final String DB_NAME = "meta-db";
     private DBI dbi;
     private static final String NAME = "H2 store";
+    private Gson gson;
     private static final Logger LOG = LoggerFactory.getLogger(H2Store.class);
 
     public static H2Store getInstance() {
@@ -90,6 +94,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
                 Exceptions.printStackTrace(se);
             }
         }
+        gson = new Gson();
     }
 
     public static String getDbDir() {
@@ -102,12 +107,12 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     }
 
     public DBI db() {
-        return db(dbName);
+        return db(DB_NAME);
     }
 
     public DBI db(String db) {
         if (dbi == null) {
-            DataSource ds = JdbcConnectionPool.create("jdbc:h2:" + getDbDir() + File.separatorChar + db, "sa", "");
+            DataSource ds = JdbcConnectionPool.create("jdbc:h2:" + getDbDir() + File.separatorChar + db, "clueminer", "clueminer");
             dbi = new DBI(ds);
 
             try {
@@ -165,6 +170,14 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
             ResultModel rt = dh.attach(ResultModel.class);
             rt.createTable();
+            dh.commit();
+
+            CostMeasureModel cmm = dh.attach(CostMeasureModel.class);
+            cmm.createTable();
+            dh.commit();
+
+            CostModel cm = dh.attach(CostModel.class);
+            cm.createTable();
             dh.commit();
 
             //update score names
@@ -439,42 +452,46 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
      * @return
      */
     @Override
-    public Collection<MetaResult> findResults(Dataset<E> dataset, String evolutionaryAlgorithm, final ClusterEvaluation<E, C> score) {
+    public Collection<MetaResult> findResults(Dataset<E> dataset, final ClusterEvaluation<E, C> score, final String evolutionaryAlgorithm) {
         final int datasetId = fetchDataset(dataset);
         final String order = score.isMaximized() ? "DESC" : "ASC";
         List<MetaResult> res;
-        if (evolutionaryAlgorithm == null) {
-            //all algorithms
-            res = db().withHandle(
-                    (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
-                            + quoteVar(score.getName()) + " \"score\" FROM results AS r"
-                            + " LEFT JOIN templates t"
-                            + " ON r.template_id = t.id"
-                            + " LEFT JOIN partitionings p"
-                            + " ON r.partitioning_id = p.id"
-                            + " LEFT JOIN runs ru"
-                            + " ON r.run_id = ru.id"
-                            + " WHERE r.dataset_id = :dataset_id"
-                            + " ORDER BY " + quoteVar(score.getName()) + " " + order)
-                            .bind("dataset_id", datasetId)
-                            .map(new MetaResultMapper()).list());
-        } else {
-            final int evoId = fetchEvolution(evolutionaryAlgorithm);
-            res = db().withHandle(
-                    (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
-                            + quoteVar(score.getName()) + " \"score\" FROM results AS r"
-                            + " LEFT JOIN templates t"
-                            + " ON r.template_id = t.id"
-                            + " LEFT JOIN partitionings p"
-                            + " ON r.partitioning_id = p.id"
-                            + " LEFT JOIN runs ru"
-                            + " ON r.run_id = ru.id"
-                            + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id"
-                            + " ORDER BY " + quoteVar(score.getName()) + " " + order)
-                            .bind("dataset_id", datasetId)
-                            .bind("evolution_id", evoId)
-                            .map(new MetaResultMapper()).list());
-        }
+        final int evoId = fetchEvolution(evolutionaryAlgorithm);
+        res = db().withHandle(
+                (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
+                        + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                        + " LEFT JOIN templates t"
+                        + " ON r.template_id = t.id"
+                        + " LEFT JOIN partitionings p"
+                        + " ON r.partitioning_id = p.id"
+                        + " LEFT JOIN runs ru"
+                        + " ON r.run_id = ru.id"
+                        + " WHERE r.dataset_id = :dataset_id AND ru.evolution_id = :evolution_id"
+                        + " ORDER BY " + quoteVar(score.getName()) + " " + order)
+                        .bind("dataset_id", datasetId)
+                        .bind("evolution_id", evoId)
+                        .map(new MetaResultMapper()).list());
+
+        return res;
+    }
+
+    @Override
+    public Collection<MetaResult> findResults(Dataset<E> dataset, final ClusterEvaluation<E, C> score) {
+        final int datasetId = fetchDataset(dataset);
+        final String order = score.isMaximized() ? "DESC" : "ASC";
+        List<MetaResult> res = db().withHandle(
+                (Handle h) -> h.createQuery("SELECT p.k, t.template, p.fingerprint, p.hash, r."
+                        + quoteVar(score.getName()) + " \"score\" FROM results AS r"
+                        + " LEFT JOIN templates t"
+                        + " ON r.template_id = t.id"
+                        + " LEFT JOIN partitionings p"
+                        + " ON r.partitioning_id = p.id"
+                        + " LEFT JOIN runs ru"
+                        + " ON r.run_id = ru.id"
+                        + " WHERE r.dataset_id = :dataset_id"
+                        + " ORDER BY " + quoteVar(score.getName()) + " " + order)
+                        .bind("dataset_id", datasetId)
+                        .map(new MetaResultMapper()).list());
 
         return res;
     }
@@ -485,7 +502,34 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
     @Override
     public void insertCost(String method, CostMeasure measure, double value, Map<String, Double> parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int measureMethodId = fetchCostMeasure(method, measure);
+        String json = gson.toJson(parameters);
+        int id;
+        try (Handle h = db().open()) {
+            CostModel cm = h.attach(CostModel.class);
+            id = cm.insert(measureMethodId, value, json);
+        }
+    }
+
+    protected int findCostMeasure(String method, CostMeasure measure) {
+        int id;
+        try (Handle h = db().open()) {
+            CostMeasureModel cm = h.attach(CostMeasureModel.class);
+            id = cm.find(method, measure.name());
+        }
+        return id;
+    }
+
+    protected int fetchCostMeasure(String method, CostMeasure measure) {
+        int id = findCostMeasure(method, measure);
+
+        if (id <= 0) {
+            try (Handle h = db().open()) {
+                CostMeasureModel cm = h.attach(CostMeasureModel.class);
+                id = cm.insert(method, measure.name());
+            }
+        }
+        return id;
     }
 
 }

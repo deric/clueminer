@@ -165,7 +165,7 @@ public class MetaPanel extends JPanel {
                     evo = null;
                 }
 
-                final Collection<MetaResult> col = storage.findResults(getDataset(), evo, evaluator);
+                final Collection<MetaResult> col = storage.findResults(getDataset(), evaluator, evo);
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override

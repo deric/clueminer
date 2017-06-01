@@ -85,11 +85,20 @@ public interface MetaStorage<E extends Instance, C extends Cluster<E>> {
      * Find all results of given algorithm sorted by an evaluation score
      *
      * @param dataset
+     * @param score
      * @param evolutionaryAlgorithm
+     * @return
+     */
+    Collection<MetaResult> findResults(Dataset<E> dataset, ClusterEvaluation<E, C> score, String evolutionaryAlgorithm);
+
+    /**
+     * Find all results produced by any algorithm sorted by an evaluation score
+     *
+     * @param dataset
      * @param score
      * @return
      */
-    Collection<MetaResult> findResults(Dataset<E> dataset, String evolutionaryAlgorithm, ClusterEvaluation<E, C> score);
+    Collection<MetaResult> findResults(Dataset<E> dataset, ClusterEvaluation<E, C> score);
 
     /**
      * Store cost measurement
