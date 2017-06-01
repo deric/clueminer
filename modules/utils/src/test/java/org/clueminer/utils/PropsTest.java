@@ -16,6 +16,8 @@
  */
 package org.clueminer.utils;
 
+import java.util.HashSet;
+import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,7 @@ import org.junit.Test;
 public class PropsTest {
 
     private Props subject;
-    private static final double delta = 1e-12;
+    private static final double DELTA = 1e-12;
 
     public PropsTest() {
     }
@@ -95,10 +97,10 @@ public class PropsTest {
         double pi = 3.14159265358979323846264338327950288419716939937510;
         subject.put(key, pi);
 
-        assertEquals(pi, subject.getDouble(key), delta);
-        assertEquals(pi, subject.getDouble(key, -1), delta);
+        assertEquals(pi, subject.getDouble(key), DELTA);
+        assertEquals(pi, subject.getDouble(key, -1), DELTA);
         //missing key
-        assertEquals(-1.0, subject.getDouble("piii", -1), delta);
+        assertEquals(-1.0, subject.getDouble("piii", -1), DELTA);
     }
 
     @Test
@@ -171,7 +173,7 @@ public class PropsTest {
         double d = 3.14159;
         String key = "some double";
         subject.putDouble(key, d);
-        assertEquals(subject.getDouble(key), d, delta);
+        assertEquals(subject.getDouble(key), d, DELTA);
     }
 
     @Test
@@ -284,6 +286,18 @@ public class PropsTest {
 
     @Test
     public void testKeySet() {
+        Props p = new Props();
+        p.put(PropType.MAIN, "foo", "bar");
+        p.put(PropType.MAIN, "blah", "ble");
+        p.put(PropType.VISUAL, "vis", "ble");
+        Set<String> res = p.keySet(PropType.MAIN);
+        Set<String> expected = new HashSet();
+        expected.add("foo");
+        expected.add("blah");
+        assertEquals(expected, res);
+        expected.add("vis");
+        res = p.keySet();
+        assertEquals(expected, res);
     }
 
     @Test
@@ -294,7 +308,7 @@ public class PropsTest {
     public void testDoubles() {
         Props p = new Props();
         p.put(PropType.VALIDATION, "fff", 123.0);
-        assertEquals(123.0, p.getDouble(PropType.VALIDATION, "fff", Double.NaN), delta);
+        assertEquals(123.0, p.getDouble(PropType.VALIDATION, "fff", Double.NaN), DELTA);
     }
 
     @Test

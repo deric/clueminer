@@ -457,6 +457,16 @@ public class Props implements Map<String, Object> {
         return store.columnKeySet();
     }
 
+    /**
+     * Select only keys form certain group (PropType)
+     *
+     * @param pt
+     * @return set of keys
+     */
+    public Set<String> keySet(PropType pt) {
+        return store.row(pt).keySet();
+    }
+
     @Override
     public Collection<Object> values() {
         return store.values();
