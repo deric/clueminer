@@ -35,6 +35,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.meta.api.CostMeasure;
+import org.clueminer.meta.api.CostMeasurement;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.h2.dao.AlgorithmModel;
@@ -70,7 +71,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     private static final String DB_NAME = "meta-db";
     private DBI dbi;
     private static final String NAME = "H2 store";
-    private Gson gson;
+    private final Gson gson;
     private static final Logger LOG = LoggerFactory.getLogger(H2Store.class);
 
     public static H2Store getInstance() {
@@ -530,6 +531,15 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
             }
         }
         return id;
+    }
+
+    public Collection<CostMeasurement> findAllCostMeasurements(String method, CostMeasure measure) {
+        Collection<CostMeasurement> res;
+        try (Handle h = db().open()) {
+            CostModel cm = h.attach(CostModel.class);
+            res = cm.findAll(method, measure.name());
+        }
+        return res;
     }
 
 }

@@ -33,6 +33,7 @@ import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.meta.api.CostMeasure;
+import org.clueminer.meta.api.CostMeasurement;
 import org.clueminer.meta.api.MetaResult;
 import org.junit.After;
 import static org.junit.Assert.assertEquals;
@@ -155,6 +156,9 @@ public class H2StoreTest<E extends Instance> {
         map.put("foo", 1.0);
         map.put("bar", 2.0);
         subject.insertCost("test", CostMeasure.TIME, 325.0, map);
+
+        Collection<CostMeasurement> res = subject.findAllCostMeasurements("test", CostMeasure.TIME);
+        assertEquals(true, res.size() > 0);
     }
 
 }

@@ -16,9 +16,14 @@
  */
 package org.clueminer.meta.h2.dao;
 
+import java.util.List;
+import org.clueminer.meta.api.CostMeasurement;
+import org.clueminer.meta.h2.CostMeasurementMapper;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 /**
  * Store computing costs of algorithms
@@ -38,4 +43,11 @@ public interface CostModel {
     @SqlUpdate("insert into costs (cost_measure_id,value,params) values (:cost_measure_id,:value,:params)")
     @GetGeneratedKeys
     int insert(@Bind("cost_measure_id") int costMeasureId, @Bind("value") double value, @Bind("params") String params);
+
+    @SqlQuery("SELECT c.id,name,measure,value,params FROM cost_measures AS m"
+            + " LEFT JOIN costs c"
+            + " ON c.cost_measure_id = m.id"
+            + " WHERE m.name = :name AND m.measure = :measure")
+    @Mapper(CostMeasurementMapper.class)
+    List<CostMeasurement> findAll(@Bind("name") String name, @Bind("measure") String measure);
 }
