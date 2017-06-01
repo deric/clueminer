@@ -36,6 +36,7 @@ import org.clueminer.dgram.vis.ImageFactory;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.gui.EvaluatorProperty;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.actions.NewAction;
@@ -304,7 +305,7 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         Sheet.Set set = new Sheet.Set();
         set.setName("Algorithm");
         set.setDisplayName("Algorithm");
-        for (final String key : params.keySet()) {
+        for (final String key : params.keySet(PropType.MAIN)) {
             Property evalProp = new PropertySupport.ReadOnly<Object>(key, Object.class, "", "") {
                 @Override
                 public String getValue() throws IllegalAccessException, InvocationTargetException {
