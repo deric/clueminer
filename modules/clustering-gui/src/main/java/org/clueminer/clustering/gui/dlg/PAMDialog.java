@@ -20,19 +20,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.algorithm.KMeans;
+import org.clueminer.clustering.algorithm.PAM;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
+import org.clueminer.clustering.api.SeedSelectionFactory;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.distance.api.DistanceFactory;
@@ -44,23 +41,19 @@ import org.openide.util.lookup.ServiceProvider;
  * @author deric
  */
 @ServiceProvider(service = ClusteringDialog.class)
-public class KmeansDialog extends JPanel implements ClusteringDialog {
+public class PAMDialog extends JPanel implements ClusteringDialog {
 
-    private static final long serialVersionUID = 7041147759279431292L;
-
-    private JSlider sliderK;
-    private JTextField tfK;
-    private JTextField tfIterations;
-    private JSlider sliderIter;
+    private static final String NAME = "k-means";
+    private static final long serialVersionUID = -4676433745154958224L;
+    private JComboBox<String> comboDistance;
+    private JComboBox<String> comboPrototypes;
     private JTextField tfRandom;
     private JButton btnRandom;
     private Random rand;
-    private JComboBox comboDistance;
-    private static final String NAME = "k-means";
+    private JTextField tfK;
 
-    public KmeansDialog() {
+    public PAMDialog() {
         initComponents();
-        comboDistance.setSelectedItem("Euclidean");
     }
 
     @Override
@@ -70,16 +63,6 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
 
     private void initComponents() {
         setLayout(new GridBagLayout());
-
-        tfK = new JTextField("4", 4);
-        sliderK = new JSlider(1, 1000, 4);
-        sliderK.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                tfK.setText(String.valueOf(sliderK.getValue()));
-            }
-        });
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -88,66 +71,20 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         c.insets = new java.awt.Insets(5, 5, 5, 5);
         c.gridx = 0;
         c.gridy = 0;
+
+        //k
+        tfK = new JTextField("4", 4);
         add(new JLabel("k:"), c);
         c.gridx = 1;
-        c.weightx = 0.9;
-        add(sliderK, c);
-        c.gridx = 2;
         add(tfK, c);
-        tfK.addKeyListener(new KeyListener() {
 
-            @Override
-            public void keyTyped(KeyEvent e) {
-                updateKSlider();
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                updateKSlider();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                updateKSlider();
-            }
-        });
-
-        //iterations
-        c.gridx = 0;
+        //prototypes
         c.gridy++;
-        add(new JLabel("Iterations:"), c);
-        sliderIter = new JSlider(10, 2000);
-        sliderIter.addChangeListener(new ChangeListener() {
-
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                tfIterations.setText(String.valueOf(sliderIter.getValue()));
-            }
-        });
+        c.gridx = 0;
+        add(new JLabel("Prototypes selection:"), c);
         c.gridx = 1;
-        add(sliderIter, c);
-
-        c.gridx = 2;
-        tfIterations = new JTextField("100", 4);
-        add(tfIterations, c);
-        tfIterations.addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                updateIterSlider();
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                updateIterSlider();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                updateIterSlider();
-            }
-        });
-        sliderIter.setValue(100);
+        comboPrototypes = new JComboBox(SeedSelectionFactory.getInstance().getProvidersArray());
+        add(comboPrototypes, c);
 
         //random
         tfRandom = new JTextField("-1", 8);
@@ -168,40 +105,25 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
         c.gridx = 2;
         add(btnRandom, c);
 
+
         //distance measure
         c.gridy++;
         c.gridx = 0;
         add(new JLabel("Distance:"), c);
         c.gridx = 1;
         comboDistance = new JComboBox(DistanceFactory.getInstance().getProvidersArray());
+        comboDistance.setSelectedItem("Euclidean");
         add(comboDistance, c);
-    }
-
-    private void updateKSlider() {
-        try {
-            int val = Integer.valueOf(tfK.getText());
-            sliderK.setValue(val);
-        } catch (NumberFormatException ex) {
-            // wrong input so we do not set the slider but also do not want to raise an exception
-        }
-    }
-
-    private void updateIterSlider() {
-        try {
-            int val = Integer.valueOf(tfIterations.getText());
-            sliderIter.setValue(val);
-        } catch (NumberFormatException ex) {
-            // wrong input so we do not set the slider but also do not want to raise an exception
-        }
     }
 
     @Override
     public Props getParams() {
         Props params = new Props();
-        params.putInt(KMeans.K, sliderK.getValue());
-        params.putInt(KMeans.ITERATIONS, sliderIter.getValue());
+        params.putInt(KMeans.K, Integer.valueOf(tfK.getText()));
+        //params.putInt(KMeans.ITERATIONS, sliderIter.getValue());
+        params.put(PAM.SEED_SELECTION, comboPrototypes.getSelectedItem());
         params.putInt(KMeans.SEED, Integer.valueOf(tfRandom.getText()));
-        params.put(KMeans.DISTANCE, (String) comboDistance.getSelectedItem());
+        params.put(KMeans.DISTANCE, comboDistance.getSelectedItem());
 
         return params;
     }
@@ -213,7 +135,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
-        return algorithm instanceof KMeans;
+        return algorithm instanceof PAM;
     }
 
 }

@@ -130,6 +130,7 @@ public abstract class Algorithm<E extends Instance, C extends Cluster<E>> implem
                                     type = ParamType.INTEGER;
                                     break;
                                 case "String":
+                                case "java.lang.String":
                                     type = ParamType.STRING;
                                     break;
                                 default:
