@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  *
@@ -35,10 +36,7 @@ public class PAMTest {
         subject = new PAM();
     }
 
-    /**
-     * @FIXME: make sure this test works
-     */
-    //@Test
+    @Test
     public void testCluster() {
         Dataset<? extends Instance> dataset = FakeClustering.irisDataset();
         Props params = new Props();

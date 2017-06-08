@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.SeedSelection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Select randomly unique data points from the dataset.
@@ -30,6 +31,7 @@ import org.clueminer.utils.Props;
  * @author Tomas Barton
  * @param <E> data type
  */
+@ServiceProvider(service = SeedSelection.class)
 public class RandomMedoidsSelection<E extends Instance> extends AbstractSelection implements SeedSelection<E> {
 
     private static final String NAME = "random";

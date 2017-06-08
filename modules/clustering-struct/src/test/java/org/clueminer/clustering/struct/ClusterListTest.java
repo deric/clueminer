@@ -89,6 +89,11 @@ public class ClusterListTest<E extends Instance, C extends Cluster<E>> {
     public void testHasAt() {
         assertEquals(true, subject.hasAt(0));
         assertEquals(true, subject.hasAt(1));
+
+        ClusterList clusters = new ClusterList(3);
+        assertEquals(false, clusters.hasAt(0));
+        assertEquals(false, clusters.hasAt(1));
+        assertEquals(false, clusters.hasAt(2));
     }
 
     @Test

@@ -17,14 +17,21 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
-import org.clueminer.clustering.api.Assignment;
+import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Configurator;
+import org.clueminer.clustering.api.SeedSelection;
+import org.clueminer.clustering.api.SeedSelectionFactory;
+import org.clueminer.clustering.api.config.annotation.Param;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Partitioning Around Medoids (PAM) - the most common realization of k-medoid
@@ -34,25 +41,37 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
+@ServiceProvider(service = ClusteringAlgorithm.class)
 public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBase<E, C> implements ClusteringAlgorithm<E, C> {
 
     private static final String NAME = "PAM";
     protected int repeats = 1;
     protected int iterLimit = 100;
 
+    public static final String SEED_SELECTION = "seed_selection";
+    @Param(name = SEED_SELECTION, description = "Seed selection")
+    protected String seedSelection;
+
+    private static final Logger LOG = LoggerFactory.getLogger(PAM.class);
+
     @Override
     public String getName() {
         return NAME;
     }
 
-    protected double cluster(Dataset<E> dataset, int[] medioids, Assignment assignments) {
+    protected double cluster(Dataset<E> dataset, E[] medoids, Clustering<E, C> clustering) {
         double totalDistance = 0.0;
         int changes;
-        int[] bestMedCand = new int[medioids.length];
-        double[] bestMedCandDist = new double[medioids.length];
+        int[] bestMedCand = new int[medoids.length];
+        double[] bestMedCandDist = new double[medoids.length];
+        int[] currMedoids = new int[medoids.length];
+        for (int i = 0; i < medoids.length; i++) {
+            currMedoids[i] = medoids[i].getIndex();
+        }
         double dist;
-        Instance current;
+        E current;
         int iter = 0;
+        boolean changed;
 
         do {
             changes = 0;
@@ -61,21 +80,43 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
             for (int i = 0; i < dataset.size(); i++) {
                 int assign = 0;
                 current = dataset.get(i);
-                double minDist = distanceFunction.measure(dataset.get(medioids[0]), current);
+                double minDist = distanceFunction.measure(dataset.get(currMedoids[0]), current);
 
-                for (int k = 1; k < medioids.length; k++) {
-                    dist = distanceFunction.measure(dataset.get(medioids[k]), current);
+                for (int k = 1; k < medoids.length; k++) {
+                    dist = distanceFunction.measure(dataset.get(currMedoids[k]), current);
                     if (dist < minDist) {
                         minDist = dist;
                         assign = k;
                     }
                 }
-
-                //Update which cluster it is in
-                if (assignments.assigned(i) != assign) {
+                C clust;
+                if (!clustering.hasAt(assign)) {
+                    LOG.debug("creating cluster {}, current size: {}", assign, clustering.size());
+                    clust = clustering.createCluster(assign);
+                    if (colorGenerator != null) {
+                        clust.setColor(colorGenerator.next());
+                    }
                     changes++;
-                    assignments.assign(i, assign);
+                    changed = true;
+                } else {
+                    clust = clustering.assignedCluster(current);
+                    if (clust == null) {
+                        clust = clustering.get(assign);
+                        changes++;
+                        changed = true;
+                    } else if (clust.getClusterId() != assign) {
+                        clust.remove(current);
+                        clust = clustering.get(assign);
+                        changes++;
+                        changed = true;
+                    } else {
+                        changed = false;
+                    }
                 }
+                if (changed) {
+                    clust.add(current);
+                }
+
                 totalDistance += minDist * minDist;
             }
 
@@ -83,21 +124,22 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
             Arrays.fill(bestMedCandDist, Double.MAX_VALUE);
             for (int i = 0; i < dataset.size(); i++) {
                 double currCandidateDist = 0.0;
-                int clusterId = assignments.assigned(i);
-                Instance medCandadate = dataset.get(i);
+                int clusterId = clustering.assignedCluster(i);
+                E medCandadate = dataset.get(i);
                 for (int j = 0; j < dataset.size(); j++) {
-                    if (j == i || assignments.assigned(j) != clusterId) {
+                    if (j == i || clustering.assignedCluster(j) != clusterId) {
                         continue;
                     }
                     currCandidateDist += Math.pow(distanceFunction.measure(medCandadate, dataset.get(j)), 2);
                 }
 
-                if (currCandidateDist < bestMedCandDist[clusterId]) {
+                if (clusterId >= 0 && currCandidateDist < bestMedCandDist[clusterId]) {
                     bestMedCand[clusterId] = i;
                     bestMedCandDist[clusterId] = currCandidateDist;
                 }
             }
-            System.arraycopy(bestMedCand, 0, medioids, 0, medioids.length);
+            System.arraycopy(bestMedCand, 0, currMedoids, 0, medoids.length);
+            LOG.debug("iter {}, changes = {}, distance = {}", iter, changes, totalDistance);
         } while (changes > 0 && iter++ < iterLimit);
 
         return totalDistance;
@@ -116,7 +158,21 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SeedSelectionFactory sf = SeedSelectionFactory.getInstance();
+        SeedSelection<E> seed = sf.getProvider(props.get(SEED_SELECTION, "random"));
+
+        distanceFunction = ClusterHelper.initDistance(props);
+        int k = guessK(dataset);
+        Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(k);
+        clustering.lookupAdd(dataset);
+        if (colorGenerator != null) {
+            colorGenerator.reset();
+        }
+        E[] prototypes = seed.selectPrototypes(dataset, props);
+
+        double dist = cluster(dataset, prototypes, clustering);
+        LOG.debug("total distane = {}", dist);
+        return clustering;
     }
 
     @Override

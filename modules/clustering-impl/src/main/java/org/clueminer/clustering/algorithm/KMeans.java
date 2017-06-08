@@ -29,7 +29,6 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
-import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -90,16 +89,6 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
     @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public Distance getDistanceFunction() {
-        return distanceFunction;
-    }
-
-    @Override
-    public void setDistanceFunction(Distance dm) {
-        this.distanceFunction = dm;
     }
 
     /**

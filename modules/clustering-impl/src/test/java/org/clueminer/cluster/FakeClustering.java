@@ -106,7 +106,7 @@ public class FakeClustering {
     public static Dataset<? extends Instance> irisDataset() {
         if (irisData == null) {
             CommonFixture tf = new CommonFixture();
-            irisData = new SampleDataset();
+            irisData = new ArrayDataset(150, 4);
             ARFFHandler arff = new ARFFHandler();
             try {
                 arff.load(tf.irisArff(), irisData, 4);

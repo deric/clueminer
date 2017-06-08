@@ -368,7 +368,7 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
     @Override
     public C assignedCluster(E inst) {
         for (C cluster : this) {
-            if (cluster.contains(inst.getIndex())) {
+            if (cluster != null && cluster.contains(inst.getIndex())) {
                 return cluster;
             }
         }

@@ -38,9 +38,9 @@ public class KClustererBaseTest {
 
         int[] memebership = new int[dataset.size()];
         for (int i = 0; i < 50; i++) {
-            memebership[i] = 1;
-            memebership[i + 50] = 2;
-            memebership[i + 100] = 3;
+            memebership[i] = 0;
+            memebership[i + 50] = 1;
+            memebership[i + 100] = 2;
         }
         Assignment assign = new HardAssignment(memebership);
         assertEquals(3, assign.distinct());
