@@ -23,9 +23,11 @@ import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -35,10 +37,22 @@ import org.junit.Test;
 public class KMeansPPSelectionTest<E extends Instance> {
 
     private KMeansPPSelection<E> subject;
+    private static ExecutorService exec;
 
     public KMeansPPSelectionTest() {
         subject = new KMeansPPSelection();
     }
+
+    @BeforeClass
+    public static void setUpClass() {
+        exec = Executors.newFixedThreadPool(3);
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        exec.shutdown();
+    }
+
 
     @Test
     public void testSelectPrototypes_Dataset_Props() {
@@ -64,7 +78,7 @@ public class KMeansPPSelectionTest<E extends Instance> {
         params.putInt(KMeans.K, 4);
         params.putInt(KMeans.SEED, 133);
 
-        ExecutorService exec = Executors.newFixedThreadPool(3);
+        exec = Executors.newFixedThreadPool(3);
         E[] prototypes = subject.selectPrototypes(dataset, params, exec);
         assertEquals(4, prototypes.length);
         assertEquals(dataset.attributeCount(), prototypes[0].size());
