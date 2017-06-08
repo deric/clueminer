@@ -18,28 +18,33 @@ package org.clueminer.clustering.seed;
 
 import java.security.SecureRandom;
 import org.clueminer.cluster.FakeClustering;
+import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  *
  * @author deric
+ * @param <E>
  */
-public class RandomMedoidsSelectionTest {
+public class RandomMedoidsSelectionTest<E extends Instance> {
 
-    private static RandomMedoidsSelection subject;
-    private static Dataset<? extends Instance> dataset;
+    private RandomMedoidsSelection<E> subject;
+    private Dataset<E> dataset;
+    private static Props params;
 
     public RandomMedoidsSelectionTest() {
+        params = new Props();
     }
 
-    @BeforeClass
-    public static void setUpClass() {
+    @Before
+    public void setUp() {
         subject = new RandomMedoidsSelection();
-        dataset = FakeClustering.irisDataset();
+        dataset = (Dataset<E>) FakeClustering.irisDataset();
     }
 
     @Test
@@ -51,24 +56,26 @@ public class RandomMedoidsSelectionTest {
     public void testSetRandom() {
         subject.setRandom(new SecureRandom());
         int k = 5;
-        int[] medoids = subject.selectIntIndices(dataset, k);
+        params.putInt(KMeans.K, k);
+        E[] medoids = subject.selectPrototypes(dataset, params);
         assertEquals(k, medoids.length);
         for (int i = 0; i < medoids.length; i++) {
-            assertEquals(true, medoids[i] < dataset.size());
-            assertEquals(true, medoids[i] >= 0);
-            assertEquals(true, dataset.hasIndex(medoids[i]));
+            assertEquals(true, medoids[i].getIndex() < dataset.size());
+            assertEquals(true, medoids[i].getIndex() >= 0);
+            assertEquals(true, dataset.hasIndex(medoids[i].getIndex()));
         }
     }
 
     @Test
     public void testSelectIntIndices() {
         int k = 15;
-        int[] medoids = subject.selectIntIndices(dataset, k);
+        params.putInt(KMeans.K, k);
+        E[] medoids = subject.selectPrototypes(dataset, params);
         assertEquals(k, medoids.length);
         for (int i = 0; i < medoids.length; i++) {
-            assertEquals(true, medoids[i] < dataset.size());
-            assertEquals(true, medoids[i] >= 0);
-            assertEquals(true, dataset.hasIndex(medoids[i]));
+            assertEquals(true, medoids[i].getIndex() < dataset.size());
+            assertEquals(true, medoids[i].getIndex() >= 0);
+            assertEquals(true, dataset.hasIndex(medoids[i].getIndex()));
         }
     }
 
@@ -78,11 +85,12 @@ public class RandomMedoidsSelectionTest {
     @Test(expected = RuntimeException.class)
     public void testBigK() {
         int k = dataset.size() + 1;
-        int[] medoids = subject.selectIntIndices(dataset, k);
+        params.putInt(KMeans.K, k);
+        E[] medoids = subject.selectPrototypes(dataset, params);
         assertEquals(k, medoids.length);
         for (int i = 0; i < medoids.length; i++) {
-            assertEquals(true, medoids[i] < dataset.size());
-            assertEquals(true, medoids[i] >= 0);
+            assertEquals(true, medoids[i].getIndex() < dataset.size());
+            assertEquals(true, medoids[i].getIndex() >= 0);
         }
     }
 

@@ -18,12 +18,14 @@ package org.clueminer.clustering.api;
 
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.utils.Props;
 
 /**
  *
  * @author Tomas Barton
+ * @param <E> row data type
  */
-public interface SeedSelection {
+public interface SeedSelection<E extends Instance> {
 
     /**
      * Unique method identification
@@ -34,12 +36,13 @@ public interface SeedSelection {
 
     /**
      * Select k indexes of medoids from given Dataset (medoids are existing
-     * instances in the dataset)
+     * instances in the dataset). Selected points represent initial prototypes
+     * of final clusters.
      *
      * @param dataset from which we select points (instances)
-     * @param k number of points to be selected
+     * @param params  configuration parameters such as number of points to be selected
      * @return
      */
-    int[] selectIntIndices(Dataset<? extends Instance> dataset, int k);
+    E[] selectPrototypes(Dataset<E> dataset, Props params);
 
 }
