@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.api.SeedSelection;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -63,6 +64,7 @@ public class KMeansPPSelection<E extends Instance> extends AbstractSelection imp
     public E[] selectPrototypes(Dataset<E> dataset, Props params) {
         int k = params.getInt("k");
         E[] prototypes = (E[]) new Instance[k];
+        setRandom(ClusterHelper.initSeed(params));
         //Initial random point
         prototypes[0] = dataset.get(rand.nextInt(dataset.size()));
 
@@ -100,6 +102,7 @@ public class KMeansPPSelection<E extends Instance> extends AbstractSelection imp
     public E[] selectPrototypes(final Dataset<E> dataset, Props params, ExecutorService threadpool) {
         int k = params.getInt("k");
         E[] prototypes = (E[]) new Instance[k];
+        setRandom(ClusterHelper.initSeed(params));
         //Initial random point
         prototypes[0] = dataset.get(rand.nextInt(dataset.size()));
 

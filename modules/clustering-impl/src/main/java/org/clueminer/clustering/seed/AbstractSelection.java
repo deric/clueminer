@@ -24,7 +24,7 @@ import java.util.Random;
  */
 public class AbstractSelection {
 
-    protected Random rand = new Random();
+    protected Random rand;
 
     public void setRandom(Random rand) {
         this.rand = rand;

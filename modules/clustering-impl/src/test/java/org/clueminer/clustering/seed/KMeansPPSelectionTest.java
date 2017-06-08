@@ -62,9 +62,13 @@ public class KMeansPPSelectionTest<E extends Instance> {
         Dataset<E> dataset = (Dataset<E>) FakeClustering.irisDataset();
         Props params = new Props();
         params.putInt(KMeans.K, 4);
+        params.putInt(KMeans.SEED, 133);
 
         ExecutorService exec = Executors.newFixedThreadPool(3);
         E[] prototypes = subject.selectPrototypes(dataset, params, exec);
+        assertEquals(4, prototypes.length);
+        assertEquals(dataset.attributeCount(), prototypes[0].size());
+        assertTrue(prototypes[0].getIndex() != prototypes[1].getIndex());
     }
 
 }
