@@ -48,6 +48,9 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
     protected int repeats = 1;
     protected int iterLimit = 100;
 
+    @Param(name = KMeans.K, description = "number of clusters", required = true, min = 2, max = 50)
+    protected int k;
+
     public static final String SEED_SELECTION = "seed_selection";
     @Param(name = SEED_SELECTION, description = "Seed selection")
     protected String seedSelection;
