@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
@@ -92,7 +93,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
      * Individual is used when result was produced using some explorative method
      *
      * @param clustering
-     * @param ind        in case of evolution/automl
+     * @param ind in case of evolution/automl
      */
     public void addClustering(Clustering<E, C> clustering, Individual ind) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
@@ -124,14 +125,22 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
 
         Clustering<E, C> c;
+        Dataset<E> d;
         for (Individual ind : result) {
             c = ind.getClustering();
-            addUniqueClustering(c, ind);
-            if (!toKeep.contains(c)) {
-                toKeep.add(c);
+            d = c.getLookup().lookup(Dataset.class);
+            if (c.size() == 1) {
+                LOG.debug("ignoring invalid clustering with single cluster, params: {}", c.getParams());
+            } else if (c.instancesCount() != d.size()) {
+                LOG.debug("ignoring incomplete clustering {}, params: {}", c.fingerprint(), c.getParams());
+            } else {
+                addUniqueClustering(c, ind);
+                if (!toKeep.contains(c)) {
+                    toKeep.add(c);
+                }
             }
         }
-        System.out.println("map: " + map.size() + ", to keep: " + toKeep.size());
+        LOG.debug("map: {}, to keep: {}", map.size(), toKeep.size());
         //go through all current nodes and remove old nodes
         /* ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
          * for (final ClusteringNode[] n : map.keySet()) {
