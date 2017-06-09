@@ -113,9 +113,10 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
 
     public DBI db(String db) {
         if (dbi == null) {
-            DataSource ds = JdbcConnectionPool.create("jdbc:h2:" + getDbDir() + File.separatorChar + db, "clueminer", "clueminer");
+            String path = "jdbc:h2:" + getDbDir() + File.separatorChar + db;
+            DataSource ds = JdbcConnectionPool.create(path, "clueminer", "clueminer");
             dbi = new DBI(ds);
-
+            LOG.debug("opening database {}", path);
             try {
                 initialize();
             } catch (SQLException ex) {
