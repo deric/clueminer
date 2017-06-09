@@ -32,6 +32,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -47,6 +48,7 @@ import org.clueminer.meta.api.MetaFlag;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.project.api.ProjectController;
+import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +68,8 @@ public class MetaPanel extends JPanel {
     private JComboBox<String> evolutions;
     private JComboBox<String> evaluators;
     private ClusterEvaluation evaluator;
+    private JButton btnReload;
     private JLabel lbResults;
-    private Collection<? extends Clustering> clusterings;
     private static final Logger LOG = LoggerFactory.getLogger(MetaPanel.class);
     private Object2ObjectMap<String, MetaResult> map;
     private Int2ObjectOpenHashMap<MetaResult> chash;
@@ -110,23 +112,38 @@ public class MetaPanel extends JPanel {
         c.gridwidth = 1;
         c.gridheight = 1;
         c.fill = GridBagConstraints.BOTH;
-
         add(new JLabel("Source: "), c);
+        c.gridx = 1;
+        //c.insets = new Insets(0, 0, 0, 0);
+        btnReload = new JButton(ImageUtilities.loadImageIcon("org/clueminer/meta/view/reload16.png", false));
+        btnReload.addActionListener((ActionEvent e) -> {
+
+            SwingUtilities.invokeLater(() -> {
+                updateEvolutions();
+            });
+        });
+        add(btnReload, c);
+        c.gridx = 0;
         c.gridy = 1;
+        c.insets = new Insets(5, 5, 5, 5);
         add(new JLabel("Evaluation: "), c);
         c.gridy = 0;
-        c.insets = new Insets(5, 55, 5, 5);
-        c.weightx = 0.15;
+        c.insets = new Insets(5, 65, 5, 5);
+        c.weightx = 0.55;
         add(evolutions, c);
         c.gridy = 1;
-        c.insets = new Insets(5, 70, 5, 5);
+        c.insets = new Insets(5, 85, 5, 5);
+        c.gridwidth = 2;
         add(evaluators, c);
         lbResults = new JLabel("Meta score");
         c.gridx = 0;
         c.gridy = 2;
+        c.insets = new Insets(5, 5, 5, 5);
         add(lbResults, c);
+        c.weightx = 1.0;
+        c.weighty = 1.0;
         instanceListScrollPane = new JScrollPane(instaceJTable);
-        add(instanceListScrollPane, new GridBagConstraints(0, 3, 1, 4, 0.85, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
+        add(instanceListScrollPane, new GridBagConstraints(0, 3, 2, 4, 0.85, 1.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0));
     }
 
     private String[] initEvaluators() {
@@ -161,11 +178,12 @@ public class MetaPanel extends JPanel {
             String evo = currentEvolution();
             evaluator = currentEvaluator();
             if (evo != null && evaluator != null && getDataset() != null) {
+                final Collection<MetaResult> col;
                 if (evo.equals(ALL_NAME)) {
-                    evo = null;
+                    col = storage.findResults(getDataset(), evaluator);
+                } else {
+                    col = storage.findResults(getDataset(), evaluator, evo);
                 }
-
-                final Collection<MetaResult> col = storage.findResults(getDataset(), evaluator, evo);
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -210,6 +228,10 @@ public class MetaPanel extends JPanel {
 
     public void setStorage(MetaStorage storage) {
         this.storage = storage;
+        updateEvolutions();
+    }
+
+    private void updateEvolutions() {
         if (storage != null) {
             Collection<String> algs = storage.getEvolutionaryAlgorithms();
             if (algs.size() > 0) {
@@ -226,7 +248,6 @@ public class MetaPanel extends JPanel {
     }
 
     public void setReferenceClustering(Collection<? extends Clustering> res) {
-        clusterings = res;
         MetaResult m;
         matched = 0;
         int hashMatch = 0;
