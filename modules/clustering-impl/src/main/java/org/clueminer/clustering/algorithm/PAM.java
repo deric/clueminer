@@ -18,6 +18,7 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
 import org.clueminer.clustering.ClusterHelper;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -155,14 +156,15 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
 
         distanceFunction = ClusterHelper.initDistance(props);
         int k = guessK(dataset);
-        Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(k);
-        clustering.lookupAdd(dataset);
+        Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(k, dataset);
         if (colorGenerator != null) {
             colorGenerator.reset();
         }
         E[] prototypes = seed.selectPrototypes(dataset, props);
 
         double dist = cluster(dataset, prototypes, clustering);
+        props.put(AlgParams.ALG, getName());
+        clustering.setParams(props);
         LOG.debug("total distane = {}", dist);
         return clustering;
     }

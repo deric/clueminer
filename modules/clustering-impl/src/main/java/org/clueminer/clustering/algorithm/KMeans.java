@@ -18,14 +18,14 @@ package org.clueminer.clustering.algorithm;
 
 import java.util.Random;
 import org.clueminer.clustering.ClusterHelper;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.config.annotation.Param;
-import org.clueminer.clustering.struct.BaseCluster;
-import org.clueminer.clustering.struct.ClusterList;
+import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
@@ -189,24 +189,21 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             }
 
         }
-        Clustering output = new ClusterList(centroids.length);
+        Clustering output = Clusterings.newList(centroids.length, data);
         output.setParams(params);
-        params.put("algorithm", getName());
+        params.put(AlgParams.ALG, getName());
         params.putInt(ITERATIONS, iterations);
-        BaseCluster cluster;
+        Cluster cluster;
         if (colorGenerator != null) {
             colorGenerator.reset();
         }
         for (int i = 0; i < centroids.length; i++) {
-            cluster = new BaseCluster(data.size());
+            cluster = output.createCluster(i, data.size());
             if (colorGenerator != null) {
                 cluster.setColor(colorGenerator.next());
             }
-            cluster.setName("cluster " + (i + 1));
-            cluster.setClusterId(i);
             //we have to copy attributes settings
             cluster.setAttributes(data.getAttributes());
-            output.put(cluster);
         }
         for (int i = 0; i < data.size(); i++) {
             int tmpCluster = 0;
@@ -221,11 +218,6 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             output.get(tmpCluster).add(data.instance(i));
 
         }
-        /**
-         * associate dataset which was used to create clustering with the
-         * clustering
-         */
-        output.lookupAdd(data);
         return output;
     }
 

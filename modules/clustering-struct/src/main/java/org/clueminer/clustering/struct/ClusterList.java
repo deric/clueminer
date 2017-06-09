@@ -519,18 +519,9 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
      */
     @Override
     public C createCluster() {
-        int attrSize = guessAttrCnt();
-        C c = (C) new BaseCluster<>(5, attrSize);
         int clusterId = size();
-        c.setClusterId(clusterId);
-        c.setName("cluster " + (clusterId + 1));
-        //some validity measures needs to access attribute properties
-        Dataset<E> d = getLookup().lookup(Dataset.class);
-        if (d != null) {
-            c.setAttributes(d.getAttributes());
-        }
-        put(clusterId, c);
-        return c;
+
+        return createCluster(clusterId, 5, "cluster " + (clusterId + 1));
     }
 
     /**
@@ -551,6 +542,11 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
         C c = (C) new BaseCluster<>(capacity, attrSize);
         c.setClusterId(clusterId);
         c.setName(name);
+        //some validity measures needs to access attribute properties
+        Dataset<E> d = getLookup().lookup(Dataset.class);
+        if (d != null) {
+            c.setAttributes(d.getAttributes());
+        }
         put(clusterId, c);
         return c;
     }
