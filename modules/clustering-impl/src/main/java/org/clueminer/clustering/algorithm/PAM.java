@@ -74,7 +74,8 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
         double dist;
         E current;
         int iter = 0;
-        boolean changed;
+        int[] assignments = new int[dataset.size()];
+        Arrays.fill(assignments, -1);
 
         do {
             changes = 0;
@@ -92,32 +93,9 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
                         assign = k;
                     }
                 }
-                C clust;
-                if (!clustering.hasAt(assign)) {
-                    LOG.debug("creating cluster {}, current size: {}", assign, clustering.size());
-                    clust = clustering.createCluster(assign);
-                    if (colorGenerator != null) {
-                        clust.setColor(colorGenerator.next());
-                    }
+                if (assign != assignments[i]) {
+                    assignments[i] = assign;
                     changes++;
-                    changed = true;
-                } else {
-                    clust = clustering.assignedCluster(current);
-                    if (clust == null) {
-                        clust = clustering.get(assign);
-                        changes++;
-                        changed = true;
-                    } else if (clust.getClusterId() != assign) {
-                        clust.remove(current);
-                        clust = clustering.get(assign);
-                        changes++;
-                        changed = true;
-                    } else {
-                        changed = false;
-                    }
-                }
-                if (changed) {
-                    clust.add(current);
                 }
 
                 totalDistance += minDist * minDist;
@@ -127,10 +105,10 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
             Arrays.fill(bestMedCandDist, Double.MAX_VALUE);
             for (int i = 0; i < dataset.size(); i++) {
                 double currCandidateDist = 0.0;
-                int clusterId = clustering.assignedCluster(i);
+                int clusterId = assignments[i];
                 E medCandadate = dataset.get(i);
                 for (int j = 0; j < dataset.size(); j++) {
-                    if (j == i || clustering.assignedCluster(j) != clusterId) {
+                    if (j == i || assignments[j] != clusterId) {
                         continue;
                     }
                     currCandidateDist += Math.pow(distanceFunction.measure(medCandadate, dataset.get(j)), 2);
@@ -145,6 +123,17 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
             LOG.debug("iter {}, changes = {}, distance = {}", iter, changes, totalDistance);
         } while (changes > 0 && iter++ < iterLimit);
 
+        Cluster clust;
+        for (int i = 0; i < medoids.length; i++) {
+            clust = clustering.createCluster(i);
+            if (colorGenerator != null) {
+                clust.setColor(colorGenerator.next());
+            }
+        }
+        //create final clustering
+        for (int i = 0; i < assignments.length; i++) {
+            clustering.get(assignments[i]).add(dataset.get(i));
+        }
         return totalDistance;
     }
 
