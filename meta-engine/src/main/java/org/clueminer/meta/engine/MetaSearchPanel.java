@@ -79,12 +79,14 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         add(new JLabel("Objective 2: "), c);
         c.gridx = 1;
         cbObj2 = new JComboBox<>(ef.getProvidersArray());
+        cbObj2.setSelectedItem("Ratkowsky-Lance");
         add(cbObj2, c);
         c.gridy++;
         c.gridx = 0;
         add(new JLabel("Sorting objective: "), c);
         c.gridx = 1;
         cbSort = new JComboBox<>(ef.getProvidersArray());
+        cbSort.setSelectedItem("McClain-Rao");
         add(cbSort, c);
 
     }
