@@ -132,8 +132,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, ParetoFrontQueue queue) {
-        Props conf = new Props();
+        Props conf = getConfig().copy();
         conf.put(AlgParams.ALG, alg.getName());
+
         int repeat = 1;
         int i = 0;
         if (!alg.isDeterministic()) {
@@ -166,6 +167,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         evaluators = ief.getAll();
+        if (cg != null) {
+            exec.setColorGenerator(cg);
+        }
 
         if (ph != null) {
             int workunits = countClusteringJobs();

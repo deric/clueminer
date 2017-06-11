@@ -153,8 +153,12 @@ public class ExplorerToolbar extends JToolBar {
                 }
                 DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
                 if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                    if (functionPanel == null) {
+                        functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
+                    }
                     Evolution ev = getEvolution();
                     evoPanel.updateAlgorithm(ev);
+                    functionPanel.updateProps(props);
                     ev.setConfig(props);
                     //start evolution right away
                     if (listener != null) {

@@ -55,6 +55,8 @@ public class EvalFuncPanel<E extends Instance, C extends Cluster<E>> extends jav
     public EvalFuncPanel(ClustSorted sortedClusterings) {
         initComponents();
         cbEval.setSelectedItem("NMI");
+        cbVisualize.setSelectedItem("Projection");
+        cbProjection.setSelectedItem("PCA");
         soComp = new ClustComparator(getEvaluator());
         moComp = new ClustComparatorMO(sortedClusterings);
         moComp.setEvaluator(getEvaluator());
