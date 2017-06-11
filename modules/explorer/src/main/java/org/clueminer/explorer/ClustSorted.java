@@ -140,26 +140,25 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
                 }
             }
         }
-        LOG.debug("map: {}, to keep: {}", map.size(), toKeep.size());
-        //go through all current nodes and remove old nodes
-        /* ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
-         * for (final ClusteringNode[] n : map.keySet()) {
-         * if (!toKeep.contains(n[0].getClustering())) {
-         * System.out.println("want to remove: " + n[0].getClustering().getName() + " precision " + n[0].evaluationTable(n[0].getClustering()).getScore("Precision"));
-         * toRemove.add(n);
-         * }
-         * }
-         * for (final ClusteringNode[] n : toRemove) {
-         * SwingUtilities.invokeLater(new Runnable() {
-         *
-         * @Override
-         * public void run() {
-         * remove(n);
-         * }
-         * });
-         * map.remove(n);
-         * } */
-
+        if (isExplicit) {
+            LOG.debug("map: {}, to keep: {}", map.size(), toKeep.size());
+            //go through all current nodes and remove old nodes
+            ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
+            for (final ClusteringNode[] n : map.keySet()) {
+                if (!toKeep.contains(n[0].getClustering())) {
+                    LOG.debug("want to remove: {} ext. score: {}", n[0].getClustering().getName(), n[0].evaluationTable(n[0].getClustering()).getScore("NMI-sqrt"));
+                    toRemove.add(n);
+                }
+            }
+            for (final ClusteringNode[] n : toRemove) {
+                SwingUtilities.invokeLater(() -> {
+                    remove(n);
+                });
+                for (ClusteringNode cn : n) {
+                    map.remove(cn, cn.getClustering().hashCode());
+                }
+            }
+        }
     }
 
     public void clearAll() {
