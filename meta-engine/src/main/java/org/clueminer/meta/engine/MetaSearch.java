@@ -82,6 +82,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private int ndRepeat = 5;
     protected List<ClusterEvaluation<E, C>> objectives;
     protected ClusterEvaluation<E, C> sortObjective;
+    private double clusteringTime;
+    private int clusteringsEvaluated;
 
     public MetaSearch() {
         super();
@@ -157,12 +159,16 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         StopWatch time = new StopWatch(true);
         Clustering<E, C> c = exec.clusterRows(dataset, conf);
         time.endMeasure();
+        clusteringTime += time.timeInSec();
+        clusteringsEvaluated++;
         c.lookupAdd(time);
         return c;
     }
 
     @Override
     public ParetoFrontQueue call() throws Exception {
+        clusteringTime = 0.0;
+        clusteringsEvaluated = 0;
         evolutionStarted(this);
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -189,6 +195,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         landmark(dataset, queue);
 
         finish();
+        LOG.info("total time {}s, evaluated {} clusterings", clusteringTime, clusteringsEvaluated);
         return queue;
     }
 
