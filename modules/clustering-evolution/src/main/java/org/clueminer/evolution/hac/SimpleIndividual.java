@@ -35,6 +35,7 @@ import org.clueminer.utils.Props;
 public class SimpleIndividual<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends BaseIndividual<I, E, C> implements Individual<I, E, C> {
 
     private final Clustering<E, C> clustering;
+    private static final String EXT_SCORE = "NMI-sqrt";
 
     public SimpleIndividual(Clustering<E, C> clustering) {
         this.clustering = clustering;
@@ -50,12 +51,16 @@ public class SimpleIndividual<I extends Individual<I, E, C>, E extends Instance,
         EvaluationTable et = evaluationTable(clustering);
         //this might take a while...
         et.countAll();
-        return et.getScore("Precision");
+        return et.getScore(EXT_SCORE);
     }
 
     @Override
     public double getFitness() {
-        return clustering.getEvaluationTable().getScore("Precision");
+        EvaluationTable et = evaluationTable(clustering);
+        if (et != null) {
+            return et.getScore(EXT_SCORE);
+        }
+        return Double.NaN;
     }
 
     @Override

@@ -17,6 +17,7 @@
 package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -232,6 +233,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Clustering<E, C> clust;
         SimpleIndividual si;
         int changes = 0;
+        double extScore = 0.0;
         //update top solutions found
         while (it.hasNext() && n < getPopulationSize()) {
             clust = it.next();
@@ -243,17 +245,27 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 changes++;
             } else {
                 if (!si.getClustering().equals(clust)) {
-                    bestIndividuals[n] = (I) si;
                     changes++;
                 }
+                bestIndividuals[n] = (I) si;
                 //otherwise nothing has changed
             }
+            extScore += si.getFitness();
+            n++;
         }
 
         if (changes > 0) {
-            LOG.info("{} changes in top population", changes);
+            LOG.info("{} changes in top population, avg fitness = {}", changes, extScore / n);
+            I[] update;
+            if (n < bestIndividuals.length) {
+                update = (I[]) new SimpleIndividual[n];
+                System.arraycopy(bestIndividuals, 0, update, 0, n);
+            } else {
+                update = bestIndividuals;
+            }
+            System.out.println("result update " + Arrays.toString(update));
             for (EvolutionListener listener : evoListeners) {
-                listener.resultUpdate(bestIndividuals);
+                listener.resultUpdate(update);
             }
         } else {
             LOG.debug("no changes in top population");
