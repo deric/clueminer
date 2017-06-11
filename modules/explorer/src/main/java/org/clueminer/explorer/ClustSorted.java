@@ -104,12 +104,8 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         nodesAry[0].setParent(this);
         nodesAry[0].createSheet();
 
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                add(nodesAry);
-            }
+        SwingUtilities.invokeLater(() -> {
+            add(nodesAry);
         });
     }
 

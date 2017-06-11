@@ -17,7 +17,6 @@
 package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -86,6 +85,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected ClusterEvaluation<E, C> sortObjective;
     private double clusteringTime;
     private int clusteringsEvaluated;
+    private int clusteringsRejected;
     private I[] bestIndividuals;
 
     public MetaSearch() {
@@ -149,8 +149,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         do {
             Clustering<E, C> c = cluster(dataset, conf);
             c.setId(cnt++);
-            queue.add(c);
-            fireResult(queue);
+            if (isValid(c)) {
+                queue.add(c);
+                fireResult(queue);
+            } else {
+                clusteringsRejected++;
+            }
+
             if (ph != null) {
                 ph.progress(cnt);
             }
@@ -168,10 +173,30 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return c;
     }
 
+    private boolean isValid(Clustering<E, C> c) {
+        if (c.size() < 2) {
+            LOG.debug("rejecting invalid clustering with single cluster, params: {}", c.getParams());
+            return false;
+        }
+        Dataset<E> d = c.getLookup().lookup(Dataset.class);
+        if (c.instancesCount() != d.size()) {
+            LOG.debug("rejecting incomplete clustering {}, params: {}", c.fingerprint(), c.getParams());
+            return false;
+        }
+        int maxK = (int) (2 * Math.sqrt(d.size()));
+        if (c.size() > maxK) {
+            LOG.debug("rejecting with too many clusters {}, params: {}", c.size(), c.getParams());
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public ParetoFrontQueue call() throws Exception {
         clusteringTime = 0.0;
         clusteringsEvaluated = 0;
+        clusteringsRejected = 0;
         evolutionStarted(this);
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -199,8 +224,22 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         landmark(dataset, queue);
 
         finish();
-        LOG.info("total time {}s, evaluated {} clusterings", clusteringTime, clusteringsEvaluated);
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", clusteringTime, clusteringsEvaluated, clusteringsRejected);
+        printStats(queue);
         return queue;
+    }
+
+    private void printStats(ParetoFrontQueue queue) {
+        double score = 0.0;
+        Iterator<Clustering<E, C>> it = queue.iterator();
+        Clustering<E, C> c;
+        int n = 0;
+        while (it.hasNext()) {
+            c = it.next();
+            score += c.getEvaluationTable().getScore("NMI-sqrt");
+            n += 1;
+        }
+        LOG.info("avg score in population: {}", String.format("%.2f", score / n));
     }
 
     public void clearObjectives() {
@@ -263,7 +302,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             } else {
                 update = bestIndividuals;
             }
-            System.out.println("result update " + Arrays.toString(update));
             for (EvolutionListener listener : evoListeners) {
                 listener.resultUpdate(update, true);
             }
