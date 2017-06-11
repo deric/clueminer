@@ -26,7 +26,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ScoreException;
-import org.clueminer.io.csv.CSVWriter;
 import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -38,6 +37,7 @@ import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
 import org.clueminer.gnuplot.GnuplotHelper;
 import org.clueminer.gnuplot.PointTypeIterator;
+import org.clueminer.io.csv.CSVWriter;
 import org.clueminer.utils.DatasetWriter;
 import org.openide.util.Exceptions;
 
@@ -377,7 +377,7 @@ public class GnuplotWriter extends GnuplotHelper implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Individual[] result) {
+    public void resultUpdate(Individual[] result, boolean isExplicit) {
         //not much to do
     }
 

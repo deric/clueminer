@@ -119,7 +119,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
     }
 
     @Override
-    public void resultUpdate(Individual[] result) {
+    public void resultUpdate(Individual[] result, boolean isExplicit) {
         LOG.debug("received {} new individuals", result.length);
         //worst case hash set size
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
@@ -163,16 +163,12 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
     }
 
     public void clearAll() {
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                for (final ClusteringNode[] n : map.keySet()) {
-                    remove(n);
-                    project.remove(n[0].getClustering());
-                }
-                map.clear();
+        SwingUtilities.invokeLater(() -> {
+            for (final ClusteringNode[] n : map.keySet()) {
+                remove(n);
+                project.remove(n[0].getClustering());
             }
+            map.clear();
         });
     }
 

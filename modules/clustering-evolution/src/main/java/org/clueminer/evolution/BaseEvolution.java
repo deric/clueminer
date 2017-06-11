@@ -165,7 +165,7 @@ public abstract class BaseEvolution<I extends Individual<I, E, C>, E extends Ins
 
     protected void fireResultUpdate(I[] population) {
         for (EvolutionListener listener : evoListeners) {
-            listener.resultUpdate(population);
+            listener.resultUpdate(population, false);
         }
     }
 

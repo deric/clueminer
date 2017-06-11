@@ -35,7 +35,7 @@ public class ConsoleReporter implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Individual[] result) {
+    public void resultUpdate(Individual[] result, boolean isExplicit) {
     }
 
 }

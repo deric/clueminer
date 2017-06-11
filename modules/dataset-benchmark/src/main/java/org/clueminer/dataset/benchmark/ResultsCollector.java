@@ -28,7 +28,6 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
-import org.clueminer.io.csv.CSVWriter;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.EvolutionMO;
@@ -36,6 +35,7 @@ import org.clueminer.evolution.api.EvolutionSO;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.api.Pair;
 import org.clueminer.evolution.api.Population;
+import org.clueminer.io.csv.CSVWriter;
 import org.clueminer.oo.api.OpListener;
 import org.clueminer.oo.api.OpSolution;
 import org.openide.util.Exceptions;
@@ -156,7 +156,7 @@ public class ResultsCollector implements EvolutionListener, OpListener {
     }
 
     @Override
-    public void resultUpdate(Individual[] result) {
+    public void resultUpdate(Individual[] result, boolean isExplicit) {
         //we are mostly interested for final set of clusterings, not incremental updates
     }
 

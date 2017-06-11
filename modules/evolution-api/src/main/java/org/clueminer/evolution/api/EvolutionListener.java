@@ -35,8 +35,10 @@ public interface EvolutionListener extends EventListener {
      * Called after each iteration of evolution
      *
      * @param result
+     * @param isExplicit whether result is complete set of solutions or
+     * incremental update
      */
-    void resultUpdate(Individual[] result);
+    void resultUpdate(Individual[] result, boolean isExplicit);
 
     /**
      * Best individual found in a generation

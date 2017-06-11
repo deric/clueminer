@@ -265,7 +265,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
             System.out.println("result update " + Arrays.toString(update));
             for (EvolutionListener listener : evoListeners) {
-                listener.resultUpdate(update);
+                listener.resultUpdate(update, true);
             }
         } else {
             LOG.debug("no changes in top population");

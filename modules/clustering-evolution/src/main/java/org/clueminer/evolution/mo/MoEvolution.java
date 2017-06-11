@@ -211,7 +211,7 @@ public class MoEvolution<I extends Individual<I, E, C>, E extends Instance, C ex
             ind[i++] = new SimpleIndividual(sol.getClustering());
         }
         for (EvolutionListener listener : evoListeners) {
-            listener.resultUpdate(ind);
+            listener.resultUpdate(ind, true);
         }
     }
 

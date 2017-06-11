@@ -93,7 +93,7 @@ public class ConsoleDump implements EvolutionListener {
     }
 
     @Override
-    public void resultUpdate(Individual[] result) {
+    public void resultUpdate(Individual[] result, boolean isExplicit) {
         //not much to do
     }
 }
