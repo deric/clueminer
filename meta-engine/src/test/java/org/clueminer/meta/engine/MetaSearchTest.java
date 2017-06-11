@@ -60,7 +60,7 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
     public void testIris() throws Exception {
         subject.setDataset((Dataset<E>) FakeDatasets.irisDataset());
         subject.setGenerations(1);
-        subject.setPopulationSize(5);
+        subject.setPopulationSize(15);
 
         mem.startClock();
         ParetoFrontQueue<E, C, Clustering<E, C>> q = subject.call();

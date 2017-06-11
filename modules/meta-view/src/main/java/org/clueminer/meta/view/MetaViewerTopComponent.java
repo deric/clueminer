@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 @Messages({
     "CTL_MetaViewerAction=MetaViewer",
     "CTL_MetaViewerTopComponent=Meta-data viewer",
-    "HINT_MetaViewerTopComponent=This is a MetaViewer window"
+    "HINT_MetaViewerTopComponent=Metrics stored in Meta DB"
 })
 public final class MetaViewerTopComponent extends TopComponent implements LookupListener {
 

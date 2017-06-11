@@ -16,8 +16,8 @@
  */
 package org.clueminer.meta.engine;
 
+import com.google.common.collect.Lists;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.ClusteringExecutorCached;
@@ -35,8 +35,8 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.eval.BIC;
 import org.clueminer.eval.McClainRao;
-import org.clueminer.eval.PointBiserialNorm;
 import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
@@ -80,10 +80,16 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private ParetoFrontQueue q;
     private HashMap<String, Double> meta;
     private int ndRepeat = 5;
+    protected List<ClusterEvaluation<E, C>> objectives;
+    protected ClusterEvaluation<E, C> sortObjective;
 
     public MetaSearch() {
         super();
         exec = new ClusteringExecutorCached();
+        this.objectives = Lists.newLinkedList();
+        objectives.add(new BIC<>());
+        objectives.add(new RatkowskyLance<>());
+        sortObjective = new McClainRao<>();
     }
 
     @Override
@@ -174,16 +180,18 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
         LOG.info("got {} meta parameters", meta.size());
-        List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
-        objectives.add(new PointBiserialNorm<>());
-        objectives.add(new RatkowskyLance<>());
-        ParetoFrontQueue queue = new ParetoFrontQueue(10, objectives, new McClainRao<>());
-
+        ParetoFrontQueue queue = new ParetoFrontQueue(getPopulationSize(), objectives, sortObjective);
         cnt = 0;
         landmark(dataset, queue);
 
         finish();
         return queue;
+    }
+
+    public void clearObjectives() {
+        if (objectives != null && !objectives.isEmpty()) {
+            objectives.clear();
+        }
     }
 
     /**
@@ -231,6 +239,30 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     @Override
     public I createIndividual() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void addObjective(ClusterEvaluation eval) {
+        objectives.add(eval);
+    }
+
+    public void removeObjective(ClusterEvaluation eval) {
+        objectives.remove(eval);
+    }
+
+    public void setSortObjective(ClusterEvaluation eval) {
+        this.sortObjective = eval;
+    }
+
+    public ClusterEvaluation getObjective(int idx) {
+        return objectives.get(idx);
+    }
+
+    public List<ClusterEvaluation<E, C>> getObjectives() {
+        return objectives;
+    }
+
+    public int getNumObjectives() {
+        return objectives.size();
     }
 
 }
