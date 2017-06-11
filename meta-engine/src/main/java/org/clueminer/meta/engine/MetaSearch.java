@@ -18,6 +18,7 @@ package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.ClusteringExecutorCached;
@@ -84,6 +85,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected ClusterEvaluation<E, C> sortObjective;
     private double clusteringTime;
     private int clusteringsEvaluated;
+    private I[] bestIndividuals;
 
     public MetaSearch() {
         super();
@@ -147,7 +149,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             Clustering<E, C> c = cluster(dataset, conf);
             c.setId(cnt++);
             queue.add(c);
-            fireResult(c);
+            fireResult(queue);
             if (ph != null) {
                 ph.progress(cnt);
             }
@@ -173,6 +175,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         evaluators = ief.getAll();
+        bestIndividuals = (I[]) new SimpleIndividual[getPopulationSize()];
         if (cg != null) {
             exec.setColorGenerator(cg);
         }
@@ -223,14 +226,37 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return total;
     }
 
-    private void fireResult(Clustering<E, C> clustering) {
-        I ind = (I) new SimpleIndividual(clustering);
-        I[] individuals = (I[]) new SimpleIndividual[1];
-        individuals[0] = ind;
-        //TODO we need to compute all properties first...
-        //fireIndividualCreated(ind);
-        for (EvolutionListener listener : evoListeners) {
-            listener.resultUpdate(individuals);
+    private void fireResult(ParetoFrontQueue queue) {
+        Iterator<Clustering<E, C>> it = queue.iterator();
+        int n = 0;
+        Clustering<E, C> clust;
+        SimpleIndividual si;
+        int changes = 0;
+        //update top solutions found
+        while (it.hasNext() && n < getPopulationSize()) {
+            clust = it.next();
+            si = clust.getLookup().lookup(SimpleIndividual.class);
+            if (si == null) {
+                si = new SimpleIndividual(clust);
+                clust.lookupAdd(si);
+                bestIndividuals[n] = (I) si;
+                changes++;
+            } else {
+                if (!si.getClustering().equals(clust)) {
+                    bestIndividuals[n] = (I) si;
+                    changes++;
+                }
+                //otherwise nothing has changed
+            }
+        }
+
+        if (changes > 0) {
+            LOG.info("{} changes in top population", changes);
+            for (EvolutionListener listener : evoListeners) {
+                listener.resultUpdate(bestIndividuals);
+            }
+        } else {
+            LOG.debug("no changes in top population");
         }
     }
 
