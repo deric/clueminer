@@ -87,6 +87,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private int clusteringsEvaluated;
     private int clusteringsRejected;
     private I[] bestIndividuals;
+    private int numResults = 10;
 
     public MetaSearch() {
         super();
@@ -201,7 +202,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         evaluators = ief.getAll();
-        bestIndividuals = (I[]) new SimpleIndividual[getPopulationSize()];
+        //TODO: make sure that numResults < population
+        bestIndividuals = (I[]) new SimpleIndividual[numResults];
         if (cg != null) {
             exec.setColorGenerator(cg);
         }
@@ -274,7 +276,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         int changes = 0;
         double extScore = 0.0;
         //update top solutions found
-        while (it.hasNext() && n < getPopulationSize()) {
+        while (it.hasNext() && n < numResults) {
             clust = it.next();
             si = clust.getLookup().lookup(SimpleIndividual.class);
             if (si == null) {
@@ -350,6 +352,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public int getNumObjectives() {
         return objectives.size();
+    }
+
+    public void setNumResults(int numResults) {
+        this.numResults = numResults;
     }
 
 }

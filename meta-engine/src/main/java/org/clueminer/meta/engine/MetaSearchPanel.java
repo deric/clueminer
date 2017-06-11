@@ -39,6 +39,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -2664655185671435048L;
     private JTextField tfPop;
+    private JTextField tfResults;
     private JComboBox<String> cbObj1;
     private JComboBox<String> cbObj2;
     private JComboBox<String> cbSort;
@@ -59,8 +60,17 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.weighty = 0.2;
         c.fill = GridBagConstraints.NONE;
 
+        add(new JLabel("Number of resuts: "), c);
+        tfResults = new JTextField("10");
+        tfResults.setPreferredSize(new Dimension(50, 20));
+        c.weightx = 1.0;
+        c.gridx = 1;
+        add(tfResults, c);
+
+        c.gridx = 0;
+        c.gridy++;
         add(new JLabel("Pool size: "), c);
-        tfPop = new JTextField("10");
+        tfPop = new JTextField("50");
         tfPop.setPreferredSize(new Dimension(50, 20));
         c.weightx = 1.0;
         c.gridx = 1;
@@ -101,6 +111,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.addObjective((ClusterEvaluation) ef.getProvider((String) cbObj1.getSelectedItem()));
         meta.addObjective((ClusterEvaluation) ef.getProvider((String) cbObj2.getSelectedItem()));
         meta.setSortObjective((ClusterEvaluation) ef.getProvider((String) cbSort.getSelectedItem()));
+        meta.setNumResults(Integer.parseInt(tfResults.getText()));
 
         //meta.setGenerations(getGenerations());
         meta.setPopulationSize(getPopulation());
