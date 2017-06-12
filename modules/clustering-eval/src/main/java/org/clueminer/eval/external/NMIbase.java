@@ -170,7 +170,7 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
     @Override
     public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
         double nmi = 0.0;
-        if (c1.size() == 0 || c2.size() == 0) {
+        if (c1.isEmpty() || c2.isEmpty()) {
             return nmi;
         }
         int instancesCnt = c1.instancesCount();

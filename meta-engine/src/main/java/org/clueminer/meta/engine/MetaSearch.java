@@ -99,7 +99,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private Random rand;
     private int maxRetries = 5;
     private int maxSolutions = -1;
-    ObjectOpenHashSet<String> blacklist;
+    private ObjectOpenHashSet<String> blacklist;
+    private ParetoFrontQueue queue;
+    private NMIsqrt cmp;
+    private double diversityThreshold = 0.2;
 
     public MetaSearch() {
         super();
@@ -108,6 +111,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         objectives.add(new BIC<>());
         objectives.add(new RatkowskyLance<>());
         sortObjective = new McClainRao<>();
+        cmp = new NMIsqrt();
     }
 
     @Override
@@ -139,19 +143,19 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param dataset
      * @param queue
      */
-    private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
+    private void landmark(Dataset<E> dataset) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
         Props conf;
         for (ClusteringAlgorithm alg : cf.getAll()) {
             conf = getConfig().copy();
             conf.put(AlgParams.ALG, alg.getName());
-            execute(dataset, alg, conf, queue);
+            execute(dataset, alg, conf);
         }
         LOG.debug("stats: {}", queue.stats());
         queue.printRanking(new NMIsqrt());
     }
 
-    private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, Props conf, ParetoFrontQueue queue) {
+    private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, Props conf) {
         int repeat = 1;
         int i = 0;
         if (!alg.isDeterministic()) {
@@ -206,7 +210,23 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             return false;
         }
 
+        Clustering<E, C> other;
+        Iterator<Clustering<E, C>> it = queue.iterator();
+        double diverse;
+        while (it.hasNext()) {
+            other = it.next();
+            diverse = diversity(other, c);
+            LOG.debug("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
+            if (diverse < diversityThreshold) {
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    private double diversity(Clustering<E, C> a, Clustering<E, C> b) {
+        return 1 - cmp.score(a, b, config);
     }
 
     @Override
@@ -244,21 +264,24 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
         LOG.info("got {} meta parameters", meta.size());
-        ParetoFrontQueue queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
+        queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
         if (useMetaDB) {
             LOG.error("meta search not implemented yet!");
         }
         if (queue.isEmpty()) {
             //initialize queue with default alg configurations
-            landmark(dataset, queue);
+            landmark(dataset);
         }
         //expand top solutions
-        explore(queue, numResults);
+        explore(numResults);
 
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", clusteringTime, clusteringsEvaluated, clusteringsRejected);
         printStats(queue);
+        for (String str : blacklist) {
+            LOG.debug("blacklist: {}", str);
+        }
         return queue;
     }
 
@@ -268,7 +291,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param queue
      * @param topN
      */
-    private void explore(ParetoFrontQueue queue, int topN) {
+    private void explore(int topN) {
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
         int n = 0;
@@ -276,7 +299,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             c = it.next();
             Props props = c.getParams();
             LOG.debug("expanding top solution#{}", n + 1, props);
-            expand(c, props, queue);
+            expand(c, props);
             n++;
         }
     }
@@ -287,7 +310,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param c
      * @param base
      */
-    private void expand(Clustering<E, C> c, Props base, ParetoFrontQueue queue) {
+    private void expand(Clustering<E, C> c, Props base) {
         ClusteringAlgorithm alg;
         Props props = null;
         Parameter[] params;
@@ -343,7 +366,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             LOG.warn("failed to find an unique config for {}", alg.getName());
         }
         if (props != null) {
-            execute(dataset, alg, props, queue);
+            execute(dataset, alg, props);
         } else {
             LOG.error("missing props!");
         }
