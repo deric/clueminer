@@ -136,9 +136,15 @@ public class ExplorerToolbar extends JToolBar {
         addSeparator();
 
         btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/settings16.png", false));
-        btnSettings.setToolTipText("Setup evolution");
+        btnSettings.setToolTipText("Setup algorithm search");
         btnSettings.addActionListener((ActionEvent e) -> {
             if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
+                if (functionPanel == null) {
+                    functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
+                    evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
+                    evolution.setConfig(props);
+                    listener.evolutionAlgorithmChanged(null);
+                }
                 EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
                 for (EvolutionUI ui1 : factory.getAll()) {
                     if (ui1.isUIfor(evolution)) {
