@@ -124,46 +124,40 @@ public class ExplorerToolbar extends JToolBar {
         comboEvolution = new javax.swing.JComboBox();
         comboEvolution.setModel(new DefaultComboBoxModel(initEvolution()));
 
-        comboEvolution.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (listener != null) {
-                    evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
-                    evolution.setConfig(props);
-                    listener.evolutionAlgorithmChanged(evt);
-                }
+        comboEvolution.addActionListener((java.awt.event.ActionEvent evt) -> {
+            if (listener != null) {
+                evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
+                evolution.setConfig(props);
+                listener.evolutionAlgorithmChanged(evt);
             }
         });
         add(comboEvolution);
+        comboEvolution.setSelectedItem("Meta search");
         addSeparator();
 
         btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/settings16.png", false));
         btnSettings.setToolTipText("Setup evolution");
-        btnSettings.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
-                    EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
-                    for (EvolutionUI ui : factory.getAll()) {
-                        if (ui.isUIfor(evolution)) {
-                            evoPanel = ui;
-                        }
+        btnSettings.addActionListener((ActionEvent e) -> {
+            if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
+                EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
+                for (EvolutionUI ui1 : factory.getAll()) {
+                    if (ui1.isUIfor(evolution)) {
+                        evoPanel = ui1;
                     }
                 }
-                DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    if (functionPanel == null) {
-                        functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
-                    }
-                    Evolution ev = getEvolution();
-                    evoPanel.updateAlgorithm(ev);
-                    functionPanel.updateProps(props);
-                    ev.setConfig(props);
-                    //start evolution right away
-                    if (listener != null) {
-                        listener.startEvolution(e, ev);
-                    }
+            }
+            DialogDescriptor dd = new DialogDescriptor(evoPanel, NbBundle.getMessage(ExplorerToolbar.class, "EvolutionPanel.title"));
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                if (functionPanel == null) {
+                    functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
+                }
+                Evolution ev = getEvolution();
+                evoPanel.updateAlgorithm(ev);
+                functionPanel.updateProps(props);
+                ev.setConfig(props);
+                //start evolution right away
+                if (listener != null) {
+                    listener.startEvolution(e, ev);
                 }
             }
         });
@@ -171,14 +165,9 @@ public class ExplorerToolbar extends JToolBar {
 
         btnTrash = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/trash16.png", false));
         btnTrash.setToolTipText("Remove all clusterings");
-        btnTrash.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (listener != null) {
-                    listener.clearAll();
-                }
+        btnTrash.addActionListener((ActionEvent e) -> {
+            if (listener != null) {
+                listener.clearAll();
             }
         });
         add(btnTrash);
@@ -190,63 +179,51 @@ public class ExplorerToolbar extends JToolBar {
         btnStart.setFocusable(false);
         btnStart.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnStart.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnStart.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if (listener != null) {
-                    listener.startEvolution(evt, getEvolution());
-                }
-
+        btnStart.addActionListener((java.awt.event.ActionEvent evt) -> {
+            if (listener != null) {
+                listener.startEvolution(evt, getEvolution());
             }
         });
         add(btnStart);
         btnFunction = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/function16.png", false));
         btnFunction.setToolTipText("Choose evaluation function");
-        btnFunction.addActionListener(new ActionListener() {
+        btnFunction.addActionListener((ActionEvent e) -> {
+            if (functionPanel == null) {
+                functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
+            }
+            DialogDescriptor dd = new DialogDescriptor(functionPanel, NbBundle.getMessage(ExplorerToolbar.class, "FunctionPanel.title"));
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                if (listener.getComparator().equals(functionPanel.getComparator())) {
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (functionPanel == null) {
-                    functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
                 }
-                DialogDescriptor dd = new DialogDescriptor(functionPanel, NbBundle.getMessage(ExplorerToolbar.class, "FunctionPanel.title"));
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    if (listener.getComparator().equals(functionPanel.getComparator())) {
+                ClusterEvaluation eval = functionPanel.getEvaluator();
+                if (eval != null) {
+                    if (listener != null) {
+                        listener.evaluatorChanged(eval);
+                    }
+                }
+                int hash = props.hashCode();
+                functionPanel.updateProps(props);
 
-                    }
-                    ClusterEvaluation eval = functionPanel.getEvaluator();
-                    if (eval != null) {
-                        if (listener != null) {
-                            listener.evaluatorChanged(eval);
-                        }
-                    }
-                    int hash = props.hashCode();
-                    functionPanel.updateProps(props);
-
-                    if (hash != props.hashCode()) {
-                        listener.updateThumbnails(props);
-                    }
+                if (hash != props.hashCode()) {
+                    listener.updateThumbnails(props);
                 }
             }
         });
         add(btnFunction);
         btnExport = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/save16.png", false));
         btnExport.setToolTipText("Export results");
-        btnExport.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (exportPanel == null) {
-                    exportPanel = new ExportPanel();
-                }
-                DialogDescriptor dd = new DialogDescriptor(exportPanel, NbBundle.getMessage(ExplorerToolbar.class, "ExplorerToolbar.title"));
-                if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
-                    EvolutionExport exp = exportPanel.getExporter();
-                    if (exp != null) {
-                        if (listener != null) {
-                            exp.setEvolution(listener.currentEvolution());
-                            exp.export();
-                        }
+        btnExport.addActionListener((ActionEvent e) -> {
+            if (exportPanel == null) {
+                exportPanel = new ExportPanel();
+            }
+            DialogDescriptor dd = new DialogDescriptor(exportPanel, NbBundle.getMessage(ExplorerToolbar.class, "ExplorerToolbar.title"));
+            if (DialogDisplayer.getDefault().notify(dd).equals(NotifyDescriptor.OK_OPTION)) {
+                EvolutionExport exp = exportPanel.getExporter();
+                if (exp != null) {
+                    if (listener != null) {
+                        exp.setEvolution(listener.currentEvolution());
+                        exp.export();
                     }
                 }
             }

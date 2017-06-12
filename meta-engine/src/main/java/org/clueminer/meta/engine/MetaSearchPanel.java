@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MetaSearchPanel extends JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -2664655185671435048L;
-    private JTextField tfPop;
+    private JTextField tfFronts;
     private JTextField tfResults;
     private JComboBox<String> cbObj1;
     private JComboBox<String> cbObj2;
@@ -61,20 +61,20 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.fill = GridBagConstraints.NONE;
 
         add(new JLabel("Number of resuts: "), c);
-        tfResults = new JTextField("10");
-        tfResults.setPreferredSize(new Dimension(50, 20));
+        tfResults = new JTextField("15");
+        tfResults.setPreferredSize(new Dimension(50, 15));
         c.weightx = 1.0;
         c.gridx = 1;
         add(tfResults, c);
 
         c.gridx = 0;
         c.gridy++;
-        add(new JLabel("Pool size: "), c);
-        tfPop = new JTextField("50");
-        tfPop.setPreferredSize(new Dimension(50, 20));
+        add(new JLabel("Number of fronts: "), c);
+        tfFronts = new JTextField("10");
+        tfFronts.setPreferredSize(new Dimension(50, 15));
         c.weightx = 1.0;
         c.gridx = 1;
-        add(tfPop, c);
+        add(tfFronts, c);
 
         //objectives
         InternalEvaluatorFactory ef = InternalEvaluatorFactory.getInstance();
@@ -114,8 +114,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.setNumResults(Integer.parseInt(tfResults.getText()));
 
         //meta.setGenerations(getGenerations());
-        meta.setPopulationSize(getPopulation());
-        meta.setCrossoverProbability(getCrossover());
+        meta.setPopulationSize(Integer.parseInt(tfFronts.getText()));
     }
 
     public double getCrossover() {
@@ -129,7 +128,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
 
     @Override
     public int getPopulation() {
-        return Integer.parseInt(tfPop.getText());
+        return 10;
     }
 
     /**

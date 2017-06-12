@@ -214,7 +214,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     public void resultChanged(LookupEvent ev) {
         Collection<? extends Clustering> allClusterings = result.allInstances();
         for (Clustering c : allClusterings) {
-            LOG.info("found clustering {}", c.fingerprint());
+            LOG.trace("found clustering {}", c.fingerprint());
             children.addUniqueClustering(c, null);
         }
     }

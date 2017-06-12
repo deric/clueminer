@@ -87,7 +87,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private int clusteringsEvaluated;
     private int clusteringsRejected;
     private I[] bestIndividuals;
-    private int numResults = 10;
+    private int numResults = 15;
+    private int numFronts = 10;
 
     public MetaSearch() {
         super();
@@ -221,7 +222,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
         LOG.info("got {} meta parameters", meta.size());
-        ParetoFrontQueue queue = new ParetoFrontQueue(getPopulationSize(), objectives, sortObjective);
+        ParetoFrontQueue queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
         landmark(dataset, queue);
 
@@ -356,6 +357,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setNumResults(int numResults) {
         this.numResults = numResults;
+    }
+
+    public void setNumFronts(int numFronts) {
+        this.numFronts = numFronts;
     }
 
 }
