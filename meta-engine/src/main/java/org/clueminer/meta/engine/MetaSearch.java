@@ -89,6 +89,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private I[] bestIndividuals;
     private int numResults = 15;
     private int numFronts = 10;
+    private boolean useMetaDB = false;
 
     public MetaSearch() {
         super();
@@ -224,7 +225,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.info("got {} meta parameters", meta.size());
         ParetoFrontQueue queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
-        landmark(dataset, queue);
+        if (useMetaDB) {
+            LOG.error("meta search not implemented yet!");
+        } else {
+            landmark(dataset, queue);
+        }
 
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", clusteringTime, clusteringsEvaluated, clusteringsRejected);
@@ -361,6 +366,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setNumFronts(int numFronts) {
         this.numFronts = numFronts;
+    }
+
+    public void setUseMetaDB(boolean b) {
+        this.useMetaDB = b;
     }
 
 }

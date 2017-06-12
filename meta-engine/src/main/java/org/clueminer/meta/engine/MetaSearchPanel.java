@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +44,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
     private JComboBox<String> cbObj1;
     private JComboBox<String> cbObj2;
     private JComboBox<String> cbSort;
+    private JCheckBox chckUseMetaDB;
 
     public MetaSearchPanel() {
         initialize();
@@ -99,6 +101,13 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         cbSort.setSelectedItem("McClain-Rao");
         add(cbSort, c);
 
+        c.gridx = 0;
+        c.gridy++;
+        chckUseMetaDB = new JCheckBox("Use Meta DB", false);
+        c.weightx = 1.0;
+        c.gridwidth = 2;
+        add(chckUseMetaDB, c);
+
     }
 
     @Override
@@ -112,6 +121,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.addObjective((ClusterEvaluation) ef.getProvider((String) cbObj2.getSelectedItem()));
         meta.setSortObjective((ClusterEvaluation) ef.getProvider((String) cbSort.getSelectedItem()));
         meta.setNumResults(Integer.parseInt(tfResults.getText()));
+        meta.setUseMetaDB(chckUseMetaDB.isSelected());
 
         //meta.setGenerations(getGenerations());
         meta.setPopulationSize(Integer.parseInt(tfFronts.getText()));
