@@ -130,7 +130,9 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
             } else if (c.instancesCount() != d.size()) {
                 LOG.debug("ignoring incomplete clustering {}, params: {}", c.fingerprint(), c.getParams());
             } else {
-                addUniqueClustering(c, ind);
+                //TODO: Disabled duplicity filtering. Should be done is search algorithms?
+                //addUniqueClustering(c, ind);
+                addClustering(c, ind);
                 if (!toKeep.contains(c)) {
                     toKeep.add(c);
                 }
