@@ -42,7 +42,6 @@ public class NaiveCutoff implements CutoffStrategy {
         return findCutoffNg(hclust);
     }
 
-
     /**
      * Search for the highest distance between tree levels (might determine a
      * reasonable number of clusters - simple, but not very precise)
@@ -91,6 +90,11 @@ public class NaiveCutoff implements CutoffStrategy {
     @Override
     public void setEvaluator(InternalEvaluator evaluator) {
         //nothing to do
+    }
+
+    @Override
+    public boolean isProximityRequired() {
+        return false;
     }
 
 }

@@ -69,4 +69,9 @@ public class NaiveCutoffByLevel implements CutoffStrategy {
         //nothing to do
     }
 
+    @Override
+    public boolean isProximityRequired() {
+        return false;
+    }
+
 }

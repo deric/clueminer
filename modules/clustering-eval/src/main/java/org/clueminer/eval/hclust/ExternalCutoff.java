@@ -65,4 +65,9 @@ public class ExternalCutoff implements CutoffStrategy {
         // nothing to do
     }
 
+    @Override
+    public boolean isProximityRequired() {
+        return true;
+    }
+
 }

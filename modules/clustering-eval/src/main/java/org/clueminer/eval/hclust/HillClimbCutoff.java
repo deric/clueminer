@@ -109,4 +109,9 @@ public class HillClimbCutoff implements CutoffStrategy {
             throw new RuntimeException("evaluator method must be set!");
         }
     }
+
+    @Override
+    public boolean isProximityRequired() {
+        return false;
+    }
 }

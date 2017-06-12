@@ -120,4 +120,9 @@ public class FirstJump implements CutoffStrategy {
         //nothing to do
     }
 
+    @Override
+    public boolean isProximityRequired() {
+        return false;
+    }
+
 }

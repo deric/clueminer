@@ -79,4 +79,9 @@ public class CophCutoff implements CutoffStrategy {
         //nothing to do
     }
 
+    @Override
+    public boolean isProximityRequired() {
+        return true;
+    }
+
 }

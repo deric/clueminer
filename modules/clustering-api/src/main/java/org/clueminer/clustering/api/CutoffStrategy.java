@@ -49,4 +49,11 @@ public interface CutoffStrategy<E extends Instance, C extends Cluster<E>> {
      * @param evaluator
      */
     void setEvaluator(InternalEvaluator<E, C> evaluator);
+
+    /**
+     * Measures that require proximity for computation should return TRUE.
+     *
+     * @return whether proximity matrix is needed for computation
+     */
+    boolean isProximityRequired();
 }
