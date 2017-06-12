@@ -16,7 +16,9 @@
  */
 package org.clueminer.clustering.api.config;
 
+import java.lang.reflect.InvocationTargetException;
 import org.clueminer.clustering.params.ParamType;
+import org.clueminer.utils.ServiceFactory;
 
 /**
  * A parameter of an algorithm, that could be either used for influencing result
@@ -64,12 +66,23 @@ public interface Parameter<T> {
     ParamType getType();
 
     /**
-     * case BOOLEAN: upperLimit[i] = 1; combinations *= 2;
-     * logger.log(Level.INFO, "possible values: {0}", 2); break; * Factory for getting possible values
+     * Typically used for String attributes
+     *
+     * @return whether factory for given attribute exists
+     */
+    boolean hasFactory();
+
+    /**
      *
      * @return String
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.lang.NoSuchMethodException
+     * @throws java.lang.IllegalAccessException
+     * @throws java.lang.reflect.InvocationTargetException
      */
-    String getFactory();
+    ServiceFactory getFactory() throws ClassNotFoundException, NoSuchMethodException,
+                                       IllegalAccessException, IllegalArgumentException,
+                                       InvocationTargetException;
 
     /**
      * Min posible value (in case of ordinary variables)

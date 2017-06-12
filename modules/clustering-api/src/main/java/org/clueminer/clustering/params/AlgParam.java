@@ -16,7 +16,10 @@
  */
 package org.clueminer.clustering.params;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.clueminer.clustering.api.config.Parameter;
+import org.clueminer.utils.ServiceFactory;
 
 /**
  * Parameter properties that are typically set from annotations, e.g. Param:
@@ -78,9 +81,23 @@ public class AlgParam<T> implements Parameter<T> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Get instance of service factory if available for given parameter
+     *
+     * @param param
+     * @return
+     * @throws ClassNotFoundException
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
+     * @throws InvocationTargetException
+     */
     @Override
-    public String getFactory() {
-        return factory;
+    public ServiceFactory getFactory() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        Class<?> clazz = Class.forName(factory);
+        Method meth = clazz.getMethod("getInstance");
+        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
+        return f;
     }
 
     @Override
@@ -111,6 +128,11 @@ public class AlgParam<T> implements Parameter<T> {
     @Override
     public void setRequired(boolean b) {
         this.required = b;
+    }
+
+    @Override
+    public boolean hasFactory() {
+        return factory != null && !factory.isEmpty();
     }
 
 }

@@ -32,7 +32,6 @@ import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.HashEvaluationTable;
-import static org.clueminer.evolution.singlem.SingleMuteIndividual.getFactory;
 import org.clueminer.oo.api.OpSolution;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
@@ -199,7 +198,7 @@ public class MoSolution<E extends Instance, C extends Cluster<E>> implements Int
             Parameter param = problem.params[id];
             switch (param.getType()) {
                 case STRING:
-                    ServiceFactory f = getFactory(param);
+                    ServiceFactory f = param.getFactory();
                     List<String> list = f.getProviders();
                     genom.put(param.getName(), list.get(value));
                     //check if configuration makes sense

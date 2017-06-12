@@ -1,7 +1,6 @@
 package org.clueminer.evolution.singlem;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Random;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.config.Parameter;
@@ -56,12 +55,12 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
 
         switch (p.getType()) {
             case STRING:
-                if (p.getFactory().isEmpty()) {
+                if (!p.hasFactory()) {
                     throw new RuntimeException("expected an factory for " + p.getName());
                 }
 
                 try {
-                    ServiceFactory f = getFactory(p);
+                    ServiceFactory f = p.getFactory();
                     String[] list = f.getProvidersArray();
                     String prev = genom.get(p.getName());
                     int i = 0;
@@ -97,24 +96,6 @@ public class SingleMuteIndividual extends MultiMuteIndividual {
     public SingleMuteIndividual deepCopy() {
         SingleMuteIndividual newOne = new SingleMuteIndividual(this);
         return newOne;
-    }
-
-    /**
-     * Get instance of service factory if available for given parameter
-     *
-     * @param param
-     * @return
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws IllegalAccessException
-     * @throws IllegalArgumentException
-     * @throws InvocationTargetException
-     */
-    public static ServiceFactory getFactory(Parameter param) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> clazz = Class.forName(param.getFactory());
-        Method meth = clazz.getMethod("getInstance");
-        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
-        return f;
     }
 
 }

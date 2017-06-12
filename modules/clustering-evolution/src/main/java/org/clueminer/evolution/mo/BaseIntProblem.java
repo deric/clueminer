@@ -18,7 +18,6 @@ package org.clueminer.evolution.mo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Executor;
@@ -78,10 +77,7 @@ public abstract class BaseIntProblem extends AbstractGenericProblem<IntegerSolut
      * @throws InvocationTargetException
      */
     public static ServiceFactory getFactory(Parameter param) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        Class<?> clazz = Class.forName(param.getFactory());
-        Method meth = clazz.getMethod("getInstance");
-        ServiceFactory f = (ServiceFactory) meth.invoke(clazz);
-        return f;
+        return param.getFactory();
     }
 
     public abstract ClusteringAlgorithm getAlgorithm();

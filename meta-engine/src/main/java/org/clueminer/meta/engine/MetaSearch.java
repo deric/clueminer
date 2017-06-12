@@ -18,6 +18,7 @@ package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,7 @@ import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.Props;
+import org.clueminer.utils.ServiceFactory;
 import org.clueminer.utils.StopWatch;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
@@ -284,33 +286,43 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         boolean uniqueConfig = false;
         int attempt = 0;
         while (!uniqueConfig && attempt < maxRetries) {
-            int pid = rand.nextInt(params.length);
-            Parameter p = params[pid];
-            props = base.copy();
+            try {
+                int pid = rand.nextInt(params.length);
+                Parameter p = params[pid];
+                props = base.copy();
 
-            LOG.info("param {}", p.getName());
-            switch (p.getType()) {
-                case INTEGER:
-                    props.putInt(p.getName(), randomInt((int) p.getMin(), (int) p.getMax()));
-                    break;
-                case DOUBLE:
-                    props.putDouble(p.getName(), randomDouble(p.getMin(), p.getMax()));
-                    break;
-                case STRING:
-                    //TODO:
-                    break;
-                case BOOLEAN:
-                    props.put(p.getName(), rand.nextBoolean());
-                    break;
-                default:
-                    throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
-            }
+                LOG.info("param {}", p.getName());
+                switch (p.getType()) {
+                    case INTEGER:
+                        props.putInt(p.getName(), randomInt((int) p.getMin(), (int) p.getMax()));
+                        break;
+                    case DOUBLE:
+                        props.putDouble(p.getName(), randomDouble(p.getMin(), p.getMax()));
+                        break;
+                    case STRING:
+                        ServiceFactory f = p.getFactory();
+                        String[] vals = f.getProvidersArray();
+                        if (vals.length > 0) {
+                            props.put(p.getName(), vals[rand.nextInt(vals.length)]);
+                        } else {
+                            LOG.error("missing providers for {}", p.getName());
+                        }
+                        break;
+                    case BOOLEAN:
+                        props.put(p.getName(), rand.nextBoolean());
+                        break;
+                    default:
+                        throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
+                }
 
-            if (!isBlacklisted(props)) {
-                LOG.debug("setting {} to {}", p.getName(), props.get(p.getName()));
-                uniqueConfig = true;
+                if (!isBlacklisted(props)) {
+                    LOG.debug("setting {} to {}", p.getName(), props.get(p.getName()));
+                    uniqueConfig = true;
+                }
+                attempt++;
+            } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                Exceptions.printStackTrace(ex);
             }
-            attempt++;
         }
         if (!uniqueConfig) {
             LOG.warn("failed to find an unique config for {}", alg.getName());
