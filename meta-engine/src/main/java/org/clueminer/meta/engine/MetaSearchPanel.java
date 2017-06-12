@@ -63,9 +63,10 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.fill = GridBagConstraints.NONE;
 
         add(new JLabel("Number of resuts: "), c);
-        tfResults = new JTextField("15");
-        tfResults.setPreferredSize(new Dimension(50, 15));
+        tfResults = new JTextField("10");
+        tfResults.setPreferredSize(new Dimension(50, 22));
         c.weightx = 1.0;
+        c.weighty = 1.0;
         c.gridx = 1;
         add(tfResults, c);
 
@@ -73,7 +74,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.gridy++;
         add(new JLabel("Number of fronts: "), c);
         tfFronts = new JTextField("10");
-        tfFronts.setPreferredSize(new Dimension(50, 15));
+        tfFronts.setPreferredSize(new Dimension(50, 22));
         c.weightx = 1.0;
         c.gridx = 1;
         add(tfFronts, c);

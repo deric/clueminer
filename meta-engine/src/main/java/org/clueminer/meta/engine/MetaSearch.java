@@ -17,9 +17,11 @@
 package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
@@ -32,6 +34,7 @@ import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -90,6 +93,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private int numResults = 15;
     private int numFronts = 10;
     private boolean useMetaDB = false;
+    private Random rand;
+    private int maxRetries = 5;
+    ObjectOpenHashSet<String> blacklist;
 
     public MetaSearch() {
         super();
@@ -131,18 +137,17 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      */
     private void landmark(Dataset<E> dataset, ParetoFrontQueue queue) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
-
+        Props conf;
         for (ClusteringAlgorithm alg : cf.getAll()) {
-            execute(dataset, alg, queue);
+            conf = getConfig().copy();
+            conf.put(AlgParams.ALG, alg.getName());
+            execute(dataset, alg, conf, queue);
         }
         LOG.debug("stats: {}", queue.stats());
         queue.printRanking(new NMIsqrt());
     }
 
-    private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, ParetoFrontQueue queue) {
-        Props conf = getConfig().copy();
-        conf.put(AlgParams.ALG, alg.getName());
-
+    private void execute(Dataset<E> dataset, ClusteringAlgorithm alg, Props conf, ParetoFrontQueue queue) {
         int repeat = 1;
         int i = 0;
         if (!alg.isDeterministic()) {
@@ -170,6 +175,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         StopWatch time = new StopWatch(true);
         Clustering<E, C> c = exec.clusterRows(dataset, conf);
         time.endMeasure();
+        blacklist.add(c.getParams().toJson());
         clusteringTime += time.timeInSec();
         clusteringsEvaluated++;
         c.lookupAdd(time);
@@ -197,6 +203,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     @Override
     public ParetoFrontQueue call() throws Exception {
+        rand = new Random();
         clusteringTime = 0.0;
         clusteringsEvaluated = 0;
         clusteringsRejected = 0;
@@ -209,6 +216,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         if (cg != null) {
             exec.setColorGenerator(cg);
         }
+        blacklist = new ObjectOpenHashSet<>(numFronts * numResults);
 
         if (ph != null) {
             int workunits = countClusteringJobs();
@@ -227,9 +235,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         cnt = 0;
         if (useMetaDB) {
             LOG.error("meta search not implemented yet!");
-        } else {
+        }
+        if (queue.isEmpty()) {
+            //initialize queue with default alg configurations
             landmark(dataset, queue);
         }
+        //expand top solutions
+        explore(queue, numResults);
 
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", clusteringTime, clusteringsEvaluated, clusteringsRejected);
@@ -237,17 +249,111 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return queue;
     }
 
+    /**
+     * Explore most promising solutions
+     *
+     * @param queue
+     * @param topN
+     */
+    private void explore(ParetoFrontQueue queue, int topN) {
+        Iterator<Clustering<E, C>> it = queue.iterator();
+        Clustering<E, C> c;
+        int n = 0;
+        while (it.hasNext() && n < topN) {
+            c = it.next();
+            Props props = c.getParams();
+            LOG.debug("expanding top solution#{}", n + 1, props);
+            expand(c, props);
+            n++;
+        }
+    }
+
+    /**
+     * Random exploration strategy
+     *
+     * @param c
+     * @param base
+     */
+    private void expand(Clustering<E, C> c, Props base) {
+        ClusteringAlgorithm alg;
+        Props props;
+        Parameter[] params;
+        alg = parseAlgorithm(base);
+        params = alg.getParameters();
+        LOG.debug("algorithm: {}, {} parameters", alg.getName(), params.length);
+        boolean uniqueConfig = false;
+        int attempt = 0;
+        while (!uniqueConfig && attempt < maxRetries) {
+            int pid = rand.nextInt(params.length);
+            Parameter p = params[pid];
+            props = base.copy();
+
+            LOG.info("param {}", p.getName());
+            switch (p.getType()) {
+                case INTEGER:
+                    props.putInt(p.getName(), randomInt((int) p.getMin(), (int) p.getMax()));
+                    break;
+                case DOUBLE:
+                    props.putDouble(p.getName(), randomDouble(p.getMin(), p.getMax()));
+                    break;
+                case STRING:
+                    //TODO:
+                    break;
+                case BOOLEAN:
+                    props.put(p.getName(), rand.nextBoolean());
+                    break;
+                default:
+                    throw new RuntimeException(p.getType() + " is not supported yet (param: " + p.getName() + ")");
+            }
+
+            if (!isBlacklisted(props)) {
+                LOG.debug("setting {} to {}", p.getName(), props.get(p.getName()));
+                uniqueConfig = true;
+            }
+            attempt++;
+        }
+        if (!uniqueConfig) {
+            LOG.warn("failed to find an unique config for {}", alg.getName());
+        }
+    }
+
+    private double randomDouble(double min, double max) {
+        return min + (max - min) * rand.nextDouble();
+    }
+
+    private int randomInt(int min, int max) {
+        return rand.nextInt((max - min) + 1) + min;
+    }
+
+    private boolean isBlacklisted(Props props) {
+        return blacklist.contains(props.toJson());
+    }
+
+    protected ClusteringAlgorithm parseAlgorithm(Props params) {
+        String alg = params.get(AlgParams.ALG);
+        if (alg == null) {
+            throw new RuntimeException("missing algorithm identifier for " + params.toString());
+        }
+        return ClusteringFactory.getInstance().getProvider(alg);
+    }
+
     private void printStats(ParetoFrontQueue queue) {
-        double score = 0.0;
+        double score = 0.0, s;
+        double topScore = 0.0;
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
         int n = 0;
         while (it.hasNext()) {
             c = it.next();
-            score += c.getEvaluationTable().getScore("NMI-sqrt");
-            n += 1;
+            s = c.getEvaluationTable().getScore("NMI-sqrt");
+            score += s;
+            if (n < numResults) {
+                topScore += s;
+            }
+            n++;
         }
-        LOG.info("avg score in population: {}", String.format("%.2f", score / n));
+        LOG.info("avg score in whole population: {}, top {} results: {}",
+                String.format("%.2f", score / n), numResults, String.format("%.2f", topScore / numResults));
     }
 
     public void clearObjectives() {
