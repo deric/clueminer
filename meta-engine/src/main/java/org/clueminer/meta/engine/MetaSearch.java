@@ -33,6 +33,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.CutoffStrategy;
+import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.Parameter;
@@ -97,6 +98,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private boolean useMetaDB = false;
     private Random rand;
     private int maxRetries = 5;
+    private int maxSolutions = -1;
     ObjectOpenHashSet<String> blacklist;
 
     public MetaSearch() {
@@ -158,8 +160,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
         do {
             Clustering<E, C> c = cluster(dataset, conf);
-            c.setId(cnt++);
             if (isValid(c)) {
+                c.setId(cnt++);
                 queue.add(c);
                 fireResult(queue);
             } else {
@@ -168,6 +170,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
             if (ph != null) {
                 ph.progress(cnt);
+            }
+            if (maxSolutions > 0 && cnt >= maxSolutions) {
+                LOG.info("exhaused search limit {}. Stopping meta search.", maxSolutions);
+                break;
             }
             i++;
         } while (i < repeat);
@@ -221,7 +227,12 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         blacklist = new ObjectOpenHashSet<>(numFronts * numResults);
 
         if (ph != null) {
-            int workunits = countClusteringJobs();
+            int workunits;
+            if (maxSolutions > -1) {
+                workunits = maxSolutions;
+            } else {
+                workunits = countClusteringJobs();
+            }
             LOG.info("search workunits: {}", workunits);
             ph.start(workunits);
         }
@@ -265,7 +276,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             c = it.next();
             Props props = c.getParams();
             LOG.debug("expanding top solution#{}", n + 1, props);
-            expand(c, props);
+            expand(c, props, queue);
             n++;
         }
     }
@@ -276,9 +287,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param c
      * @param base
      */
-    private void expand(Clustering<E, C> c, Props base) {
+    private void expand(Clustering<E, C> c, Props base, ParetoFrontQueue queue) {
         ClusteringAlgorithm alg;
-        Props props;
+        Props props = null;
         Parameter[] params;
         alg = parseAlgorithm(base);
         params = alg.getParameters();
@@ -327,6 +338,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         if (!uniqueConfig) {
             LOG.warn("failed to find an unique config for {}", alg.getName());
         }
+        if (props != null) {
+            execute(dataset, alg, props, queue);
+        } else {
+            LOG.error("missing props!");
+        }
     }
 
     private double randomDouble(double min, double max) {
@@ -354,15 +370,23 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         double topScore = 0.0;
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
+        EvaluationTable et;
         int n = 0;
         while (it.hasNext()) {
             c = it.next();
-            s = c.getEvaluationTable().getScore("NMI-sqrt");
-            score += s;
-            if (n < numResults) {
-                topScore += s;
+            if (c != null) {
+                et = c.getEvaluationTable();
+                if (et != null) {
+                    s = et.getScore("NMI-sqrt");
+                    score += s;
+                    if (n < numResults) {
+                        topScore += s;
+                    }
+                    n++;
+                }
+            } else {
+                LOG.warn("encoutered null clustering");
             }
-            n++;
         }
         LOG.info("avg score in whole population: {}, top {} results: {}",
                 String.format("%.2f", score / n), numResults, String.format("%.2f", topScore / numResults));
@@ -488,6 +512,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setUseMetaDB(boolean b) {
         this.useMetaDB = b;
+    }
+
+    public void setMaxSolutions(int maxSolutions) {
+        this.maxSolutions = maxSolutions;
     }
 
 }

@@ -41,10 +41,12 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
     private static final long serialVersionUID = -2664655185671435048L;
     private JTextField tfFronts;
     private JTextField tfResults;
+    private JTextField tfNumStates;
     private JComboBox<String> cbObj1;
     private JComboBox<String> cbObj2;
     private JComboBox<String> cbSort;
     private JCheckBox chckUseMetaDB;
+    private JCheckBox chckLimitSolutions;
 
     public MetaSearchPanel() {
         initialize();
@@ -108,6 +110,17 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.weightx = 1.0;
         c.gridwidth = 2;
         add(chckUseMetaDB, c);
+
+        c.gridx = 0;
+        c.gridy++;
+        chckLimitSolutions = new JCheckBox("Limit explored states", true);
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        add(chckLimitSolutions, c);
+        tfNumStates = new JTextField("100");
+        tfNumStates.setPreferredSize(new Dimension(50, 22));
+        c.gridx = 1;
+        add(tfNumStates, c);
 
     }
 
