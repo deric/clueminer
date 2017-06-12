@@ -173,7 +173,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
             if (maxSolutions > 0 && cnt >= maxSolutions) {
                 LOG.info("exhaused search limit {}. Stopping meta search.", maxSolutions);
-                break;
+                return;
             }
             i++;
         } while (i < repeat);
@@ -311,12 +311,16 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                         props.putDouble(p.getName(), randomDouble(p.getMin(), p.getMax()));
                         break;
                     case STRING:
-                        ServiceFactory f = p.getFactory();
-                        String[] vals = f.getProvidersArray();
-                        if (vals.length > 0) {
-                            props.put(p.getName(), vals[rand.nextInt(vals.length)]);
+                        if (p.hasFactory()) {
+                            ServiceFactory f = p.getFactory();
+                            String[] vals = f.getProvidersArray();
+                            if (vals.length > 0) {
+                                props.put(p.getName(), vals[rand.nextInt(vals.length)]);
+                            } else {
+                                LOG.error("missing providers for {}", p.getName());
+                            }
                         } else {
-                            LOG.error("missing providers for {}", p.getName());
+                            LOG.error("missing factory for parameter {}", p.getName());
                         }
                         break;
                     case BOOLEAN:
@@ -456,7 +460,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 listener.resultUpdate(update, true);
             }
         } else {
-            LOG.debug("no changes in top population");
+            LOG.debug("no changes in top population, population size: {}", queue.size());
         }
     }
 

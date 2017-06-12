@@ -136,6 +136,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.setSortObjective((ClusterEvaluation) ef.getProvider((String) cbSort.getSelectedItem()));
         meta.setNumResults(Integer.parseInt(tfResults.getText()));
         meta.setUseMetaDB(chckUseMetaDB.isSelected());
+        meta.setMaxSolutions(Integer.parseInt(tfNumStates.getText()));
 
         //meta.setGenerations(getGenerations());
         meta.setPopulationSize(Integer.parseInt(tfFronts.getText()));
