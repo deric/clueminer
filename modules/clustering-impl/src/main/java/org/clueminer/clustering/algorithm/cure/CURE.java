@@ -123,9 +123,18 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         distanceFunction = ClusterHelper.initDistance(props);
         n = dataset.size();
+        if (n < 2) {
+            throw new RuntimeException("no data to cluster, dataset of size: " + n);
+        }
         k = props.getInt(K);
         representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
         numPartitions = props.getInt(NUM_PARTITIONS, 1);
+        int sqrtN = (int) (2 * Math.sqrt(n));
+        if (numPartitions > sqrtN) {
+            LOG.warn("overriding num_partitions to {} (was too large: {})", sqrtN, numPartitions);
+            numPartitions = sqrtN;
+            props.putInt(NUM_PARTITIONS, numPartitions);
+        }
         reduceFactor = props.getInt(REDUCE_FACTOR, 3);
 
         currentRepAdditionCount = n;

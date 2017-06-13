@@ -82,6 +82,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         if (numberofRepInCluster > maxRepCnt) {
             CURE.LOG.warn("number of representatives was too large: {}, using {} instead (otherwise algorithm is not guaranteed to finish)", numberofRepInCluster, maxRepCnt);
             numberofRepInCluster = maxRepCnt;
+            props.put(CURE.NUM_REPRESENTATIVES, numberofRepInCluster);
         }
         try {
             buildHeapAndTree(dataset);

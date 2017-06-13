@@ -19,6 +19,7 @@ package org.clueminer.meta.engine;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.lang.reflect.InvocationTargetException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -103,6 +104,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private ParetoFrontQueue queue;
     private NMIsqrt cmp;
     private double diversityThreshold = 0.2;
+    private static final DecimalFormat df = new DecimalFormat("#,##0.00");
 
     public MetaSearch() {
         super();
@@ -278,7 +280,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         explore(numResults);
 
         finish();
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", clusteringTime, clusteringsEvaluated, clusteringsRejected);
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
         printStats(queue);
         for (String str : blacklist) {
             LOG.debug("blacklist: {}", str);
@@ -417,7 +419,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
         }
         LOG.info("avg score in whole population: {}, top {} results: {}",
-                String.format("%.2f", score / n), numResults, String.format("%.2f", topScore / numResults));
+                df.format(score / n), numResults, df.format(topScore / numResults));
     }
 
     public void clearObjectives() {
