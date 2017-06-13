@@ -16,7 +16,7 @@
  */
 package org.clueminer.explorer;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import javax.swing.SwingUtilities;
 import org.clueminer.clustering.api.Cluster;
@@ -47,14 +47,13 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
 
     //private Lookup.Result<Clustering> result;
     private static final Logger LOG = LoggerFactory.getLogger(ClustSorted.class);
-    private final Object2IntOpenHashMap<ClusteringNode[]> map = new Object2IntOpenHashMap<>();
+    private final Int2ObjectOpenHashMap<ClusteringNode[]> map = new Int2ObjectOpenHashMap<>();
     private final Project project;
     private Evolution evolution;
 
     public ClustSorted() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         project = pc.getCurrentProject();
-
     }
 
     @Override
@@ -79,26 +78,27 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
         addClustering(ind.getClustering(), ind);
     }
 
-    public void addUniqueClustering(Clustering<E, C> clustering, Individual ind) {
+    public int addUniqueClustering(Clustering<E, C> clustering, Individual ind) {
         int hash = clustering.hashCode();
         //new clustering
-        if (!map.containsValue(hash)) {
+        if (!map.containsKey(hash)) {
             addClustering(clustering, ind);
-        } else {
-            LOG.info("ignoring {} clust: {}", hash, clustering.getName());
+            return 1;
         }
+        LOG.info("ignoring {} clust: {}", hash, clustering.getName());
+        return 0;
     }
 
     /**
      * Individual is used when result was produced using some explorative method
      *
      * @param clustering
-     * @param ind in case of evolution/automl
+     * @param ind        in case of evolution/automl
      */
     public void addClustering(Clustering<E, C> clustering, Individual ind) {
         final ClusteringNode[] nodesAry = new ClusteringNode[1];
         nodesAry[0] = new ClusteringNode<>((Clustering<E, C>) clustering);
-        map.put(nodesAry, clustering.hashCode());
+        map.put(clustering.hashCode(), nodesAry);
         project.add(clustering);
         nodesAry[0].setIndividual(ind);
         nodesAry[0].setParent(this);
@@ -116,12 +116,12 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
 
     @Override
     public void resultUpdate(Individual[] result, boolean isExplicit) {
-        LOG.debug("received {} new individuals", result.length);
-        //worst case hash set size
+        LOG.debug("received {} individuals, map size: {}", result.length, map.size());
         ObjectOpenHashSet<Clustering> toKeep = new ObjectOpenHashSet<>(result.length);
 
         Clustering<E, C> c;
         Dataset<E> d;
+        int added = 0;
         for (Individual ind : result) {
             c = ind.getClustering();
             d = c.getLookup().lookup(Dataset.class);
@@ -131,20 +131,19 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
                 LOG.debug("ignoring incomplete clustering {}, params: {}", c.fingerprint(), c.getParams());
             } else {
                 //TODO: Disabled duplicity filtering. Should be done is search algorithms?
-                //addUniqueClustering(c, ind);
-                addClustering(c, ind);
-                if (!toKeep.contains(c)) {
-                    toKeep.add(c);
-                }
+                added += addUniqueClustering(c, ind);
+                // no matter whether was just added or it's already there
+                toKeep.add(c);
             }
         }
         if (isExplicit) {
             LOG.debug("map: {}, to keep: {}", map.size(), toKeep.size());
             //go through all current nodes and remove old nodes
             ObjectOpenHashSet<ClusteringNode[]> toRemove = new ObjectOpenHashSet<>(result.length);
-            for (final ClusteringNode[] n : map.keySet()) {
+            for (final ClusteringNode[] n : map.values()) {
                 if (!toKeep.contains(n[0].getClustering())) {
-                    LOG.debug("want to remove: {} ext. score: {}", n[0].getClustering().getName(), n[0].evaluationTable(n[0].getClustering()).getScore("NMI-sqrt"));
+                    LOG.debug("want to remove: {} ext. score: {}", n[0].getClustering().getName(),
+                            n[0].evaluationTable(n[0].getClustering()).getScore("NMI-sqrt"));
                     toRemove.add(n);
                 }
             }
@@ -153,15 +152,18 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
                     remove(n);
                 });
                 for (ClusteringNode cn : n) {
-                    map.remove(cn, cn.getClustering().hashCode());
+                    LOG.debug("removing clustering {}, size before {}", cn.getClustering().fingerprint(), map.size());
+                    map.remove(cn.getClustering().hashCode(), n);
+                    LOG.debug("map size: {}", map.size());
                 }
             }
+            LOG.debug("added {} clusterings, removed {}", added, toRemove.size());
         }
     }
 
     public void clearAll() {
         SwingUtilities.invokeLater(() -> {
-            for (final ClusteringNode[] n : map.keySet()) {
+            for (final ClusteringNode[] n : map.values()) {
                 remove(n);
                 project.remove(n[0].getClustering());
             }
