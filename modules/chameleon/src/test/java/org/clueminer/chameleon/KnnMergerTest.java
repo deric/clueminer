@@ -196,7 +196,7 @@ public class KnnMergerTest<E extends Instance> {
         Chameleon ch = new Chameleon();
         Props props = new Props();
         props.put("merger", "k-NN merger");
-        props.putInt("k", 3);
+        props.putInt(Chameleon.K, 3);
         props.putInt("max_partition_size:", 5);
         HierarchicalResult res = ch.hierarchy(dataset, props);
         DendroTreeData tree = res.getTreeData();
@@ -259,7 +259,7 @@ public class KnnMergerTest<E extends Instance> {
         Chameleon ch = new Chameleon();
         Props props = new Props();
         props.put("merger", "k-NN merger");
-        props.putInt("k", 4);
+        props.putInt(Chameleon.K, 4);
         props.putInt("max_partition_size:", 5);
         HierarchicalResult res = ch.hierarchy(dataset, props);
         DendroTreeData tree = res.getTreeData();

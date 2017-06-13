@@ -140,7 +140,7 @@ public class KNNGraphBuilder<E extends Instance> extends AbsGraphConvertor<E> im
 
     @Override
     public void createEdges(Graph graph, Dataset<E> dataset, Long[] mapping, Props params) {
-        int k = params.getInt("k", 5);
+        int k = params.getInt("k", params.getInt("chameleon.k", 5));
         if (k >= dataset.size()) {
             throw new RuntimeException("Too many neighbours, not enough nodes in dataset");
         }

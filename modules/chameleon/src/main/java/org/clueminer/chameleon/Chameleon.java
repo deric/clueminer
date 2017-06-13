@@ -70,7 +70,7 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
     /**
      * Number of neighbors for each node in k-NN algorithm.
      */
-    public static final String K = "k";
+    public static final String K = "chameleon.k";
     @Param(name = Chameleon.K, description = "Number of neighbors for each node in k-NN algorithm",
            required = false, min = 2, max = 50)
     private int k;

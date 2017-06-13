@@ -98,7 +98,7 @@ public class KnnMerger<E extends Instance> extends PairMerger<E> implements Merg
      * @return
      */
     private int getK(Props pref) {
-        return 2 * pref.getInt("k", 15);
+        return 2 * pref.getInt(Chameleon.K, 15);
     }
 
     /**

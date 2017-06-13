@@ -71,7 +71,7 @@ public class KnnInitializator<E extends Instance> extends AbsGraphConvertor<E> i
         }
         alg.setDataset(dataset);
         alg.setDistanceMeasure(dm);
-        int k = params.getInt("k", 5);
+        int k = params.getInt("k", params.getInt("chameleon.k", 5));
         Neighbor[] nn;
         long nodeId;
         Node<E> target;

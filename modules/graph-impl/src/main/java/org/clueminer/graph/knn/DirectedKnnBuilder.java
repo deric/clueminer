@@ -78,7 +78,7 @@ public class DirectedKnnBuilder<E extends Instance> extends AbsGraphConvertor<E>
         String includeEdges = params.get(INCLUDE_EDGES, "any");
         alg.setDataset(dataset);
         alg.setDistanceMeasure(dm);
-        int k = params.getInt("k", 5);
+        int k = params.getInt("k", params.getInt("chameleon.k", 5));
 
         switch (includeEdges) {
             case "bidirect":
