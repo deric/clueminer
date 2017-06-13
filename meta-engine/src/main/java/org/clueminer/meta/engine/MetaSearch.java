@@ -216,7 +216,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         while (it.hasNext()) {
             other = it.next();
             diverse = diversity(other, c);
-            LOG.debug("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
+            LOG.trace("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
             if (diverse < diversityThreshold) {
                 LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
                 return false;
@@ -261,7 +261,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         if (!config.containsKey(AlgParams.STD)) {
             config.put(AlgParams.STD, "z-score");
         }
-        config.putInt("k", 5);
+        //config.putInt("k", 5);
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
         LOG.info("got {} meta parameters", meta.size());

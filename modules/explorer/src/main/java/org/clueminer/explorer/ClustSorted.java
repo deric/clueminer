@@ -85,7 +85,7 @@ public class ClustSorted<E extends Instance, C extends Cluster<E>> extends Child
             addClustering(clustering, ind);
             return 1;
         }
-        LOG.info("ignoring {} clust: {}", hash, clustering.getName());
+        LOG.trace("ignoring {} clust: {}", hash, clustering.getName());
         return 0;
     }
 

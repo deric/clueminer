@@ -104,7 +104,7 @@ public class ClusterSetView<E extends Instance, C extends Cluster<E>> extends JP
         this.removeAll();
 
         clusterNum = clust.size();
-        LOG.debug("got {} clusters", clusterNum);
+        LOG.trace("got {} clusters", clusterNum);
 
         Timeseries<ContinuousInstance> ts;
 
