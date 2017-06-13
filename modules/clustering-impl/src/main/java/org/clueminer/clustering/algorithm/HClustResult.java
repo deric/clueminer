@@ -408,6 +408,11 @@ public class HClustResult<E extends Instance, C extends Cluster<E>> implements H
         if (cutoffStrategy == null) {
             return Double.NaN;
         }
+        if (cutoffStrategy.isProximityRequired() && proximity == null) {
+            LOG.warn("can't use {} because proximity matrix is not set,"
+                    + " using fall back strategy", cutoffStrategy.getName());
+            cutoffStrategy = CutoffStrategyFactory.getInstance().getProvider("naive cutoff");
+        }
         double cut = cutoffStrategy.findCutoff(this, getParams());
         updateCutoff(cut);
         return cut;

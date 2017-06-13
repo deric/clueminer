@@ -25,18 +25,19 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Cutoff method based on Cophenetic correlation coefficient.
  *
  * @author Tomas Barton
  */
 @ServiceProvider(service = CutoffStrategy.class)
 public class CophCutoff implements CutoffStrategy {
 
-    private static final String name = "coph cutoff";
+    private static final String NAME = "coph cutoff";
     private final HierarchicalClusterEvaluator eval = new CopheneticCorrelation();
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
