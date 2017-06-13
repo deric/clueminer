@@ -34,6 +34,7 @@ import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.clustering.api.dendrogram.OptimalTreeOrder;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
 import org.clueminer.clustering.order.MOLO;
 import org.clueminer.clustering.struct.DendrogramData;
 import org.clueminer.dataset.api.ColorGenerator;
@@ -182,6 +183,10 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
         LOG.info("cutting dendrogram with {}", strategy.getName());
+        if (strategy.isProximityRequired() && result.getProximityMatrix() == null) {
+            LOG.warn("can't use strategy {} without proximity matrix, using fallback", strategy.getName());
+            strategy = CutoffStrategyFactory.getInstance().getProvider("hill-climb inc");
+        }
         double cut = result.findCutoff(strategy);
         LOG.debug("found cutoff {}, resulting clusters {}", cut, result.getClustering().size());
     }
