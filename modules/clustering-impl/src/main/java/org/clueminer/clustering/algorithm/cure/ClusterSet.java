@@ -78,6 +78,11 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         k = numberOfClusters;
         this.cg = cg;
         CURE.LOG.debug("|dataset| = {}, k = {}", dataset.size(), k);
+        int maxRepCnt = (int) (2 * Math.sqrt(dataset.size()));
+        if (numberofRepInCluster > maxRepCnt) {
+            CURE.LOG.warn("number of representatives was too large: {}, using {} instead (otherwise algorithm is not guaranteed to finish)", numberofRepInCluster, maxRepCnt);
+            numberofRepInCluster = maxRepCnt;
+        }
         try {
             buildHeapAndTree(dataset);
             startClustering();
