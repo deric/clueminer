@@ -47,6 +47,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
     private JComboBox<String> cbSort;
     private JCheckBox chckUseMetaDB;
     private JCheckBox chckLimitSolutions;
+    private JCheckBox chckExpandOnlyTop;
 
     public MetaSearchPanel() {
         initialize();
@@ -122,6 +123,13 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         c.gridx = 1;
         add(tfNumStates, c);
 
+        c.gridx = 0;
+        c.gridy++;
+        chckExpandOnlyTop = new JCheckBox("Expand only top solutions", false);
+        c.weightx = 1.0;
+        c.gridwidth = 2;
+        add(chckExpandOnlyTop, c);
+
     }
 
     @Override
@@ -137,6 +145,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.setNumResults(Integer.parseInt(tfResults.getText()));
         meta.setUseMetaDB(chckUseMetaDB.isSelected());
         meta.setMaxSolutions(Integer.parseInt(tfNumStates.getText()));
+        meta.setExpandOnlyTop(chckExpandOnlyTop.isSelected());
 
         //meta.setGenerations(getGenerations());
         meta.setPopulationSize(Integer.parseInt(tfFronts.getText()));

@@ -105,6 +105,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private NMIsqrt cmp;
     private double diversityThreshold = 0.2;
     private static final DecimalFormat df = new DecimalFormat("#,##0.00");
+    private boolean expandOnlyTop = false;
 
     public MetaSearch() {
         super();
@@ -298,10 +299,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
         int n = 0;
-        while (it.hasNext() && n < topN) {
+        while (it.hasNext()) {
+            if (expandOnlyTop && n < topN) {
+                return;
+            }
             c = it.next();
             Props props = c.getParams();
-            LOG.debug("expanding top solution#{}", n + 1, props);
+            LOG.debug("expanding solution#{}", n + 1, props);
             expand(c, props);
             n++;
         }
@@ -546,6 +550,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setMaxSolutions(int maxSolutions) {
         this.maxSolutions = maxSolutions;
+    }
+
+    public void setExpandOnlyTop(boolean expandOnlyTop) {
+        this.expandOnlyTop = expandOnlyTop;
     }
 
 }
