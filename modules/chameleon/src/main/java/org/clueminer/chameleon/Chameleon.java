@@ -80,7 +80,9 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      * partitioning algorithm.
      */
     public static final String MAX_PARTITION = "max_partition_size";
-    @Param(name = Chameleon.MAX_PARTITION, description = "Maximum number of nodes in each partition after the execution of the partitioning algorithm")
+    @Param(name = Chameleon.MAX_PARTITION,
+           description = "Maximum number of nodes in each partition after the execution of the partitioning algorithm",
+           min = 3, max = 1000)
     private int maxPartitionSize;
 
     /**
