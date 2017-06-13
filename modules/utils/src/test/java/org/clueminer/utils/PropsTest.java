@@ -342,7 +342,18 @@ public class PropsTest {
         p.putBoolean("bool", true);
 
         assertEquals("{\"bar\":\"y\",\"bool\":\"true\",\"double\":3.14519,\"foo\":\"x\",\"int\":123}", p.toJson());
+    }
 
+    @Test
+    public void testToJsonNonFinite() {
+        Props p = new Props();
+        p.putDouble("keey", Double.NaN);
+        p.putDouble("ifninty", Double.NEGATIVE_INFINITY);
+        String json = p.toJson();
+        assertEquals("{\"ifninty\":-Infinity,\"keey\":NaN}", json);
+        Props p2 = Props.fromJson(json);
+        assertEquals(Double.NaN, p2.getDouble("keey"), DELTA);
+        assertEquals(Double.NEGATIVE_INFINITY, p2.getDouble("ifninty"), DELTA);
     }
 
     @Test

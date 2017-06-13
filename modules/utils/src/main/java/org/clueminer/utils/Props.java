@@ -493,13 +493,24 @@ public class Props implements Map<String, Object> {
         StringWriter w = new StringWriter();
         try {
             try (JsonWriter writer = new JsonWriter(w)) {
+                //more relaxed JSON standard, allows serializing NaN and non-finite values
+                writer.setLenient(true);
                 writer.beginObject();
                 for (Entry<String, Object> entry : entrySet()) {
                     Object val = entry.getValue();
                     writer.name(entry.getKey());
                     if (val instanceof Double) {
                         double d = (Double) val;
-                        writer.value(d);
+                        // if double is not finite, cast to number first
+                        // see https://github.com/google/gson/issues/1090
+                        if (Double.isNaN(d) || Double.isInfinite(d)) {
+                            //writer.beginArray();
+                            Number num = d;
+                            writer.value(num);
+                            //writer.endArray();
+                        } else {
+                            writer.value(d);
+                        }
                     } else if (val instanceof Integer) {
                         int i = (Integer) val;
                         writer.value(i);
