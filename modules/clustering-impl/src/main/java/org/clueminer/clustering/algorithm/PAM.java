@@ -53,7 +53,7 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
     protected int k;
 
     public static final String SEED_SELECTION = "seed_selection";
-    @Param(name = SEED_SELECTION, description = "Seed selection")
+    @Param(name = SEED_SELECTION, description = "Seed selection", factory = "org.clueminer.clustering.api.SeedSelectionFactory")
     protected String seedSelection;
 
     private static final Logger LOG = LoggerFactory.getLogger(PAM.class);

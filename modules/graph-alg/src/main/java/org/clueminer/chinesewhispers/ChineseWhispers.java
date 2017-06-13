@@ -63,12 +63,13 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
 
     public static final String EDGE_THRESHOLD = "edge_threshold";
     @Param(name = ChineseWhispers.EDGE_THRESHOLD, description = "Minimum distance for edge initialization")
-    private double edgeThreshold;
+    protected double edgeThreshold;
 
     public static final String GRAPH_CONV = "graph_conv";
-    @Param(name = ChineseWhispers.GRAPH_CONV,
-            factory = "org.clueminer.graph.api.GraphConvertorFactory",
-            type = org.clueminer.clustering.params.ParamType.STRING)
+    //it's a performance parameter
+    /* @Param(name = ChineseWhispers.GRAPH_CONV,
+     * factory = "org.clueminer.graph.api.GraphConvertorFactory",
+     * type = org.clueminer.clustering.params.ParamType.STRING) */
     private GraphConvertor graphCon;
 
     private static final String CLS = "cw_cls";

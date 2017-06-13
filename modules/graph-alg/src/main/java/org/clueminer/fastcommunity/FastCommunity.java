@@ -29,7 +29,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
-import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.dataset.api.Dataset;
@@ -61,9 +60,8 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
     DeltaQMatrix dQ;
 
     public static final String GRAPH_CONV = "graph_conv";
-    @Param(name = FastCommunity.GRAPH_CONV,
-           factory = "org.clueminer.graph.api.GraphConvertorFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+    /* @Param(name = FastCommunity.GRAPH_CONV,           factory = "org.clueminer.graph.api.GraphConvertorFactory",
+           type = org.clueminer.clustering.params.ParamType.STRING) */
     private GraphConvertor graphCon;
 
     @Override

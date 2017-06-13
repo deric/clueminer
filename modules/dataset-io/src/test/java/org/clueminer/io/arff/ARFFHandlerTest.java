@@ -26,6 +26,7 @@ import org.clueminer.dataset.impl.SampleDataset;
 import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.BioFixture;
 import org.clueminer.fixtures.CommonFixture;
+import org.clueminer.fixtures.MLearnFixture;
 import org.clueminer.io.AttrHolder;
 import org.clueminer.io.LineIterator;
 import static org.junit.Assert.assertEquals;
@@ -277,6 +278,20 @@ public class ARFFHandlerTest<E extends Instance> {
         assertEquals(114, data.size());
         assertEquals("'Basophils'", data.get(0).classValue());
         assertEquals(datasetName, data.getName());
+    }
+
+    @Test
+    public void testEcoli() throws ParserError, FileNotFoundException, IOException {
+        Dataset<Instance> data = new ArrayDataset<>(336, 7);
+        MLearnFixture bf = new MLearnFixture();
+
+        String datasetName = "ecoli";
+        arff.load(bf.ecoli(), data);
+        assertEquals(7, data.attributeCount());
+        assertEquals(336, data.size());
+        assertEquals("cp", data.get(0).classValue());
+        assertEquals(datasetName, data.getName());
+        assertEquals("pp", data.get(335).classValue());
     }
 
 }
