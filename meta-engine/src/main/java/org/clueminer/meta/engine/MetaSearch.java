@@ -195,7 +195,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private boolean isValid(Clustering<E, C> c) {
-        if (c.size() < 2) {
+        if (c == null || c.size() < 2) {
             LOG.debug("rejecting invalid clustering with single cluster, params: {}", c.getParams());
             return false;
         }
@@ -218,6 +218,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             diverse = diversity(other, c);
             LOG.debug("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
             if (diverse < diversityThreshold) {
+                LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
                 return false;
             }
         }

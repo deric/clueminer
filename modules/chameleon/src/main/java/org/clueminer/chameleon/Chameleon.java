@@ -71,7 +71,8 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      * Number of neighbors for each node in k-NN algorithm.
      */
     public static final String K = "k";
-    @Param(name = Chameleon.K, description = "Number of neighbors for each node in k-NN algorithm", required = false)
+    @Param(name = Chameleon.K, description = "Number of neighbors for each node in k-NN algorithm",
+           required = false, min = 2, max = 50)
     private int k;
 
     /**
@@ -102,19 +103,21 @@ public class Chameleon<E extends Instance, C extends Cluster<E>> extends Algorit
      * interconnectivity.
      */
     public static final String CLOSENESS_PRIORITY = "closeness_priority";
-    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters")
+    @Param(name = Chameleon.CLOSENESS_PRIORITY, description = "Priority of merging close clusters",
+           min = 0.1, max = 4.0)
     public double closenessPriority;
 
     public static final String INTERCONNECTIVITY_PRIORITY = "interconnectivity_priority";
-    @Param(name = Chameleon.INTERCONNECTIVITY_PRIORITY, description = "Priority of merging close clusters")
+    @Param(name = Chameleon.INTERCONNECTIVITY_PRIORITY, description = "Priority of merging close clusters",
+           min = 0.1, max = 4.0)
     public double interconnectivityPriority;
 
     public static final String SHARED_NN_FACTOR = "shared_nn_factor";
-    @Param(name = Chameleon.SHARED_NN_FACTOR, description = "Factor of multiplying shared neighbors")
+    //@Param(name = Chameleon.SHARED_NN_FACTOR, description = "Factor of multiplying shared neighbors")
     public double sharedNNfactor;
 
     public static final String NOISE_RATIO = "noise_ratio";
-    @Param(name = Chameleon.NOISE_RATIO, description = "Ratio needed to mark cluster as noise")
+    //@Param(name = Chameleon.NOISE_RATIO, description = "Ratio needed to mark cluster as noise")
     public double noiseRatio;
 
     /**

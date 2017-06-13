@@ -77,7 +77,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
         cc = new CureComparator<>();
         k = numberOfClusters;
         this.cg = cg;
-
+        CURE.LOG.debug("|dataset| = {}, k = {}", dataset.size(), k);
         try {
             buildHeapAndTree(dataset);
             startClustering();

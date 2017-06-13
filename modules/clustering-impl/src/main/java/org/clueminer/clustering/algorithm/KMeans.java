@@ -63,7 +63,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
      * change.
      *
      */
-    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 105)
+    @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 150)
     private int iterations = -1;
     /**
      * Random generator for this clusterer.

@@ -66,10 +66,10 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
     public static final String CONV_ITER = "conv_iter";
     public static final String PREFERENCE = "preference";
 
-    @Param(name = CONV_ITER, description = "Max. convergence iterations")
+    @Param(name = CONV_ITER, description = "Max. convergence iterations", min = 50, max = 250)
     protected int convergenceIter = 100;
 
-    @Param(name = MAX_ITERATIONS, description = "Maximum number of iterations")
+    @Param(name = MAX_ITERATIONS, description = "Maximum number of iterations", min = 50, max = 250)
     protected int maxIterations = 100;
 
     @Override
