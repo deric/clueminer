@@ -34,7 +34,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${clueminer.maven-surefire.version}s</version>
+                <version>${clueminer.maven-surefire.version}</version>
                 <configuration>
                     <forkMode>once</forkMode>
                     <workingDirectory>target</workingDirectory>
