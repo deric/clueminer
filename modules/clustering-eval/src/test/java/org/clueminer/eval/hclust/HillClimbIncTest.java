@@ -16,8 +16,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -65,9 +65,8 @@ public class HillClimbIncTest {
         pref.put(AlgParams.CUTOFF_SCORE, "KsqDetW");
         Clustering<Instance, Cluster<Instance>> clust = exec.clusterRows(data, pref);
         //assertEquals(36, clust.size());
-        //wtf?
         System.out.println("clu" + clust.toString());
-        assertEquals(5, clust.instancesCount());
+        assertEquals(150, clust.instancesCount());
     }
 
 }

@@ -29,7 +29,7 @@ import org.junit.Test;
 public class CompactnessTest {
 
     private final Compactness subject;
-    private final double delta = 1e-9;
+    private final double DELTA = 1e-9;
 
     public CompactnessTest() {
         subject = new Compactness();
@@ -43,7 +43,7 @@ public class CompactnessTest {
     @Test
     public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
-        assertEquals(0.9574211390878558, scoreBetter, delta);
+        assertEquals(0.9569861178161254, scoreBetter, DELTA);
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         System.out.println("better: " + scoreBetter);

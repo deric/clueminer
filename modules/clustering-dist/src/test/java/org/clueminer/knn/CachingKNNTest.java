@@ -19,7 +19,6 @@ package org.clueminer.knn;
 import java.util.HashSet;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import static org.clueminer.knn.AbstractNNTest.DELTA;
 import org.clueminer.neighbor.Neighbor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -63,12 +62,11 @@ public class CachingKNNTest extends AbstractNNTest {
         Neighbor[] nn = subject.knn(ref, k);
         assertEquals(k, nn.length);
         Instance inst;
-        //there are 3 same instances iris dataset
-        //should find two very same instances (id: 34, 37)
+        //should find two very similar instances (id: 34, 37)
         for (int i = 0; i < 2; i++) {
             inst = (Instance) nn[i].key;
             for (int j = 0; j < d.attributeCount(); j++) {
-                assertEquals(ref.get(j), inst.get(j), DELTA);
+                assertEquals(ref.get(j), inst.get(j), 0.11);
             }
         }
         assertEquals(k, nn.length);

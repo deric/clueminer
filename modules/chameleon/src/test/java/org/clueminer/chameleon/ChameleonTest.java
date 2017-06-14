@@ -39,7 +39,7 @@ import org.openide.util.Exceptions;
  */
 public class ChameleonTest {
 
-    double delta = 1e-9;
+    double DELTA = 1e-9;
 
     @Test
     public void testGetName() {
@@ -60,8 +60,7 @@ public class ChameleonTest {
         pref.put(GRAPH_STORAGE, "Adjacency matrix graph");
 
         //measure clustering run
-        NanoBench.create().measurements(3).measure(
-                "chameleon - glass (std)",
+        NanoBench.create().measurements(3).measure("chameleon - glass (std)",
                 new Runnable() {
 
             @Override
@@ -69,7 +68,7 @@ public class ChameleonTest {
                 HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
                 DendroTreeData tree = result.getTreeData();
                 DendroNode root = tree.getRoot();
-                assertEquals(891.8865411798738, root.getHeight(), delta);
+                assertEquals(891.8865411798738, root.getHeight(), DELTA);
             }
 
         }
@@ -102,7 +101,7 @@ public class ChameleonTest {
         HierarchicalResult result = ch.hierarchy(FakeDatasets.glassDataset(), pref);
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();
-        assertEquals(891.8865411798738, root.getHeight(), delta);
+        assertEquals(891.8865411798738, root.getHeight(), DELTA);
     }
 
     @Test
@@ -120,7 +119,7 @@ public class ChameleonTest {
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();
         //assertEquals(662.3346235252453, root.getHeight(), delta);
-        assertEquals(663.3261605858437, root.getHeight(), delta);
+        assertEquals(432.4020406254316, root.getHeight(), DELTA);
     }
 
     @Test
@@ -134,7 +133,7 @@ public class ChameleonTest {
         HierarchicalResult result = ch.hierarchy(FakeDatasets.irisDataset(), pref);
         DendroTreeData tree = result.getTreeData();
         DendroNode root = tree.getRoot();
-        assertEquals(695.2089980350675, root.getHeight(), delta);
+        assertEquals(496.5804989282214, root.getHeight(), DELTA);
     }
 
     @Test
@@ -148,7 +147,7 @@ public class ChameleonTest {
         DendroNode root = tree.getRoot();
         //k = log2(n)
         //assertEquals(59.40222184544098, root.getHeight(), delta);
-        assertEquals(54.42682446615163, root.getHeight(), delta);
+        assertEquals(54.42682446615163, root.getHeight(), DELTA);
     }
 
     @Test
@@ -163,7 +162,7 @@ public class ChameleonTest {
         DendroNode root = tree.getRoot();
         //k = log2(n)
         //assertEquals(265.38835528693505, root.getHeight(), delta);
-        assertEquals(220.69856376379437, root.getHeight(), delta);
+        assertEquals(220.69856376379437, root.getHeight(), DELTA);
     }
 
     @Test

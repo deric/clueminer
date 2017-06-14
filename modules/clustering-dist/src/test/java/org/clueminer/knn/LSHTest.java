@@ -59,8 +59,8 @@ public class LSHTest<E extends Instance> extends AbstractNNTest {
             inst = (E) nn[i].key;
             if (i < 2) {
                 //should find two very same instances (id: 34, 37)
-                assertEquals(0.0, nn[i].distance, DELTA);
-                assertEquals(0.0, nn2[i].distance, DELTA);
+                assertEquals(0.0, nn[i].distance, 0.2);
+                assertEquals(0.0, nn2[i].distance, 0.2);
             }
             System.out.println(nn[i].distance + ", " + inst.getIndex() + ": " + inst.toString());
             assertNotNull(inst);

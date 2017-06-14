@@ -91,13 +91,13 @@ public class SDindexTest {
     @Test
     public void testScattering() throws ScoreException {
         double scatt = subject.scattering(FakeClustering.iris());
-        //assertEquals(0.1090009, scatt, DELTA);
+        assertEquals(0.1090009, scatt, DELTA);
     }
 
     @Test
     public void testDispersion() throws ScoreException {
         double dis = subject.dispersion(FakeClustering.iris());
-//        assertEquals(1.43630554195769, dis, DELTA);
+        assertEquals(1.43630554195769, dis, DELTA);
 
         Clustering<Instance, Cluster<Instance>> c = FakeClustering.iris();
         System.out.println("iris");

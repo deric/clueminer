@@ -80,7 +80,7 @@ public class RiRcSimilarityTest {
 
         pref.putDouble(Chameleon.CLOSENESS_PRIORITY, 2.0);
 
-        assertEquals(2.524438049398596, subject.score(clusters.get(0), clusters.get(1), pref), delta);
+        assertEquals(2.4069555157180726, subject.score(clusters.get(0), clusters.get(1), pref), delta);
         assertEquals(0.0, subject.score(clusters.get(1), clusters.get(2), pref), delta);
         assertEquals(0.20807824906992473, subject.score(clusters.get(3), clusters.get(4), pref), delta);
         assertEquals(0.6636615718193234, subject.score(clusters.get(6), clusters.get(7), pref), delta);

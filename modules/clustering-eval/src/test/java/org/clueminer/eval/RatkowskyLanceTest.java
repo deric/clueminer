@@ -42,7 +42,7 @@ import org.openide.util.Exceptions;
 public class RatkowskyLanceTest {
 
     private static RatkowskyLance subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public RatkowskyLanceTest() {
         subject = new RatkowskyLance();
@@ -110,7 +110,7 @@ public class RatkowskyLanceTest {
         iris.lookupRemove(irisData);
         double sc = subject.score(iris);
 
-        assertEquals(scorePrecomp, sc, delta);
+        assertEquals(scorePrecomp, sc, DELTA);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class RatkowskyLanceTest {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.491870539886729
         //TODO: verify the implementation
-        assertEquals(0.4826635728768826, score, delta);
+        assertEquals(0.4826635728768826, score, DELTA);
     }
 
 }

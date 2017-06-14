@@ -59,7 +59,7 @@ public class EpsNNTest<E extends Instance> {
                 subject.buildGraph(g, iris, params);
 
                 assertEquals(iris.size(), g.getNodeCount());
-                assertEquals(8640, g.getEdgeCount());
+                assertEquals(8635, g.getEdgeCount());
 
             }
         });
@@ -78,7 +78,7 @@ public class EpsNNTest<E extends Instance> {
 
                 subject.buildGraph(g, iris, params);
                 assertEquals(iris.size(), g.getNodeCount());
-                assertEquals(2627, g.getEdgeCount());
+                assertEquals(2633, g.getEdgeCount());
             }
         }
         );
@@ -100,7 +100,7 @@ public class EpsNNTest<E extends Instance> {
                 subject.buildGraph(g, data, params);
 
                 assertEquals(data.size(), g.getNodeCount());
-                assertEquals(2627, g.getEdgeCount());
+                assertEquals(2633, g.getEdgeCount());
 
             }
 

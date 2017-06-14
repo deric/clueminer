@@ -112,9 +112,9 @@ public class KDTreeTest<E extends Instance> extends AbstractNNTest {
         for (int i = 0; i < 5; i++) {
             inst = (E) nn[i].key;
             if (i < 2) {
-                //should find two very same instances (id: 34, 37)
-                assertEquals(0.0, nn[i].distance, DELTA);
-                assertEquals(0.0, nn2[i].distance, DELTA);
+                //should find two very similar instances (id: 34, 37)
+                assertEquals(0.0, nn[i].distance, 0.2);
+                assertEquals(0.0, nn2[i].distance, 0.2);
             }
             assertNotNull(inst);
         }
