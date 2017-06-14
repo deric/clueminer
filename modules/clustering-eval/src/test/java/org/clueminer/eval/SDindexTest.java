@@ -91,7 +91,7 @@ public class SDindexTest {
     @Test
     public void testScattering() throws ScoreException {
         double scatt = subject.scattering(FakeClustering.iris());
-        assertEquals(0.1090009, scatt, DELTA);
+        assertEquals(0.10827421364989398, scatt, DELTA);
     }
 
     @Test
