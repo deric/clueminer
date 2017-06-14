@@ -234,6 +234,31 @@ public class PropsTest {
     }
 
     @Test
+    public void testCopyPropType() {
+        Props p = new Props();
+        String key = "keep-matrix";
+        p.put(PropType.PERFORMANCE, key, true);
+        String strKey = "str";
+        p.put(strKey, "foo");
+        p.put(PropType.VISUAL, "vis", "val");
+        p.put(PropType.MAIN, "main", "do-not-copy");
+
+        Props copy = p.copy(PropType.PERFORMANCE, PropType.VISUAL);
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key));
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key, false));
+        //MAIN key should not be copied
+        assertEquals(null, copy.get(strKey));
+        assertEquals(null, copy.get("main"));
+        assertEquals("val", copy.get(PropType.VISUAL, "vis"));
+        //change original value
+        p.put(PropType.PERFORMANCE, key, false);
+        p.put(strKey, "bar");
+        //copy should be unchanged
+        assertEquals(true, copy.getBoolean(PropType.PERFORMANCE, key));
+        assertEquals(null, copy.get(strKey));
+    }
+
+    @Test
     public void testClone() {
         Props p = new Props();
         p.put("foo", "foo");

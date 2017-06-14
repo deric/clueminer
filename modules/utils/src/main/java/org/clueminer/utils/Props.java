@@ -379,6 +379,23 @@ public class Props implements Map<String, Object> {
         return c;
     }
 
+    /**
+     * Copy only given sections of props
+     *
+     * @param pts
+     * @return partial (deep) copy of props object
+     */
+    public Props copy(PropType... pts) {
+        Props c = new Props();
+        for (PropType pt : pts) {
+            for (Entry<String, Object> entr : store.row(pt).entrySet()) {
+                c.put(pt, entr.getKey(), entr.getValue());
+            }
+        }
+
+        return c;
+    }
+
     @Override
     public Props clone() {
         Props c = new Props();
