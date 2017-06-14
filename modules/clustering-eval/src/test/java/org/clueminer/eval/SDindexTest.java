@@ -16,7 +16,10 @@
  */
 package org.clueminer.eval;
 
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ScoreException;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +33,7 @@ import org.junit.Test;
 public class SDindexTest {
 
     private final SDindex subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public SDindexTest() {
         subject = new SDindex(EuclideanDistance.getInstance());
@@ -77,12 +80,30 @@ public class SDindexTest {
         double dis = subject.dispersion(FakeClustering.int100p4());
         //clusterCrit = 0.424825246347848
         //TODO: check dispersion computation
-        assertEquals(0.424825246347848, dis, delta);
+        assertEquals(0.424825246347848, dis, DELTA);
 
         double scat = subject.scattering(FakeClustering.int100p4());
         //clusterCrit = 0.0323239791483279
         //small difference is caused by variance being normalized by (n - 1) instead of just (n)
-        assertEquals(0.03224316920045716, scat, delta);
+        assertEquals(0.03224316920045716, scat, DELTA);
+    }
+
+    @Test
+    public void testScattering() throws ScoreException {
+        double scatt = subject.scattering(FakeClustering.iris());
+        //assertEquals(0.1090009, scatt, DELTA);
+    }
+
+    @Test
+    public void testDispersion() throws ScoreException {
+        double dis = subject.dispersion(FakeClustering.iris());
+//        assertEquals(1.43630554195769, dis, DELTA);
+
+        Clustering<Instance, Cluster<Instance>> c = FakeClustering.iris();
+        System.out.println("iris");
+        for (Cluster clust : c) {
+            System.out.println(clust.getCentroid().toString());
+        }
     }
 
 }

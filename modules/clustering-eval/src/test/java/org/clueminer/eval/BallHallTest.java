@@ -28,7 +28,7 @@ import org.junit.Test;
 public class BallHallTest {
 
     private static BallHall subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public BallHallTest() {
         subject = new BallHall();
@@ -45,7 +45,7 @@ public class BallHallTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.264855324859755
-        assertEquals(0.264855324859755, score, delta);
+        assertEquals(0.264855324859755, score, DELTA);
     }
 
 }

@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class DunnIndex<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -6973489229802690101L;
-    private static final String name = "Dunn index";
+    private static final String NAME = "Dunn index";
 
     public DunnIndex() {
         dm = EuclideanDistance.getInstance();
@@ -53,7 +53,7 @@ public class DunnIndex<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

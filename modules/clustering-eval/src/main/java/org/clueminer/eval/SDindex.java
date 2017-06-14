@@ -51,7 +51,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SDindex<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 4323522308319865590L;
-    private static final String name = "SD index";
+    private static final String NAME = "SD index";
 
     public SDindex() {
         dm = EuclideanDistance.getInstance();
@@ -63,7 +63,7 @@ public class SDindex<E extends Instance, C extends Cluster<E>> extends AbstractE
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**

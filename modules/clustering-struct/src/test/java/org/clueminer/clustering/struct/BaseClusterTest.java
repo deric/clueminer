@@ -51,6 +51,7 @@ public class BaseClusterTest {
     public void setUp() {
         irisDataset(); //preload
         irisClusters = new ClusterList(3);
+        irisClusters.lookupAdd(irisData);
         Cluster a = new BaseCluster(50);
         a.setName("cluster 1");
         a.setClusterId(0);

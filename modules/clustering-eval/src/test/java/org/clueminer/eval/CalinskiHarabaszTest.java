@@ -32,7 +32,7 @@ public class CalinskiHarabaszTest {
 
     private static Clustering clusters;
     private static CalinskiHarabasz subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     @BeforeClass
     public static void setUpClass() {
@@ -62,6 +62,9 @@ public class CalinskiHarabaszTest {
         double s3 = subject.score(FakeClustering.irisWrong5());
         assertEquals(true, subject.isBetter(s1, s2));
         assertEquals(true, subject.isBetter(s1, s3));
+
+        //according to NbClust
+        //assertEquals(558.058, s1, DELTA);
     }
 
     /**
@@ -83,6 +86,6 @@ public class CalinskiHarabaszTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = 3959.80613603063
-        assertEquals(3959.80613603063, score, delta);
+        assertEquals(3959.80613603063, score, DELTA);
     }
 }

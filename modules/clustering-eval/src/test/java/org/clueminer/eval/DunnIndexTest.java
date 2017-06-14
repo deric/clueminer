@@ -49,8 +49,8 @@ public class DunnIndexTest {
 
     private static final DunnIndex<Instance, Cluster<Instance>> subject = new DunnIndex<>(new EuclideanDistance());
     private static Cluster<Instance> cluster;
-    private static final CommonFixture tf = new CommonFixture();
-    private static final double delta = 1e-9;
+    private static final CommonFixture TF = new CommonFixture();
+    private static final double DELTA = 1e-9;
 
     public DunnIndexTest() {
     }
@@ -61,7 +61,7 @@ public class DunnIndexTest {
         cluster.setAttribute(0, cluster.attributeBuilder().create("x", BasicAttrType.NUMERICAL));
         cluster.setAttribute(0, cluster.attributeBuilder().create("y", BasicAttrType.NUMERICAL));
         ARFFHandler arff = new ARFFHandler();
-        assertTrue(arff.load(tf.simpleCluster(), cluster, 2));
+        assertTrue(arff.load(TF.simpleCluster(), cluster, 2));
     }
 
     /**
@@ -84,7 +84,7 @@ public class DunnIndexTest {
         ClusteringAlgorithm km = new KMeans();
         ARFFHandler arff = new ARFFHandler();
         Dataset<Instance> iris = new ArrayDataset(150, 4);
-        arff.load(tf.irisArff(), iris, 4);
+        arff.load(TF.irisArff(), iris, 4);
         Props p = new Props();
         p.putInt("k", 3);
         Clustering clusters = km.cluster(iris, p);
@@ -131,9 +131,6 @@ public class DunnIndexTest {
         out.set(j, tmp);
     }
 
-    /**
-     * Test of isBetter method, of class DunnIndex.
-     */
     @Test
     public void testCompareScore() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
@@ -141,6 +138,9 @@ public class DunnIndexTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        //result according to R's NbClust package
+        assertEquals(0.058480532147193, scoreBetter, DELTA);
     }
 
     /**
@@ -153,6 +153,6 @@ public class DunnIndexTest {
     @Test
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
-        assertEquals(0.835485600869118, score, delta);
+        assertEquals(0.835485600869118, score, DELTA);
     }
 }

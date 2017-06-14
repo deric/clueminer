@@ -26,6 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * SDbw index
  *
  * @author deric
  * @param <E>
@@ -38,12 +39,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class SDbw<E extends Instance, C extends Cluster<E>> extends SDindex<E, C> implements InternalEvaluator<E, C>, ClusterEvaluation<E, C> {
 
-    private static final String name = "S_Dbw";
+    private static final String NAME = "S_Dbw";
     private static final long serialVersionUID = 2687565191321472835L;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     public SDbw() {

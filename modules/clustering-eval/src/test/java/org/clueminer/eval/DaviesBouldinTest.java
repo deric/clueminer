@@ -29,10 +29,7 @@ import org.junit.Test;
 public class DaviesBouldinTest {
 
     private static final DaviesBouldin subject = new DaviesBouldin();
-    private static final double delta = 1e-9;
-
-    public DaviesBouldinTest() {
-    }
+    private static final double DELTA = 1e-9;
 
     @Test
     public void testGetName() {
@@ -46,6 +43,8 @@ public class DaviesBouldinTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        //assertEquals(0.680019167896978, scoreBetter, DELTA);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class DaviesBouldinTest {
         double score = subject.score(FakeClustering.int100p4());
         //TODO: according to clusterCrit it should be 0.212623030978125
         ///
-        assertEquals(0.22908933305064558, score, delta);
+        assertEquals(0.22908933305064558, score, DELTA);
     }
 
 }

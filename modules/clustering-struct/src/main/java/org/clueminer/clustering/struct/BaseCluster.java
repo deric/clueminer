@@ -116,7 +116,7 @@ public class BaseCluster<E extends Instance> extends ArrayDataset<E> implements 
             Instance avg = this.builder().build(attrCount);
             for (int i = 0; i < attrCount; i++) {
                 //use pre-computed average for each attribute
-                value = getAttribute(i).statistics(StatsNum.AVG);
+                value = getAttribute(i).statistics(StatsNum.MEAN);
                 avg.set(i, value);
             }
             centroid = (E) avg;

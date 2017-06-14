@@ -29,7 +29,7 @@ import org.junit.Test;
 public class PointBiserialTest {
 
     private final PointBiserial subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public PointBiserialTest() {
         subject = new PointBiserial();
@@ -50,6 +50,7 @@ public class PointBiserialTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
     }
 
     @Test
@@ -68,7 +69,7 @@ public class PointBiserialTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: -1.6928719863069
-        assertEquals(-1.6928719274027788, score, delta);
+        assertEquals(-1.6928719274027788, score, DELTA);
     }
 
 }

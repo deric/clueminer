@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends CalinskiHarabasz<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "Log SS Ratio";
+    private static final String NAME = "Log SS Ratio";
     private static final long serialVersionUID = 1027250256090361526L;
 
     public LogSSRatio() {
@@ -49,7 +49,7 @@ public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends Calins
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

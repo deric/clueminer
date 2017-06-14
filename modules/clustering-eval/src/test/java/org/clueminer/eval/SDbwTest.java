@@ -30,7 +30,7 @@ import org.junit.Test;
 public class SDbwTest extends InternalTest {
 
     private final SDbw subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public SDbwTest() {
         subject = new SDbw();
@@ -48,6 +48,8 @@ public class SDbwTest extends InternalTest {
 
         //should recognize "better" clustering (hand made clustering based on labels)
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+        // according to NbClust
+        //assertEquals(0.3470961, scoreBetter, DELTA);
     }
 
     @Test
@@ -81,6 +83,6 @@ public class SDbwTest extends InternalTest {
         double dis = subject.score(FakeClustering.int100p4());
         //clusterCrit = 0.0323239791483279
         //tiny difference due to variance computing
-        assertEquals(0.03224316920045716, dis, delta);
+        assertEquals(0.03224316920045716, dis, DELTA);
     }
 }

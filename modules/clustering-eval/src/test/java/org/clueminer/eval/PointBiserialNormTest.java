@@ -28,7 +28,7 @@ import org.junit.Test;
 public class PointBiserialNormTest {
 
     private final PointBiserialNorm subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public PointBiserialNormTest() {
         subject = new PointBiserialNorm();
@@ -44,6 +44,8 @@ public class PointBiserialNormTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+        //NbClust
+        //assertEquals(0.680019167896978, scoreBetter, DELTA);
     }
 
 }
