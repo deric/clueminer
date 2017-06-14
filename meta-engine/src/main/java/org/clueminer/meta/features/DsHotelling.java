@@ -30,6 +30,7 @@ import org.clueminer.utils.Props;
 /**
  *
  * @author deric
+ * @param <E>
  */
 public class DsHotelling<E extends Instance> implements DataStats<E> {
 

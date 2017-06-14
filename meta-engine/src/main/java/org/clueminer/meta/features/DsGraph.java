@@ -36,6 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = DataStats.class)
 public class DsGraph<E extends Instance> implements DataStats<E> {

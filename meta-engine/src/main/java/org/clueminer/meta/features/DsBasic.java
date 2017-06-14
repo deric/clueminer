@@ -27,6 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Features commonly used for algorithm selection.
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = DataStats.class)
 public class DsBasic<E extends Instance> implements DataStats<E> {

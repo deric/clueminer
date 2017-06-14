@@ -30,6 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  * The Pearson median skewness, or second skewness coefficient
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = DataStats.class)
 public class DsMedianSkewness<E extends Instance> implements DataStats<E> {

@@ -30,6 +30,7 @@ import org.openide.util.lookup.ServiceProvider;
  * Standard deviation of all attribute's first quartiles divided by their means.
  *
  * @author deric
+ * @param <E>
  */
 @ServiceProvider(service = DataStats.class)
 public class DsCVQ<E extends Instance> implements DataStats<E> {
