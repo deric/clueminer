@@ -62,12 +62,12 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
     /**
      * The minimum number of points required to form a cluster
      */
-    @Param(name = MIN_PTS, description = "minimum number of points required to form a cluster", required = true, min = 1, max = Double.MAX_VALUE)
+    @Param(name = MIN_PTS, description = "minimum number of points required to form a cluster", required = true, min = 1, max = 50)
     private int minPts;
     /**
      * The range of neighborhood.
      */
-    @Param(name = EPS, description = "the range of a point neighborhood", required = true, min = 1e-9, max = Double.MAX_VALUE)
+    @Param(name = EPS, description = "the range of a point neighborhood", required = true, min = 1e-6, max = 1000)
     private double radius;
 
     private RNNSearch<E> nns;
