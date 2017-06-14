@@ -54,6 +54,7 @@ import org.clueminer.evolution.hac.SimpleIndividual;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
+import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.clueminer.utils.StopWatch;
@@ -150,7 +151,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         ClusteringFactory cf = ClusteringFactory.getInstance();
         Props conf;
         for (ClusteringAlgorithm alg : cf.getAll()) {
-            conf = getConfig().copy();
+            conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
             conf.put(AlgParams.ALG, alg.getName());
             execute(dataset, alg, conf);
         }
