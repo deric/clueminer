@@ -176,12 +176,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 clusteringsRejected++;
             }
 
-            if (ph != null) {
-                ph.progress(cnt);
-            }
             if (maxSolutions > 0 && cnt >= maxSolutions) {
                 LOG.info("exhaused search limit {}. Stopping meta search.", maxSolutions);
+                ph.finish();
                 return;
+            }
+            if (ph != null) {
+                ph.progress(cnt);
             }
             i++;
         } while (i < repeat);
@@ -219,11 +220,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         double diverse;
         while (it.hasNext()) {
             other = it.next();
-            diverse = diversity(other, c);
-            LOG.trace("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
-            if (diverse < diversityThreshold) {
-                LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
-                return false;
+            if (other != null) {
+                diverse = diversity(other, c);
+                LOG.trace("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
+                if (diverse < diversityThreshold) {
+                    LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
+                    return false;
+                }
             }
         }
 
@@ -284,9 +287,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
         printStats(queue);
-        for (String str : blacklist) {
-            LOG.debug("blacklist: {}", str);
-        }
+        /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
+        } */
         return queue;
     }
 
@@ -300,15 +302,18 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
         int n = 0;
+        Props props;
         while (it.hasNext()) {
             if (expandOnlyTop && n < topN) {
                 return;
             }
             c = it.next();
-            Props props = c.getParams();
-            LOG.debug("expanding solution#{}", n + 1, props);
-            expand(c, props);
-            n++;
+            if (c != null) {
+                props = c.getParams();
+                LOG.debug("expanding solution#{}", n + 1, props);
+                expand(c, props);
+                n++;
+            }
         }
     }
 
@@ -419,12 +424,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                     }
                     n++;
                 }
-            } else {
-                LOG.warn("encoutered null clustering");
             }
         }
-        LOG.info("avg score in whole population: {}, top {} results: {}",
-                df.format(score / n), numResults, df.format(topScore / numResults));
+        LOG.info("avg score in whole population ({}): {}, top {} results: {}",
+                n, df.format(score / n), numResults, df.format(topScore / numResults));
     }
 
     public void clearObjectives() {
