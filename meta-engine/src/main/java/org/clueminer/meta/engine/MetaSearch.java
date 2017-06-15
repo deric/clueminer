@@ -168,8 +168,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
         do {
             Clustering<E, C> c = cluster(dataset, conf);
+            cnt++;
             if (isValid(c)) {
-                c.setId(cnt++);
+                c.setId(gen++);
                 queue.add(c);
                 fireResult(queue);
             } else {
