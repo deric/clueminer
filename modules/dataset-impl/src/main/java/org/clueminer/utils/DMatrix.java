@@ -4,6 +4,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.AbstractMatrix;
+import org.clueminer.math.matrix.JMatrix;
 
 /**
  * Dataset matrix, a facade for accessing numerical datasets.
@@ -65,7 +66,14 @@ public class DMatrix extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix transpose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Matrix X = new JMatrix(columnsCount(), rowsCount());
+        double[][] C = X.getArray();
+        for (int i = 0; i < rowsCount(); i++) {
+            for (int j = 0; j < columnsCount(); j++) {
+                C[j][i] = get(i, j);
+            }
+        }
+        return X;
     }
 
     @Override
