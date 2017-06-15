@@ -29,26 +29,24 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Friedman index
+ * Rubin index
  *
  * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for grouping data."
  * Journal of the American Statistical Association 62.320 (1967): 1159-1178.
  *
  * @author deric
- * @param <E>
- * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class Friedman<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
+public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String NAME = "Friedman";
+    private static final String NAME = "Rubin";
     private static final long serialVersionUID = -1636596859242265112L;
 
-    public Friedman() {
+    public Rubin() {
         dm = new EuclideanDistance();
     }
 
-    public Friedman(Distance dist) {
+    public Rubin(Distance dist) {
         this.dm = dist;
     }
 
@@ -81,15 +79,17 @@ public class Friedman<E extends Instance, C extends Cluster<E>> extends Abstract
          * TODO: some matrix operations might not be necessary
          * */
         Matrix ZT = Z.transpose();
-        Matrix xbar = ZT.times(Z).inverse().times(ZT).times(X);
+        // cluster sizes on diagonal -- inverse
+        Matrix TIZ = ZT.times(Z).inverse();
+        Matrix xbar = TIZ.times(ZT).times(X);
         //xbar.print(3, 3);
         Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
 
         //W_q
         Matrix Wq = TT.minus(B);
-        //solve(W) -- Inverse of A where A is a square matrix.
-        //<- sum(diag(solve(W)*B))
-        return Wq.inverse().arrayTimesEquals(B).trace();
+
+        //<- sum(diag(P))/sum(diag(W))
+        return TT.trace() / Wq.trace();
     }
 
     /**
