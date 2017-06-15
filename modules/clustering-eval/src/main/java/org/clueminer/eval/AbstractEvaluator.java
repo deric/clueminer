@@ -217,8 +217,10 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     /**
      * Within group squared scatter - distances between centroid.
      *
+     * also known as trace(W_q)
+     *
      * @param clusters
-     * @return
+     * @return trace(W_q)
      */
     public double wgss(Clustering<E, C> clusters) {
         double wgss = 0.0, dist;

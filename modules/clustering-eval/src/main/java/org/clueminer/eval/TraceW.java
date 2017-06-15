@@ -59,17 +59,7 @@ public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        double wgss = 0.0, dist;
-        Cluster clust;
-        for (int i = 0; i < clusters.size(); i++) {
-            clust = clusters.get(i);
-            for (int j = 0; j < clust.size(); j++) {
-                dist = dm.measure(clust.get(j), clust.getCentroid());
-                wgss += dist * dist;
-            }
-        }
-
-        return wgss;
+        return wgss(clusters);
     }
 
     @Override
