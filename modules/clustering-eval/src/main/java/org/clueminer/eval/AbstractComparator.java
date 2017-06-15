@@ -30,7 +30,7 @@ import org.clueminer.dataset.api.Instance;
  */
 public abstract class AbstractComparator<E extends Instance, C extends Cluster<E>> implements ClusterEvaluation<E, C> {
 
-    protected static final double eps = 1e-8;
+    protected static final double EPS = 1e-8;
 
     /**
      * 0 when arguments are the same (within EPS range). 1 when score1 is worser
@@ -50,7 +50,7 @@ public abstract class AbstractComparator<E extends Instance, C extends Cluster<E
             score2 = replaceNaN(score2);
         }
 
-        if (Math.abs(score1 - score2) < eps) {
+        if (Math.abs(score1 - score2) < EPS) {
             return 0;
         }
         if (isMaximized()) { //descending order [10, 9, 8, ...]

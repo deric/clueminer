@@ -19,17 +19,20 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This index has been one of the most popular indices suggested for use in clustering context
+ * Trace of within clusters pooled covariance matrix
  *
- * (Milligan and Cooper 1985; Edwards and Cavalli-Sforza 1965; Friedman and Rubin 1967;
- * Orloci 1967; Fukunaga and Koontz 1970).
+ * Trcovw = tr(cov(W_q)))
  *
  * Milligan, Glenn W., and Martha C. Cooper. "An examination of procedures for
  * determining the number of clusters in a data set." Psychometrika 50.2 (1985): 159-179.
@@ -39,16 +42,16 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
+public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final long serialVersionUID = 6195054290041907628L;
-    private static final String NAME = "Trace W";
+    private static final String NAME = "TrcovW";
+    private static final long serialVersionUID = 60822019698264781L;
 
-    public TraceW() {
+    public Trcovw() {
         dm = new EuclideanDistance();
     }
 
-    public TraceW(Distance dist) {
+    public Trcovw(Distance dist) {
         this.dm = dist;
     }
 
@@ -59,17 +62,40 @@ public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        double wgss = 0.0, dist;
-        Cluster clust;
-        for (int i = 0; i < clusters.size(); i++) {
-            clust = clusters.get(i);
-            for (int j = 0; j < clust.size(); j++) {
-                dist = dm.measure(clust.get(j), clust.getCentroid());
-                wgss += dist * dist;
-            }
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing original dataset");
         }
+        Matrix X = dataset.asMatrix();
+        //a matrix d x d (d - number of attributes)
+        // T = X'X
+        Matrix TT = X.transpose().times(X);
 
-        return wgss;
+        //assign matrix - (index, cluster) = 1.0
+        Matrix Z = new JMatrix(dataset.size(), clusters.size());
+        int k = 0;
+        for (Cluster<E> c : clusters) {
+            for (E inst : c) {
+                Z.set(inst.getIndex(), k, 1.0);
+            }
+            k++;
+        }
+        /**
+         * TODO: some matrix operations might not be necessary
+         * */
+        Matrix ZT = Z.transpose();
+        // cluster sizes on diagonal -- inverse
+        Matrix TIZ = ZT.times(Z).inverse();
+        Matrix xbar = TIZ.times(ZT).times(X);
+        //xbar.print(3, 3);
+        Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
+
+        //W_q
+        Matrix Wq = TT.minus(B);
+
+        // trace(W_q)
+        //sc = Wq.trace();
+        return Maths.covariance(Wq).trace();
     }
 
     @Override

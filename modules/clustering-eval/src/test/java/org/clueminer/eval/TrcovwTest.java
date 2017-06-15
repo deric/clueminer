@@ -25,13 +25,13 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class TraceWTest {
+public class TrcovwTest {
 
-    private final TraceW subject;
+    private final Trcovw subject;
     private static final double DELTA = 1e-9;
 
-    public TraceWTest() {
-        subject = new TraceW();
+    public TrcovwTest() {
+        subject = new Trcovw();
     }
 
     @Test
@@ -43,30 +43,7 @@ public class TraceWTest {
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
 
         // value according to R's NbClust package
-        assertEquals(89.2974000000007, scoreBetter, DELTA);
-    }
-
-    /**
-     * Check against definition (and tests in R package clusterCrit)
-     * https://cran.r-project.org/web/packages/clusterCrit/index.html
-     *
-     * NOTE: There's a small problem with precision of floating point
-     * operations. First 7 decimal digits seems to match.
-     */
-    @Test
-    public void testClusterCrit() throws ScoreException {
-        double score = subject.score(FakeClustering.int100p4());
-        //clustCrit: 105.942129943902
-        assertEquals(105.942129943902, score, DELTA);
-    }
-
-    @Test
-    public void testSpeed() throws ScoreException {
-        long ts = System.currentTimeMillis();
-        double sc1 = subject.score(FakeClustering.wineClustering());
-        long tot = System.currentTimeMillis() - ts;
-        System.out.println("tracew(wine) took " + tot + " ms");
-        assertEquals(5966.055555555556, sc1, DELTA);
+        assertEquals(357.162304790009, scoreBetter, DELTA);
     }
 
 }
