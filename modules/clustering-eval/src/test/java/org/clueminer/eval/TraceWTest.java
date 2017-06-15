@@ -28,7 +28,7 @@ import org.junit.Test;
 public class TraceWTest {
 
     private final TraceW subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public TraceWTest() {
         subject = new TraceW();
@@ -41,6 +41,9 @@ public class TraceWTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        // value according to R's NbClust package
+        assertEquals(89.2974000000007, scoreBetter, DELTA);
     }
 
     /**
@@ -54,7 +57,7 @@ public class TraceWTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 105.942129943902
-        assertEquals(105.942129943902, score, delta);
+        assertEquals(105.942129943902, score, DELTA);
     }
 
 }

@@ -28,7 +28,7 @@ import org.junit.Test;
 public class ScottSymonsTest {
 
     private final ScottSymons subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public ScottSymonsTest() {
         subject = new ScottSymons();
@@ -41,11 +41,12 @@ public class ScottSymonsTest {
         double s3 = subject.score(FakeClustering.irisWrong5());
         assertEquals(false, subject.isBetter(s1, s2));
         assertEquals(false, subject.isBetter(s1, s3));
+
+        // value according to R's NbClust package
+        //assertEquals(1294.41449050555, s1, DELTA);
+        //TODO: current value: -1655.558816645169
     }
 
-    /**
-     * Test of isBetter method, of class CalinskiHarabasz.
-     */
     @Test
     public void testCompareScore() {
         assertEquals(true, subject.isBetter(2, 20));
@@ -62,7 +63,7 @@ public class ScottSymonsTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = -1627.96174403586
-        assertEquals(-1627.961692875162, score, delta);
+        assertEquals(-1627.961692875162, score, DELTA);
     }
 
 }

@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 6195054290041907628L;
-    private static String name = "Trace W";
+    private static final String NAME = "Trace W";
 
     public TraceW() {
         dm = new EuclideanDistance();
@@ -50,7 +50,7 @@ public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

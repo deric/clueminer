@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class ScottSymons<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "Scott-Symons";
+    private static final String NAME = "Scott-Symons";
     private static final long serialVersionUID = 8534361956815910728L;
 
     public ScottSymons() {
@@ -47,7 +47,7 @@ public class ScottSymons<E extends Instance, C extends Cluster<E>> extends Abstr
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
