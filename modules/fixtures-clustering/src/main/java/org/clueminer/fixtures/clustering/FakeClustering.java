@@ -527,6 +527,7 @@ public class FakeClustering {
                 int k = 4;
                 Cluster c;
                 int100p4 = new ClusterList(k);
+                int100p4.lookupAdd(data);
                 for (int i = 0; i < k; i++) {
                     c = int100p4.createCluster(i);
                     c.setAttributes(data.getAttributes());

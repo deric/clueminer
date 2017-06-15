@@ -26,7 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This objective is called W/B in Milligan (1981)
+ * McClain-Rao index. This objective is also called W/B in Milligan (1981)
  *
  * @param <E>
  * @param <C>
@@ -40,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class McClainRao<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String NAME = "McClain-Rao";
+    private static String NAME = "McClain-Rao (WB)";
     private static final long serialVersionUID = -3222061698654228829L;
 
     public McClainRao() {

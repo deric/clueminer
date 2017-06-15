@@ -46,4 +46,20 @@ public class TrcovwTest {
         assertEquals(357.162304790009, scoreBetter, DELTA);
     }
 
+    @Test
+    public void testSpeed1() throws ScoreException {
+        long start = System.currentTimeMillis();
+        double sc1 = subject.score(FakeClustering.iris());
+        long end = System.currentTimeMillis();
+        System.out.println("sc1 took " + (end - start) + " ms, score " + sc1);
+    }
+
+    @Test
+    public void testSpeed2() throws ScoreException {
+        long start = System.currentTimeMillis();
+        double sc2 = subject.score2(FakeClustering.iris());
+        long end = System.currentTimeMillis();
+        System.out.println("sc2 took " + (end - start) + " ms, score " + sc2);
+    }
+
 }

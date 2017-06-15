@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class SilhoutetteSqrt<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
-    private static final String name = "Silhouette-sqrt";
+    private static final String NAME = "Silhouette-sqrt";
     private static final long serialVersionUID = -6749580294703273126L;
 
     public SilhoutetteSqrt() {
@@ -42,7 +42,7 @@ public class SilhoutetteSqrt<E extends Instance, C extends Cluster<E>> extends S
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
 }

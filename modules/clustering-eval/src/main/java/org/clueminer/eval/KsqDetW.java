@@ -22,13 +22,15 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * k^2 |W| criterion
+ * Marriott index, KsqDetW or k^2 |W| criterion
  * Best partition size is determined by max score difference
+ *
+ *
+ * Marriott, F. H. C. "Practical problems in a method of cluster analysis." Biometrics (1971): 501-514.
  *
  * @author deric
  * @param <E>
@@ -37,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class KsqDetW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "KsqDetW";
+    private static final String NAME = "Marriott (KsqDetW)";
     private static final long serialVersionUID = 3727657004516559539L;
 
     public KsqDetW() {
@@ -50,15 +52,15 @@ public class KsqDetW<E extends Instance, C extends Cluster<E>> extends AbstractE
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         double res = clusters.size() * clusters.size();
         if (clusters.size() > 0) {
-            Matrix wg = withinGroupScatter(clusters);
-            res *= wg.det();
+            //res *= wqMatrix(clusters).det();
+            res *= withinGroupScatter(clusters).det();
         }
         return res;
     }

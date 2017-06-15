@@ -28,7 +28,7 @@ import org.junit.Test;
 public class RayTuriTest {
 
     private final RayTuri subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public RayTuriTest() {
         subject = new RayTuri();
@@ -54,7 +54,7 @@ public class RayTuriTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.017348560185186
-        assertEquals(0.017348560185186, score, delta);
+        assertEquals(0.017348560185186, score, DELTA);
     }
 
 }

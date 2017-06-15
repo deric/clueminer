@@ -27,6 +27,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Very similar to {@link Rubin}
  *
  * @author deric
  * @param <E>

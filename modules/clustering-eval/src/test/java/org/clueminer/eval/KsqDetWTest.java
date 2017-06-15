@@ -28,7 +28,7 @@ import org.junit.Test;
 public class KsqDetWTest {
 
     private final KsqDetW subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-7;
 
     public KsqDetWTest() {
         subject = new KsqDetW();
@@ -41,6 +41,9 @@ public class KsqDetWTest {
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        // value according to R's NbClust package
+        assertEquals(198871.895339518, scoreBetter, DELTA);
     }
 
     /**
@@ -54,6 +57,6 @@ public class KsqDetWTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 44740.3406899463
-        assertEquals(44740.3406899463, score, delta);
+        assertEquals(44740.3406899463, score, DELTA);
     }
 }

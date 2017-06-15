@@ -28,7 +28,7 @@ import org.junit.Test;
 public class XieBeniTest {
 
     private final XieBeni subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public XieBeniTest() {
         subject = new XieBeni();
@@ -54,7 +54,7 @@ public class XieBeniTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.0776720010784792
-        assertEquals(0.0776720010784792, score, delta);
+        assertEquals(0.0776720010784792, score, DELTA);
     }
 
 }

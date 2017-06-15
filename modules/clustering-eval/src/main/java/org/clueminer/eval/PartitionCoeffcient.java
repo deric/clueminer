@@ -31,12 +31,12 @@ import org.clueminer.utils.Props;
  */
 public class PartitionCoeffcient<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String name = "PC";
+    private static final String NAME = "PC";
     private static final long serialVersionUID = 888558324967098222L;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

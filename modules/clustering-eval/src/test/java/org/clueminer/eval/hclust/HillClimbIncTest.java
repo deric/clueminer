@@ -62,7 +62,7 @@ public class HillClimbIncTest {
         pref.put(Algorithm.LOG, true);
         //TODO: this combination of parameters does not return valid clustering
         pref.put(AlgParams.STD, "Maximum");
-        pref.put(AlgParams.CUTOFF_SCORE, "KsqDetW");
+        pref.put(AlgParams.CUTOFF_SCORE, "Marriott (KsqDetW)");
         Clustering<Instance, Cluster<Instance>> clust = exec.clusterRows(data, pref);
         //assertEquals(36, clust.size());
         System.out.println("clu" + clust.toString());

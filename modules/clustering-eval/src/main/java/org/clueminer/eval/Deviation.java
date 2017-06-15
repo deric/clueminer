@@ -35,6 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
  *
+ * @see similar index {@link TraceW}, {@link SumOfSquaredErrors}, {@link BallHall}
+ *
  * @author Tomas Barton
  */
 @ServiceProvider(service = InternalEvaluator.class)

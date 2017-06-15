@@ -34,6 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
  * analysis and pattern classification. STANFORD RESEARCH INST MENLO PARK CA,
  * 1965.
  *
+ * @see similar to {@link TraceW}, {@link Deviation}, {@link SumOfSquaredErrors}
+ *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)
@@ -51,25 +53,7 @@ public class BallHall<E extends Instance, C extends Cluster<E>> extends Abstract
         return NAME;
     }
 
-    /**
-     * Score according to NbClust
-     *
-     * @param clusters
-     * @param params
-     * @return
-     */
     public double score(Clustering<E, C> clusters, Props params) {
-        return wgss(clusters) / clusters.size();
-    }
-
-    /**
-     * Score according to clusterCrit
-     *
-     * @param clusters
-     * @param params
-     * @return
-     */
-    public double scoreClustCrit(Clustering<E, C> clusters, Props params) {
         double sum = 0;
         Cluster<E> clust;
         double error, tmpSum;

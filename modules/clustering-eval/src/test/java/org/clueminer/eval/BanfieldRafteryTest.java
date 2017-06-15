@@ -28,7 +28,7 @@ import org.junit.Test;
 public class BanfieldRafteryTest extends InternalTest {
 
     private final BanfieldRaftery subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public BanfieldRafteryTest() {
         subject = new BanfieldRaftery();
@@ -50,7 +50,7 @@ public class BanfieldRafteryTest extends InternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), DELTA);
     }
 
     /**
@@ -64,7 +64,7 @@ public class BanfieldRafteryTest extends InternalTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clusterCrit = -534.545225046529
-        assertEquals(-534.545225046529, score, delta);
+        assertEquals(-534.545225046529, score, DELTA);
     }
 
 }

@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class LogDetRatio<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "Log Det Ratio";
+    private static final String NAME = "Log Det Ratio";
     private static final long serialVersionUID = -353270997388847921L;
 
     public LogDetRatio() {
@@ -48,7 +48,7 @@ public class LogDetRatio<E extends Instance, C extends Cluster<E>> extends Abstr
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

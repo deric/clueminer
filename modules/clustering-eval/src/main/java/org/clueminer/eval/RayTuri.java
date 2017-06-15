@@ -34,6 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
  * Proceedings of the 4th international conference on advances in pattern
  * recognition and digital techniques. 1999.
  *
+ * @see Similar index {@link XieBeni}
+ *
  * @author deric
  */
 @ServiceProvider(service = InternalEvaluator.class)

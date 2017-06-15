@@ -31,6 +31,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Rubin index
  *
+ * Very similar to {@link DetRatio}
+ *
  * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for grouping data."
  * Journal of the American Statistical Association 62.320 (1967): 1159-1178.
  *

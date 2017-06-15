@@ -34,6 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
  * Milligan, Glenn W., and Martha C. Cooper. "An examination of procedures for
  * determining the number of clusters in a data set." Psychometrika 50.2 (1985): 159-179.
  *
+ * @see similar index {@link Deviation}
+ *
  * @author deric
  * @param <E>
  * @param <C>

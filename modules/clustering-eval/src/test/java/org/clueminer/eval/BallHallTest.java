@@ -38,13 +38,13 @@ public class BallHallTest {
     @Test
     public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
-        double scoreWorser = subject.score(FakeClustering.irisWrong5());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
 
-        // value according to R's NbClust package
-        assertEquals(29.7658, scoreBetter, DELTA);
+        // according to R's NbClust package the would be same as "Sum of squared errors"
+        assertEquals(0.5953160000000001, scoreBetter, DELTA);
     }
 
     /**
@@ -56,7 +56,7 @@ public class BallHallTest {
      */
     @Test
     public void testClusterCrit() throws ScoreException {
-        double score = subject.scoreClustCrit(FakeClustering.int100p4(), new Props());
+        double score = subject.score(FakeClustering.int100p4(), new Props());
         //clustCrit: 0.264855324859755
         assertEquals(0.264855324859755, score, DELTA);
     }

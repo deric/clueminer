@@ -19,12 +19,9 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
-import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
-import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -62,40 +59,19 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
-        if (dataset == null) {
-            throw new RuntimeException("missing original dataset");
-        }
-        Matrix X = dataset.asMatrix();
-        //a matrix d x d (d - number of attributes)
-        // T = X'X
-        Matrix TT = X.transpose().times(X);
-
-        //assign matrix - (index, cluster) = 1.0
-        Matrix Z = new JMatrix(dataset.size(), clusters.size());
-        int k = 0;
-        for (Cluster<E> c : clusters) {
-            for (E inst : c) {
-                Z.set(inst.getIndex(), k, 1.0);
-            }
-            k++;
-        }
-        /**
-         * TODO: some matrix operations might not be necessary
-         * */
-        Matrix ZT = Z.transpose();
-        // cluster sizes on diagonal -- inverse
-        Matrix TIZ = ZT.times(Z).inverse();
-        Matrix xbar = TIZ.times(ZT).times(X);
-        //xbar.print(3, 3);
-        Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
-
-        //W_q
-        Matrix Wq = TT.minus(B);
-
         // trace(W_q)
         //sc = Wq.trace();
-        return Maths.covariance(Wq).trace();
+        return Maths.covariance(wqMatrix(clusters)).trace();
+    }
+
+    /**
+     * Alternate computing method
+     *
+     * @param clusters
+     * @return
+     */
+    public double score2(Clustering<E, C> clusters) {
+        return Maths.covariance(withinGroupScatter(clusters)).trace();
     }
 
     @Override

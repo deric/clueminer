@@ -26,6 +26,13 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
+/**
+ * min-max cut
+ *
+ * @author deric
+ * @param <E>
+ * @param <C>
+ */
 @ServiceProvider(service = InternalEvaluator.class)
 public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 

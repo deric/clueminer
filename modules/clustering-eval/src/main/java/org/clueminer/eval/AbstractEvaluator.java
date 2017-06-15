@@ -339,22 +339,6 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     /**
-     * Computes within group (cluster) scatter matrix
-     *
-     * @param clusters
-     * @return
-     */
-    public Matrix withinGroupScatter(Clustering<E, C> clusters) {
-        //number of dimensions
-        int m = clusters.get(0).attributeCount();
-        Matrix wg = new JMatrix(m, m);
-        for (Cluster clust : clusters) {
-            wg.plusEquals(wgScatter(clust));
-        }
-        return wg;
-    }
-
-    /**
      * Trace of within-group matrix
      *
      * @param clust
@@ -387,6 +371,55 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         }
 
         return trace;
+    }
+
+    /**
+     * Computes within group (cluster) scatter matrix
+     *
+     * @param clusters
+     * @return
+     */
+    public Matrix withinGroupScatter(Clustering<E, C> clusters) {
+        //number of dimensions
+        int m = clusters.get(0).attributeCount();
+        Matrix wg = new JMatrix(m, m);
+        for (Cluster<E> clust : clusters) {
+            wg.plusEquals(wgScatter(clust));
+        }
+        return wg;
+    }
+
+    public Matrix wqMatrix(Clustering<E, C> clusters) {
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing original dataset");
+        }
+        Matrix X = dataset.asMatrix();
+        //a matrix d x d (d - number of attributes)
+        // T = X'X
+        Matrix TT = X.transpose().times(X);
+
+        //assign matrix - (index, cluster) = 1.0
+        Matrix Z = new JMatrix(dataset.size(), clusters.size());
+        int k = 0;
+        for (Cluster<E> c : clusters) {
+            for (E inst : c) {
+                Z.set(inst.getIndex(), k, 1.0);
+            }
+            k++;
+        }
+        /**
+         * TODO: some matrix operations might not be necessary
+         * */
+        Matrix ZT = Z.transpose();
+        // cluster sizes on diagonal -- inverse
+        Matrix TIZ = ZT.times(Z).inverse();
+        Matrix xbar = TIZ.times(ZT).times(X);
+        //xbar.print(3, 3);
+        Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
+
+        //W_q
+        return TT.minus(B);
     }
 
     public KNNSearch<E> getKnn(Clustering<E, C> clusters, Props params) {
