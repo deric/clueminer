@@ -51,8 +51,25 @@ public class BallHall<E extends Instance, C extends Cluster<E>> extends Abstract
         return NAME;
     }
 
-    @Override
+    /**
+     * Score according to NbClust
+     *
+     * @param clusters
+     * @param params
+     * @return
+     */
     public double score(Clustering<E, C> clusters, Props params) {
+        return wgss(clusters) / clusters.size();
+    }
+
+    /**
+     * Score according to clusterCrit
+     *
+     * @param clusters
+     * @param params
+     * @return
+     */
+    public double scoreClustCrit(Clustering<E, C> clusters, Props params) {
         double sum = 0;
         Cluster<E> clust;
         double error, tmpSum;
@@ -67,6 +84,7 @@ public class BallHall<E extends Instance, C extends Cluster<E>> extends Abstract
             }
             sum += tmpSum / clust.size();
         }
+
         return sum / clusters.size();
     }
 

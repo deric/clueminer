@@ -18,6 +18,7 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -34,6 +35,18 @@ public class BallHallTest {
         subject = new BallHall();
     }
 
+    @Test
+    public void testIris() throws ScoreException {
+        double scoreBetter = subject.score(FakeClustering.iris());
+        double scoreWorser = subject.score(FakeClustering.irisWrong5());
+
+        //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        // value according to R's NbClust package
+        assertEquals(29.7658, scoreBetter, DELTA);
+    }
+
     /**
      * Check against definition (and tests in R package clusterCrit)
      * https://cran.r-project.org/web/packages/clusterCrit/index.html
@@ -43,7 +56,7 @@ public class BallHallTest {
      */
     @Test
     public void testClusterCrit() throws ScoreException {
-        double score = subject.score(FakeClustering.int100p4());
+        double score = subject.scoreClustCrit(FakeClustering.int100p4(), new Props());
         //clustCrit: 0.264855324859755
         assertEquals(0.264855324859755, score, DELTA);
     }
