@@ -17,7 +17,6 @@
 package org.clueminer.clustering.algorithm;
 
 import java.util.Arrays;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ExecutorService;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;
@@ -67,11 +66,11 @@ public class MeanShift<E extends Instance, C extends Cluster<E>> extends Algorit
         int[] designations = new int[dataset.size()];
         Clustering<E, C> result;
         ExecutorService threadpool = null;
-        try {
-            boolean[] converged = new boolean[dataset.size()];
-            Arrays.fill(converged, false);
+        //try {
+        boolean[] converged = new boolean[dataset.size()];
+        Arrays.fill(converged, false);
 
-            /*  final KernelFunction k = mkde.getKernelFunction();
+        /*  final KernelFunction k = mkde.getKernelFunction();
             if (threadpool == null) {
                 mkde.setUsingData(dataset);
             } else {
@@ -91,17 +90,16 @@ public class MeanShift<E extends Instance, C extends Cluster<E>> extends Algorit
             }
 
             assignmentStep(converged, xit, designations);*/
+        result = (Clustering<E, C>) Clusterings.newList(5, dataset);
 
-            result = (Clustering<E, C>) Clusterings.newList(5, dataset);
-
-            return result;
-        } catch (InterruptedException ex) {
+        return result;
+        /*        } catch (InterruptedException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
         } catch (BrokenBarrierException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new RuntimeException(ex);
-        }
+        }*/
     }
 
     @Override
