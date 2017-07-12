@@ -30,6 +30,7 @@ import org.clueminer.dataset.api.Plotter;
 import org.clueminer.dataset.api.PlotterFactory;
 import org.clueminer.dataset.api.Statistics;
 import org.clueminer.dataset.api.Stats;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.math.Interpolator;
 import org.clueminer.math.Vector;
 import org.clueminer.stats.NumericalStats;
@@ -339,17 +340,17 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
 
     @Override
     public double getMin() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return statistics(StatsNum.MIN);
     }
 
     @Override
     public double getMax() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return statistics(StatsNum.MAX);
     }
 
     @Override
     public double getStdDev() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return stdDev();
     }
 
     @Override
@@ -402,6 +403,28 @@ public class XYInstance extends AbstractInstance<Double> implements Instance<Dou
     @Override
     public double[] asArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double mean() {
+        return statistics(StatsNum.MEAN);
+    }
+
+    @Override
+    public double variance() {
+        return statistics(StatsNum.VARIANCE);
+    }
+
+    @Override
+    public double stdDev() {
+        return statistics(StatsNum.STD_DEV);
+    }
+
+    @Override
+    public double[] toArray() {
+        double[] res = new double[size()];
+        System.arraycopy(y, 0, res, 0, size());
+        return res;
     }
 
 }

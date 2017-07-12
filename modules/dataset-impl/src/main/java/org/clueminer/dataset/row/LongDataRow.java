@@ -27,6 +27,8 @@ import org.clueminer.math.Vector;
  */
 public class LongDataRow extends DataRow<Long> implements Iterable<Long>, Vector<Long>, Instance<Long> {
 
+    private static final long serialVersionUID = -2894628044268002362L;
+
     /**
      * last is pointing to next empty space
      */
@@ -228,6 +230,11 @@ public class LongDataRow extends DataRow<Long> implements Iterable<Long>, Vector
     @Override
     public Iterator<Long> iterator() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[] toArray() {
+        return arrayCopy();
     }
 
 }

@@ -210,7 +210,7 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
     }
 
     @Override
-    public Double mean() {
+    public double mean() {
         double m = 0;
         for (int i = 0; i < size(); i++) {
             m += get(i);
@@ -219,7 +219,7 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
     }
 
     @Override
-    public Double variance() {
+    public double variance() {
         double mu = mean();
         double variance = 0;
 
@@ -237,7 +237,7 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
     }
 
     @Override
-    public Double stdDev() {
+    public double stdDev() {
         return Math.sqrt(variance());
     }
 

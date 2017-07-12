@@ -149,6 +149,38 @@ public abstract class AbstractTimeInstance<E extends Number> extends AbstractIns
         return Math.pow(norm, 1.0 / p);
     }
 
+    @Override
+    public double mean() {
+        double m = 0;
+        for (int i = 0; i < size(); i++) {
+            m += get(i);
+        }
+        return m / size();
+    }
+
+    @Override
+    public double variance() {
+        return Math.sqrt(variance());
+    }
+
+    @Override
+    public double stdDev() {
+        double mu = mean();
+        double variance = 0;
+
+        double N = size();
+
+        int used = 0;
+        for (int i = 0; i < N; i++) {
+            used++;
+            variance += Math.pow(get(i) - mu, 2) / N;
+        }
+        //Now add all the zeros we skipped into it
+        variance += (N - used) * Math.pow(0 - mu, 2) / N;
+
+        return variance;
+    }
+
     /**
      * {@inheritDoc }
      */

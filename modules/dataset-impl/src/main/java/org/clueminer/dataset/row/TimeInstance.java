@@ -362,4 +362,9 @@ public class TimeInstance<E extends DataItem> extends AbstractTimeInstance<E> im
         return new TimeInstance(this.size());
     }
 
+    @Override
+    public double[] toArray() {
+        return arrayCopy();
+    }
+
 }

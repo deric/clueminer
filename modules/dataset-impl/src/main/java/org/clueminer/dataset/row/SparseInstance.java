@@ -421,4 +421,9 @@ public class SparseInstance extends DataRow implements Instance, Iterable<Double
 
         }
     }
+
+    @Override
+    public double[] toArray() {
+        return arrayCopy();
+    }
 }

@@ -148,19 +148,19 @@ public interface Vector<T extends Number> {
      *
      * @return mean (average) value
      */
-    T mean();
+    double mean();
 
     /**
      *
      * @return vector's variance
      */
-    T variance();
+    double variance();
 
     /**
      *
      * @return vector's standard deviation
      */
-    T stdDev();
+    double stdDev();
 
     /**
      * Will return the same underlying Vector structure without any values.

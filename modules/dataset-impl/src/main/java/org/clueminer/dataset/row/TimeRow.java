@@ -375,6 +375,13 @@ public class TimeRow<E extends Number> extends AbstractTimeInstance<E> implement
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public double[] toArray() {
+        double[] res = new double[size()];
+        System.arraycopy(data, 0, res, 0, size());
+        return res;
+    }
+
     class InstanceValueIterator<E extends Number> implements Iterator<E> {
 
         private int index = 0;

@@ -316,6 +316,11 @@ public class IntegerDataRow extends DataRow<Integer> implements Iterable<Integer
         set(index, (int) value);
     }
 
+    @Override
+    public double[] toArray() {
+        return arrayCopy();
+    }
+
     class InstanceValueIterator implements Iterator<Integer> {
 
         private int index = 0;

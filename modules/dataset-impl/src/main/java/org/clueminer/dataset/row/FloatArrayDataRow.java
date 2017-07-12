@@ -259,6 +259,16 @@ public class FloatArrayDataRow extends DataRow<Float> implements Iterable<Float>
         set(index, (float) value);
     }
 
+    @Override
+    public double[] toArray() {
+        double[] res = new double[size()];
+        for (int i = 0; i < res.length; i++) {
+            res[i] = data[i];
+
+        }
+        return res;
+    }
+
     class InstanceValueIterator implements Iterator<Float> {
 
         private int index = 0;
