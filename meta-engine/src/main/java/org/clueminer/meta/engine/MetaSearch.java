@@ -63,6 +63,9 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Use meta-features to select suitable (optimal) clustering algorithm.
@@ -275,21 +278,31 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.info("got {} meta parameters", meta.size());
         queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
-        if (useMetaDB) {
-            LOG.error("meta search not implemented yet!");
-        }
-        if (queue.isEmpty()) {
-            //initialize queue with default alg configurations
-            landmark(dataset);
-        }
-        //expand top solutions
-        explore(numResults);
+        JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
+        try (Jedis jedis = pool.getResource()) {
 
+            if (useMetaDB) {
+                if (!jedis.exists("algorithms")) {
+                    LOG.info("Redis is empty");
+                }
+                LOG.error("meta search not implemented yet!");
+
+            }
+            if (queue.isEmpty()) {
+                //initialize queue with default alg configurations
+                landmark(dataset);
+            }
+            //expand top solutions
+            explore(numResults);
+
+        }
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
+
+        pool.destroy();
         return queue;
     }
 
