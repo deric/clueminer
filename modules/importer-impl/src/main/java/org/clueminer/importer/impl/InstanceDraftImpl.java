@@ -34,6 +34,8 @@ import org.clueminer.utils.Props;
  */
 public class InstanceDraftImpl implements InstanceDraft {
 
+    private static final long serialVersionUID = -8087444499041396086L;
+
     private String id;
     private String name;
     private String label;
@@ -332,6 +334,26 @@ public class InstanceDraftImpl implements InstanceDraft {
 
     @Override
     public Iterator<? extends Object> values() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double mean() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double variance() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double stdDev() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
