@@ -65,6 +65,7 @@
                 <configuration>
                     <publicPackages>
                         <publicPackage>org.clueminer.dataset.api</publicPackage>
+                        <publicPackage>org.clueminer.dist</publicPackage>
                         <publicPackage>org.clueminer.distance.api</publicPackage>
                         <publicPackage>org.clueminer.events</publicPackage>
                         <publicPackage>org.clueminer.exception</publicPackage>

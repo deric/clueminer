@@ -1,7 +1,5 @@
 package org.clueminer.math.impl;
 
-import org.clueminer.math.impl.Polynomial;
-
 /*
  * Copyright (C) 1999 CERN - European Organization for Nuclear Research.
  * Permission to use, copy, modify, distribute and sell this software and its
@@ -12,7 +10,9 @@ import org.clueminer.math.impl.Polynomial;
  * purpose. It is provided "as is" without expressed or implied warranty.
  */
 /**
- * Gamma and Beta functions. <p> <b>Implementation:</b> <dt> Some code taken and
+ * Gamma and Beta functions.
+ * <p>
+ * <b>Implementation:</b> <dt> Some code taken and
  * adapted from the <A
  * HREF="http://www.sci.usq.edu.au/staff/leighb/graph/Top.html">Java 2D Graph
  * Package 2.4</A>, which in turn is a port from the <A

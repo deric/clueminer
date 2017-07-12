@@ -1,8 +1,24 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.math.impl;
 
-import org.clueminer.math.matrix.JMatrix;
 import org.clueminer.math.EigenvalueDecomposition;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.matrix.JMatrix;
 
 /**
  * PCA - Principal Component Analysis
@@ -12,9 +28,9 @@ import org.clueminer.math.Matrix;
 public class PCA {
 
     public static double[][] compute(int m, int n, double[][] indat) {
-        // Data preprocessing - standardization and determining correlations 
+        // Data preprocessing - standardization and determining correlations
         double[][] indatstd = PCA.Standardize(n, m, indat);
-        // use Jama matrix class  
+        // use Jama matrix class
         Matrix X = new JMatrix(indatstd);
 
         // Sums of squares and cross-products matrix
@@ -22,7 +38,7 @@ public class PCA {
         Matrix SSCP = Xprime.times(X);
         // Note the following:
         // - with no preprocessing of the input data, we have an SSCP matrix
-        // - with centering of columns (i.e. each col. has col. mean 
+        // - with centering of columns (i.e. each col. has col. mean
         //   [vector in row-space] subtracted) we have variances/covariances
         // - with centering and reduction to unit variance [i.e. centered
         //   cols. are divided by std. dev.] we have correlations

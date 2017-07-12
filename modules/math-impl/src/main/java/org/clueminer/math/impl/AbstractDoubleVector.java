@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011-2017 clueminer.org
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.clueminer.math.impl;
 
 import org.clueminer.math.DoubleVector;
@@ -192,4 +208,37 @@ public abstract class AbstractDoubleVector extends AbstractVector<Double>
         }
         return arr;
     }
+
+    @Override
+    public Double mean() {
+        double m = 0;
+        for (int i = 0; i < size(); i++) {
+            m += get(i);
+        }
+        return m / size();
+    }
+
+    @Override
+    public Double variance() {
+        double mu = mean();
+        double variance = 0;
+
+        double N = size();
+
+        int used = 0;
+        for (int i = 0; i < N; i++) {
+            used++;
+            variance += Math.pow(get(i) - mu, 2) / N;
+        }
+        //Now add all the zeros we skipped into it
+        variance += (N - used) * Math.pow(0 - mu, 2) / N;
+
+        return variance;
+    }
+
+    @Override
+    public Double stdDev() {
+        return Math.sqrt(variance());
+    }
+
 }

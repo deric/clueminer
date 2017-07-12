@@ -144,10 +144,35 @@ public interface Vector<T extends Number> {
     Vector<T> times(double scalar);
 
     /**
+     * Compute vector's mean
+     *
+     * @return mean (average) value
+     */
+    T mean();
+
+    /**
+     *
+     * @return vector's variance
+     */
+    T variance();
+
+    /**
+     *
+     * @return vector's standard deviation
+     */
+    T stdDev();
+
+    /**
      * Will return the same underlying Vector structure without any values.
      *
      * @return empty Vector structure with the same length.
      */
     Vector<T> duplicate();
+
+    /**
+     *
+     * @return deep copy of underlying data
+     */
+    double[] toArray();
 
 }
