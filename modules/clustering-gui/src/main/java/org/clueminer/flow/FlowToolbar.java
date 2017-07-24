@@ -17,7 +17,6 @@
 package org.clueminer.flow;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
@@ -38,11 +37,16 @@ import org.slf4j.LoggerFactory;
  */
 public class FlowToolbar extends JToolBar {
 
+    private static final long serialVersionUID = 4815833013275855141L;
+
     private JButton btnRun;
+    private JButton btnSave;
+    private JButton btnLoad;
     private final NodeContainer container;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ProjectController pc;
     private static final Logger LOG = LoggerFactory.getLogger(FlowToolbar.class);
+
 
     public FlowToolbar(NodeContainer container) {
         super(SwingConstants.HORIZONTAL);
@@ -58,17 +62,28 @@ public class FlowToolbar extends JToolBar {
         btnRun = new JButton(ImageUtilities.loadImageIcon("org/clueminer/flow/play16.png", false));
         btnRun.setToolTipText("Execute flow");
 
-        btnRun.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                btnRun.setEnabled(false);
-                run(container.getNodes().clone());
-            }
+        btnRun.addActionListener((ActionEvent e) -> {
+            btnRun.setEnabled(false);
+            run(container.getNodes().clone());
         });
 
         add(btnRun);
         addSeparator();
+
+        btnLoad = new JButton(ImageUtilities.loadImageIcon("org/clueminer/flow/open16.png", false));
+        btnLoad.setToolTipText("Load flow");
+
+        btnLoad.addActionListener((ActionEvent e) -> {
+            btnLoad.setEnabled(false);
+            //
+        });
+        add(btnLoad);
+
+        btnSave = new JButton(ImageUtilities.loadImageIcon("org/clueminer/flow/save16.png", false));
+        btnSave.setToolTipText("Save flow");
+
+        btnSave.addActionListener(new FlowExporter(container));
+        add(btnSave);
 
     }
 

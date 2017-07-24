@@ -30,6 +30,8 @@ import org.openide.nodes.Node;
  */
 public class NodeContainer extends Index.ArrayChildren implements FlowNodeModel {
 
+    private static final long serialVersionUID = 1747942885452246170L;
+
     private final List<Node> list = new ArrayList<>();
 
 

@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays something.
+ * Top component that shows data-mining process.
  */
 @ConvertAsProperties(
         dtd = "-//org.clueminer.flow//Flow//EN",
@@ -58,6 +58,8 @@ import org.slf4j.LoggerFactory;
     "HINT_FlowTopComponent=Data processing flow"
 })
 public final class FlowTopComponent extends TopComponent implements ExplorerManager.Provider {
+
+    private static final long serialVersionUID = 6969289984655081908L;
 
     private FlowFrame frame;
     private FlowToolbar toolbar;
@@ -140,16 +142,15 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
 
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
-        if(latestFlow().exists()){
+        if (latestFlow().exists()) {
             //load flow
             LOG.debug("found flow");
         }
     }
 
-    private File latestFlow(){
+    private File latestFlow() {
         return new File(FileUtils.appFolder() + "latest_flow.json");
     }
-
 
     @Override
     public ExplorerManager getExplorerManager() {
