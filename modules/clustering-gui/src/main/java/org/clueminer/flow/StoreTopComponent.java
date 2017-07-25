@@ -58,6 +58,8 @@ import org.slf4j.LoggerFactory;
 })
 public final class StoreTopComponent extends TopComponent implements ExplorerManager.Provider {
 
+    private static final long serialVersionUID = 5328220047995394112L;
+
     private BeanTreeView treeView;
     private Lookup.Result<FlowNode> result = null;
     private static final Logger LOG = LoggerFactory.getLogger(StoreTopComponent.class);

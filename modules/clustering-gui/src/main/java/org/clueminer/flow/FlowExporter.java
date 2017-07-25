@@ -16,12 +16,12 @@
  */
 package org.clueminer.flow;
 
+import com.google.gson.Gson;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
@@ -101,19 +101,23 @@ public class FlowExporter implements ActionListener {
                 final ProgressHandle ph = ProgressHandle.createHandle("Saving flow");
 
                 task = RP.create(() -> {
-                    try {
-                        ph.start(2);
-                        if (files.length == 0 || files[0] == null) {
-                            throw new RuntimeException("missing target file: " + files[0]);
-                        }
-                        File f = files[0];
-                        ph.progress(1);
-                        Files.write(Paths.get(f.getAbsolutePath()), container.serialize().getBytes());
-                        ph.progress(2);
-                        LOG.info("flow saved to {}", f.getAbsolutePath());
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                    Gson gson = new Gson();
+
+                    ph.start(2);
+                    if (files.length == 0 || files[0] == null) {
+                        throw new RuntimeException("missing target file: " + files[0]);
                     }
+                    File f = files[0];
+                    ph.progress(1);
+
+                    try (FileWriter writer = new FileWriter(f)) {
+                        gson.toJson(container, writer);
+                    } catch (IOException e) {
+                        Exceptions.printStackTrace(e);
+                    }
+
+                    ph.progress(2);
+                    LOG.info("flow saved to {}", f.getAbsolutePath());
                 });
                 //task.addTaskListener(parent);
                 task.addTaskListener(new TaskListener() {

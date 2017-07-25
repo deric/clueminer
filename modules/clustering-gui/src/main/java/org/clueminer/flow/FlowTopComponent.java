@@ -16,9 +16,11 @@
  */
 package org.clueminer.flow;
 
+import com.google.gson.Gson;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import org.clueminer.gui.msg.MessageUtil;
 import org.clueminer.utils.FileUtils;
@@ -98,7 +100,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
 
     @Override
     public void componentClosed() {
-        // TODO add custom code on component closing
+        saveCurrentFlow();
     }
 
     private void initialize() {
@@ -132,9 +134,15 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
         // better to version settings since initial version as advocated at
         // http://wiki.apidesign.org/wiki/PropertyFiles
         p.setProperty("version", "1.0");
+
+    }
+
+    private void saveCurrentFlow() {
         LOG.debug("saving current flow");
-        try {
-            FlowSerializer.write(latestFlow(), container.serialize());
+
+        Gson gson = new Gson();
+        try (FileWriter writer = new FileWriter(latestFlow())) {
+            gson.toJson(container, writer);
         } catch (IOException ex) {
             MessageUtil.error("Failed to save current flow process", ex);
         }

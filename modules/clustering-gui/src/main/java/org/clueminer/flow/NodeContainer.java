@@ -68,6 +68,8 @@ public class NodeContainer extends Index.ArrayChildren implements FlowNodeModel 
         HashMap<String, String> data = new HashMap<>();
         data.put("version", "1.0");
 
+        gson.toJson(this);
+
         return gson.toJson(data);
     }
 
