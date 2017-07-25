@@ -278,31 +278,33 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.info("got {} meta parameters", meta.size());
         queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
-        JedisPool pool = new JedisPool(new JedisPoolConfig(), "localhost");
-        try (Jedis jedis = pool.getResource()) {
+        JedisPool pool = null;
 
-            if (useMetaDB) {
+        if (useMetaDB) {
+            pool = new JedisPool(new JedisPoolConfig(), "localhost");
+            try (Jedis jedis = pool.getResource()) {
                 if (!jedis.exists("algorithms")) {
                     LOG.info("Redis is empty");
                 }
                 LOG.error("meta search not implemented yet!");
-
             }
-            if (queue.isEmpty()) {
-                //initialize queue with default alg configurations
-                landmark(dataset);
-            }
-            //expand top solutions
-            explore(numResults);
-
         }
+
+        if (queue.isEmpty()) {
+            //initialize queue with default alg configurations
+            landmark(dataset);
+        }
+        //expand top solutions
+        explore(numResults);
+
         finish();
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
-
-        pool.destroy();
+        if (pool != null) {
+            pool.destroy();
+        }
         return queue;
     }
 
