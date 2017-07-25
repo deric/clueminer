@@ -32,6 +32,8 @@ import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
 import org.openide.windows.WindowManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -39,13 +41,14 @@ import org.openide.windows.WindowManager;
  */
 public class FlowExporter implements ActionListener {
 
-    private static final String prefKey = "last_folder";
+    private static final String PREF_KEY = "last_folder";
     private File defaultFolder = null;
     private JFileChooser fileChooser;
     private FileFilter jsonFilter;
     private static final RequestProcessor RP = new RequestProcessor("Flow exporter");
     private RequestProcessor.Task task;
-    private NodeContainer container;
+    private final NodeContainer container;
+    private static final Logger LOG = LoggerFactory.getLogger(FlowExporter.class);
 
     public FlowExporter(NodeContainer container) {
         this.container = container;
@@ -58,7 +61,7 @@ public class FlowExporter implements ActionListener {
     }
 
     private void displayFileChooser(Preferences pref) {
-        String folder = pref.get(prefKey, null);
+        String folder = pref.get(PREF_KEY, null);
         if (folder != null) {
             defaultFolder = new File(folder);
         }
@@ -88,18 +91,26 @@ public class FlowExporter implements ActionListener {
         }
         defaultFolder = fileChooser.getCurrentDirectory();
         if (defaultFolder != null) {
-            pref.put(prefKey, fileChooser.getCurrentDirectory().getAbsolutePath());
+            pref.put(PREF_KEY, fileChooser.getCurrentDirectory().getAbsolutePath());
         }
         if (fileChooser.showOpenDialog(WindowManager.getDefault().getMainWindow()) == JFileChooser.APPROVE_OPTION) {
             File[] files = fileChooser.getSelectedFiles();
 
             Object retval = NotifyDescriptor.YES_OPTION;
             if (retval.equals(NotifyDescriptor.YES_OPTION)) {
-                final ProgressHandle ph = ProgressHandle.createHandle("Loading flow");
+                final ProgressHandle ph = ProgressHandle.createHandle("Saving flow");
 
                 task = RP.create(() -> {
                     try {
-                        Files.write(Paths.get("./fileName.txt"), container.serialize().getBytes());
+                        ph.start(2);
+                        if (files.length == 0 || files[0] == null) {
+                            throw new RuntimeException("missing target file: " + files[0]);
+                        }
+                        File f = files[0];
+                        ph.progress(1);
+                        Files.write(Paths.get(f.getAbsolutePath()), container.serialize().getBytes());
+                        ph.progress(2);
+                        LOG.info("flow saved to {}", f.getAbsolutePath());
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     }
