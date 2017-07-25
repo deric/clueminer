@@ -281,7 +281,7 @@ public class DendrogramData<E extends Instance, C extends Cluster<E>> implements
     }
 
     @Override
-    public void printMappedMatix(int d) {
+    public void printMappedMatrix(int d) {
         if (!hasRowsClustering()) {
             LOG.error("missing row clustering");
             return;

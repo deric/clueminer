@@ -2,8 +2,8 @@ package org.clueminer.dendrogram;
 
 import java.io.IOException;
 import org.clueminer.clustering.aggl.HC;
-import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.AgglomerativeClustering;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.struct.DendroMatrixData;
@@ -14,8 +14,6 @@ import org.clueminer.exception.ParserError;
 import org.clueminer.fixtures.CommonFixture;
 import org.clueminer.io.arff.ARFFHandler;
 import org.clueminer.utils.Props;
-import org.junit.After;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -59,16 +57,8 @@ public class DendrogramDataTest {
         dendroData = new DendroMatrixData(dataset, dataset.asMatrix(), rowsResult, colResuls);
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
     @Before
     public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
     }
 
     /**
@@ -214,31 +204,19 @@ public class DendrogramDataTest {
     public void testGetColumnsClustering() {
     }
 
-    /**
-     * Test of setRowsTreeCutoffByLevel method, of class DendrogramData.
-     */
     @Test
     public void testSetRowsTreeCutoffByLevel() {
     }
 
-    /**
-     * Test of setColumnsTreeCutoffByLevel method, of class DendrogramData.
-     */
     @Test
     public void testSetColumnsTreeCutoffByLevel() {
     }
 
-    /**
-     * Test of hasRowsClustering method, of class DendrogramData.
-     */
     @Test
     public void testHasRowsClustering() {
         assertEquals(true, dendroData.hasRowsClustering());
     }
 
-    /**
-     * Test of hasColumnsClustering method, of class DendrogramData.
-     */
     @Test
     public void testHasColumnsClustering() {
         assertEquals(true, dendroData.hasColumnsClustering());
@@ -247,6 +225,6 @@ public class DendrogramDataTest {
     @Test
     public void testPrintMatrix() {
         assertEquals(false, dendroData.isEmpty());
-        dendroData.printMappedMatix(2);
+        //dendroData.printMappedMatrix(2);
     }
 }

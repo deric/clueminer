@@ -119,5 +119,5 @@ public interface DendrogramMapping<E extends Instance, C extends Cluster<E>> {
      *
      * @param d number of decimal places
      */
-    public void printMappedMatix(int d);
+    public void printMappedMatrix(int d);
 }
