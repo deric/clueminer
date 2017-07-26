@@ -30,9 +30,9 @@ import org.openide.explorer.view.BeanTreeView;
 public class FlowFrame extends JPanel {
 
     private final transient ExplorerManager mgr = new ExplorerManager();
-    private FlowNodeRoot root;
+    private final FlowNodeRoot root;
     private BeanTreeView treeView;
-    private FlowNodeFactory factory;
+    private final FlowNodeFactory factory;
 
     public FlowFrame() {
         initComponents();

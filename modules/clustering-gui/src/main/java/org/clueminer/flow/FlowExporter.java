@@ -17,6 +17,7 @@
 package org.clueminer.flow;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -25,9 +26,10 @@ import java.io.IOException;
 import java.util.prefs.Preferences;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import org.clueminer.flow.api.FlowNode;
+import org.clueminer.gui.msg.MessageUtil;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 import org.openide.util.RequestProcessor;
 import org.openide.util.TaskListener;
@@ -49,9 +51,16 @@ public class FlowExporter implements ActionListener {
     private RequestProcessor.Task task;
     private final NodeContainer container;
     private static final Logger LOG = LoggerFactory.getLogger(FlowExporter.class);
+    private GsonBuilder gsonBuilder;
 
     public FlowExporter(NodeContainer container) {
         this.container = container;
+        init();
+    }
+
+    private void init() {
+        gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(FlowNode.class, new FlowNodeAdapter());
     }
 
     @Override
@@ -101,7 +110,6 @@ public class FlowExporter implements ActionListener {
                 final ProgressHandle ph = ProgressHandle.createHandle("Saving flow");
 
                 task = RP.create(() -> {
-                    Gson gson = new Gson();
 
                     ph.start(2);
                     if (files.length == 0 || files[0] == null) {
@@ -110,11 +118,7 @@ public class FlowExporter implements ActionListener {
                     File f = files[0];
                     ph.progress(1);
 
-                    try (FileWriter writer = new FileWriter(f)) {
-                        gson.toJson(container, writer);
-                    } catch (IOException e) {
-                        Exceptions.printStackTrace(e);
-                    }
+                    saveFlow(f);
 
                     ph.progress(2);
                     LOG.info("flow saved to {}", f.getAbsolutePath());
@@ -132,6 +136,15 @@ public class FlowExporter implements ActionListener {
                 task.schedule(0);
 
             }
+        }
+    }
+
+    public void saveFlow(File file) {
+        try (FileWriter writer = new FileWriter(file)) {
+            Gson gson = gsonBuilder.create();
+            gson.toJson(container, NodeContainer.class, writer);
+        } catch (IOException e) {
+            MessageUtil.error("Failed to save flow process", e);
         }
     }
 

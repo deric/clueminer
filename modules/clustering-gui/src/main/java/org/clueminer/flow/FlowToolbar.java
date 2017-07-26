@@ -46,6 +46,7 @@ public class FlowToolbar extends JToolBar {
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private final ProjectController pc;
     private static final Logger LOG = LoggerFactory.getLogger(FlowToolbar.class);
+    private FlowExporter flowExporter;
 
 
     public FlowToolbar(NodeContainer container) {
@@ -82,7 +83,8 @@ public class FlowToolbar extends JToolBar {
         btnSave = new JButton(ImageUtilities.loadImageIcon("org/clueminer/flow/save16.png", false));
         btnSave.setToolTipText("Save flow");
 
-        btnSave.addActionListener(new FlowExporter(container));
+        flowExporter = new FlowExporter(container);
+        btnSave.addActionListener(flowExporter);
         add(btnSave);
 
     }
@@ -113,6 +115,10 @@ public class FlowToolbar extends JToolBar {
 
     public void taskFinished() {
         btnRun.setEnabled(true);
+    }
+
+    public FlowExporter getExporter() {
+        return flowExporter;
     }
 
 }

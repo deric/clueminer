@@ -16,13 +16,9 @@
  */
 package org.clueminer.flow;
 
-import com.google.gson.Gson;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import org.clueminer.gui.msg.MessageUtil;
 import org.clueminer.utils.FileUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -140,12 +136,7 @@ public final class FlowTopComponent extends TopComponent implements ExplorerMana
     private void saveCurrentFlow() {
         LOG.debug("saving current flow");
 
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter(latestFlow())) {
-            gson.toJson(container, writer);
-        } catch (IOException ex) {
-            MessageUtil.error("Failed to save current flow process", ex);
-        }
+        toolbar.getExporter().saveFlow(latestFlow());
     }
 
     void readProperties(java.util.Properties p) {
