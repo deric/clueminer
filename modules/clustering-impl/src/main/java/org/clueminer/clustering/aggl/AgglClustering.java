@@ -158,7 +158,7 @@ public class AgglClustering {
         return columnSimilarityMatrix(m, dm, null);
     }
 
-    static Matrix columnSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue) {
+    public static Matrix columnSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue) {
         Matrix similarityMatrix;
         double dist;
         if (dm.isSymmetric()) {

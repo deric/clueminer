@@ -81,18 +81,18 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     private static final Logger LOG = LoggerFactory.getLogger(HC.class);
 
     @Param(name = AlgParams.LINKAGE,
-           factory = "org.clueminer.clustering.api.factory.LinkageFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+            factory = "org.clueminer.clustering.api.factory.LinkageFactory",
+            type = org.clueminer.clustering.params.ParamType.STRING)
     protected ClusterLinkage linkage;
 
     @Param(name = AlgParams.CUTOFF_STRATEGY,
-           factory = "org.clueminer.clustering.api.factory.CutoffStrategyFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+            factory = "org.clueminer.clustering.api.factory.CutoffStrategyFactory",
+            type = org.clueminer.clustering.params.ParamType.STRING)
     protected CutoffStrategy cutoffStrategy;
 
     @Param(name = AlgParams.CUTOFF_SCORE,
-           factory = "org.clueminer.clustering.api.factory.InternalEvaluatorFactory",
-           type = org.clueminer.clustering.params.ParamType.STRING)
+            factory = "org.clueminer.clustering.api.factory.InternalEvaluatorFactory",
+            type = org.clueminer.clustering.params.ParamType.STRING)
     protected InternalEvaluator cutoffScore;
 
     @Override
@@ -208,11 +208,11 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     /**
      * Find most closest items and merges them into one cluster (subtree)
      *
-     * @param pq               queue with sorted distances (lowest distance pops out first)
+     * @param pq queue with sorted distances (lowest distance pops out first)
      * @param similarityMatrix
      * @param dataset
      * @param params
-     * @param n                number of items to cluster
+     * @param n number of items to cluster
      * @return
      */
     protected DendroTreeData computeLinkage(AbstractQueue<Element> pq, Matrix similarityMatrix, Dataset<E> dataset, AlgParams params, int n) {
@@ -272,7 +272,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
      * @param n
      * @return
      */
-    protected int triangleSize(int n) {
+    public int triangleSize(int n) {
         return ((n - 1) * n) >>> 1;
     }
 
@@ -293,17 +293,17 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     /**
      *
-     * @param mergedId         id of newly created cluster
-     * @param mergedCluster    id of all items in merged cluster
+     * @param mergedId id of newly created cluster
+     * @param mergedCluster id of all items in merged cluster
      * @param similarityMatrix matrix of distances
      * @param assignments
      * @param pq
      * @param linkage
      * @param cache
-     * @param leftId           left cluster ID
-     * @param rightId          right cluster ID
-     * @param ma               size of left cluster
-     * @param mb               size of right cluster
+     * @param leftId left cluster ID
+     * @param rightId right cluster ID
+     * @param ma size of left cluster
+     * @param mb size of right cluster
      * @param centroids
      * @param dataset
      */
@@ -353,7 +353,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
     /**
      * Each data point forms an individual cluster
      *
-     * @param n       the number of data points
+     * @param n the number of data points
      * @param dataset
      * @param params
      * @param nodes
