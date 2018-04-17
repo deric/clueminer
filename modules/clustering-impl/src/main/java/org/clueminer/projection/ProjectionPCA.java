@@ -40,8 +40,17 @@ public class ProjectionPCA<E extends Instance> implements Projection<E> {
 
     @Override
     public void initialize(Dataset<E> dataset, int targetDims) {
-        PrincipalComponentAnalysis transform = new PrincipalComponentAnalysis();
-        data = transform.pca(dataset.arrayCopy(), targetDims);
+        if (dataset.attributeCount() > 2) {
+            PrincipalComponentAnalysis transform = new PrincipalComponentAnalysis();
+            data = transform.pca(dataset.arrayCopy(), targetDims);
+        } else {
+            //no need to run projection for just 2 dimensions
+            if (dataset.attributeCount() == 2) {
+                data = dataset.arrayCopy();
+            } else {
+                throw new RuntimeException("unexpected number of attributes: " + dataset.attributeCount());
+            }
+        }
         this.dataset = dataset;
     }
 

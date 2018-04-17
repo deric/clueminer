@@ -71,8 +71,17 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
     public void initialize(Dataset<E> dataset, int targetDims) {
         double perplexity = 20.0;
         int initialDims = 50;
-        TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
-        data = run(config);
+        if (dataset.attributeCount() > 2) {
+            TSNEConfig config = new TSNEConfigImpl(dataset.arrayCopy(), 2, initialDims, perplexity, 1000);
+            data = run(config);
+        } else {
+            //no need to run projection for just 2 dimensions
+            if (dataset.attributeCount() == 2) {
+                data = dataset.arrayCopy();
+            } else {
+                throw new RuntimeException("unexpected number of attributes: " + dataset.attributeCount());
+            }
+        }
         this.dataset = dataset;
     }
 
@@ -181,9 +190,11 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         int[] row_P = new int[N + 1];
         int[] col_P = new int[N * K];
         double[] val_P = new double[N * K];
-        /** _row_P = (int*) malloc((N + 1) * sizeof(int));
-         * _col_P = (int*) calloc(N * K, sizeof(int));
-         * _val_P = (double*) calloc(N * K, sizeof(double)); */
+        /**
+         * _row_P = (int*) malloc((N + 1) * sizeof(int)); _col_P = (int*)
+         * calloc(N * K, sizeof(int)); _val_P = (double*) calloc(N * K,
+         * sizeof(double));
+         */
         // Compute input similarities for exact t-SNE
         if (exact) {
 
@@ -548,10 +559,12 @@ public class BHTSNE<E extends Instance> implements TSNE, Projection<E> {
         }
 
         // Allocate the memory we need
-        /** _row_P = (int*) malloc((N + 1) * sizeof(int));
-         * _col_P = (int*) calloc(N * K, sizeof(int));
-         * _val_P = (double*) calloc(N * K, sizeof(double));
-         * if(*_row_P == null || *_col_P == null || *_val_P == null) { Rcpp::stop("Memory allocation failed!\n"); } */
+        /**
+         * _row_P = (int*) malloc((N + 1) * sizeof(int)); _col_P = (int*)
+         * calloc(N * K, sizeof(int)); _val_P = (double*) calloc(N * K,
+         * sizeof(double)); if(*_row_P == null || *_col_P == null || *_val_P ==
+         * null) { Rcpp::stop("Memory allocation failed!\n"); }
+         */
         int[] row_P = _row_P;
         int[] col_P = _col_P;
         double[] val_P = _val_P;
