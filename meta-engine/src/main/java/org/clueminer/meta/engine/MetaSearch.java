@@ -205,7 +205,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     private boolean isValid(Clustering<E, C> c) {
         if (c == null || c.size() < 2) {
-            LOG.debug("rejecting invalid clustering with single cluster, params: {}", c.getParams());
+            if (c != null) {
+                LOG.debug("rejecting invalid clustering with single cluster, params: {}", c.getParams());
+            }
             return false;
         }
         Dataset<E> d = c.getLookup().lookup(Dataset.class);
