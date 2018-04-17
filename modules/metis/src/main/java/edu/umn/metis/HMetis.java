@@ -26,6 +26,8 @@ import org.clueminer.utils.Props;
 import org.clueminer.utils.SystemInfo;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * See hMETIS documentation for detailed options explanation
@@ -51,8 +53,9 @@ public class HMetis extends AbstractMetis implements Partitioning {
     protected int reconst = 0;// 0-1
     protected int dbglvl = 0;
     private final ExtBinHelper<Instance> helper;
-    private boolean debug = false;
+    private boolean debug = true;
     private static File metisFile = null;
+    private static final Logger LOG = LoggerFactory.getLogger(HMetis.class);
 
     public HMetis() {
         helper = new ExtBinHelper();
@@ -70,7 +73,11 @@ public class HMetis extends AbstractMetis implements Partitioning {
         String filename = file.getName();
         Process p;
         try {
+            LOG.info("writing graph to file: {}", file.getAbsolutePath());
             graph.hMetisExport(file, false);
+            if (!file.exists()) {
+                LOG.warn("graph serialization failed!, missing {}", file.getAbsolutePath());
+            }
             if (metisFile == null) {
                 //fetch the file just once
                 metisFile = getBinary();
@@ -80,7 +87,7 @@ public class HMetis extends AbstractMetis implements Partitioning {
             //run metis
             String space = " ";
             StringBuilder sb = new StringBuilder(metisFile.getAbsolutePath());
-            sb.append(" ").append(filename).append(" ")
+            sb.append(" ").append(file.getAbsolutePath()).append(" ")
                     .append(String.valueOf(k)).append(space)
                     .append("-ufactor=").append(String.valueOf(params.getDouble(UFACTOR, 5.0))).append(space)
                     .append("-nruns=").append(String.valueOf(params.getInt(NRUNS, 10))).append(space)
@@ -97,20 +104,26 @@ public class HMetis extends AbstractMetis implements Partitioning {
             p = Runtime.getRuntime().exec(sb.toString());
             p.waitFor();
             if (debug) {
-                System.out.println("cmd: " + sb.toString());
-                System.out.println("exit code: " + p.exitValue());
+                LOG.error("cmd: {}", sb.toString());
+                LOG.error("exit code: {}", p.exitValue());
                 if (p.exitValue() != 1) {
                     //System.out.println(ExtBinHelper.readFile(file));
+                    String stderr= helper.readStderr(p);
+                    if(!stderr.isEmpty()){
+                        LOG.error(stderr);
+                    }
                 }
-
-                helper.readStdout(p);
-                helper.readStderr(p);
+                //helper.readStdout(p);
             }
-            file.delete();
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (IOException | InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+        } finally {
+            if (file.exists()) {
+                LOG.debug("removing graph file {}", file.getAbsolutePath());
+                file.delete();
+            }
         }
         return filename;
     }
