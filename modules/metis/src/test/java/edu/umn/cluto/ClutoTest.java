@@ -45,7 +45,7 @@ public class ClutoTest<E extends Instance, C extends Cluster<E>> {
         subject = new Cluto<>();
     }
 
-    @Test
+    //@Test
     public void testCluster() {
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.schoolData();
         subject.setColorGenerator(new ColorBrewer());
@@ -63,7 +63,7 @@ public class ClutoTest<E extends Instance, C extends Cluster<E>> {
         }
     }
 
-    @Test
+    //@Test
     public void testGlass() {
         Dataset<E> dataset = (Dataset<E>) FakeDatasets.glassDataset();
         Props params = new Props();
