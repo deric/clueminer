@@ -16,7 +16,6 @@
  */
 package org.clueminer.chameleon;
 
-import edu.umn.metis.HMetisBisector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -327,7 +326,7 @@ public abstract class AbstractMerger<E extends Instance> implements Merger<E> {
         DendroNode left = nodes[pair.A.getClusterId()];
         DendroNode right = nodes[pair.B.getClusterId()];
         double sim = pair.getValue();
-        if (bisection instanceof HMetisBisector) {
+        if (bisection.getName().contains("hMETIS")) {
             stdAdd(left, right, sim);
         } else {
             improvedAdd(left, right, sim);
