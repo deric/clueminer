@@ -249,7 +249,6 @@
         <module>modules/meta-view</module>
         <module>modules/scatter</module>
         <module>modules/graph-fast</module>
-        <module>modules/metis</module>
         <module>modules/core-lib-wrapper</module>
         <module>meta-engine</module>
         <module>modules/io-api</module>
