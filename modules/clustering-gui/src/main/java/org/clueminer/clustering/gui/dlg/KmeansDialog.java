@@ -213,7 +213,7 @@ public class KmeansDialog extends JPanel implements ClusteringDialog {
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
-        return algorithm instanceof KMeans;
+        return (algorithm.getName().contains("k-means"));
     }
 
 }
