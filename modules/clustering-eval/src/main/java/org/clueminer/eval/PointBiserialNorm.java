@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -27,6 +28,9 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
+ *
+ * @cite Mitligan, G. W. (1981a). A Monte Carlo study of thirty internal
+ * criterion measures for cluster analysis. Psychometrika, 46, 187-199.
  * @author deric
  * @param <E>
  * @param <C>
@@ -60,9 +64,9 @@ public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends
      */
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        double dw = 0, fw = 0;
-        double db = 0, fb = 0;
-        double nd, sd, pb;
+        double sw = 0, nw = 0;
+        double sb = 0, nb = 0;
+        double nt, sd, pb;
 
         C first, second;
         E x, y;
@@ -74,9 +78,8 @@ public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends
                 // number.
                 for (int k = j + 1; k < first.size(); k++) {
                     y = first.instance(k);
-                    double distance = dm.measure(x, y);
-                    dw += distance;
-                    fw++;
+                    sw += dm.measure(x, y);
+                    nw++;
                 }
                 // calculate sum of inter cluster distances dw and count their
                 // number.
@@ -84,18 +87,17 @@ public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends
                     second = clusters.get(k);
                     for (int l = 0; l < second.size(); l++) {
                         y = second.instance(l);
-                        double distance = dm.measure(x, y);
-                        db += distance;
-                        fb++;
+                        sb += dm.measure(x, y);
+                        nb++;
                     }
                 }
             }
         }
         // calculate total number of distances
-        nd = fw + fb;
+        nt = nw + nb;
         // calculate mean dw and db
-        double meanDw = dw / fw;
-        double meanDb = db / fb;
+        double meanSw = sw / nw;
+        double meanSb = sb / nb;
         // calculate standard deviation of all distances (sum inter and intra)
         double tmpSdw = 0, tmpSdb = 0;
         double distance;
@@ -106,21 +108,22 @@ public class PointBiserialNorm<E extends Instance, C extends Cluster<E>> extends
                 for (int k = j + 1; k < first.size(); k++) {
                     y = first.instance(k);
                     distance = dm.measure(x, y);
-                    tmpSdw += (distance - meanDw) * (distance - meanDw);
+                    tmpSdw += FastMath.pow(distance - meanSw, 2);
                 }
                 for (int k = i + 1; k < clusters.size(); k++) {
                     second = clusters.get(k);
                     for (int l = 0; l < second.size(); l++) {
                         y = second.instance(l);
                         distance = dm.measure(x, y);
-                        tmpSdb += (distance - meanDb) * (distance - meanDb);
+                        tmpSdb += FastMath.pow(distance - meanSb, 2);
                     }
                 }
             }
         }
-        sd = Math.sqrt((tmpSdw + tmpSdb) / nd);
+        //standard deviation of all distances
+        sd = Math.sqrt((tmpSdw + tmpSdb) / nt);
         // calculate point biserial score
-        pb = (meanDb - meanDw) * Math.sqrt(((fw * fb) / (nd * nd))) / sd;
+        pb = (meanSb - meanSw) * Math.sqrt(((nw * nb) / (nt * nt))) / sd;
         return pb;
     }
 

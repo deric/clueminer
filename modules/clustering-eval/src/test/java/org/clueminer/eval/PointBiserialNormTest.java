@@ -48,4 +48,10 @@ public class PointBiserialNormTest {
         //assertEquals(0.680019167896978, scoreBetter, DELTA);
     }
 
+    @Test
+    public void testClusterCrit() throws ScoreException {
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(2.0604126177213273, score, DELTA);
+    }
+
 }
