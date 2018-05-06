@@ -250,7 +250,7 @@
         <module>modules/scatter</module>
         <module>modules/graph-fast</module>
         <module>modules/core-lib-wrapper</module>
-        <module>meta-engine</module>
+        <module>modules/meta-engine</module>
         <module>modules/io-api</module>
     </modules>
     <reporting>
