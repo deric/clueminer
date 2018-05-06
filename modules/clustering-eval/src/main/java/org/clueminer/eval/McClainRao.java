@@ -30,9 +30,8 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @param <E>
  * @param <C>
- * @cite
- * McClain, John O., and Vithala R. Rao. "Clustisz: A program to test for the
- * quality of clustering of a set of objects." JMR, Journal of Marketing
+ * @cite McClain, John O., and Vithala R. Rao. "Clustisz: A program to test for
+ * the quality of clustering of a set of objects." JMR, Journal of Marketing
  * Research (pre-1986) 12.000004 (1975): 456.
  *
  * @author deric
@@ -40,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class McClainRao<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String NAME = "McClain-Rao (WB)";
+    private static String NAME = "McClain-Rao";
     private static final long serialVersionUID = -3222061698654228829L;
 
     public McClainRao() {

@@ -38,6 +38,7 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.Parameter;
+import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -119,6 +120,23 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         objectives.add(new RatkowskyLance<>());
         sortObjective = new McClainRao<>();
         cmp = new NMIsqrt();
+    }
+
+    public void configure(Props p) {
+        // comma separated objectives
+        EvaluationFactory ef = EvaluationFactory.getInstance();
+        String obj = p.get("objectives", "");
+        if (!obj.isEmpty()) {
+            objectives.clear();
+            String[] objs = obj.split(",");
+            for (String str : objs) {
+                objectives.add(ef.getProvider(str));
+            }
+        }
+        numFronts = p.getInt("fronts", 10);
+        numResults = p.getInt("results", 15);
+        diversityThreshold = p.getDouble("diversity", 0.2);
+        sortObjective = ef.getProvider(p.get("rank-objective", "McClain-Rao"));
     }
 
     @Override
@@ -249,6 +267,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         clusteringTime = 0.0;
         clusteringsEvaluated = 0;
         clusteringsRejected = 0;
+        LOG.info("Starting meta-search. Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
         evolutionStarted(this);
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -301,8 +320,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
         finish();
         double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, acceptace: {}%",
-                df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected, df.format(acceptRate));
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings",
+                df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
+        LOG.info("acceptace rate: {}%", df.format(acceptRate));
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
@@ -621,6 +641,23 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setExpandOnlyTop(boolean expandOnlyTop) {
         this.expandOnlyTop = expandOnlyTop;
+    }
+
+    private String printObjectives() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("[");
+        int i = 0;
+        for (ClusterEvaluation<E, C> ce : objectives) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+
+            sb.append(ce.getName());
+            i++;
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 
 }

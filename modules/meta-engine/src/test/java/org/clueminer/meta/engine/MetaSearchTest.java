@@ -17,8 +17,10 @@
 package org.clueminer.meta.engine;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.SortedMap;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -27,6 +29,8 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.report.MemInfo;
+import org.clueminer.utils.Props;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -92,4 +96,13 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         mem.report();
     }
 
+    @Test
+    public void testConf() {
+        Props p = new Props();
+        p.put("objectives", "AIC,BIC");
+        subject.configure(p);
+        List<ClusterEvaluation<E, C>> ce = subject.getObjectives();
+        assertEquals(2, ce.size());
+        assertEquals("AIC", ce.get(0).getName());
+    }
 }
