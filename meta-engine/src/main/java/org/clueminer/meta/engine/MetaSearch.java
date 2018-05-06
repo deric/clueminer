@@ -300,7 +300,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         explore(numResults);
 
         finish();
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings", df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
+        double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, acceptace: {}%",
+                df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected, df.format(acceptRate));
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
@@ -424,7 +426,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private void printStats(ParetoFrontQueue queue) {
-        double score = 0.0, s1 = 0, s5 = 0.0, s10 = 0.0, s;
+        double score = 0.0, s1 = 0, s3 = 0, s5 = 0.0, s10 = 0.0, s;
         double sTop = 0.0;
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
@@ -438,6 +440,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                     s = et.getScore("NMI-sqrt");
                     if (n == 0) {
                         s1 = s;
+                    }
+                    if (n < 3) {
+                        s3 += s;
                     }
                     if (n < 5) {
                         s5 += s;
@@ -453,7 +458,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 }
             }
         }
-
+        if (numResults >= 3) {
+            s3 /= 3;
+        } else {
+            s3 = Double.NaN;
+        }
         if (numResults >= 5) {
             s5 /= 5;
         } else {
@@ -472,8 +481,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
         score /= n;
 
-        LOG.info("top score: {}, (top5: {}, top10: {}, top: {})", numFormat(s1), numFormat(s5), numFormat(s10), numFormat(sTop));
-        LOG.info("avg score in whole population ({}): {}, top {}", n, numFormat(score), numResults);
+        LOG.info("top score: {}, (top3: {}, top5: {}, top10: {}, top: {})",
+                numFormat(s1), numFormat(s3), numFormat(s5), numFormat(s10), numFormat(sTop));
+        LOG.info("avg score in whole population ({}): {}, fronts: {}", n, numFormat(score), queue.stats());
     }
 
     private String numFormat(double d) {
