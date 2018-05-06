@@ -163,7 +163,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
                 config.configure(dataset, params);
                 LOG.info("estimated parameters: {} for {}", params.toJson(), algorithm.getName());
             } else {
-                LOG.info("skipping parameters estimation. all required parameters were specified");
+                LOG.trace("skipping parameters estimation. all required parameters were specified");
             }
 
             clustering = algorithm.cluster(dataset, params);
