@@ -104,7 +104,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private boolean useMetaDB = false;
     private Random rand;
     private int maxRetries = 5;
-    private int maxSolutions = -1;
+    //maximum number of explored states
+    private int maxStates = -1;
     private ObjectOpenHashSet<String> blacklist;
     private ParetoFrontQueue queue;
     private NMIsqrt cmp;
@@ -137,6 +138,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         numResults = p.getInt("results", 15);
         diversityThreshold = p.getDouble("diversity", 0.2);
         sortObjective = ef.getProvider(p.get("rank-objective", "McClain-Rao"));
+        useMetaDB = p.getBoolean("use-metadb", false);
+        maxStates = p.getInt("max-states", -1);
     }
 
     @Override
@@ -198,8 +201,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 clusteringsRejected++;
             }
 
-            if (maxSolutions > 0 && cnt >= maxSolutions) {
-                LOG.info("exhaused search limit {}. Stopping meta search.", maxSolutions);
+            if (maxStates > 0 && cnt >= maxStates) {
+                LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
                 ph.finish();
                 return;
             }
@@ -281,8 +284,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
         if (ph != null) {
             int workunits;
-            if (maxSolutions > -1) {
-                workunits = maxSolutions;
+            if (maxStates > -1) {
+                workunits = maxStates;
             } else {
                 workunits = countClusteringJobs();
             }
@@ -636,7 +639,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     public void setMaxSolutions(int maxSolutions) {
-        this.maxSolutions = maxSolutions;
+        this.maxStates = maxSolutions;
     }
 
     public void setExpandOnlyTop(boolean expandOnlyTop) {
