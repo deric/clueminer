@@ -424,8 +424,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private void printStats(ParetoFrontQueue queue) {
-        double score = 0.0, s;
-        double topScore = 0.0;
+        double score = 0.0, s1 = 0, s5 = 0.0, s10 = 0.0, s;
+        double sTop = 0.0;
         Iterator<Clustering<E, C>> it = queue.iterator();
         Clustering<E, C> c;
         EvaluationTable et;
@@ -436,16 +436,51 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 et = c.getEvaluationTable();
                 if (et != null) {
                     s = et.getScore("NMI-sqrt");
+                    if (n == 0) {
+                        s1 = s;
+                    }
+                    if (n < 5) {
+                        s5 += s;
+                    }
+                    if (n < 10) {
+                        s10 += s;
+                    }
                     score += s;
                     if (n < numResults) {
-                        topScore += s;
+                        sTop += s;
                     }
                     n++;
                 }
             }
         }
-        LOG.info("avg score in whole population ({}): {}, top {} results: {}",
-                n, df.format(score / n), numResults, df.format(topScore / numResults));
+
+        if (numResults >= 5) {
+            s5 /= 5;
+        } else {
+            s5 = Double.NaN;
+        }
+        if (numResults >= 10) {
+            s10 /= 10;
+        } else {
+            s10 = Double.NaN;
+        }
+
+        if (n >= numResults) {
+            sTop /= numResults;
+        } else {
+            sTop = Double.NaN;
+        }
+        score /= n;
+
+        LOG.info("top score: {}, (top5: {}, top10: {}, top: {})", numFormat(s1), numFormat(s5), numFormat(s10), numFormat(sTop));
+        LOG.info("avg score in whole population ({}): {}, top {}", n, numFormat(score), numResults);
+    }
+
+    private String numFormat(double d) {
+        if (Double.isNaN(d)) {
+            return "n/a";
+        }
+        return df.format(d);
     }
 
     public void clearObjectives() {
