@@ -64,12 +64,8 @@ public class H2StoreTest<E extends Instance> {
 
     @After
     public void tearDown() {
-        try {
-            subject.close();
-            subject.deleteDb(TEST_DB);
-        } catch (SQLException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        subject.close();
+        subject.deleteDb(TEST_DB);
     }
 
     @Test

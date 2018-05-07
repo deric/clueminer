@@ -54,6 +54,7 @@ import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.hac.SimpleIndividual;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
+import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
@@ -64,9 +65,6 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Use meta-features to select suitable (optimal) clustering algorithm.
@@ -306,16 +304,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.info("got {} meta parameters", meta.size());
         queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
-        JedisPool pool = null;
+        MetaStorage storage = MetaStore.fetchStorage();
 
         if (useMetaDB) {
-            pool = new JedisPool(new JedisPoolConfig(), "localhost");
-            try (Jedis jedis = pool.getResource()) {
-                if (!jedis.exists("algorithms")) {
-                    LOG.info("Redis is empty");
-                }
-                LOG.error("meta search not implemented yet!");
-            }
+
         }
 
         if (queue.isEmpty()) {
@@ -333,8 +325,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
-        if (pool != null) {
-            pool.destroy();
+        if (useMetaDB) {
+            storage.close();
         }
         return queue;
     }

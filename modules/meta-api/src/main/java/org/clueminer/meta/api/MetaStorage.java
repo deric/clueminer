@@ -41,6 +41,16 @@ public interface MetaStorage<E extends Instance, C extends Cluster<E>> {
     String getName();
 
     /**
+     * Prepare DB resource before inserting/searching data
+     */
+    void initialize();
+
+    /**
+     * Close DB connection
+     */
+    void close();
+
+    /**
      * Find score in previous results
      *
      * @param dataset

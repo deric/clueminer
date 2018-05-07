@@ -70,7 +70,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     private Connection conn = null;
     private static final String DB_NAME = "meta-db";
     private DBI dbi;
-    private static final String NAME = "H2 store";
+    private static final String NAME = "H2";
     private final Gson gson;
     private static final Logger LOG = LoggerFactory.getLogger(H2Store.class);
 
@@ -82,6 +82,11 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     }
 
     public H2Store() {
+        gson = new Gson();
+    }
+
+    @Override
+    public void initialize() {
         String dir = getDbDir();
 
         File path = new File(dir);
@@ -95,7 +100,6 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
                 Exceptions.printStackTrace(se);
             }
         }
-        gson = new Gson();
     }
 
     public static String getDbDir() {
@@ -118,7 +122,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
             dbi = new DBI(ds);
             LOG.debug("opening database {}", path);
             try {
-                initialize();
+                prepare();
             } catch (SQLException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -141,7 +145,7 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
     /**
      * Create tables for meta-storage
      */
-    private void initialize() throws SQLException {
+    private void prepare() throws SQLException {
         try (Handle dh = dbi.open()) {
             dh.begin();
 
@@ -419,9 +423,14 @@ public class H2Store<E extends Instance, C extends Cluster<E>> implements MetaSt
         return id;
     }
 
-    public void close() throws SQLException {
+    @Override
+    public void close() {
         if (conn != null) {
-            conn.close();
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 

@@ -20,9 +20,7 @@ import java.util.Map;
 import org.clueminer.meta.api.CostFunction;
 import org.clueminer.meta.api.CostMeasure;
 import org.clueminer.meta.api.MetaStorage;
-import org.clueminer.meta.api.MetaStorageFactory;
-import org.clueminer.project.api.ProjectController;
-import org.openide.util.Lookup;
+import org.clueminer.meta.engine.MetaStore;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,24 +41,9 @@ public class LinearCost implements CostFunction {
         return NAME;
     }
 
-    private MetaStorage fetchStorage() {
-        MetaStorage storage = null;
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
-        if (pc != null) {
-            storage = pc.getCurrentProject().getLookup().lookup(MetaStorage.class);
-        } else {
-            LOG.error("missing project controller");
-        }
-        if (storage == null) {
-            LOG.info("meta storage not set, using default one");
-            storage = MetaStorageFactory.getInstance().getDefault();
-        }
-        return storage;
-    }
-
     @Override
     public void submit(String method, CostMeasure measure, double value, Map<String, Double> parameters) {
-        MetaStorage storage = fetchStorage();
+        MetaStorage storage = MetaStore.fetchStorage();
         storage.insertCost(method, measure, value, parameters);
     }
 
