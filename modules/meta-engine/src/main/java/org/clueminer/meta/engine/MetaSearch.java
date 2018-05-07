@@ -104,8 +104,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private boolean useMetaDB = false;
     private Random rand;
     private int maxRetries = 5;
-    //maximum number of explored states
-    private int maxStates = -1;
+    //maximum number of explored states, use -1 to use unlimited search
+    private int maxStates = 200;
     private ObjectOpenHashSet<String> blacklist;
     private ParetoFrontQueue queue;
     private NMIsqrt cmp;
@@ -139,7 +139,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         diversityThreshold = p.getDouble("diversity", 0.2);
         sortObjective = ef.getProvider(p.get("rank-objective", "McClain-Rao"));
         useMetaDB = p.getBoolean("use-metadb", false);
-        maxStates = p.getInt("max-states", -1);
+        maxStates = p.getInt("max-states", 200);
     }
 
     @Override
@@ -203,7 +203,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
             if (maxStates > 0 && cnt >= maxStates) {
                 LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
-                ph.finish();
+                if (ph != null) {
+                    ph.finish();
+                }
                 return;
             }
             if (ph != null) {
