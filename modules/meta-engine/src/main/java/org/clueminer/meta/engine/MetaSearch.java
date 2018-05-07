@@ -173,8 +173,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      */
     private void landmark(Dataset<E> dataset) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
+        List<ClusteringAlgorithm> algs = cf.getAll();
         Props conf;
-        for (ClusteringAlgorithm alg : cf.getAll()) {
+        LOG.info("landmarking algorithms: {}", printAlg(algs));
+        for (ClusteringAlgorithm alg : algs) {
             conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
             conf.put(AlgParams.ALG, alg.getName());
             execute(dataset, alg, conf);
@@ -649,7 +651,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private String printObjectives() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("[");
         int i = 0;
         for (ClusterEvaluation<E, C> ce : objectives) {
@@ -658,6 +660,22 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
 
             sb.append(ce.getName());
+            i++;
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
+
+    private String printAlg(List<ClusteringAlgorithm> algs) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        int i = 0;
+        for (ClusteringAlgorithm alg : algs) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(alg.getName());
             i++;
         }
         sb.append("]");
