@@ -20,6 +20,8 @@ import java.util.HashMap;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Spearman's rank correlation coefficient
@@ -32,6 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class Spearman implements Rank {
 
     private static final String NAME = "Spearman";
+    private static final Logger LOG = LoggerFactory.getLogger(Spearman.class);
 
     @Override
     public String getName() {
@@ -44,12 +47,17 @@ public class Spearman implements Rank {
         double corr = 0.0;
         map.clear();
         for (int i = 0; i < size; i++) {
-            map.put(ref[i].getId(), i);
+            if (ref[i] != null) {
+                map.put(ref[i].getId(), i);
+            } else {
+                LOG.warn("missing clustering #{}", i);
+            }
         }
         if (map.size() != ref.length) {
-            throw new RuntimeException("clustering IDs are not unique! Map contains " + map.size()
-                    + " elements, while reference solutions " + ref.length
-                    + map.keySet().toString());
+            LOG.warn("clustering IDs are not unique! Map contains {} elements,"
+                    + " while reference solutions {}: {}",
+                    map.size(), ref.length, map.keySet().toString());
+            return Double.NaN;
         }
 
         int diff;
