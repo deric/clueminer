@@ -325,7 +325,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
         LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings",
                 df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
-        LOG.info("acceptace rate: {}%", df.format(acceptRate));
+        LOG.info("acceptance rate: {}%", df.format(acceptRate));
         printStats(queue);
         /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
         } */
