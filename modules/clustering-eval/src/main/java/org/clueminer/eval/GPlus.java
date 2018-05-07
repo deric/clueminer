@@ -34,8 +34,9 @@ import org.openide.util.lookup.ServiceProvider;
  * Ecology and Systematics, 5:101–113, 1974.
  *
  * @author Tomas Barton
+ * @note Intentionally not offered as the computing time limits usefulness of
+ * this objective.
  */
-@ServiceProvider(service = InternalEvaluator.class)
 public class GPlus<E extends Instance, C extends Cluster<E>> extends Gamma<E, C> {
 
     private static final String NAME = "G+";

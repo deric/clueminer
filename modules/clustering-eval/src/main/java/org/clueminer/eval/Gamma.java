@@ -43,9 +43,9 @@ import org.openide.util.lookup.ServiceProvider;
  * Association, 1976: pp. 870– 878.
  *
  * @author Tomas Barton
- *
+ * @note Intentionally not offered as the computing time limits usefulness of
+ * this objective.
  */
-@ServiceProvider(service = InternalEvaluator.class)
 public class Gamma<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Gamma";

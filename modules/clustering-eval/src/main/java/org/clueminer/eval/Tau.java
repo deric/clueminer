@@ -18,12 +18,10 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Corrected Tau index (ties are accounted)
@@ -40,8 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author Tomas Barton
  * @param <E>
  * @param <C>
+ * @note Intentionally not offered as the computing time limits usefulness of
+ * this objective.
  */
-@ServiceProvider(service = InternalEvaluator.class)
 public class Tau<E extends Instance, C extends Cluster<E>> extends Gamma<E, C> {
 
     private static String NAME = "Tau";
