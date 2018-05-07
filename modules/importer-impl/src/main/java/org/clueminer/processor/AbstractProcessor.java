@@ -176,7 +176,7 @@ public abstract class AbstractProcessor<D extends InstanceDraft, E extends Insta
                     inst.setClassValue(instd.getObject(j));
                     inst.setId((String) instd.getObject(j));
                     inst.setName((String) instd.getObject(j));
-                    LOG.debug("setting class {}: {}", i, instd.getObject(j));
+                    LOG.trace("setting class {}: {}", i, instd.getObject(j));
                 } else if (attr.getRole().equals(BasicAttrRole.ID)) {
                     inst.setId((String) instd.getObject(j));
                     inst.setName((String) instd.getObject(j));
