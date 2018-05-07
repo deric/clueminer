@@ -136,8 +136,7 @@ public class Props implements Map<String, Object> {
 
     /**
      * By default return String, we can't override methods with different return
-     * types,
-     * thus for getting boolean use getBoolean() etc.
+     * types, thus for getting boolean use getBoolean() etc.
      *
      * @param key
      * @return String value for given key if present, otherwise null
@@ -249,6 +248,9 @@ public class Props implements Map<String, Object> {
     private int castInt(Object val) {
         if (val instanceof Long) {
             return Math.toIntExact((long) val);
+        }
+        if (val instanceof String) {
+            return Integer.parseInt((String) val);
         }
         return (int) val;
     }
