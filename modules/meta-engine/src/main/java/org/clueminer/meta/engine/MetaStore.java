@@ -16,6 +16,9 @@
  */
 package org.clueminer.meta.engine;
 
+import java.util.Arrays;
+import java.util.List;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.api.MetaStorageFactory;
 import org.clueminer.project.api.ProjectController;
@@ -40,11 +43,33 @@ public class MetaStore {
         } else {
             LOG.error("missing project controller");
         }
+        MetaStorageFactory msf = MetaStorageFactory.getInstance();
+        LOG.info("storage backends: {}", printStorages(msf.getAll()));
         if (storage == null) {
             LOG.info("meta storage not set, using default one");
-            storage = MetaStorageFactory.getInstance().getDefault();
+            storage = msf.getDefault();
+            if (storage == null) {
+                throw new RuntimeException("default meta-storage not found");
+            }
         }
         return storage;
+    }
+
+    private static String printStorages(List<MetaStorage> storages) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        int i = 0;
+        for (MetaStorage meta : storages) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+
+            sb.append(meta.getName());
+            i++;
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 
 }

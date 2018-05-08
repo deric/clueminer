@@ -16,9 +16,11 @@
  */
 package org.clueminer.meta.cost;
 
+import java.util.Collection;
 import java.util.Map;
 import org.clueminer.meta.api.CostFunction;
 import org.clueminer.meta.api.CostMeasure;
+import org.clueminer.meta.api.CostMeasurement;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.engine.MetaStore;
 import org.openide.util.lookup.ServiceProvider;
@@ -49,7 +51,11 @@ public class LinearCost implements CostFunction {
 
     @Override
     public double estimate(String method, CostMeasure measure, Map<String, Double> parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        MetaStorage storage = MetaStore.fetchStorage();
+        Collection<CostMeasurement> costs = storage.findAllCostMeasurements(method, measure);
+        LOG.debug("fetched {} cost records", costs.size());
+        //TODO: build model,
+        return -1;
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.evolution.api.Evolution;
 import org.clueminer.meta.api.CostMeasure;
+import org.clueminer.meta.api.CostMeasurement;
 import org.clueminer.meta.api.MetaResult;
 import org.clueminer.meta.api.MetaStorage;
 import org.slf4j.Logger;
@@ -102,6 +103,11 @@ public class RedisStore<E extends Instance, C extends Cluster<E>> implements Met
 
     @Override
     public void insertCost(String method, CostMeasure measure, double value, Map<String, Double> parameters) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Collection<CostMeasurement> findAllCostMeasurements(String method, CostMeasure measure) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

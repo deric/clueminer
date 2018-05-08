@@ -119,4 +119,13 @@ public interface MetaStorage<E extends Instance, C extends Cluster<E>> {
      * @param parameters
      */
     void insertCost(String method, CostMeasure measure, double value, Map<String, Double> parameters);
+
+    /**
+     * Find all cost measurements
+     *
+     * @param method
+     * @param measure
+     * @return
+     */
+    Collection<CostMeasurement> findAllCostMeasurements(String method, CostMeasure measure);
 }

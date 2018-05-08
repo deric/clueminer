@@ -319,10 +319,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.info("got {} meta parameters", meta.size());
         queue = new ParetoFrontQueue(numFronts, objectives, sortObjective);
         cnt = 0;
-        MetaStorage storage = MetaStore.fetchStorage();
+        MetaStorage storage = null;
 
         if (useMetaDB) {
-
+            storage = MetaStore.fetchStorage();
+            LOG.info("using {} meta-storage", storage.getName());
         }
 
         if (queue.isEmpty()) {
