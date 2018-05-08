@@ -230,7 +230,6 @@
         <module>modules/timechart</module>
         <module>modules/chart-api</module>
         <module>modules/chart-base</module>
-        <module>modules/curve</module>
         <module>modules/validation</module>
         <module>modules/fixtures-clustering</module>
         <module>modules/clustering-eval</module>
