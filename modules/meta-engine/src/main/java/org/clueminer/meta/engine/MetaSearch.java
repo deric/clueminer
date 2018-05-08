@@ -23,7 +23,9 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
@@ -52,6 +54,9 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.hac.SimpleIndividual;
+import org.clueminer.meta.api.CostFunction;
+import org.clueminer.meta.api.CostFunctionFactory;
+import org.clueminer.meta.api.CostMeasure;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.api.MetaStorage;
@@ -173,8 +178,17 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         ClusteringFactory cf = ClusteringFactory.getInstance();
         List<ClusteringAlgorithm> algs = cf.getAll();
         Props conf;
-        LOG.info("landmarking algorithms: {}", printAlg(algs));
+        TreeMap<ClusteringAlgorithm, Double> estTime = new TreeMap<>();
+        double time;
+        CostFunctionFactory cff = CostFunctionFactory.getInstance();
+        CostFunction costFunc = cff.getDefault();
+        //estimate computing time for each algorithm
         for (ClusteringAlgorithm alg : algs) {
+            time = costFunc.estimate(alg.getName(), CostMeasure.TIME, meta);
+            estTime.put(alg, time);
+        }
+        LOG.info("landmarking algorithms: {}", printAlg(estTime));
+        for (ClusteringAlgorithm alg : estTime.descendingKeySet()) {
             conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
             conf.put(AlgParams.ALG, alg.getName());
             execute(dataset, alg, conf);
@@ -660,15 +674,15 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return sb.toString();
     }
 
-    private String printAlg(List<ClusteringAlgorithm> algs) {
+    private String printAlg(TreeMap<ClusteringAlgorithm, Double> estTime) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         int i = 0;
-        for (ClusteringAlgorithm alg : algs) {
+        for (Entry<ClusteringAlgorithm, Double> alg : estTime.descendingMap().entrySet()) {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(alg.getName());
+            sb.append(alg.getKey().getName()).append(":").append(alg.getValue());
             i++;
         }
         sb.append("]");
