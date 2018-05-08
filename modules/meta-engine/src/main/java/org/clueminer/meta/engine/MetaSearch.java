@@ -135,7 +135,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         numFronts = p.getInt("fronts", 10);
         numResults = p.getInt("results", 15);
         diversityThreshold = p.getDouble("diversity", 0.2);
-        sortObjective = ef.getProvider(p.get("rank-objective", "McClain-Rao"));
+        sortObjective = ef.getProvider(p.get("sort-objective", "McClain-Rao"));
         useMetaDB = p.getBoolean("use-metadb", false);
         maxStates = p.getInt("max-states", 200);
     }
@@ -191,6 +191,14 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             repeat = ndRepeat;
         }
         do {
+            if (maxStates > 0 && cnt >= maxStates) {
+                LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
+                if (ph != null) {
+                    ph.finish();
+                }
+                return;
+            }
+
             Clustering<E, C> c = cluster(dataset, conf);
             cnt++;
             if (isValid(c)) {
@@ -201,13 +209,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 clusteringsRejected++;
             }
 
-            if (maxStates > 0 && cnt >= maxStates) {
-                LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
-                if (ph != null) {
-                    ph.finish();
-                }
-                return;
-            }
             if (ph != null) {
                 ph.progress(cnt);
             }
