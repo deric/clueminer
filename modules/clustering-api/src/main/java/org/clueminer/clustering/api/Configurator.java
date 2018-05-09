@@ -29,13 +29,23 @@ import org.clueminer.utils.Props;
 public interface Configurator<E extends Instance> {
 
     /**
-     * Configure algorithm for single run on given dataset by setting up parameters
-     * in <code>params</code>. Params is a key-value store, that can contain value
-     * of any type.
+     * Configure algorithm for single run on given dataset by setting up
+     * parameters in <code>params</code>. Params is a key-value store, that can
+     * contain value of any type.
      *
      * @param dataset
      * @param params
      */
     void configure(Dataset<E> dataset, Props params);
+
+    /**
+     * Compute expected approximate algorithm complexity based on input data
+     * size
+     *
+     * @param dataset
+     * @param params
+     * @return expected running time in ms
+     */
+    double estimateRunTime(Dataset<E> dataset, Props params);
 
 }

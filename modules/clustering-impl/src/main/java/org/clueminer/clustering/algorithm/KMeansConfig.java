@@ -51,4 +51,16 @@ public class KMeansConfig<E extends Instance> implements Configurator<E> {
         params.putInt(KMeans.K, k);
     }
 
+    /**
+     * Linear complexity
+     *
+     * @param dataset
+     * @param params
+     * @return
+     */
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return dataset.size() * dataset.attributeCount();
+    }
+
 }

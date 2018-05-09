@@ -45,4 +45,9 @@ public class CWConfig<E extends Instance> implements Configurator<E> {
         //TODO
     }
 
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return dataset.size() * dataset.attributeCount();
+    }
+
 }

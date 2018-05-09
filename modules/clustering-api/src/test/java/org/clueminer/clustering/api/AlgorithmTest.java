@@ -1,5 +1,6 @@
 package org.clueminer.clustering.api;
 
+import com.google.common.collect.Iterables;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.dataset.api.Dataset;
@@ -46,6 +47,11 @@ public class AlgorithmTest {
                 @Override
                 public void configure(Dataset<E> dataset, Props params) {
                     //do nothing
+                }
+
+                @Override
+                public double estimateRunTime(Dataset<E> dataset, Props params) {
+                    return dataset.size(); //linear algorithm
                 }
             };
         }

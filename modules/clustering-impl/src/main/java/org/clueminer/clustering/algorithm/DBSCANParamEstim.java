@@ -217,4 +217,9 @@ public class DBSCANParamEstim<E extends Instance> implements Configurator<E> {
         return eps + (kdist[0] - eps) / 2.0;
     }
 
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return Math.log(FastMath.pow(dataset.size(), 2) * dataset.attributeCount());
+    }
+
 }

@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.aggl;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -44,6 +45,18 @@ public class HCConfig<E extends Instance> implements Configurator<E> {
     @Override
     public void configure(Dataset<E> dataset, Props params) {
         //TODO
+    }
+
+    /**
+     * Complexity O(n^2 * d)
+     *
+     * @param dataset
+     * @param params
+     * @return
+     */
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return FastMath.pow(dataset.size(), 2) * dataset.attributeCount();
     }
 
 }

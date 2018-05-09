@@ -16,6 +16,7 @@
  */
 package org.clueminer.chameleon;
 
+import org.apache.commons.math3.util.FastMath;
 import static org.clueminer.chameleon.Chameleon.K;
 import static org.clueminer.chameleon.Chameleon.MAX_PARTITION;
 import org.clueminer.clustering.api.AlgParams;
@@ -126,6 +127,11 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
         } else {
             return dataset.size() / 200;
         }
+    }
+
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return FastMath.pow(dataset.size(), 2) * dataset.attributeCount();
     }
 
 }

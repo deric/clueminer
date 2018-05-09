@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -47,6 +48,11 @@ public class CUREConfig<E extends Instance> implements Configurator<E> {
         if (!params.containsKey(CURE.SHRINK_FACTOR)) {
             params.putDouble(CURE.SHRINK_FACTOR, 0.5);
         }
+    }
+
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return Math.log(FastMath.pow(dataset.size(), 3) * dataset.attributeCount());
     }
 
 }
