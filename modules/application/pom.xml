@@ -252,6 +252,8 @@
                     <systemPropertyVariables>
                         <all.clusters>${all.clusters}</all.clusters>
                         <branding.token>${brandingToken}</branding.token>
+                        <trimStackTrace>false</trimStackTrace>
+                        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

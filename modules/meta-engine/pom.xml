@@ -23,6 +23,15 @@
                     </publicPackages>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${clueminer.maven-surefire.version}</version>
+                <configuration>
+                    <!-- see surefire bug: https://netbeans.org/bugzilla/show_bug.cgi?id=257563 -->
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
