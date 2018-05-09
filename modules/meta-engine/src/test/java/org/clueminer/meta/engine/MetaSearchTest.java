@@ -70,8 +70,8 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         SortedMap<Double, Clustering<E, C>> ranking = q.computeRanking();
         assertNotNull(ranking);
         //there should be always 1.0 key (best solution)
-        assertTrue(ranking.containsKey(1.0));
         q.printRanking(new NMIavg());
+        assertTrue("there should be always 1.0 key", ranking.containsKey(1.0));
         HashSet<Integer> ids = new HashSet<>(q.size());
         for (Clustering<E, C> c : ranking.values()) {
             //for computing ranking correlations we need unique id's

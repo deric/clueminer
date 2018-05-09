@@ -23,9 +23,9 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
@@ -61,6 +61,7 @@ import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.api.MetaStorage;
 import org.clueminer.meta.ranking.ParetoFrontQueue;
+import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
@@ -178,7 +179,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         ClusteringFactory cf = ClusteringFactory.getInstance();
         List<ClusteringAlgorithm> algs = cf.getAll();
         Props conf;
-        TreeMap<ClusteringAlgorithm, Double> estTime = new TreeMap<>();
+        Map<ClusteringAlgorithm, Double> estTime = new HashMap<>();
         double time;
         CostFunctionFactory cff = CostFunctionFactory.getInstance();
         CostFunction costFunc = cff.getDefault();
@@ -187,11 +188,13 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             time = costFunc.estimate(alg.getName(), CostMeasure.TIME, meta);
             estTime.put(alg, time);
         }
-        LOG.info("landmarking algorithms: {}", printAlg(estTime));
-        for (ClusteringAlgorithm alg : estTime.descendingKeySet()) {
+        Map<ClusteringAlgorithm, Double> sortedMap = MapUtils.sortByValue(estTime);
+
+        LOG.info("landmarking algorithms: {}", printAlg(sortedMap));
+        for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
             conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
-            conf.put(AlgParams.ALG, alg.getName());
-            execute(dataset, alg, conf);
+            conf.put(AlgParams.ALG, alg.getKey().getName());
+            execute(dataset, alg.getKey(), conf);
         }
         LOG.debug("stats: {}", queue.stats());
         queue.printRanking(new NMIsqrt());
@@ -675,11 +678,11 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return sb.toString();
     }
 
-    private String printAlg(TreeMap<ClusteringAlgorithm, Double> estTime) {
+    private String printAlg(Map<ClusteringAlgorithm, Double> estTime) {
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         int i = 0;
-        for (Entry<ClusteringAlgorithm, Double> alg : estTime.descendingMap().entrySet()) {
+        for (Entry<ClusteringAlgorithm, Double> alg : estTime.entrySet()) {
             if (i > 0) {
                 sb.append(", ");
             }
