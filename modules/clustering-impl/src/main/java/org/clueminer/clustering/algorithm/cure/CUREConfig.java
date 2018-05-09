@@ -52,7 +52,7 @@ public class CUREConfig<E extends Instance> implements Configurator<E> {
 
     @Override
     public double estimateRunTime(Dataset<E> dataset, Props params) {
-        return Math.log(FastMath.pow(dataset.size(), 3) * dataset.attributeCount());
+        return dataset.size() * Math.log(FastMath.pow(dataset.size(), 3) * dataset.attributeCount());
     }
 
 }

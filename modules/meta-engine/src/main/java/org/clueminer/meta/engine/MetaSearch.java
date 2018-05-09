@@ -185,7 +185,14 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         CostFunction costFunc = cff.getDefault();
         //estimate computing time for each algorithm
         for (ClusteringAlgorithm alg : algs) {
-            time = costFunc.estimate(alg.getName(), CostMeasure.TIME, meta);
+            time = -1;
+            if (useMetaDB) {
+                time = costFunc.estimate(alg.getName(), CostMeasure.TIME, meta);
+            }
+            //in case that we're not using meta db, or estimation failed
+            if (time < 0) {
+                time = alg.getConfigurator().estimateRunTime(dataset, config);
+            }
             estTime.put(alg, time);
         }
         Map<ClusteringAlgorithm, Double> sortedMap = MapUtils.sortByValue(estTime);
