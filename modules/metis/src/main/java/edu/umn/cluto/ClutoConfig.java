@@ -35,6 +35,7 @@
  */
 package edu.umn.cluto;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -62,6 +63,11 @@ public class ClutoConfig<E extends Instance> implements Configurator<E> {
     @Override
     public void configure(Dataset<E> dataset, Props params) {
         //TODO
+    }
+
+    @Override
+    public double estimateRunTime(Dataset<E> dataset, Props params) {
+        return FastMath.pow(dataset.size(), 2) * dataset.attributeCount();
     }
 
 }
