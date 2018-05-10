@@ -26,13 +26,15 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * This index has been one of the most popular indices suggested for use in clustering context
+ * This index has been one of the most popular indices suggested for use in
+ * clustering context
  *
- * (Milligan and Cooper 1985; Edwards and Cavalli-Sforza 1965; Friedman and Rubin 1967;
- * Orloci 1967; Fukunaga and Koontz 1970).
+ * (Milligan and Cooper 1985; Edwards and Cavalli-Sforza 1965; Friedman and
+ * Rubin 1967; Orloci 1967; Fukunaga and Koontz 1970).
  *
  * Milligan, Glenn W., and Martha C. Cooper. "An examination of procedures for
- * determining the number of clusters in a data set." Psychometrika 50.2 (1985): 159-179.
+ * determining the number of clusters in a data set." Psychometrika 50.2 (1985):
+ * 159-179.
  *
  * @see similar index {@link Deviation}
  *
@@ -44,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class TraceW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 6195054290041907628L;
-    private static final String NAME = "Trace W";
+    private static final String NAME = "TraceW";
 
     public TraceW() {
         dm = new EuclideanDistance();

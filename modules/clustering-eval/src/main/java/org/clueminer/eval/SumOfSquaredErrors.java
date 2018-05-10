@@ -26,7 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * I_3 from the Zhao 2001 paper
+ * Sum of squared errors - I_3 from the Zhao 2001 paper
  *
  *
  * @author Andreas De Rijcke
@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class SumOfSquaredErrors<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String NAME = "Sum of squared errors";
+    private static String NAME = "SSE";
     private static final long serialVersionUID = 7246192305561714193L;
 
     public SumOfSquaredErrors() {

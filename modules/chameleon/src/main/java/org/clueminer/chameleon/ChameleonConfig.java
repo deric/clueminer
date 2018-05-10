@@ -64,7 +64,7 @@ public class ChameleonConfig<E extends Instance> implements Configurator<E> {
         if (!params.containsKey(K)) {
             params.putInt(K, determineK(dataset, params));
         }
-        putndef(params, AlgParams.CUTOFF_SCORE, "SD index");
+        putndef(params, AlgParams.CUTOFF_SCORE, "SD");
         putndef(params, AlgParams.CUTOFF_STRATEGY, "FirstJump");
         putndef(params, AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
     }

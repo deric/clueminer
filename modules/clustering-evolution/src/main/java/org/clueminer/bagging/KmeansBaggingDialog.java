@@ -260,7 +260,7 @@ public class KmeansBaggingDialog extends JPanel implements ClusteringDialog {
         c.gridx = 1;
         comboObjective2 = new JComboBox(InternalEvaluatorFactory.getInstance().getProvidersArray());
         add(comboObjective2, c);
-        comboObjective2.setSelectedItem("SD index");
+        comboObjective2.setSelectedItem("SD");
 
         //rand k
         c.gridy++;

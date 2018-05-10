@@ -25,6 +25,7 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
+ * Wemmert Gancarski criterion
  *
  * @author deric
  * @param <E>
@@ -32,7 +33,7 @@ import org.clueminer.utils.Props;
  */
 public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "WemmertGancarski";
+    private static final String name = "Wemmert-Gancarski";
     private static final long serialVersionUID = -1206250158135544566L;
 
     public WemmertGancarski() {

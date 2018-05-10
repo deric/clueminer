@@ -28,6 +28,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Hybrid Centroid Similarity (HCS)
  *
  * @author Tomas Barton
  * @param <E>
@@ -36,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class HybridCentroidSimilarity<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String NAME = "Hybrid Centroid Similarity";
+    private static final String NAME = "HCS";
     private static final long serialVersionUID = 5859566115007803560L;
 
     public HybridCentroidSimilarity() {

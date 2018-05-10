@@ -26,7 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simplified silhoulette index
+ * Simplified Silhoulette index
  *
  * @author deric
  * @param <E>
@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
-    private static String name = "Silhouette Simpl";
+    private static String name = "Silhouette-simpl";
     private static final long serialVersionUID = 2679542818862912390L;
 
     public SilhouetteSimpl() {

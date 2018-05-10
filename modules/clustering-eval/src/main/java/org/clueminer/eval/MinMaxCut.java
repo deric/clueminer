@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String NAME = "min-max cut";
+    private static final String NAME = "min-max-cut";
     private static final long serialVersionUID = -4963722097900153865L;
 
     public MinMaxCut() {

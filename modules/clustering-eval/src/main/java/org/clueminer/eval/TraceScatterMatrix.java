@@ -27,7 +27,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * * E_1 from the Zhao 2001 paper
+ * Trace Scatter Matrix - E_1 from the Zhao 2001 paper
  *
  * Distance measure has to be CosineSimilarity
  *
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String NAME = "Trace Scatter Matrix";
+    private static String NAME = "TraceSM";
     private static final long serialVersionUID = -3714149292456837484L;
 
     public TraceScatterMatrix() {

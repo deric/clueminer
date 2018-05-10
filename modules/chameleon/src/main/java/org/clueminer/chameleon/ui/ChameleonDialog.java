@@ -62,7 +62,7 @@ public class ChameleonDialog extends JPanel implements ClusteringDialog {
         comboPartitioning.setSelectedItem("Recursive bisection");
         comboBisection.setSelectedItem("Fiduccia-Mattheyses");
         comboCutoffMethod.setSelectedItem("FirstJump");
-        comboCutoff.setSelectedItem("SD index");
+        comboCutoff.setSelectedItem("SD");
         comboGraphStorage.setSelectedItem(AdjListGraph.NAME);
         comboSimilarity.setSelectedItem(BBK1.NAME);
         comboMerger.setSelectedItem(KnnMerger.NAME);

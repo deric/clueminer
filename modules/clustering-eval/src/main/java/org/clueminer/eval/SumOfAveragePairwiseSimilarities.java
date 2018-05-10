@@ -26,7 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * I_1 from the Zhao 2001 paper
+ * Sum of AVG pairwise similarities - I_1 from the Zhao 2001 paper
  *
  * @author Andreas De Rijcke
  * @author Tomas Barton
@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SumOfAveragePairwiseSimilarities<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 3813005489221333305L;
-    private static String NAME = "Sum of AVG parwise similarities";
+    private static String NAME = "SAPS";
 
     public SumOfAveragePairwiseSimilarities() {
         dm = EuclideanDistance.getInstance();

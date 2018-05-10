@@ -26,11 +26,12 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Marriott index, KsqDetW or k^2 |W| criterion
- * Best partition size is determined by max score difference
+ * Marriott index, KsqDetW or k^2 |W| criterion Best partition size is
+ * determined by max score difference
  *
  *
- * Marriott, F. H. C. "Practical problems in a method of cluster analysis." Biometrics (1971): 501-514.
+ * Marriott, F. H. C. "Practical problems in a method of cluster analysis."
+ * Biometrics (1971): 501-514.
  *
  * @author deric
  * @param <E>
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class KsqDetW<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String NAME = "Marriott (KsqDetW)";
+    private static final String NAME = "KsqDetW";
     private static final long serialVersionUID = 3727657004516559539L;
 
     public KsqDetW() {

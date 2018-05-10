@@ -26,6 +26,7 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Sum of Centroid Similarities (SCS)
  *
  * @author Tomas Barton
  * @param <E>
@@ -34,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class SumOfCentroidSimilarities<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String NAME = "Sum of Centroid Similarities";
+    private static String NAME = "SCS";
     private static final long serialVersionUID = -2323688637159800449L;
 
     public SumOfCentroidSimilarities() {
