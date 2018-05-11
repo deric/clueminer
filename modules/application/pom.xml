@@ -185,7 +185,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>meta-h2</artifactId>
+            <artifactId>meta-db</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
