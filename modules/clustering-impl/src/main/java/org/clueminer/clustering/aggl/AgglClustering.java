@@ -99,6 +99,52 @@ public class AgglClustering {
         return similarityMatrix;
     }
 
+        public static Matrix rowSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue, double sigma) {
+        Matrix similarityMatrix;
+        double dist;
+        if (dm.isSymmetric()) {
+
+            similarityMatrix = new SymmetricMatrix(m.rowsCount(), m.rowsCount());
+            for (int i = 0; i < m.rowsCount(); ++i) {
+                for (int j = i + 1; j < m.rowsCount(); ++j) {
+                    dist = dm.measure(m.getRowVector(i), m.getRowVector(j));
+                    // Gaussian similarity function 
+                    double similarity = Math.exp(-Math.pow(dist, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(i, j, similarity);
+                    // when printing lower part of matrix this indexes should match
+                    if (queue != null) {
+                        queue.add(new Element(similarity, i, j));
+                    }
+                }
+            }
+        } else {
+            double dist2;
+            MatrixVector vi, vj;
+            similarityMatrix = new JMatrix(m.rowsCount(), m.rowsCount());
+            for (int i = 0; i < m.rowsCount(); ++i) {
+                for (int j = i + 1; j < m.rowsCount(); ++j) {
+                    /**
+                     * measure is not symmetrical, we have to compute distance
+                     * from A to B and from B to A
+                     */
+                    vi = m.getRowVector(i);
+                    vj = m.getRowVector(j);
+                    dist = dm.measure(vi, vj);
+                    double similarity = Math.exp(-Math.pow(dist, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(i, j, similarity);
+                    dist2 = dm.measure(vj, vi);
+                    double similarity2 = Math.exp(-Math.pow(dist2, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(j, i, similarity2);
+                    if (queue != null) {
+                        queue.add(new Element(similarity, i, j));
+                        queue.add(new Element(similarity2, j, i));
+                    }
+                }
+            }
+        }
+        return similarityMatrix;
+    }
+    
     /**
      * We expect distance measure to be symmetrical
      *
@@ -199,5 +245,50 @@ public class AgglClustering {
         }
         return similarityMatrix;
     }
-
+    
+    public static Matrix columnSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue, double sigma) {
+        Matrix similarityMatrix;
+        double dist;
+        if (dm.isSymmetric()) {
+            similarityMatrix = new SymmetricMatrix(m.columnsCount(), m.columnsCount());
+            for (int i = 0; i < m.columnsCount(); ++i) {
+                for (int j = i + 1; j < m.columnsCount(); ++j) {
+                    dist = dm.measure(m.getColumnVector(i), m.getColumnVector(j));
+                    // Gaussina similarity function
+                    double similarity = Math.exp(-Math.pow(dist, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(i, j, similarity);
+                    if (queue != null) {
+                        // when printing lower part of matrix this indexes should match
+                        queue.add(new Element(similarity, i, j));
+                    }
+                }
+            }
+        } else {
+            double dist2;
+            MatrixVector vi, vj;
+            similarityMatrix = new JMatrix(m.columnsCount(), m.columnsCount());
+            for (int i = 0; i < m.columnsCount(); ++i) {
+                for (int j = i + 1; j < m.columnsCount(); ++j) {
+                    /**
+                     * measure is not symmetrical, we have to compute distance
+                     * from A to B and from B to A
+                     */
+                    vi = m.getColumnVector(i);
+                    vj = m.getColumnVector(j);
+                    dist = dm.measure(vi, vj);
+                    double similarity = Math.exp(-Math.pow(dist, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(i, j, similarity);
+                    //inversed distance
+                    dist2 = dm.measure(vj, vi);
+                    double similarity2 = Math.exp(-Math.pow(dist2, 2) / (2 * Math.pow(sigma, 2)));
+                    similarityMatrix.set(j, i, similarity2);
+                    if (queue != null) {
+                        queue.add(new Element(similarity, i, j));
+                        queue.add(new Element(similarity2, j, i));
+                    }
+                }
+            }
+        }
+        return similarityMatrix;
+    }
 }

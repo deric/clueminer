@@ -48,6 +48,8 @@ public class FakeClustering {
     private static Clustering<Instance, Cluster<Instance>> simpleClustering;
     private static Clustering<Instance, Cluster<Instance>> simpleResponse;
     private static Dataset<Instance> irisData;
+    private static Dataset<Instance> jainData;
+    private static Dataset<Instance> spiralData;
     private static Dataset<Instance> wine;
     private static Dataset<Instance> kumar;
     private static Dataset<? extends Instance> school;
@@ -119,6 +121,38 @@ public class FakeClustering {
         return irisData;
     }
 
+    public static Dataset<? extends Instance> jainDataset() {
+        if (jainData == null) {
+            CommonFixture tf = new CommonFixture();
+            jainData = new ArrayDataset(373, 2);
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(tf.jainArff(), jainData, 2);
+            } catch (FileNotFoundException | ParserError ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return jainData;
+    }
+    
+    public static Dataset<? extends Instance> spiralDataset() {
+        if (spiralData == null) {
+            CommonFixture tf = new CommonFixture();
+            spiralData = new ArrayDataset(1000, 2);
+            ARFFHandler arff = new ARFFHandler();
+            try {
+                arff.load(tf.spiralArff(), spiralData, 2);
+            } catch (FileNotFoundException | ParserError ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return spiralData;
+    }
+    
     public static Clustering irisWrong() {
         if (irisWrong == null) {
             irisWrong = new ClusterList(3);

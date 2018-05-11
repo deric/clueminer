@@ -133,6 +133,16 @@
             <version>${project.version}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.clueminer</groupId>
+            <artifactId>graph-impl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.clueminer</groupId>
+            <artifactId>graph-alg</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
