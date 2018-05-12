@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -59,6 +61,7 @@ public class XChartPanel extends BPanel {
     private final static Logger LOG = LoggerFactory.getLogger(XChartPanel.class);
     private Dimension minSize;
     private boolean initialized = false;
+    private final LinkedList<BPanel> layers;
 
     /**
      * Constructor
@@ -69,6 +72,7 @@ public class XChartPanel extends BPanel {
         this.chart = chart;
         initialize();
         this.initialized = true;
+        layers = new LinkedList<>();
     }
 
     private void initialize() {
@@ -111,6 +115,22 @@ public class XChartPanel extends BPanel {
     @Override
     public void render(Graphics2D g) {
         chart.paint(g, getWidth(), getHeight());
+        if (!layers.isEmpty()) {
+            Iterator<BPanel> it = layers.iterator();
+            BPanel panel;
+            while (it.hasNext()) {
+                panel = it.next();
+                panel.sizeUpdated(realSize);
+                panel.render(g);
+            }
+        }
+        //all painting is finished
+        g.dispose();
+    }
+
+    public void addLayer(BPanel panel) {
+        panel.setParent(this);
+        layers.add(panel);
     }
 
     @Override

@@ -109,7 +109,8 @@ public class ChartPainter {
         chartTitle.paint(g);
         chartLegend.paint(g);
 
-        g.dispose();
+        //graphics need to be disposed in parent frame
+        //g.dispose();
     }
 
     /**
@@ -157,7 +158,8 @@ public class ChartPainter {
     }
 
     /**
-     * Gets the Chart's style manager, which can be used to customize the Chart's appearance
+     * Gets the Chart's style manager, which can be used to customize the
+     * Chart's appearance
      *
      * @return the style manager
      */

@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Buffered panel. Each component inheriting from this component must set
- * <code>reqSize</code> and <code>realSize</code> variables. Moreover once method
- * <code>sizeUpdated</code> is called cache invalidation (using <code>resetCache();</code>)
- * is recommended.
+ * <code>reqSize</code> and <code>realSize</code> variables. Moreover once
+ * method <code>sizeUpdated</code> is called cache invalidation (using
+ * <code>resetCache();</code>) is recommended.
  *
  * @author Tomas Barton
  */
@@ -48,6 +48,7 @@ public abstract class BPanel extends JPanel {
     protected boolean fitToSpace = true;
     protected boolean reloading = false;
     private static final Logger LOG = LoggerFactory.getLogger(BPanel.class);
+    private BPanel parent = null;
 
     public BPanel() {
         initComponent();
@@ -194,6 +195,10 @@ public abstract class BPanel extends JPanel {
     }
 
     public void resetCache() {
+        if (parent != null) {
+            parent.resetCache();
+            return;
+        }
         recalculate();
 
         //invoke painting from EDT thread
@@ -213,4 +218,7 @@ public abstract class BPanel extends JPanel {
         return realSize;
     }
 
+    public void setParent(BPanel parent) {
+        this.parent = parent;
+    }
 }

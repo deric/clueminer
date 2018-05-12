@@ -31,13 +31,15 @@ import java.awt.Shape;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
+import java.util.Iterator;
+import java.util.LinkedList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.gui.BPanel;
 
 /**
  * Simple and fast 2D chart.
@@ -57,6 +59,8 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private String title = null;
     private boolean simple = false;
     private final transient EventListenerList renderListeners = new EventListenerList();
+    private LinkedList<BPanel> layers;
+    private XChartPanel xchart;
 
     public ScatterPlot() {
         initComponents();
@@ -71,6 +75,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private void initComponents() {
         setLayout(new GridBagLayout());
         setSize(new Dimension(800, 600));
+        layers = new LinkedList<>();
     }
 
     /**
@@ -91,9 +96,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                                 GridBagConstraints.NORTHWEST,
                                 GridBagConstraints.BOTH,
                                 new Insets(0, 0, 0, 0), 0, 0));
-                /*revalidate();
+                revalidate();
                 validate();
-                repaint();*/
+                repaint();
                 fireComponentRendered();
             }
         });
@@ -134,12 +139,16 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                 s.setMarkerColor(clust.getColor());
             }
         }
-        XChartPanel xchart = new XChartPanel(chart);
+        xchart = new XChartPanel(chart);
         if (mouseListener != null) {
             xchart.addMouseListener(mouseListener);
         }
         if (mouseMotionListener != null) {
             xchart.addMouseMotionListener(mouseMotionListener);
+        }
+        Iterator<BPanel> it = layers.iterator();
+        while (it.hasNext()) {
+            xchart.addLayer(it.next());
         }
 
         return xchart;
@@ -161,9 +170,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                 add(clusteringPlot(clusteringA), c);
                 c.gridx = 1;
                 add(clusteringPlot(clusteringB), c);
-                /* revalidate();
+                revalidate();
                 validate();
-                repaint();*/
+                repaint();
             }
         });
     }
@@ -234,6 +243,19 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
         for (RenderingListener listener : listeners) {
             listener.renderingFinished(this);
         }
+    }
+
+    public void addLayer(BPanel panel) {
+        layers.add(panel);
+    }
+
+    public void resetCache() {
+        if (xchart != null) {
+            xchart.resetCache();
+        }
+        revalidate();
+        validate();
+        repaint();
     }
 
 }
