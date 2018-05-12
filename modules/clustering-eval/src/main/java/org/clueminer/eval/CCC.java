@@ -23,8 +23,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
+import org.clueminer.math.impl.MathUtil;
 import org.clueminer.math.matrix.JamaMatrix;
-import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 
 /**
@@ -74,7 +74,8 @@ public class CCC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
         }
         /**
          * TODO: some matrix operations might not be necessary
-         * */
+         *
+         */
         Matrix ZT = Z.transpose();
         // cluster sizes on diagonal -- inverse
         Matrix TIZ = ZT.times(Z).inverse();
@@ -101,7 +102,7 @@ public class CCC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
      * @return
      */
     public double score2(Clustering<E, C> clusters) {
-        return Maths.covariance(withinGroupScatter(clusters)).trace();
+        return MathUtil.covariance(withinGroupScatter(clusters)).trace();
     }
 
     @Override

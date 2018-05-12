@@ -23,7 +23,6 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.impl.MathUtil;
-import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
