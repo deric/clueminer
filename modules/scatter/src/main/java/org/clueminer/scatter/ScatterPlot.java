@@ -33,8 +33,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.EventListenerList;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.ClusteringListener;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -54,6 +56,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     private Chart currChart;
     private String title = null;
     private boolean simple = false;
+    private final transient EventListenerList renderListeners = new EventListenerList();
 
     public ScatterPlot() {
         initComponents();
@@ -91,6 +94,7 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                 revalidate();
                 validate();
                 repaint();
+                fireComponentRendered();
             }
         });
     }
@@ -217,6 +221,19 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
     public void setTitle(String title) {
         this.title = title;
         repaint();
+    }
+
+    public void addRenderListener(RenderingListener listener) {
+        renderListeners.add(RenderingListener.class, listener);
+    }
+
+    public void fireComponentRendered() {
+        RenderingListener[] listeners;
+
+        listeners = renderListeners.getListeners(RenderingListener.class);
+        for (RenderingListener listener : listeners) {
+            listener.renderingFinished(this);
+        }
     }
 
 }
