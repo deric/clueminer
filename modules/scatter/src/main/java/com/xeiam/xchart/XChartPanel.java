@@ -47,7 +47,8 @@ import org.slf4j.LoggerFactory;
 /**
  * A Swing JPanel that contains a Chart
  * <p>
- * Right-click + Save As... or ctrl+S pops up a Save As dialog box for saving the chart as a JPeg or PNG file.
+ * Right-click + Save As... or ctrl+S pops up a Save As dialog box for saving
+ * the chart as a JPeg or PNG file.
  *
  * @author timmolter
  */
@@ -201,7 +202,8 @@ public class XChartPanel extends BPanel {
     }
 
     /**
-     * File filter based on the suffix of a file. This file filter accepts all files that end with .suffix or the capitalized suffix.
+     * File filter based on the suffix of a file. This file filter accepts all
+     * files that end with .suffix or the capitalized suffix.
      *
      * @author Benedikt Bünz
      */
@@ -210,7 +212,8 @@ public class XChartPanel extends BPanel {
         private final String suffix;
 
         /**
-         * @param suffix This file filter accepts all files that end with .suffix or the capitalized suffix.
+         * @param suffix This file filter accepts all files that end with
+         * .suffix or the capitalized suffix.
          */
         public SuffixSaveFilter(String suffix) {
 
@@ -300,8 +303,9 @@ public class XChartPanel extends BPanel {
      * Update a series by updating the X-Axis, Y-Axis and error bar data
      *
      * @param seriesName
-     * @param newXData        - set null to be automatically generated as a list of increasing Integers starting from
-     *                        1 and ending at the size of the new Y-Axis data list.
+     * @param newXData - set null to be automatically generated as a list of
+     * increasing Integers starting from 1 and ending at the size of the new
+     * Y-Axis data list.
      * @param newYData
      * @param newErrorBarData - set null if there are no error bars
      * @return

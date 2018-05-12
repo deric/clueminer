@@ -91,9 +91,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                                 GridBagConstraints.NORTHWEST,
                                 GridBagConstraints.BOTH,
                                 new Insets(0, 0, 0, 0), 0, 0));
-                revalidate();
+                /*revalidate();
                 validate();
-                repaint();
+                repaint();*/
                 fireComponentRendered();
             }
         });
@@ -161,9 +161,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
                 add(clusteringPlot(clusteringA), c);
                 c.gridx = 1;
                 add(clusteringPlot(clusteringB), c);
-                revalidate();
+                /* revalidate();
                 validate();
-                repaint();
+                repaint();*/
             }
         });
     }
@@ -178,9 +178,9 @@ public class ScatterPlot<E extends Instance, C extends Cluster<E>> extends JPane
 
     public void setMarkerSize(int markerSize) {
         this.markerSize = markerSize;
-        revalidate();
+        /*    revalidate();
         validate();
-        repaint();
+        repaint();*/
     }
 
     /**
