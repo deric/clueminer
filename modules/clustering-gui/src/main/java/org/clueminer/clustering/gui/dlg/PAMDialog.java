@@ -43,7 +43,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class PAMDialog extends JPanel implements ClusteringDialog {
 
-    private static final String NAME = "k-means";
+    private static final String NAME = "PAM";
     private static final long serialVersionUID = -4676433745154958224L;
     private JComboBox<String> comboDistance;
     private JComboBox<String> comboPrototypes;
@@ -104,7 +104,6 @@ public class PAMDialog extends JPanel implements ClusteringDialog {
         });
         c.gridx = 2;
         add(btnRandom, c);
-
 
         //distance measure
         c.gridy++;

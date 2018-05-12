@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringDialog.class)
 public class KmeansDialog extends JPanel implements ClusteringDialog {
 
-    private static final long serialVersionUID = 7041147759279431292L;
+    private static final long serialVersionUID = 7041147759279431293L;
 
     private JSlider sliderK;
     private JTextField tfK;

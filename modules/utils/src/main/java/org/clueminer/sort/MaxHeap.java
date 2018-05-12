@@ -137,7 +137,7 @@ public class MaxHeap<T extends Comparable<? super T>> extends BaseHeap<T> implem
             sorted = true;
         }
     }
-
+    
     /**
      * Place the array in max-heap order. Note that the array is not fully
      * sorted.
