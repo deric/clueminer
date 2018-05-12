@@ -1,12 +1,11 @@
-/*******************************************************************************
+/** *****************************************************************************
  * Copyright (c) 1999-2005 The Institute for Genomic Research (TIGR).
- * Copyright (c) 2005-2008, the Dana-Farber Cancer Institute (DFCI), 
+ * Copyright (c) 2005-2008, the Dana-Farber Cancer Institute (DFCI),
  * J. Craig Venter Institute (JCVI) and the University of Washington.
  * All rights reserved.
- *******************************************************************************/
+ ****************************************************************************** */
 package org.clueminer.math.impl;
 
-import org.clueminer.math.matrix.Maths;
 import org.clueminer.math.matrix.LUDecompositionJama;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -14,50 +13,50 @@ import java.io.StreamTokenizer;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-
-
 // Changed from double to float for memory demand reduction!
 // This Class is based on the Jama Matrix
 /**
  * Jama = Java Matrix class.
  * <P>
- * The Java Matrix Class provides the fundamental operations of numerical
- * linear algebra.  Various constructors create Matrices from two dimensional
- * arrays of double precision floating point numbers.  Various "gets" and
- * "sets" provide access to submatrices and matrix elements.  Several methods
- * implement basic matrix arithmetic, including matrix addition and
- * multiplication, matrix norms, and element-by-element array operations.
- * Methods for reading and printing matrices are also included.  All the
- * operations in this version of the Matrix Class involve real matrices.
- * Complex matrices may be handled in a future version.
+ * The Java Matrix Class provides the fundamental operations of numerical linear
+ * algebra. Various constructors create Matrices from two dimensional arrays of
+ * double precision floating point numbers. Various "gets" and "sets" provide
+ * access to submatrices and matrix elements. Several methods implement basic
+ * matrix arithmetic, including matrix addition and multiplication, matrix
+ * norms, and element-by-element array operations. Methods for reading and
+ * printing matrices are also included. All the operations in this version of
+ * the Matrix Class involve real matrices. Complex matrices may be handled in a
+ * future version.
  * <P>
- * Five fundamental matrix decompositions, which consist of pairs or triples
- * of matrices, permutation vectors, and the like, produce results in five
- * decomposition classes.  These decompositions are accessed by the Matrix
- * class to compute solutions of simultaneous linear equations, determinants,
- * inverses and other matrix functions.  The five decompositions are:
- * <P><UL>
+ * Five fundamental matrix decompositions, which consist of pairs or triples of
+ * matrices, permutation vectors, and the like, produce results in five
+ * decomposition classes. These decompositions are accessed by the Matrix class
+ * to compute solutions of simultaneous linear equations, determinants, inverses
+ * and other matrix functions. The five decompositions are:
+ * <P>
+ * <UL>
  * <LI>Cholesky Decomposition of symmetric, positive definite matrices.
  * <LI>LU Decomposition of rectangular matrices.
  * <LI>QR Decomposition of rectangular matrices.
  * <LI>Singular Value Decomposition of rectangular matrices.
- * <LI>Eigenvalue Decomposition of both symmetric and nonsymmetric square matrices.
+ * <LI>Eigenvalue Decomposition of both symmetric and nonsymmetric square
+ * matrices.
  * </UL>
  * <DL>
  * <DT><B>Example of use:</B></DT>
  * <P>
  * <DD>Solve a linear system A x = b and compute the residual norm, ||b - A x||.
- * <P><PRE>
- * double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}};
- * Matrix A = new Matrix(vals);
- * Matrix b = Matrix.random(3,1);
- * Matrix x = A.solve(b);
- * Matrix r = A.times(x).minus(b);
- * double rnorm = r.normInf();
+ * <P>
+ * <
+ * PRE>
+ * double[][] vals = {{1.,2.,3},{4.,5.,6.},{7.,8.,10.}}; Matrix A = new
+ * Matrix(vals); Matrix b = Matrix.random(3,1); Matrix x = A.solve(b); Matrix r
+ * = A.times(x).minus(b); double rnorm = r.normInf();
  * </PRE></DD>
  * </DL>
  *
- * @author The MathWorks, Inc. and the National Institute of Standards and Technology.
+ * @author The MathWorks, Inc. and the National Institute of Standards and
+ * Technology.
  * @version 5 August 1998
  */
 public class FloatMatrix implements Cloneable {
@@ -65,18 +64,22 @@ public class FloatMatrix implements Cloneable {
     /* ------------------------
     Class variables
      * ------------------------ */
-    /** Array for internal storage of elements.
+    /**
+     * Array for internal storage of elements.
+     *
      * @serial internal array storage.
      */
     public float[][] A;
     /**
      * Number of rows
-     * @serial 
+     *
+     * @serial
      */
     public int m;
-    
+
     /**
      * Number of columns
+     *
      * @serial n
      */
     public int n;
@@ -84,9 +87,11 @@ public class FloatMatrix implements Cloneable {
     /* ------------------------
     Constructors
      * ------------------------ */
-    /** Construct an m-by-n matrix of zeros.
-     * @param m    Number of rows
-     * @param n    Number of columns
+    /**
+     * Construct an m-by-n matrix of zeros.
+     *
+     * @param m Number of rows
+     * @param n Number of columns
      */
     public FloatMatrix(int m, int n) {
         this.m = m;
@@ -94,10 +99,12 @@ public class FloatMatrix implements Cloneable {
         A = new float[m][n];
     }
 
-    /** Construct an m-by-n constant matrix.
-     * @param m    Number of rows.
-     * @param n    Number of colums.
-     * @param s    Fill the matrix with this scalar value.
+    /**
+     * Construct an m-by-n constant matrix.
+     *
+     * @param m Number of rows.
+     * @param n Number of colums.
+     * @param s Fill the matrix with this scalar value.
      */
     public FloatMatrix(int m, int n, float s) {
         this.m = m;
@@ -110,10 +117,12 @@ public class FloatMatrix implements Cloneable {
         }
     }
 
-    /** Construct a matrix from a 2-D array.
-     * @param A    Two-dimensional array of doubles.
-     * @exception  IllegalArgumentException All rows must have the same length
-     * @see        #constructWithCopy
+    /**
+     * Construct a matrix from a 2-D array.
+     *
+     * @param A Two-dimensional array of doubles.
+     * @exception IllegalArgumentException All rows must have the same length
+     * @see #constructWithCopy
      */
     public FloatMatrix(float[][] A) {
         m = A.length;
@@ -126,10 +135,12 @@ public class FloatMatrix implements Cloneable {
         this.A = A;
     }
 
-    /** Construct a matrix quickly without checking arguments.
-     * @param A    Two-dimensional array of doubles.
-     * @param m    Number of rows.
-     * @param n    Number of colums.
+    /**
+     * Construct a matrix quickly without checking arguments.
+     *
+     * @param A Two-dimensional array of doubles.
+     * @param m Number of rows.
+     * @param n Number of colums.
      */
     public FloatMatrix(float[][] A, int m, int n) {
         this.A = A;
@@ -137,10 +148,13 @@ public class FloatMatrix implements Cloneable {
         this.n = n;
     }
 
-    /** Construct a matrix from a one-dimensional packed array
-     * @param vals One-dimensional array of doubles, packed by columns (ala Fortran).
-     * @param m    Number of rows.
-     * @exception  IllegalArgumentException Array length must be a multiple of m.
+    /**
+     * Construct a matrix from a one-dimensional packed array
+     *
+     * @param vals One-dimensional array of doubles, packed by columns (ala
+     * Fortran).
+     * @param m Number of rows.
+     * @exception IllegalArgumentException Array length must be a multiple of m.
      */
     public FloatMatrix(float vals[], int m) {
         this.m = m;
@@ -163,9 +177,11 @@ public class FloatMatrix implements Cloneable {
         return new String[]{"array", "rowDimension", "columnDimension"};
     }
 
-    /** Construct a matrix from a copy of a 2-D array.
-     * @param A    Two-dimensional array of doubles.
-     * @exception  IllegalArgumentException All rows must have the same length
+    /**
+     * Construct a matrix from a copy of a 2-D array.
+     *
+     * @param A Two-dimensional array of doubles.
+     * @exception IllegalArgumentException All rows must have the same length
      */
     public static FloatMatrix constructWithCopy(float[][] A) {
         int m = A.length;
@@ -183,7 +199,8 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Make a deep copy of a matrix
+    /**
+     * Make a deep copy of a matrix
      */
     public FloatMatrix copy() {
         FloatMatrix X = new FloatMatrix(m, n);
@@ -196,21 +213,24 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Clone the Matrix object.
+    /**
+     * Clone the Matrix object.
      */
     @Override
     public Object clone() {
         return this.copy();
     }
 
-    /** Access the internal two-dimensional array.
-     * @return     Pointer to the two-dimensional array of matrix elements.
+    /**
+     * Access the internal two-dimensional array.
+     *
+     * @return Pointer to the two-dimensional array of matrix elements.
      */
     public float[][] getArray() {
         return A;
     }
-    
-    public double[][] getDoubleArray(){
+
+    public double[][] getDoubleArray() {
         double[][] C = new double[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -220,8 +240,10 @@ public class FloatMatrix implements Cloneable {
         return C;
     }
 
-    /** Copy the internal two-dimensional array.
-     * @return     Two-dimensional array copy of matrix elements.
+    /**
+     * Copy the internal two-dimensional array.
+     *
+     * @return Two-dimensional array copy of matrix elements.
      */
     public float[][] getArrayCopy() {
         float[][] C = new float[m][n];
@@ -233,8 +255,10 @@ public class FloatMatrix implements Cloneable {
         return C;
     }
 
-    /** Make a one-dimensional column packed copy of the internal array.
-     * @return     Matrix elements packed in a one-dimensional array by columns.
+    /**
+     * Make a one-dimensional column packed copy of the internal array.
+     *
+     * @return Matrix elements packed in a one-dimensional array by columns.
      */
     public float[] getColumnPackedCopy() {
         float[] vals = new float[m * n];
@@ -246,8 +270,10 @@ public class FloatMatrix implements Cloneable {
         return vals;
     }
 
-    /** Make a one-dimensional row packed copy of the internal array.
-     * @return     Matrix elements packed in a one-dimensional array by rows.
+    /**
+     * Make a one-dimensional row packed copy of the internal array.
+     *
+     * @return Matrix elements packed in a one-dimensional array by rows.
      */
     public float[] getRowPackedCopy() {
         float[] vals = new float[m * n];
@@ -259,37 +285,45 @@ public class FloatMatrix implements Cloneable {
         return vals;
     }
 
-    /** Get row dimension.
-     * @return     m, the number of rows.
+    /**
+     * Get row dimension.
+     *
+     * @return m, the number of rows.
      */
     public int getRowDimension() {
         return m;
     }
 
-    /** Get column dimension.
-     * @return     n, the number of columns.
+    /**
+     * Get column dimension.
+     *
+     * @return n, the number of columns.
      */
     public int getColumnDimension() {
         return n;
     }
 
-    /** Get a single element.
-     * @param i    Row index.
-     * @param j    Column index.
-     * @return     A(i,j)
-     * @exception  ArrayIndexOutOfBoundsException
+    /**
+     * Get a single element.
+     *
+     * @param i Row index.
+     * @param j Column index.
+     * @return A(i,j)
+     * @exception ArrayIndexOutOfBoundsException
      */
     public float get(int i, int j) {
         return A[i][j];
     }
 
-    /** Get a submatrix.
-     * @param i0   Initial row index
-     * @param i1   Final row index
-     * @param j0   Initial column index
-     * @param j1   Final column index
-     * @return     A(i0:i1,j0:j1)
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Get a submatrix.
+     *
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param j0 Initial column index
+     * @param j1 Final column index
+     * @return A(i0:i1,j0:j1)
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public FloatMatrix getMatrix(int i0, int i1, int j0, int j1) {
         FloatMatrix X = new FloatMatrix(i1 - i0 + 1, j1 - j0 + 1);
@@ -306,11 +340,13 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Get a submatrix.
-     * @param r    Array of row indices.
-     * @param c    Array of column indices.
-     * @return     A(r(:),c(:))
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Get a submatrix.
+     *
+     * @param r Array of row indices.
+     * @param c Array of column indices.
+     * @return A(r(:),c(:))
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public FloatMatrix getMatrix(int[] r, int[] c) {
         FloatMatrix X = new FloatMatrix(r.length, c.length);
@@ -327,12 +363,14 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Get a submatrix.
-     * @param i0   Initial row index
-     * @param i1   Final row index
-     * @param c    Array of column indices.
-     * @return     A(i0:i1,c(:))
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Get a submatrix.
+     *
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param c Array of column indices.
+     * @return A(i0:i1,c(:))
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public FloatMatrix getMatrix(int i0, int i1, int[] c) {
         FloatMatrix X = new FloatMatrix(i1 - i0 + 1, c.length);
@@ -349,12 +387,14 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Get a submatrix.
-     * @param r    Array of row indices.
-     * @param i0   Initial column index
-     * @param i1   Final column index
-     * @return     A(r(:),j0:j1)
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Get a submatrix.
+     *
+     * @param r Array of row indices.
+     * @param i0 Initial column index
+     * @param i1 Final column index
+     * @return A(r(:),j0:j1)
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public FloatMatrix getMatrix(int[] r, int j0, int j1) {
         FloatMatrix X = new FloatMatrix(r.length, j1 - j0 + 1);
@@ -371,23 +411,27 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Set a single element.
-     * @param i    Row index.
-     * @param j    Column index.
-     * @param s    A(i,j).
-     * @exception  ArrayIndexOutOfBoundsException
+    /**
+     * Set a single element.
+     *
+     * @param i Row index.
+     * @param j Column index.
+     * @param s A(i,j).
+     * @exception ArrayIndexOutOfBoundsException
      */
     public void set(int i, int j, float s) {
         A[i][j] = s;
     }
 
-    /** Set a submatrix.
-     * @param i0   Initial row index
-     * @param i1   Final row index
-     * @param j0   Initial column index
-     * @param j1   Final column index
-     * @param X    A(i0:i1,j0:j1)
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Set a submatrix.
+     *
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param j0 Initial column index
+     * @param j1 Final column index
+     * @param X A(i0:i1,j0:j1)
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public void setMatrix(int i0, int i1, int j0, int j1, FloatMatrix X) {
         try {
@@ -401,11 +445,13 @@ public class FloatMatrix implements Cloneable {
         }
     }
 
-    /** Set a submatrix.
-     * @param r    Array of row indices.
-     * @param c    Array of column indices.
-     * @param X    A(r(:),c(:))
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Set a submatrix.
+     *
+     * @param r Array of row indices.
+     * @param c Array of column indices.
+     * @param X A(r(:),c(:))
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public void setMatrix(int[] r, int[] c, FloatMatrix X) {
         try {
@@ -419,12 +465,14 @@ public class FloatMatrix implements Cloneable {
         }
     }
 
-    /** Set a submatrix.
-     * @param r    Array of row indices.
-     * @param j0   Initial column index
-     * @param j1   Final column index
-     * @param X    A(r(:),j0:j1)
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Set a submatrix.
+     *
+     * @param r Array of row indices.
+     * @param j0 Initial column index
+     * @param j1 Final column index
+     * @param X A(r(:),j0:j1)
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public void setMatrix(int[] r, int j0, int j1, FloatMatrix X) {
         try {
@@ -438,12 +486,14 @@ public class FloatMatrix implements Cloneable {
         }
     }
 
-    /** Set a submatrix.
-     * @param i0   Initial row index
-     * @param i1   Final row index
-     * @param c    Array of column indices.
-     * @param X    A(i0:i1,c(:))
-     * @exception  ArrayIndexOutOfBoundsException Submatrix indices
+    /**
+     * Set a submatrix.
+     *
+     * @param i0 Initial row index
+     * @param i1 Final row index
+     * @param c Array of column indices.
+     * @param X A(i0:i1,c(:))
+     * @exception ArrayIndexOutOfBoundsException Submatrix indices
      */
     public void setMatrix(int i0, int i1, int[] c, FloatMatrix X) {
         try {
@@ -457,8 +507,10 @@ public class FloatMatrix implements Cloneable {
         }
     }
 
-    /** Matrix transpose.
-     * @return    A'
+    /**
+     * Matrix transpose.
+     *
+     * @return A'
      */
     public FloatMatrix transpose() {
         FloatMatrix X = new FloatMatrix(n, m);
@@ -471,8 +523,10 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** One norm
-     * @return    maximum column sum.
+    /**
+     * One norm
+     *
+     * @return maximum column sum.
      */
     public float norm1() {
         float f = 0;
@@ -486,14 +540,18 @@ public class FloatMatrix implements Cloneable {
         return f;
     }
 
-    /** Two norm
-     * @return    maximum singular value.
+    /**
+     * Two norm
+     *
+     * @return maximum singular value.
      */
     /*   public float norm2 () {
     return (new SingularValueDecomposition(this).norm2());
     }*/
-    /** Infinity norm
-     * @return    maximum row sum.
+    /**
+     * Infinity norm
+     *
+     * @return maximum row sum.
      */
     public float normInf() {
         float f = 0;
@@ -507,21 +565,25 @@ public class FloatMatrix implements Cloneable {
         return f;
     }
 
-    /** Frobenius norm
-     * @return    sqrt of sum of squares of all elements.
+    /**
+     * Frobenius norm
+     *
+     * @return sqrt of sum of squares of all elements.
      */
     public float normF() {
         float f = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                f = Maths.hypotF(f, A[i][j]);
+                f = MathUtil.hypotF(f, A[i][j]);
             }
         }
         return f;
     }
 
-    /**  Unary minus
-     * @return    -A
+    /**
+     * Unary minus
+     *
+     * @return -A
      */
     public FloatMatrix uminus() {
         FloatMatrix X = new FloatMatrix(m, n);
@@ -534,9 +596,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** C = A + B
-     * @param B    another matrix
-     * @return     A + B
+    /**
+     * C = A + B
+     *
+     * @param B another matrix
+     * @return A + B
      */
     public FloatMatrix plus(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -550,9 +614,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** A = A + B
-     * @param B    another matrix
-     * @return     A + B
+    /**
+     * A = A + B
+     *
+     * @param B another matrix
+     * @return A + B
      */
     public FloatMatrix plusEquals(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -564,9 +630,11 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** C = A - B
-     * @param B    another matrix
-     * @return     A - B
+    /**
+     * C = A - B
+     *
+     * @param B another matrix
+     * @return A - B
      */
     public FloatMatrix minus(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -580,9 +648,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** A = A - B
-     * @param B    another matrix
-     * @return     A - B
+    /**
+     * A = A - B
+     *
+     * @param B another matrix
+     * @return A - B
      */
     public FloatMatrix minusEquals(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -594,9 +664,11 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** Element-by-element multiplication, C = A.*B
-     * @param B    another matrix
-     * @return     A.*B
+    /**
+     * Element-by-element multiplication, C = A.*B
+     *
+     * @param B another matrix
+     * @return A.*B
      */
     public FloatMatrix arrayTimes(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -610,9 +682,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Element-by-element multiplication in place, A = A.*B
-     * @param B    another matrix
-     * @return     A.*B
+    /**
+     * Element-by-element multiplication in place, A = A.*B
+     *
+     * @param B another matrix
+     * @return A.*B
      */
     public FloatMatrix arrayTimesEquals(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -624,9 +698,11 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** Element-by-element right division, C = A./B
-     * @param B    another matrix
-     * @return     A./B
+    /**
+     * Element-by-element right division, C = A./B
+     *
+     * @param B another matrix
+     * @return A./B
      */
     public FloatMatrix arrayRightDivide(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -640,9 +716,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Element-by-element right division in place, A = A./B
-     * @param B    another matrix
-     * @return     A./B
+    /**
+     * Element-by-element right division in place, A = A./B
+     *
+     * @param B another matrix
+     * @return A./B
      */
     public FloatMatrix arrayRightDivideEquals(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -654,9 +732,11 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** Element-by-element left division, C = A.\B
-     * @param B    another matrix
-     * @return     A.\B
+    /**
+     * Element-by-element left division, C = A.\B
+     *
+     * @param B another matrix
+     * @return A.\B
      */
     public FloatMatrix arrayLeftDivide(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -670,9 +750,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Element-by-element left division in place, A = A.\B
-     * @param B    another matrix
-     * @return     A.\B
+    /**
+     * Element-by-element left division in place, A = A.\B
+     *
+     * @param B another matrix
+     * @return A.\B
      */
     public FloatMatrix arrayLeftDivideEquals(FloatMatrix B) {
         checkMatrixDimensions(B);
@@ -684,9 +766,11 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** Multiply a matrix by a scalar, C = s*A
-     * @param s    scalar
-     * @return     s*A
+    /**
+     * Multiply a matrix by a scalar, C = s*A
+     *
+     * @param s scalar
+     * @return s*A
      */
     public FloatMatrix times(float s) {
         FloatMatrix X = new FloatMatrix(m, n);
@@ -699,9 +783,11 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** Multiply a matrix by a scalar in place, A = s*A
-     * @param s    scalar
-     * @return     replace A by s*A
+    /**
+     * Multiply a matrix by a scalar in place, A = s*A
+     *
+     * @param s scalar
+     * @return replace A by s*A
      */
     public FloatMatrix timesEquals(float s) {
         for (int i = 0; i < m; i++) {
@@ -712,10 +798,12 @@ public class FloatMatrix implements Cloneable {
         return this;
     }
 
-    /** Linear algebraic matrix multiplication, A * B
-     * @param B    another matrix
-     * @return     Matrix product, A * B
-     * @exception  IllegalArgumentException Matrix inner dimensions must agree.
+    /**
+     * Linear algebraic matrix multiplication, A * B
+     *
+     * @param B another matrix
+     * @return Matrix product, A * B
+     * @exception IllegalArgumentException Matrix inner dimensions must agree.
      */
     public FloatMatrix times(FloatMatrix B) {
         if (B.m != n) {
@@ -740,8 +828,10 @@ public class FloatMatrix implements Cloneable {
         return X;
     }
 
-    /** LU Decomposition
-     * @return     LUDecompositionJama
+    /**
+     * LU Decomposition
+     *
+     * @return LUDecompositionJama
      * @see LUDecompositionJama
      */
     public LUDecompositionJama lu() {
@@ -750,37 +840,47 @@ public class FloatMatrix implements Cloneable {
 
     }
 
-    /** QR Decomposition
-     * @return     QRDecomposition
+    /**
+     * QR Decomposition
+     *
+     * @return QRDecomposition
      * @see QRDecomposition
      */
     /*   public QRDecomposition qr () {
     return new QRDecomposition(this);
     }*/
-    /** Cholesky Decomposition
-     * @return     CholeskyDecomposition
+    /**
+     * Cholesky Decomposition
+     *
+     * @return CholeskyDecomposition
      * @see CholeskyDecomposition
      */
     /*   public CholeskyDecomposition chol () {
     return new CholeskyDecomposition(this);
     }*/
-    /** Singular Value Decomposition
-     * @return     SingularValueDecomposition
+    /**
+     * Singular Value Decomposition
+     *
+     * @return SingularValueDecomposition
      * @see SingularValueDecomposition
      */
     /*   public SingularValueDecomposition svd () {
     return new SingularValueDecomposition(this);
     }*/
-    /** Eigenvalue Decomposition
-     * @return     EigenvalueDecomposition
+    /**
+     * Eigenvalue Decomposition
+     *
+     * @return EigenvalueDecomposition
      * @see EigenvalueDecomposition
      */
     /*   public EigenvalueDecomposition eig () {
     return new EigenvalueDecomposition(this);
     }*/
-    /** Solve A*X = B
-     * @param B    right hand side
-     * @return     solution if A is square, least squares solution otherwise
+    /**
+     * Solve A*X = B
+     *
+     * @param B right hand side
+     * @return solution if A is square, least squares solution otherwise
      */
     public FloatMatrix solve(FloatMatrix B) {
         throw new UnsupportedOperationException("not supported yet");
@@ -788,43 +888,55 @@ public class FloatMatrix implements Cloneable {
         //        : (new QRDecomposition(this)).solve(B));
     }
 
-    /** Solve X*A = B, which is also A'*X' = B'
-     * @param B    right hand side
-     * @return     solution if A is square, least squares solution otherwise.
+    /**
+     * Solve X*A = B, which is also A'*X' = B'
+     *
+     * @param B right hand side
+     * @return solution if A is square, least squares solution otherwise.
      */
     public FloatMatrix solveTranspose(FloatMatrix B) {
         return transpose().solve(B.transpose());
     }
 
-    /** Matrix inverse or pseudoinverse
-     * @return     inverse(A) if A is square, pseudoinverse otherwise.
+    /**
+     * Matrix inverse or pseudoinverse
+     *
+     * @return inverse(A) if A is square, pseudoinverse otherwise.
      */
     public FloatMatrix inverse() {
         return solve(identity(m, m));
     }
 
-    /** Matrix determinant
-     * @return     determinant
+    /**
+     * Matrix determinant
+     *
+     * @return determinant
      */
     public float det() {
         throw new UnsupportedOperationException("not supported yet");
         //return new LUDecompositionJama(this).det();
     }
 
-    /** Matrix rank
-     * @return     effective numerical rank, obtained from SVD.
+    /**
+     * Matrix rank
+     *
+     * @return effective numerical rank, obtained from SVD.
      */
     /*   public int rank () {
     return new SingularValueDecomposition(this).rank();
     }*/
-    /** Matrix condition (2 norm)
-     * @return     ratio of largest to smallest singular value.
+    /**
+     * Matrix condition (2 norm)
+     *
+     * @return ratio of largest to smallest singular value.
      */
     /*   public float cond () {
     return new SingularValueDecomposition(this).cond();
     }*/
-    /** Matrix trace.
-     * @return     sum of the diagonal elements.
+    /**
+     * Matrix trace.
+     *
+     * @return sum of the diagonal elements.
      */
     public float trace() {
         float t = 0;
@@ -834,10 +946,12 @@ public class FloatMatrix implements Cloneable {
         return t;
     }
 
-    /** Generate matrix with random elements
-     * @param m    Number of rows.
-     * @param n    Number of colums.
-     * @return     An m-by-n matrix with uniformly distributed random elements.
+    /**
+     * Generate matrix with random elements
+     *
+     * @param m Number of rows.
+     * @param n Number of colums.
+     * @return An m-by-n matrix with uniformly distributed random elements.
      */
     public static FloatMatrix random(int m, int n) {
         FloatMatrix A = new FloatMatrix(m, n);
@@ -850,10 +964,12 @@ public class FloatMatrix implements Cloneable {
         return A;
     }
 
-    /** Generate identity matrix
-     * @param m    Number of rows.
-     * @param n    Number of colums.
-     * @return     An m-by-n matrix with ones on the diagonal and zeros elsewhere.
+    /**
+     * Generate identity matrix
+     *
+     * @param m Number of rows.
+     * @param n Number of colums.
+     * @return An m-by-n matrix with ones on the diagonal and zeros elsewhere.
      */
     public static FloatMatrix identity(int m, int n) {
         FloatMatrix A = new FloatMatrix(m, n);
@@ -866,20 +982,24 @@ public class FloatMatrix implements Cloneable {
         return A;
     }
 
-    /** Print the matrix to stdout.   Line the elements up in columns
-     * with a Fortran-like 'Fw.d' style format.
-     * @param w    Column width.
-     * @param d    Number of digits after the decimal.
+    /**
+     * Print the matrix to stdout. Line the elements up in columns with a
+     * Fortran-like 'Fw.d' style format.
+     *
+     * @param w Column width.
+     * @param d Number of digits after the decimal.
      */
     public void print(int w, int d) {
         print(new PrintWriter(System.out, true), w, d);
     }
 
-    /** Print the matrix to the output stream.   Line the elements up in
-     * columns with a Fortran-like 'Fw.d' style format.
+    /**
+     * Print the matrix to the output stream. Line the elements up in columns
+     * with a Fortran-like 'Fw.d' style format.
+     *
      * @param output Output stream.
-     * @param w      Column width.
-     * @param d      Number of digits after the decimal.
+     * @param w Column width.
+     * @param d Number of digits after the decimal.
      */
     public void print(PrintWriter output, int w, int d) {
         DecimalFormat format = new DecimalFormat();
@@ -890,11 +1010,12 @@ public class FloatMatrix implements Cloneable {
         print(output, format, w + 2);
     }
 
-    /** Print the matrix to stdout.  Line the elements up in columns.
-     * Use the format object, and right justify within columns of width
-     * characters.
-     * @param format A  Formatting object for individual elements.
-     * @param width     Field width for each column.
+    /**
+     * Print the matrix to stdout. Line the elements up in columns. Use the
+     * format object, and right justify within columns of width characters.
+     *
+     * @param format A Formatting object for individual elements.
+     * @param width Field width for each column.
      */
     public void print(NumberFormat format, int width) {
         print(new PrintWriter(System.out, true), format, width);
@@ -904,12 +1025,14 @@ public class FloatMatrix implements Cloneable {
     // Since it doesn't pad on the left, the elements will come out different
     // widths.  Consequently, we'll pass the desired column width in as an
     // argument and do the extra padding ourselves.
-    /** Print the matrix to the output stream.  Line the elements up in columns.
+    /**
+     * Print the matrix to the output stream. Line the elements up in columns.
      * Use the format object, and right justify within columns of width
      * characters.
+     *
      * @param output the output stream.
      * @param format A formatting object to format the matrix elements
-     * @param width  Column width.
+     * @param width Column width.
      */
     public void print(PrintWriter output, NumberFormat format, int width) {
         output.println();  // start on new line.
@@ -927,10 +1050,12 @@ public class FloatMatrix implements Cloneable {
         output.println();   // end with blank line.
     }
 
-    /** Read a matrix from a stream.  The format is the same the print method,
-     * so printed matrices can be read back in.  Elements are separated by
-     * whitespace, all the elements for each row appear on a single line,
-     * the last row is followed by a blank line.
+    /**
+     * Read a matrix from a stream. The format is the same the print method, so
+     * printed matrices can be read back in. Elements are separated by
+     * whitespace, all the elements for each row appear on a single line, the
+     * last row is followed by a blank line.
+     *
      * @param input the input stream.
      */
     public static FloatMatrix read(BufferedReader input) throws java.io.IOException {
@@ -941,7 +1066,6 @@ public class FloatMatrix implements Cloneable {
         // The strategy here is to disable StreamTokenizer's number parsing.
         // We'll only get whitespace delimited words, EOL's and EOF's.
         // These words should all be numbers, for Float.valueOf to parse.
-
         tokenizer.resetSyntax();
         tokenizer.wordChars(0, 255);
         tokenizer.whitespaceChars(0, ' ');
@@ -988,15 +1112,19 @@ public class FloatMatrix implements Cloneable {
     /* ------------------------
     Private Methods
      * ------------------------ */
-    /** Check if size(A) == size(B) **/
+    /**
+     * Check if size(A) == size(B) *
+     */
     protected void checkMatrixDimensions(FloatMatrix B) {
         if (B.m != m || B.n != n) {
             throw new IllegalArgumentException("Matrix dimensions must agree.");
         }
     }
 
-    /** Get a sub-matrix .
-     * @return    A'
+    /**
+     * Get a sub-matrix .
+     *
+     * @return A'
      */
     public FloatMatrix getSubMatrix(int displayInterval) {
 
@@ -1019,15 +1147,14 @@ public class FloatMatrix implements Cloneable {
 
         return X;
 
-
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder("FloatMatrix [\n");
-        for(int i=0; i< m; i++){
+        for (int i = 0; i < m; i++) {
             sb.append("|");
-            for(int j=0; j<n; j++){
+            for (int j = 0; j < n; j++) {
                 sb.append(A[i][j]).append(" ");
             }
             sb.append("\n");
