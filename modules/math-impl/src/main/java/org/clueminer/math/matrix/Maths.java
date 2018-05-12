@@ -45,7 +45,7 @@ public class Maths {
         final int cols = m.columnsCount();
 
         double[] mean = new double[cols];
-        Matrix covar = new JMatrix(cols, cols);
+        Matrix covar = new JamaMatrix(cols, cols);
 
         // mean
         for (int j = 0; j < rows; j++) {

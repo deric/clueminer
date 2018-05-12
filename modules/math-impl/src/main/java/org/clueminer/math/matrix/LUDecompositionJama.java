@@ -132,7 +132,7 @@ public class LUDecompositionJama implements LUDecomposition, java.io.Serializabl
    @return               Structure to access L, U and piv.
    *\
 
-   public LUDecompositionJama (JMatrix A, int linpackflag) {
+   public LUDecompositionJama (JamaMatrix A, int linpackflag) {
       // Initialize.
       LU = A.getArrayCopy();
       m = A.rowsCount();
@@ -196,7 +196,7 @@ public class LUDecompositionJama implements LUDecomposition, java.io.Serializabl
    */
 
    public Matrix getL () {
-      JMatrix X = new JMatrix(m,n);
+      JamaMatrix X = new JamaMatrix(m,n);
       double[][] L = X.getArray();
       for (int i = 0; i < m; i++) {
          for (int j = 0; j < n; j++) {
@@ -217,7 +217,7 @@ public class LUDecompositionJama implements LUDecomposition, java.io.Serializabl
    */
 
    public Matrix getU () {
-      Matrix X = new JMatrix(n,n);
+      Matrix X = new JamaMatrix(n,n);
       double[][] U = X.getArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
@@ -257,7 +257,7 @@ public class LUDecompositionJama implements LUDecomposition, java.io.Serializabl
 
    /** Determinant
    @return     det(A)
-   @exception  IllegalArgumentException  JMatrix must be square
+     * @throws IllegalArgumentException JamaMatrix must be square
    */
 
    public double det () {
@@ -272,10 +272,10 @@ public class LUDecompositionJama implements LUDecomposition, java.io.Serializabl
    }
 
    /** Solve A*X = B
-   @param  B   A JMatrix with as many rows as A and any number of columns.
+   @param  B   A JamaMatrix with as many rows as A and any number of columns.
    @return     X so that L*U*X = B(piv,:)
-   @exception  IllegalArgumentException JMatrix row dimensions must agree.
-   @exception  RuntimeException  JMatrix is singular.
+     * @throws IllegalArgumentException JamaMatrix row dimensions must agree.
+     * @throws RuntimeException JamaMatrix is singular.
    */
 
    public Matrix solve (Matrix B) {

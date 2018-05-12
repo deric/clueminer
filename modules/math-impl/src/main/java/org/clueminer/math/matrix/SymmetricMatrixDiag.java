@@ -247,7 +247,7 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
     @Override
     public Matrix plus(Matrix B) {
         checkMatrixDimensions(B);
-        Matrix C = new JMatrix(n, n);
+        Matrix C = new JamaMatrix(n, n);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 C.set(i, j, get(i, j) + B.get(i, j));
@@ -303,7 +303,7 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix times(double s) {
-        Matrix X = new JMatrix(n, n);
+        Matrix X = new JamaMatrix(n, n);
         double value;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j <= i; j++) {

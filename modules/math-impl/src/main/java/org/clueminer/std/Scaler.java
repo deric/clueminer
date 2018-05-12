@@ -19,7 +19,7 @@ package org.clueminer.std;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Standardisation;
 import org.clueminer.math.StandardisationFactory;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 
 /**
  * Normalize data arrays. For normalizing datasets see DataScaler.
@@ -48,7 +48,7 @@ public class Scaler {
         if (logScale) {
             stdarr = logScale(stdarr, m, n);
         }
-        return new JMatrix(stdarr, m, n);
+        return new JamaMatrix(stdarr, m, n);
     }
 
     public static double[][] logScale(double[][] stdarr, int m, int n) {

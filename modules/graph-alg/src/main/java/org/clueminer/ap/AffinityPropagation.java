@@ -34,7 +34,7 @@ import org.clueminer.exception.ParameterException;
 import org.clueminer.math.IntMatrix;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.IntegerMatrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -107,8 +107,8 @@ public class AffinityPropagation<E extends Instance, C extends Cluster<E>> exten
         }
 
         //initialize messages
-        Matrix A = new JMatrix(N, N);
-        Matrix R = new JMatrix(N, N);
+        Matrix A = new JamaMatrix(N, N);
+        Matrix R = new JamaMatrix(N, N);
 
         double eps = Double.MIN_VALUE;
         double tiny = tiny();

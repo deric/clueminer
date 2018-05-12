@@ -19,7 +19,7 @@ package org.clueminer.clustering.spectral;
 import java.lang.reflect.Array;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.neighbor.Neighbor;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -48,7 +48,7 @@ public class UndirectedKnnMatrix<E extends Instance> implements MatrixConvertor<
 
         boolean mutual = params.getBoolean("Mutual", false);
 
-        JMatrix knnMatrix = new JMatrix(similarityMatrix.rowsCount(), similarityMatrix.columnsCount(), 0);
+        JamaMatrix knnMatrix = new JamaMatrix(similarityMatrix.rowsCount(), similarityMatrix.columnsCount(), 0);
 
         for (int i = 0; i < similarityMatrix.rowsCount(); i++) {
 

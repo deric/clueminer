@@ -24,7 +24,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,7 +57,7 @@ public class SilhouetteTest {
         dataset = FakeDatasets.irisDataset();
 
         params = getParams();
-        input = new JMatrix(dataset.arrayCopy());
+        input = new JamaMatrix(dataset.arrayCopy());
 
         /* ClusteringAlgorithm algorithm = new HCL();
          * algorithm.setDistanceFunction(new EuclideanDistance());

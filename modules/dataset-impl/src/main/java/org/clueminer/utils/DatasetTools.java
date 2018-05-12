@@ -1,6 +1,6 @@
 package org.clueminer.utils;
 
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import java.util.Map;
 import java.util.Random;
 import org.apache.commons.math3.stat.StatUtils;
@@ -254,7 +254,7 @@ final public class DatasetTools {
         return ret;
     }
 
-    public static JMatrix createMatrix(Dataset<Instance> dataset, Standardisation std) {
+    public static JamaMatrix createMatrix(Dataset<Instance> dataset, Standardisation std) {
         if (dataset.isEmpty()) {
             throw new NullPointerException("no data to process");
         }
@@ -270,7 +270,7 @@ final public class DatasetTools {
                 }
             }
 
-            return new JMatrix(std.optimize(res, m, n), m, n);
+            return new JamaMatrix(std.optimize(res, m, n), m, n);
         }
         throw new ArrayIndexOutOfBoundsException("empty dataset - dimensions " + m + " x " + n);
     }

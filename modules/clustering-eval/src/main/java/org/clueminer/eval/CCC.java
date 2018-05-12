@@ -23,7 +23,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 
@@ -64,7 +64,7 @@ public class CCC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
         Matrix TT = X.transpose().times(X);
 
         //assign matrix - (index, cluster) = 1.0
-        Matrix Z = new JMatrix(dataset.size(), clusters.size());
+        Matrix Z = new JamaMatrix(dataset.size(), clusters.size());
         int k = 0;
         for (Cluster<E> c : clusters) {
             for (E inst : c) {

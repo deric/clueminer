@@ -18,7 +18,7 @@ public class MatrixHelper {
      * @return An m-by-n matrix with uniformly distributed random elements.
      */
     public static Matrix random(int m, int n) {
-        Matrix A = new JMatrix(m, n);
+        Matrix A = new JamaMatrix(m, n);
         double[][] X = A.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -36,7 +36,7 @@ public class MatrixHelper {
      * @return An m-by-n matrix with ones on the diagonal and zeros elsewhere.
      */
     public static Matrix identity(int m, int n) {
-        Matrix matrix = new JMatrix(m, n);
+        Matrix matrix = new JamaMatrix(m, n);
         double[][] X = matrix.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -103,6 +103,6 @@ public class MatrixHelper {
         int m = v.size();  // Now we've got the number of rows.
         double[][] A = new double[m][];
         v.copyInto(A);  // copy the rows out of the vector
-        return new JMatrix(A);
+        return new JamaMatrix(A);
     }
 }

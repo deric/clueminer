@@ -38,7 +38,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
@@ -56,7 +56,7 @@ public class Projection2DRendererTest<E extends Instance, C extends Cluster<E>> 
     public Projection2DRendererTest() throws TimeoutException {
         setLayout(new BorderLayout());
         Dataset<? extends Instance> dataset = FakeDatasets.irisDataset();
-        Matrix input = new JMatrix(dataset.arrayCopy());
+        Matrix input = new JamaMatrix(dataset.arrayCopy());
 
         Props params = new Props();
         AgglomerativeClustering algorithm = new HCLW();

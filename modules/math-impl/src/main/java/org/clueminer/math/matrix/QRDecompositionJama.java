@@ -113,7 +113,7 @@ public class QRDecompositionJama implements QRDecomposition {
      */
     @Override
     public Matrix getH() {
-        Matrix X = new JMatrix(m, n);
+        Matrix X = new JamaMatrix(m, n);
         double[][] H = X.getArray();
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -134,7 +134,7 @@ public class QRDecompositionJama implements QRDecomposition {
      */
     @Override
     public Matrix getR() {
-        Matrix X = new JMatrix(n, n);
+        Matrix X = new JamaMatrix(n, n);
         double[][] R = X.getArray();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -157,7 +157,7 @@ public class QRDecompositionJama implements QRDecomposition {
      */
     @Override
     public Matrix getQ() {
-        Matrix X = new JMatrix(m, n);
+        Matrix X = new JamaMatrix(m, n);
         double[][] Q = X.getArray();
         for (int k = n - 1; k >= 0; k--) {
             for (int i = 0; i < m; i++) {
@@ -183,10 +183,10 @@ public class QRDecompositionJama implements QRDecomposition {
     /**
      * Least squares solution of A*X = B
      *
-     * @param B A JMatrix with as many rows as A and any number of columns.
+     * @param B A JamaMatrix with as many rows as A and any number of columns.
      * @return X that minimizes the two norm of Q*R*X-B.
-     * @exception IllegalArgumentException JMatrix row dimensions must agree.
-     * @exception RuntimeException JMatrix is rank deficient.
+     * @throws IllegalArgumentException JamaMatrix row dimensions must agree.
+     * @throws RuntimeException JamaMatrix is rank deficient.
      */
     public Matrix solve(Matrix B) {
         if (B.rowsCount() != m) {
@@ -224,6 +224,6 @@ public class QRDecompositionJama implements QRDecomposition {
                 }
             }
         }
-        return (new JMatrix(X, n, nx).getMatrix(0, n - 1, 0, nx - 1));
+        return (new JamaMatrix(X, n, nx).getMatrix(0, n - 1, 0, nx - 1));
     }
 }

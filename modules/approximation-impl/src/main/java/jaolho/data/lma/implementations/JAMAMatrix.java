@@ -1,13 +1,13 @@
 package jaolho.data.lma.implementations;
 
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import jaolho.data.lma.LMAMatrix;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.NumberFormat;
 import org.clueminer.math.Matrix;
 
-public class JAMAMatrix extends JMatrix implements LMAMatrix {
+public class JAMAMatrix extends JamaMatrix implements LMAMatrix {
 
     private static final long serialVersionUID = -8925816623803983503L;
 

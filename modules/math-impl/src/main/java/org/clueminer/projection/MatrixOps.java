@@ -25,7 +25,7 @@ import static java.util.concurrent.ForkJoinTask.invokeAll;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.ThreadLocalRandom;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.ejml.data.DenseMatrix64F;
 
 public class MatrixOps {
@@ -1452,8 +1452,8 @@ public class MatrixOps {
 
     // Unit Tested
     public static double[][] times(double[][] m1, double[][] m2) {
-        Matrix A = JMatrix.constructWithCopy(m1);
-        Matrix B = JMatrix.constructWithCopy(m2);
+        Matrix A = JamaMatrix.constructWithCopy(m1);
+        Matrix B = JamaMatrix.constructWithCopy(m2);
         return A.times(B).getArray();
     }
 

@@ -98,7 +98,7 @@ public class CholeskyDecompositionJama implements CholeskyDecomposition, java.io
      * A Square, symmetric matrix. @param rightflag Actual value ignored.
      * @return Structure to access R and isspd flag. \
      *
-     * public CholeskyDecompositionJama (JMatrix Arg, int rightflag) { //
+     * public CholeskyDecompositionJama (JamaMatrix Arg, int rightflag) { //
      * Initialize. double[][] A = Arg.getArray(); n = Arg.columnsCount();
      * R = new double[n][n]; isspd = (Arg.columnsCount() == n); // Main
      * loop. for (int j = 0; j < n; j++) { double d = 0.0; for (int k = 0; k <
@@ -110,7 +110,7 @@ public class CholeskyDecompositionJama implements CholeskyDecomposition, java.io
      *
      * \** Return upper triangular factor. @return R \
      *
-     * public JMatrix getR () { return new JMatrix(R,n,n); }
+     * public JamaMatrix getR () { return new JamaMatrix(R,n,n); }
      *
      * \* ------------------------ End of temporary code.
      * ------------------------
@@ -135,16 +135,16 @@ public class CholeskyDecompositionJama implements CholeskyDecomposition, java.io
      */
     @Override
     public Matrix getL() {
-        return new JMatrix(L, n, n);
+        return new JamaMatrix(L, n, n);
     }
 
     /**
      * Solve A*X = B
      *
-     * @param B A JMatrix with as many rows as A and any number of columns.
+     * @param B A JamaMatrix with as many rows as A and any number of columns.
      * @return X so that L*L'*X = B
-     * @exception IllegalArgumentException JMatrix row dimensions must agree.
-     * @exception RuntimeException JMatrix is not symmetric positive definite.
+     * @throws IllegalArgumentException JamaMatrix row dimensions must agree.
+     * @throws RuntimeException JamaMatrix is not symmetric positive definite.
      */
     @Override
     public Matrix solve(Matrix B) {
@@ -180,6 +180,6 @@ public class CholeskyDecompositionJama implements CholeskyDecomposition, java.io
         }
 
 
-        return new JMatrix(X, n, nx);
+        return new JamaMatrix(X, n, nx);
     }
 }

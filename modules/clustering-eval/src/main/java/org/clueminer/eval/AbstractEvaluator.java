@@ -31,7 +31,7 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
 import org.clueminer.math.impl.DenseVector;
 import org.clueminer.math.impl.Stats;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.KnnFactory;
@@ -382,7 +382,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     public Matrix withinGroupScatter(Clustering<E, C> clusters) {
         //number of dimensions
         int m = clusters.get(0).attributeCount();
-        Matrix wg = new JMatrix(m, m);
+        Matrix wg = new JamaMatrix(m, m);
         for (Cluster<E> clust : clusters) {
             wg.plusEquals(wgScatter(clust));
         }
@@ -400,7 +400,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         Matrix TT = X.transpose().times(X);
 
         //assign matrix - (index, cluster) = 1.0
-        Matrix Z = new JMatrix(dataset.size(), clusters.size());
+        Matrix Z = new JamaMatrix(dataset.size(), clusters.size());
         int k = 0;
         for (Cluster<E> c : clusters) {
             for (E inst : c) {

@@ -22,7 +22,7 @@ import org.clueminer.graph.api.Edge;
 import org.clueminer.graph.api.Graph;
 import org.clueminer.graph.api.Node;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.partitioning.api.Bisection;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -71,7 +71,7 @@ public class SpectralBisection implements Bisection {
                 }
             }
         }
-        return new JMatrix(matrixArray);
+        return new JamaMatrix(matrixArray);
     }
 
     @Override

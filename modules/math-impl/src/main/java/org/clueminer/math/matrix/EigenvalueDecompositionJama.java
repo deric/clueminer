@@ -901,7 +901,7 @@ public class EigenvalueDecompositionJama implements EigenvalueDecomposition {
      */
     @Override
     public Matrix getV() {
-        return new JMatrix(V, n, n);
+        return new JamaMatrix(V, n, n);
     }
 
     /**
@@ -931,7 +931,7 @@ public class EigenvalueDecompositionJama implements EigenvalueDecomposition {
      */
     @Override
     public Matrix getD() {
-        Matrix X = new JMatrix(n, n);
+        Matrix X = new JamaMatrix(n, n);
         double[][] D = X.getArray();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {

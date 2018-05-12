@@ -123,7 +123,7 @@ public class JMatrixTest {
     public void testConstructorFillWithScalar() {
         int m = 10;
         int n = 15;
-        Matrix mat = new JMatrix(m, n, 5.0);
+        Matrix mat = new JamaMatrix(m, n, 5.0);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 assertEquals(5.0, mat.get(i, j), eps);
@@ -132,7 +132,7 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of constructWithCopy method, of class JMatrix.
+     * Test of constructWithCopy method, of class JamaMatrix.
      */
     @Test
     public void testConstructWithCopy() {
@@ -149,7 +149,7 @@ public class JMatrixTest {
              * check that exception is thrown in packed constructor with invalid
              * length *
              */
-            A = new JMatrix(columnwise, invalidld);
+            A = new JamaMatrix(columnwise, invalidld);
             errorCount = try_failure(errorCount, "Catch invalid length in packed constructor... ",
                     "exception not thrown for invalid input");
         } catch (IllegalArgumentException e) {
@@ -161,7 +161,7 @@ public class JMatrixTest {
              * check that exception is thrown in default constructor if input
              * array is 'ragged' *
              */
-            A = new JMatrix(rvals);
+            A = new JamaMatrix(rvals);
             tmp = A.get(raggedr, raggedc);
         } catch (IllegalArgumentException e) {
             try_success("Catch ragged input to default constructor... ",
@@ -175,7 +175,7 @@ public class JMatrixTest {
              * check that exception is thrown in constructWithCopy if input
              * array is 'ragged' *
              */
-            A = JMatrix.constructWithCopy(rvals);
+            A = JamaMatrix.constructWithCopy(rvals);
             tmp = A.get(raggedr, raggedc);
         } catch (IllegalArgumentException e) {
             try_success("Catch ragged input to constructWithCopy... ", e.getMessage());
@@ -183,13 +183,13 @@ public class JMatrixTest {
             errorCount = try_failure(errorCount, "Catch ragged input to constructWithCopy... ", "exception not thrown in construction...ArrayIndexOutOfBoundsException thrown later");
         }
 
-        A = new JMatrix(columnwise, validld);
-        B = new JMatrix(avals);
+        A = new JamaMatrix(columnwise, validld);
+        B = new JamaMatrix(avals);
         tmp = B.get(0, 0);
         avals[0][0] = 0.0;
         C = B.minus(A);
         avals[0][0] = tmp;
-        B = JMatrix.constructWithCopy(avals);
+        B = JamaMatrix.constructWithCopy(avals);
         tmp = B.get(0, 0);
         avals[0][0] = 0.0;
         if ((tmp - B.get(0, 0)) != 0.0) {
@@ -201,7 +201,7 @@ public class JMatrixTest {
             try_success("constructWithCopy... ", "");
         }
         avals[0][0] = columnwise[0];
-        I = new JMatrix(ivals);
+        I = new JamaMatrix(ivals);
         try {
             check(I, MatrixHelper.identity(3, 4));
             try_success("identity... ", "");
@@ -224,7 +224,7 @@ public class JMatrixTest {
          * Various get methods:
          *
          */
-        B = new JMatrix(avals);
+        B = new JamaMatrix(avals);
         double[][] barray = B.getArray();
         if (barray != avals) {
             errorCount = try_failure(errorCount, "getArray... ", "");
@@ -278,7 +278,7 @@ public class JMatrixTest {
         } catch (java.lang.ArrayIndexOutOfBoundsException e) {
             errorCount = try_failure(errorCount, "get(int,int)... ", "Unexpected ArrayIndexOutOfBoundsException");
         }
-        SUB = new JMatrix(subavals);
+        SUB = new JamaMatrix(subavals);
         try {
             M = B.getMatrix(ib, ie + B.rowsCount() + 1, jb, je);
             errorCount = try_failure(errorCount, "getMatrix(int,int,int,int)... ", "ArrayIndexOutOfBoundsException expected but not thrown");
@@ -406,7 +406,7 @@ public class JMatrixTest {
         } catch (java.lang.ArrayIndexOutOfBoundsException e1) {
             errorCount = try_failure(errorCount, "set(int,int,double)... ", "Unexpected ArrayIndexOutOfBoundsException");
         }
-        M = new JMatrix(2, 3, 0.);
+        M = new JamaMatrix(2, 3, 0.);
         try {
             B.setMatrix(ib, ie + B.rowsCount() + 1, jb, je, M);
             errorCount = try_failure(errorCount, "setMatrix(int,int,int,int,Matrix)... ", "ArrayIndexOutOfBoundsException expected but not thrown");
@@ -514,7 +514,7 @@ public class JMatrixTest {
          *
          */
         print("\nTesting array-like methods...\n");
-        S = new JMatrix(columnwise, nonconformld);
+        S = new JamaMatrix(columnwise, nonconformld);
         R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
         A = R;
         try {
@@ -525,7 +525,7 @@ public class JMatrixTest {
         }
         A = R.copy();
         A.minusEquals(R);
-        Z = new JMatrix(A.rowsCount(), A.columnsCount());
+        Z = new JamaMatrix(A.rowsCount(), A.columnsCount());
         try {
             A.minusEquals(S);
             errorCount = try_failure(errorCount, "minusEquals conformance check... ", "nonconformance not raised");
@@ -575,7 +575,7 @@ public class JMatrixTest {
             errorCount = try_failure(errorCount, "uminus... ", "(-A + A != zeros)");
         }
         A = R.copy();
-        O = new JMatrix(A.rowsCount(), A.columnsCount(), 1.0);
+        O = new JamaMatrix(A.rowsCount(), A.columnsCount(), 1.0);
         C = A.arrayLeftDivide(R);
         try {
             S = A.arrayLeftDivide(S);
@@ -664,7 +664,7 @@ public class JMatrixTest {
          *
          */
         print("\nTesting linear algebra methods...\n");
-        A = new JMatrix(columnwise, 3);
+        A = new JamaMatrix(columnwise, 3);
 
         A.transpose();
         try {
@@ -697,7 +697,7 @@ public class JMatrixTest {
         } catch (java.lang.RuntimeException e) {
             errorCount = try_failure(errorCount, "det()...", "incorrect determinant calculation");
         }
-        SQ = new JMatrix(square);
+        SQ = new JamaMatrix(square);
         try {
             check(A.times(A.transpose()), SQ);
             try_success("times(Matrix)...", "");
@@ -751,8 +751,8 @@ public class JMatrixTest {
      * Check norm of difference of arrays. *
      */
     private static void check(double[][] x, double[][] y) {
-        JMatrix A = new JMatrix(x);
-        JMatrix B = new JMatrix(y);
+        JamaMatrix A = new JamaMatrix(x);
+        JamaMatrix B = new JamaMatrix(y);
         check(A, B);
     }
 
@@ -810,158 +810,158 @@ public class JMatrixTest {
     private static void print(double[] x, int w, int d) {
         // Use format Fw.d for all elements.
         System.out.print("\n");
-        new JMatrix(x, 1).print(w, d);
+        new JamaMatrix(x, 1).print(w, d);
         print("\n");
     }
 
     /**
-     * Test of copy method, of class JMatrix.
+     * Test of copy method, of class JamaMatrix.
      */
     @Test
     public void testCopy() {
     }
 
     /**
-     * Test of clone method, of class JMatrix.
+     * Test of clone method, of class JamaMatrix.
      */
     @Test
     public void testClone() {
     }
 
     /**
-     * Test of getArray method, of class JMatrix.
+     * Test of getArray method, of class JamaMatrix.
      */
     @Test
     public void testGetArray() {
     }
 
     /**
-     * Test of getArrayCopy method, of class JMatrix.
+     * Test of getArrayCopy method, of class JamaMatrix.
      */
     @Test
     public void testGetArrayCopy() {
     }
 
     /**
-     * Test of getColumnPackedCopy method, of class JMatrix.
+     * Test of getColumnPackedCopy method, of class JamaMatrix.
      */
     @Test
     public void testGetColumnPackedCopy() {
     }
 
     /**
-     * Test of getRowPackedCopy method, of class JMatrix.
+     * Test of getRowPackedCopy method, of class JamaMatrix.
      */
     @Test
     public void testGetRowPackedCopy() {
     }
 
     /**
-     * Test of rowsCount method, of class JMatrix.
+     * Test of rowsCount method, of class JamaMatrix.
      */
     @Test
     public void testGetRowCount() {
-        B = new JMatrix(avals);
+        B = new JamaMatrix(avals);
         assertEquals(rows, B.rowsCount());
     }
 
     /**
-     * Test of columnsCount method, of class JMatrix.
+     * Test of columnsCount method, of class JamaMatrix.
      */
     @Test
     public void testGetColumnsCount() {
-        B = new JMatrix(avals);
+        B = new JamaMatrix(avals);
         assertEquals(cols, B.columnsCount());
     }
 
     /**
-     * Test of get method, of class JMatrix.
+     * Test of get method, of class JamaMatrix.
      */
     @Test
     public void testGet() {
     }
 
     /**
-     * Test of getMatrix method, of class JMatrix.
+     * Test of getMatrix method, of class JamaMatrix.
      */
     @Test
     public void testGetMatrix_4args() {
     }
 
     /**
-     * Test of getMatrix method, of class JMatrix.
+     * Test of getMatrix method, of class JamaMatrix.
      */
     @Test
     public void testGetMatrix_intArr_intArr() {
     }
 
     /**
-     * Test of getMatrix method, of class JMatrix.
+     * Test of getMatrix method, of class JamaMatrix.
      */
     @Test
     public void testGetMatrix_3args_1() {
     }
 
     /**
-     * Test of getMatrix method, of class JMatrix.
+     * Test of getMatrix method, of class JamaMatrix.
      */
     @Test
     public void testGetMatrix_3args_2() {
     }
 
     /**
-     * Test of set method, of class JMatrix.
+     * Test of set method, of class JamaMatrix.
      */
     @Test
     public void testSet() {
     }
 
     /**
-     * Test of setMatrix method, of class JMatrix.
+     * Test of setMatrix method, of class JamaMatrix.
      */
     @Test
     public void testSetMatrix_5args() {
     }
 
     /**
-     * Test of setMatrix method, of class JMatrix.
+     * Test of setMatrix method, of class JamaMatrix.
      */
     @Test
     public void testSetMatrix_3args() {
     }
 
     /**
-     * Test of setMatrix method, of class JMatrix.
+     * Test of setMatrix method, of class JamaMatrix.
      */
     @Test
     public void testSetMatrix_4args_1() {
     }
 
     /**
-     * Test of setMatrix method, of class JMatrix.
+     * Test of setMatrix method, of class JamaMatrix.
      */
     @Test
     public void testSetMatrix_4args_2() {
     }
 
     /**
-     * Test of transpose method, of class JMatrix.
+     * Test of transpose method, of class JamaMatrix.
      */
     @Test
     public void testTranspose() {
-        A = new JMatrix(columnwise, 3);
-        T = new JMatrix(tvals);
+        A = new JamaMatrix(columnwise, 3);
+        T = new JamaMatrix(tvals);
         T = A.transpose();
         check(A.transpose(), T);
         try_success("transpose...", "");
     }
 
     /**
-     * Test of norm1 method, of class JMatrix.
+     * Test of norm1 method, of class JamaMatrix.
      */
     @Test
     public void testNorm1() {
-        A = new JMatrix(columnwise, validld);
+        A = new JamaMatrix(columnwise, validld);
         R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
         A = R;
 
@@ -970,130 +970,130 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of norm2 method, of class JMatrix.
+     * Test of norm2 method, of class JamaMatrix.
      */
     @Test
     public void testNorm2() {
     }
 
     /**
-     * Test of normInf method, of class JMatrix.
+     * Test of normInf method, of class JamaMatrix.
      */
     @Test
     public void testNormInf() {
     }
 
     /**
-     * Test of normF method, of class JMatrix.
+     * Test of normF method, of class JamaMatrix.
      */
     @Test
     public void testNormF() {
     }
 
     /**
-     * Test of uminus method, of class JMatrix.
+     * Test of uminus method, of class JamaMatrix.
      */
     @Test
     public void testUminus() {
     }
 
     /**
-     * Test of plus method, of class JMatrix.
+     * Test of plus method, of class JamaMatrix.
      */
     @Test
     public void testPlus() {
     }
 
     /**
-     * Test of plusEquals method, of class JMatrix.
+     * Test of plusEquals method, of class JamaMatrix.
      */
     @Test
     public void testPlusEquals() {
     }
 
     /**
-     * Test of minus method, of class JMatrix.
+     * Test of minus method, of class JamaMatrix.
      */
     @Test
     public void testMinus() {
     }
 
     /**
-     * Test of minusEquals method, of class JMatrix.
+     * Test of minusEquals method, of class JamaMatrix.
      */
     @Test
     public void testMinusEquals() {
     }
 
     /**
-     * Test of arrayTimes method, of class JMatrix.
+     * Test of arrayTimes method, of class JamaMatrix.
      */
     @Test
     public void testArrayTimes() {
     }
 
     /**
-     * Test of arrayTimesEquals method, of class JMatrix.
+     * Test of arrayTimesEquals method, of class JamaMatrix.
      */
     @Test
     public void testArrayTimesEquals() {
     }
 
     /**
-     * Test of arrayRightDivide method, of class JMatrix.
+     * Test of arrayRightDivide method, of class JamaMatrix.
      */
     @Test
     public void testArrayRightDivide() {
     }
 
     /**
-     * Test of arrayRightDivideEquals method, of class JMatrix.
+     * Test of arrayRightDivideEquals method, of class JamaMatrix.
      */
     @Test
     public void testArrayRightDivideEquals() {
     }
 
     /**
-     * Test of arrayLeftDivide method, of class JMatrix.
+     * Test of arrayLeftDivide method, of class JamaMatrix.
      */
     @Test
     public void testArrayLeftDivide() {
     }
 
     /**
-     * Test of arrayLeftDivideEquals method, of class JMatrix.
+     * Test of arrayLeftDivideEquals method, of class JamaMatrix.
      */
     @Test
     public void testArrayLeftDivideEquals() {
     }
 
     /**
-     * Test of times method, of class JMatrix.
+     * Test of times method, of class JamaMatrix.
      */
     @Test
     public void testTimes_double() {
     }
 
     /**
-     * Test of timesEquals method, of class JMatrix.
+     * Test of timesEquals method, of class JamaMatrix.
      */
     @Test
     public void testTimesEquals() {
     }
 
     /**
-     * Test of times method, of class JMatrix.
+     * Test of times method, of class JamaMatrix.
      */
     @Test
     public void testTimes_Matrix() {
     }
 
     /**
-     * LU Decomposition Test of lu method, of class JMatrix.
+     * LU Decomposition Test of lu method, of class JamaMatrix.
      */
     @Test
     public void testLu() {
-        A = new JMatrix(columnwise, 4);
+        A = new JamaMatrix(columnwise, 4);
         int n = A.columnsCount();
         A = A.getMatrix(0, n - 1, 0, n - 1);
         A.set(0, 0, 0.);
@@ -1102,22 +1102,22 @@ public class JMatrixTest {
     }
 
     /**
-     * QRDecomposition Test of qr method, of class JMatrix.
+     * QRDecomposition Test of qr method, of class JamaMatrix.
      */
     @Test
     public void testQr() {
-        A = new JMatrix(columnwise, 4);
+        A = new JamaMatrix(columnwise, 4);
         QRDecomposition QR = A.qr();
         R = QR.getR();
         check(A, QR.getQ().times(R));
     }
 
     /**
-     * Cholesky Decomposition Test of chol method, of class JMatrix.
+     * Cholesky Decomposition Test of chol method, of class JamaMatrix.
      */
     @Test
     public void testChol() {
-        A = new JMatrix(pvals);
+        A = new JamaMatrix(pvals);
         CholeskyDecomposition Chol = A.chol();
         Matrix L = Chol.getL();
         check(A, L.times(L.transpose()));
@@ -1126,28 +1126,28 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of svd method, of class JMatrix.
+     * Test of svd method, of class JamaMatrix.
      */
     @Test
     public void testSvd() {
-        A = new JMatrix(columnwise, 4);
+        A = new JamaMatrix(columnwise, 4);
         SingularValueDecomposition SVD = A.svd();
         check(A, SVD.getU().times(SVD.getS().times(SVD.getV().transpose())));
     }
 
     /**
-     * Test of eig method, of class JMatrix.
+     * Test of eig method, of class JamaMatrix.
      */
     @Test
     public void testEig() {
-        A = new JMatrix(pvals);
+        A = new JamaMatrix(pvals);
         EigenvalueDecomposition Eig = A.eig();
         Matrix D = Eig.getD();
         Matrix V = Eig.getV();
 
         //EigenvalueDecomposition (symmetric)...
         check(A.times(V), V.times(D));
-        A = new JMatrix(evals);
+        A = new JamaMatrix(evals);
         Eig = A.eig();
         D = Eig.getD();
         V = Eig.getV();
@@ -1156,30 +1156,30 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of solve method, of class JMatrix.
+     * Test of solve method, of class JamaMatrix.
      */
     @Test
     public void testSolve() {
-        SUB = new JMatrix(subavals);
-        O = new JMatrix(SUB.rowsCount(), 1, 1.0);
-        SOL = new JMatrix(sqSolution);
+        SUB = new JamaMatrix(subavals);
+        O = new JamaMatrix(SUB.rowsCount(), 1, 1.0);
+        SOL = new JamaMatrix(sqSolution);
         SQ = SUB.getMatrix(0, SUB.rowsCount() - 1, 0, SUB.rowsCount() - 1);
         check(SQ.solve(SOL), O);
     }
 
     /**
-     * Test of solveTranspose method, of class JMatrix.
+     * Test of solveTranspose method, of class JamaMatrix.
      */
     @Test
     public void testSolveTranspose() {
     }
 
     /**
-     * Test of inverse method, of class JMatrix.
+     * Test of inverse method, of class JamaMatrix.
      */
     @Test
     public void testInverse() {
-        A = new JMatrix(columnwise, 4);
+        A = new JamaMatrix(columnwise, 4);
         int n = A.columnsCount();
         A = A.getMatrix(0, n - 1, 0, n - 1);
         A.set(0, 0, 0.);
@@ -1188,7 +1188,7 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of det method, of class JMatrix.
+     * Test of det method, of class JamaMatrix.
      */
     @Test
     public void testDet() {
@@ -1196,7 +1196,7 @@ public class JMatrixTest {
 
     @Test
     public void testHas() {
-        Matrix a = new JMatrix(2, 2);
+        Matrix a = new JamaMatrix(2, 2);
         //check whether number could be stored in matrix on given indexes
         assertEquals(true, a.has(0, 0));
         assertEquals(false, a.has(-1, 0));
@@ -1205,54 +1205,54 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of rank method, of class JMatrix.
+     * Test of rank method, of class JamaMatrix.
      */
     @Test
     public void testRank() {
-        DEF = new JMatrix(rankdef);
+        DEF = new JamaMatrix(rankdef);
         check(DEF.rank(), Math.min(DEF.rowsCount(), DEF.columnsCount()) - 1);
     }
 
     /**
-     * Test of cond method, of class JMatrix.
+     * Test of cond method, of class JamaMatrix.
      */
     @Test
     public void testCond() {
-        A = new JMatrix(columnwise, 4);
+        A = new JamaMatrix(columnwise, 4);
         SingularValueDecomposition SVD = A.svd();
-        B = new JMatrix(condmat);
+        B = new JamaMatrix(condmat);
         SVD = B.svd();
         double[] singularvalues = SVD.getSingularValues();
         check(B.cond(), singularvalues[0] / singularvalues[Math.min(B.rowsCount(), B.columnsCount()) - 1]);
     }
 
     /**
-     * Test of trace method, of class JMatrix.
+     * Test of trace method, of class JamaMatrix.
      */
     @Test
     public void testTrace() {
     }
 
     /**
-     * Test of random method, of class JMatrix.
+     * Test of random method, of class JamaMatrix.
      */
     @Test
     public void testRandom() {
     }
 
     /**
-     * Test of identity method, of class JMatrix.
+     * Test of identity method, of class JamaMatrix.
      */
     @Test
     public void testIdentity() {
     }
 
     /**
-     * Test of print method, of class JMatrix.
+     * Test of print method, of class JamaMatrix.
      */
     @Test
     public void testPrint_int_int() {
-        A = new JMatrix(columnwise, validld);
+        A = new JamaMatrix(columnwise, validld);
         R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
 
         /**
@@ -1297,13 +1297,13 @@ public class JMatrixTest {
     }
 
     /**
-     * Test of print method, of class JMatrix.
+     * Test of print method, of class JamaMatrix.
      *
      * @throws java.io.IOException
      */
     @Test
     public void testPrint_3args_2() throws IOException {
-        A = new JMatrix(columnwise, validld);
+        A = new JamaMatrix(columnwise, validld);
         R = MatrixHelper.random(A.rowsCount(), A.columnsCount());
         File tmpfile = File.createTempFile("TMPMATRIX", ".out");
         try {
@@ -1328,7 +1328,7 @@ public class JMatrixTest {
     @Test
     public void testSetDiagonal() {
         int n = 5;
-        Matrix M = new JMatrix(n, n);
+        Matrix M = new JamaMatrix(n, n);
         M.setDiagonal(10);
 
         for (int i = 0; i < n; i++) {

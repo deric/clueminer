@@ -1,6 +1,6 @@
 package org.clueminer.math.impl;
 
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -88,7 +88,7 @@ public class PCATest {
             // Data preprocessing - standardization and determining correlations
             double[][] indatstd = PCA.Standardize(n, m, indat);
             // use Jama matrix class
-            Matrix X = new JMatrix(indatstd);
+            Matrix X = new JamaMatrix(indatstd);
 
             // Sums of squares and cross-products matrix
             Matrix Xprime = X.transpose();
@@ -132,7 +132,7 @@ public class PCATest {
             for (int j = 0; j < m; j++) {
                 Evals[j] = evals[m - j - 1];
             }
-            // reverse order of JMatrix evecs into JMatrix Evecs
+            // reverse order of JamaMatrix evecs into JamaMatrix Evecs
             double[][] tempold = evecs.getArray();
             double[][] tempnew = new double[m][m];
             for (int j1 = 0; j1 < m; j1++) {
@@ -140,7 +140,7 @@ public class PCATest {
                     tempnew[j1][j2] = tempold[j1][m - j2 - 1];
                 }
             }
-            JMatrix Evecs = new JMatrix(tempnew);
+            JamaMatrix Evecs = new JamaMatrix(tempnew);
             Evecs.print(10, 4);
 
             System.out.println();
@@ -165,7 +165,7 @@ public class PCATest {
             // Col projections (X'X) U    (4x4) x4  And col-wise div. by sqrt(evals)
             Matrix colproj = SSCP.times(Evecs);
 
-            // We need to leave colproj JMatrix class and instead use double array
+            // We need to leave colproj JamaMatrix class and instead use double array
             double[][] ynew = colproj.getArray();
             for (int j1 = 0; j1 < m; j1++) {
                 for (int j2 = 0; j2 < m; j2++) {

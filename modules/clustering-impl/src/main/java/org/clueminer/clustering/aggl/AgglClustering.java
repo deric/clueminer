@@ -22,7 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.MatrixVector;
-import org.clueminer.math.matrix.JMatrix;
+import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.math.matrix.SymmetricMatrix;
 import org.openide.util.Exceptions;
 
@@ -76,7 +76,7 @@ public class AgglClustering {
         } else {
             double dist2;
             MatrixVector vi, vj;
-            similarityMatrix = new JMatrix(m.rowsCount(), m.rowsCount());
+            similarityMatrix = new JamaMatrix(m.rowsCount(), m.rowsCount());
             for (int i = 0; i < m.rowsCount(); ++i) {
                 for (int j = i + 1; j < m.rowsCount(); ++j) {
                     /**
@@ -120,7 +120,7 @@ public class AgglClustering {
         } else {
             double dist2;
             MatrixVector vi, vj;
-            similarityMatrix = new JMatrix(m.rowsCount(), m.rowsCount());
+            similarityMatrix = new JamaMatrix(m.rowsCount(), m.rowsCount());
             for (int i = 0; i < m.rowsCount(); ++i) {
                 for (int j = i + 1; j < m.rowsCount(); ++j) {
                     /**
@@ -222,7 +222,7 @@ public class AgglClustering {
         } else {
             double dist2;
             MatrixVector vi, vj;
-            similarityMatrix = new JMatrix(m.columnsCount(), m.columnsCount());
+            similarityMatrix = new JamaMatrix(m.columnsCount(), m.columnsCount());
             for (int i = 0; i < m.columnsCount(); ++i) {
                 for (int j = i + 1; j < m.columnsCount(); ++j) {
                     /**
@@ -266,7 +266,7 @@ public class AgglClustering {
         } else {
             double dist2;
             MatrixVector vi, vj;
-            similarityMatrix = new JMatrix(m.columnsCount(), m.columnsCount());
+            similarityMatrix = new JamaMatrix(m.columnsCount(), m.columnsCount());
             for (int i = 0; i < m.columnsCount(); ++i) {
                 for (int j = i + 1; j < m.columnsCount(); ++j) {
                     /**

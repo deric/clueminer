@@ -37,7 +37,7 @@ public class MatrixRowVectorTest {
 
     @Before
     public void setUp() {
-        matrix = new JMatrix(array);
+        matrix = new JamaMatrix(array);
         vector = matrix.getRowVector(0);
     }
 
