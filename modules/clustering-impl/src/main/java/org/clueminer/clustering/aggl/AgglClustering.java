@@ -99,7 +99,7 @@ public class AgglClustering {
         return similarityMatrix;
     }
 
-        public static Matrix rowSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue, double sigma) {
+    public static Matrix rowSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue, double sigma) {
         Matrix similarityMatrix;
         double dist;
         if (dm.isSymmetric()) {
@@ -108,7 +108,7 @@ public class AgglClustering {
             for (int i = 0; i < m.rowsCount(); ++i) {
                 for (int j = i + 1; j < m.rowsCount(); ++j) {
                     dist = dm.measure(m.getRowVector(i), m.getRowVector(j));
-                    // Gaussian similarity function 
+                    // Gaussian similarity function
                     double similarity = Math.exp(-Math.pow(dist, 2) / (2 * Math.pow(sigma, 2)));
                     similarityMatrix.set(i, j, similarity);
                     // when printing lower part of matrix this indexes should match
@@ -144,7 +144,7 @@ public class AgglClustering {
         }
         return similarityMatrix;
     }
-    
+
     /**
      * We expect distance measure to be symmetrical
      *
@@ -245,7 +245,7 @@ public class AgglClustering {
         }
         return similarityMatrix;
     }
-    
+
     public static Matrix columnSimilarityMatrix(Matrix m, Distance dm, AbstractQueue<Element> queue, double sigma) {
         Matrix similarityMatrix;
         double dist;

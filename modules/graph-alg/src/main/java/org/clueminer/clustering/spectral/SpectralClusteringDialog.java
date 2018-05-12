@@ -33,8 +33,6 @@ import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.gui.ClusteringDialog;
 import org.clueminer.dataset.api.Dataset;
-import org.clueminer.distance.api.DistanceFactory;
-import org.clueminer.graph.api.GraphConvertorFactory;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -324,7 +322,7 @@ public class SpectralClusteringDialog extends JPanel implements ClusteringDialog
 
     @Override
     public boolean isUIfor(ClusteringAlgorithm algorithm, Dataset dataset) {
-        return algorithm instanceof SpectralClustering;
+        return algorithm.getName().contains("Spectral");
     }
 
 }

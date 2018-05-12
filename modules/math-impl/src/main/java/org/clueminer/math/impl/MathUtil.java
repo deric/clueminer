@@ -163,4 +163,48 @@ public class MathUtil {
         return covar;
     }
 
+    /**
+     * Returns the trigonometric cosine of an angle.
+     */
+    public static double cos(double a) {
+        return java.lang.Math.cos(a);
+    }
+
+    /**
+     * Returns the hyperbolic cosine of a double value.
+     */
+    public static double cosh(double x) {
+        return java.lang.Math.cosh(x);
+    }
+
+    /**
+     * Returns Euler's number e raised to the power of a double value.
+     */
+    public static double exp(double a) {
+        return java.lang.Math.exp(a);
+    }
+
+    /**
+     * Returns e<sup>x</sup>-1.
+     */
+    public static double expm1(double x) {
+        return java.lang.Math.expm1(x);
+    }
+
+    /**
+     * Returns the largest (closest to positive infinity) double value that is
+     * less than or equal to the argument and is equal to a mathematical
+     * integer.
+     */
+    public static double floor(double a) {
+        return java.lang.Math.floor(a);
+    }
+
+    /**
+     * Returns the unbiased exponent used in the representation of a double.
+     */
+    public static int getExponent(double d) {
+        return java.lang.Math.getExponent(d);
+    }
+
 }

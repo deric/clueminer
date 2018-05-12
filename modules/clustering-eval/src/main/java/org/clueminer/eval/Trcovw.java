@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.math.impl.MathUtil;
 import org.clueminer.math.matrix.Maths;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -32,7 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
  * Trcovw = tr(cov(W_q)))
  *
  * Milligan, Glenn W., and Martha C. Cooper. "An examination of procedures for
- * determining the number of clusters in a data set." Psychometrika 50.2 (1985): 159-179.
+ * determining the number of clusters in a data set." Psychometrika 50.2 (1985):
+ * 159-179.
  *
  * @author deric
  * @param <E>
@@ -61,7 +63,7 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
     public double score(Clustering<E, C> clusters, Props params) {
         // trace(W_q)
         //sc = Wq.trace();
-        return Maths.covariance(wqMatrix(clusters)).trace();
+        return MathUtil.covariance(wqMatrix(clusters)).trace();
     }
 
     /**
@@ -71,7 +73,7 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
      * @return
      */
     public double score2(Clustering<E, C> clusters) {
-        return Maths.covariance(withinGroupScatter(clusters)).trace();
+        return MathUtil.covariance(withinGroupScatter(clusters)).trace();
     }
 
     @Override
