@@ -47,7 +47,7 @@ public class ClusterHelper {
         }
         return dm;
     }
-
+    
     public static Random initSeed(Props params) {
         int seed = params.getInt(SEED, -1);
         Random random = null;

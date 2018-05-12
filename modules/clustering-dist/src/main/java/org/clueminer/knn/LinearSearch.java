@@ -61,7 +61,7 @@ public class LinearSearch<T extends Instance> extends AbstractKNN<T> implements 
     public String getName() {
         return NAME;
     }
-
+  
     @Override
     public Neighbor[] knn(T q, int k) {
         if (k <= 0) {
