@@ -71,7 +71,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
     /**
      *
-     * @param max        number of fronts kept
+     * @param max number of fronts kept
      * @param blacklist
      * @param objectives
      * @param eval3rd
@@ -375,7 +375,7 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             Iterator<P> iter = curr.iterator();
             P clustering;
             //increment of rank in current front
-            inc = curr.size() == 1 ? 0.0 : 1.0 / curr.size();
+            inc = curr.size() == 1 ? 0.0 : 1.0 / (double) curr.size();
             while (iter.hasNext()) {
                 clustering = iter.next();
                 res.put(rank, clustering);
