@@ -116,6 +116,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private double diversityThreshold = 0.2;
     private static final DecimalFormat df = new DecimalFormat("#,##0.00");
     private boolean expandOnlyTop = false;
+    private boolean enforceDiversity = false;
 
     public MetaSearch() {
         super();
@@ -143,6 +144,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         diversityThreshold = p.getDouble("diversity", 0.2);
         sortObjective = ef.getProvider(p.get("sort-objective", "McClain-Rao"));
         useMetaDB = p.getBoolean("use-metadb", false);
+        enforceDiversity = p.getBoolean("enforce-diversity", false);
         maxStates = p.getInt("max-states", 200);
     }
 
@@ -269,17 +271,19 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             return false;
         }
 
-        Clustering<E, C> other;
-        Iterator<Clustering<E, C>> it = queue.iterator();
-        double diverse;
-        while (it.hasNext()) {
-            other = it.next();
-            if (other != null) {
-                diverse = diversity(other, c);
-                LOG.trace("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
-                if (diverse < diversityThreshold) {
-                    LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
-                    return false;
+        if (enforceDiversity) {
+            Clustering<E, C> other;
+            Iterator<Clustering<E, C>> it = queue.iterator();
+            double diverse;
+            while (it.hasNext()) {
+                other = it.next();
+                if (other != null) {
+                    diverse = diversity(other, c);
+                    LOG.trace("diversity = {}. {} vs {}", diverse, other.fingerprint(), c.fingerprint());
+                    if (diverse < diversityThreshold) {
+                        LOG.debug("rejecting {} (vs {}) due to low diversity = {}", c.fingerprint(), other.fingerprint(), diverse);
+                        return false;
+                    }
                 }
             }
         }
@@ -297,7 +301,12 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         clusteringTime = 0.0;
         clusteringsEvaluated = 0;
         clusteringsRejected = 0;
-        LOG.info("Starting meta-search. Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
+        if (enforceDiversity) {
+            LOG.info("Starting meta-search. Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
+        } else {
+            LOG.info("Starting meta-search. Objectives: {}", printObjectives());
+        }
+
         evolutionStarted(this);
         prepare();
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -666,6 +675,19 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public void setExpandOnlyTop(boolean expandOnlyTop) {
         this.expandOnlyTop = expandOnlyTop;
+    }
+
+    public void setEnforceDiversity(boolean enforce) {
+        this.enforceDiversity = enforce;
+    }
+
+    /**
+     * Sets minimal required diversity
+     *
+     * @param diversity
+     */
+    public void setDiversity(double diversity) {
+        this.diversityThreshold = diversity;
     }
 
     private String printObjectives() {

@@ -20,11 +20,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.evolution.api.Evolution;
@@ -41,11 +45,13 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
     private static final long serialVersionUID = -2664655185671435048L;
     private JTextField tfFronts;
     private JTextField tfResults;
+    private JTextField tfDiversity;
     private JTextField tfNumStates;
     private JComboBox<String> cbObj1;
     private JComboBox<String> cbObj2;
     private JComboBox<String> cbSort;
     private JCheckBox chckUseMetaDB;
+    private JCheckBox chckEnforceDiversity;
     private JCheckBox chckLimitSolutions;
     private JCheckBox chckExpandOnlyTop;
 
@@ -114,6 +120,28 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
 
         c.gridx = 0;
         c.gridy++;
+        chckEnforceDiversity = new JCheckBox("Enforce diversity", false);
+        c.weightx = 1.0;
+        c.gridwidth = 2;
+        add(chckEnforceDiversity, c);
+        chckEnforceDiversity.addChangeListener((ChangeEvent e) -> {
+            if (tfDiversity != null) {
+                if (chckEnforceDiversity.isSelected()) {
+                    tfDiversity.setEditable(false);
+                } else {
+                    tfDiversity.setEditable(true);
+                }
+            }
+        });
+
+        tfDiversity = new JTextField("0.2");
+        tfDiversity.setPreferredSize(new Dimension(50, 22));
+        tfDiversity.setEnabled(false);
+        c.gridx = 1;
+        add(tfDiversity, c);
+
+        c.gridx = 0;
+        c.gridy++;
         chckLimitSolutions = new JCheckBox("Limit explored states", true);
         c.weightx = 1.0;
         c.gridwidth = 1;
@@ -146,6 +174,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
         meta.setUseMetaDB(chckUseMetaDB.isSelected());
         meta.setMaxSolutions(Integer.parseInt(tfNumStates.getText()));
         meta.setExpandOnlyTop(chckExpandOnlyTop.isSelected());
+        meta.setDiversity(Double.parseDouble(tfDiversity.getText()));
 
         //meta.setGenerations(getGenerations());
         meta.setPopulationSize(Integer.parseInt(tfFronts.getText()));
