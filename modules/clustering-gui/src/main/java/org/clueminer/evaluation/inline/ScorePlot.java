@@ -103,6 +103,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private static final Logger LOGGER = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
     private boolean crossAtMedian = true;
+    private boolean showCorrelation = true;
     private static final String GROUND_TRUTH = "ground-truth";
     private double correlation = Double.NaN;
     private Rank rank;
@@ -447,9 +448,10 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
         drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
         drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
-
-        if (!Double.isNaN(correlation)) {
-            drawNumberX(correlation, cxMax, cyMin);
+        if (showCorrelation) {
+            if (!Double.isNaN(correlation)) {
+                drawNumberX(correlation, cxMax, cyMin);
+            }
         }
 
         //average distance per item
@@ -646,6 +648,10 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     public void setCrossAxisAtMedian(boolean crossAtMedian) {
         this.crossAtMedian = crossAtMedian;
+    }
+
+    public void setShowCorrelation(boolean show) {
+        this.showCorrelation = show;
     }
 
     public void setRank(Rank rank) {

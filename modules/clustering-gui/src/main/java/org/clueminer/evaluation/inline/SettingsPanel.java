@@ -34,6 +34,7 @@ public class SettingsPanel extends JPanel {
 
     private JCheckBox chckUseMetricsMax;
     private JCheckBox chckMedian;
+    private JCheckBox chckCorrelation;
     private JComboBox comboCorrelation;
 
     public SettingsPanel() {
@@ -62,8 +63,13 @@ public class SettingsPanel extends JPanel {
         add(chckMedian, c);
 
         c.gridy++;
+        chckCorrelation = new JCheckBox("show correlation");
+        chckCorrelation.setSelected(true);
+        add(chckCorrelation, c);
+
+        c.gridy++;
         c.gridx = 0;
-        add(new JLabel("Correlation:"), c);
+        add(new JLabel("Ranking similarity:"), c);
         comboCorrelation = new JComboBox(RankFactory.getInstance().getProvidersArray());
         c.gridx = 1;
         add(comboCorrelation, c);
@@ -77,6 +83,7 @@ public class SettingsPanel extends JPanel {
     void updatePlot(ScorePlot plot) {
         plot.setUseSupervisedMetricMax(chckUseMetricsMax.isSelected());
         plot.setCrossAxisAtMedian(chckMedian.isSelected());
+        plot.setShowCorrelation(chckCorrelation.isSelected());
         plot.setRank(RankFactory.getInstance().getProvider(comboCorrelation.getSelectedItem().toString()));
         plot.updateCorrelation();
     }
