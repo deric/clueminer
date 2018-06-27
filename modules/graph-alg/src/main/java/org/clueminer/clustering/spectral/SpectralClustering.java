@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ServiceProvider(service = ClusteringAlgorithm.class)
+//@ServiceProvider(service = ClusteringAlgorithm.class)
 public class SpectralClustering<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements ClusteringAlgorithm<E, C> {
 
     public static final String NAME = "Spectral Clustering";
