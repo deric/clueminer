@@ -26,4 +26,5 @@ public enum PropType {
     PERFORMANCE, //optimization
     VALIDATION, //metric store
     VISUAL, //data visualization
+    RUNTIME,
 }
