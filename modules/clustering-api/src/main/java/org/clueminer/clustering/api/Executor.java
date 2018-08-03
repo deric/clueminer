@@ -77,4 +77,12 @@ public interface Executor<E extends Instance, C extends Cluster<E>> {
      */
     void setColorGenerator(ColorGenerator cg);
 
+    /**
+     * Run automated method for cutting dendrogram tree
+     *
+     * @param result
+     * @param params
+     */
+    void findCutoff(HierarchicalResult result, Props params);
+
 }

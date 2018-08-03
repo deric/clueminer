@@ -180,6 +180,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
         return false;
     }
 
+    @Override
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
         LOG.info("cutting dendrogram with {}", strategy.getName());

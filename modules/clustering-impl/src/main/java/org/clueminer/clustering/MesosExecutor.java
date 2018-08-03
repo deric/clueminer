@@ -115,4 +115,9 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
         this.cg = cg;
     }
 
+    @Override
+    public void findCutoff(HierarchicalResult result, Props params) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
