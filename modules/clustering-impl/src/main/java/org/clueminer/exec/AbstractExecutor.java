@@ -47,7 +47,7 @@ public abstract class AbstractExecutor<E extends Instance, C extends Cluster<E>>
         this.algorithm = algorithm;
     }
 
-    protected CutoffStrategy<E, C> getCutoffStrategy(Props params) {
+    public CutoffStrategy<E, C> getCutoffStrategy(Props params) {
         CutoffStrategy<E, C> strategy;
         String cutoffAlg = params.get(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
 
