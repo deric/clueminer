@@ -16,7 +16,7 @@
  */
 package org.clueminer.eval.hclust;
 
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.aggl.linkage.CentroidLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;

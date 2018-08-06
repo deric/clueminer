@@ -16,7 +16,7 @@
  */
 package org.clueminer.evolution.eval;
 
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.CalinskiHarabasz;

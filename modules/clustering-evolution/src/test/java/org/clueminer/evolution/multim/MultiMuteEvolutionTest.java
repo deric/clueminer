@@ -1,6 +1,6 @@
 package org.clueminer.evolution.multim;
 
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.eval.AIC;

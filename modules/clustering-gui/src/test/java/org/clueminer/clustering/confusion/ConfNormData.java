@@ -21,7 +21,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.IOException;
 import javax.swing.JFrame;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;

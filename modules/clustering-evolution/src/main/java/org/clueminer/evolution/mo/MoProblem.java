@@ -18,7 +18,7 @@ package org.clueminer.evolution.mo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.lang.reflect.InvocationTargetException;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.config.Parameter;

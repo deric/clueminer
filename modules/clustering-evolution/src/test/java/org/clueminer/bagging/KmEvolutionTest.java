@@ -16,7 +16,7 @@
  */
 package org.clueminer.bagging;
 
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.ExternalEvaluator;

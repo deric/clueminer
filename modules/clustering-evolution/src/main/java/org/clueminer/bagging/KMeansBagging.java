@@ -18,7 +18,7 @@ package org.clueminer.bagging;
 
 import java.util.List;
 import java.util.Random;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Algorithm;
 import org.clueminer.clustering.api.Cluster;

@@ -20,7 +20,7 @@ import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;

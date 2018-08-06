@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.clustering;
+package org.clueminer.exec;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.clueminer.clustering.StdStorage;
 import org.clueminer.clustering.aggl.HCLW;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;

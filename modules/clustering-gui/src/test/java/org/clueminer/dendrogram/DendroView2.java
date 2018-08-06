@@ -6,7 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.dendrogram.DendroViewer;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;

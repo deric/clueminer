@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering;
 
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;

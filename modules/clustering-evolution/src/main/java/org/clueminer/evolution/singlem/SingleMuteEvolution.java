@@ -19,7 +19,7 @@ package org.clueminer.evolution.singlem;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;

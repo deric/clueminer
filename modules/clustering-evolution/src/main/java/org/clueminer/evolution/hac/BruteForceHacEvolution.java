@@ -17,7 +17,7 @@
 package org.clueminer.evolution.hac;
 
 import java.util.List;
-import org.clueminer.clustering.ClusteringExecutorCached;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AgglomerativeClustering;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
