@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 import java.util.UUID;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.clueminer.clustering.api.Cluster;
@@ -152,18 +153,22 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                         sha1 = computeSha1(file);
                     }
 
+                    HashMap<String, Object> attr = new HashMap<>();
+                    attr.put("name", dataset.getName());
+                    attr.put("sha1", sha1);
+                    attr.put("n", dataset.size());
+                    attr.put("d", dataset.attributeCount());
+
                     HttpResponse<JsonNode> response = Unirest.post(cluster + "/datasets")
                             .header("accept", "application/json")
-                            .field("name", dataset.getName())
-                            .field("sha1", sha1)
-                            .field("n", dataset.size())
-                            .field("m", dataset.attributeCount())
-                            .field("file", file)
+                            .field("json", GSON.toJson(attr), "text/plain")
+                            .field("file", file, "text/plain")
                             .asJson();
                     if (response.getStatus() == 200) {
                         LOG.info("dataset created: {}", response.getBody().toString());
                     } else {
-                        LOG.warn("code: {}, failed to create a dataset", response.getStatus());
+                        LOG.warn("code: {} {}. Failed to create a dataset. reason: {}",
+                                response.getStatus(), response.getStatusText(), response.getBody().toString());
                     }
 
                 } else {
