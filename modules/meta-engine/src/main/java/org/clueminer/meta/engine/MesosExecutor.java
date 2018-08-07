@@ -160,7 +160,7 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                             .field("m", dataset.attributeCount())
                             .field("file", file)
                             .asJson();
-                    LOG.info("dataset created: {}", response);
+                    LOG.info("dataset created: {}", response.getBody().toString());
                 } else {
                     LOG.info("found dataset: {}", jsonResponse.getBody().getArray());
                 }
