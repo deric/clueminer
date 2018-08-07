@@ -128,18 +128,17 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
 
     private UUID uploadDataset(Dataset<E> dataset, Props params) {
         String sha1 = params.get(PropType.RUNTIME, "sha1", null);
-        File file;
+        File file = null;
         // fallback
         if (sha1 == null) {
             try {
                 file = writeTmpDataset(dataset);
                 sha1 = computeSha1(file);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (NoSuchAlgorithmException ex) {
+            } catch (IOException | NoSuchAlgorithmException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
+        LOG.info("dataset sha1: {}", sha1);
 
         try {
             HttpResponse<JsonNode> jsonResponse = Unirest.get(cluster + "/datasets/find")
@@ -148,7 +147,22 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                     .asJson();
             int resp = jsonResponse.getStatus();
             if (resp == 200) {
-                LOG.info(jsonResponse.getBody().toString());
+                //no dataset found
+                if (jsonResponse.getBody().getArray().isNull(0)) {
+                    LOG.info("no dataset found, uploading");
+
+                    HttpResponse<JsonNode> response = Unirest.post(cluster + "/datasets")
+                            .header("accept", "application/json")
+                            .field("name", dataset.getName())
+                            .field("sha1", sha1)
+                            .field("n", dataset.size())
+                            .field("m", dataset.attributeCount())
+                            .field("file", file)
+                            .asJson();
+                    LOG.info("dataset created: {}", response);
+                } else {
+                    LOG.info("found dataset: {}", jsonResponse.getBody().getArray());
+                }
             } else {
                 LOG.warn("Mesos cluster returned {}:", resp, jsonResponse.getBody().toString());
             }
