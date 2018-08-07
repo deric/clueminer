@@ -695,4 +695,12 @@ public class ArrayDatasetTest<E extends Instance> {
         assertEquals(1.2, test.min(), DELTA);
 
     }
+
+    @Test
+    public void testHashCode() {
+        Dataset<E> a = new ArrayDataset<>(data2x5);
+        Dataset<E> b = new ArrayDataset<>(data2x5);
+        System.out.println("hash = " + a.hashCode());
+        assertEquals("datasets with the same data should have same hash", a, b);
+    }
 }

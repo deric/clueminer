@@ -16,6 +16,7 @@
  */
 package org.clueminer.dataset.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -752,4 +753,36 @@ public class ArrayDataset<E extends Instance> extends BaseDataset<E> implements 
     public Iterator<E> iterator() {
         return (Iterator<E>) new ArrayDatasetIterator();
     }
+
+    @Override
+    public int hashCode() {
+        long hash = 7;
+        Iterator<E> it = iterator();
+        E inst;
+        while (it.hasNext()) {
+            inst = it.next();
+            hash += inst.hashCode() >>> 8;
+        }
+
+        return (int) hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ArrayDataset<?> other = (ArrayDataset<?>) obj;
+        if (!Arrays.deepEquals(this.data, other.data)) {
+            return false;
+        }
+        return true;
+    }
+
 }
