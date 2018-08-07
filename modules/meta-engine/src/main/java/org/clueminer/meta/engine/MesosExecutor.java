@@ -116,14 +116,14 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
             //in case of original dataset (easier to diff)
             for (int i = 0; i < dataset.size(); i++) {
                 inst = dataset.get(i);
-                writer.write(inst, (String) dataset.classValue(i));
+                writer.write(inst, (String) inst.classValue());
             }
             writer.close();
 
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-        LOG.info("tmp file: {}", file.getAbsolutePath());
+        LOG.debug("tmp file: {}", file.getAbsolutePath());
         return file;
     }
 
@@ -160,7 +160,12 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                             .field("m", dataset.attributeCount())
                             .field("file", file)
                             .asJson();
-                    LOG.info("dataset created: {}", response.getBody().toString());
+                    if (response.getStatus() == 200) {
+                        LOG.info("dataset created: {}", response.getBody().toString());
+                    } else {
+                        LOG.warn("code: {}, failed to create a dataset", response.getStatus());
+                    }
+
                 } else {
                     LOG.info("found dataset: {}", jsonResponse.getBody().getArray());
                 }
