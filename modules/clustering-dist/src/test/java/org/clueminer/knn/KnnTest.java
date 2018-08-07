@@ -32,6 +32,7 @@ public class KnnTest extends AbstractNNTest {
     @Test
     public void testBenchmark() {
         CachingKNN t1 = new CachingKNN();
+        KnnCache.getInstance().clear();
         LinearSearch t2 = new LinearSearch();
         Dataset<? extends Instance> d = irisDataset();
         t1.setDataset(d);
@@ -48,6 +49,9 @@ public class KnnTest extends AbstractNNTest {
                 inst2 = (Instance) nn2[j].key;
                 assertNotNull(inst1);
                 assertNotNull(inst2);
+                if (nn1[j].distance != nn2[j].distance) {
+                    System.out.println("d1 = " + nn1[j].distance + " vs " + nn2[j].distance);
+                }
                 assertEquals(nn1[j].distance, nn2[j].distance, DELTA);
             }
         }

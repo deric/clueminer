@@ -31,7 +31,7 @@ public class KnnCache<T> {
 
     private static KnnCache instance;
 
-    private final Table<Dataset, Integer, T[]> cache;
+    private Table<Dataset, Integer, T[]> cache;
 
     private KnnCache() {
         cache = HashBasedTable.create();
@@ -65,5 +65,9 @@ public class KnnCache<T> {
      */
     public void put(Dataset<? extends Instance> dataset, int id, T[] inst) {
         cache.put(dataset, id, inst);
+    }
+
+    public void clear() {
+        cache = HashBasedTable.create();
     }
 }
