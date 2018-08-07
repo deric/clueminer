@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.clueminer.clustering.api.Cluster;
@@ -46,6 +47,7 @@ import org.clueminer.exec.AbstractExecutor;
 import org.clueminer.io.arff.ARFFWriter;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
+import org.json.JSONObject;
 import org.openide.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,8 +147,21 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                     .asJson();
             int resp = jsonResponse.getStatus();
             if (resp == 200) {
+                LOG.info("searching for datasets: {}", jsonResponse.getBody().toString());
                 //no dataset found
-                if (jsonResponse.getBody().getArray().isNull(0)) {
+                Iterator it = jsonResponse.getBody().getArray().iterator();
+                if (it.hasNext()) {
+                    JSONObject data = (JSONObject) it.next();
+                    LOG.info("found dataset: {}", data.toString());
+                    return UUID.fromString(data.getString("uuid"));
+                } else {
+                    LOG.info("dataset checksum: {}", dataset.hashCode());
+                    UUID uuid = findDatasetByChecksum(dataset.hashCode());
+
+                    if (uuid != null) {
+                        return uuid;
+                    }
+
                     LOG.info("no dataset found, uploading");
                     if (file == null) {
                         file = writeTmpDataset(dataset);
@@ -156,9 +171,11 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                     HashMap<String, Object> attr = new HashMap<>();
                     attr.put("name", dataset.getName());
                     attr.put("sha1", sha1);
+                    attr.put("checksum", dataset.hashCode());
                     attr.put("n", dataset.size());
                     attr.put("d", dataset.attributeCount());
 
+                    //we're sending multi-part content
                     HttpResponse<JsonNode> response = Unirest.post(cluster + "/datasets")
                             .header("accept", "application/json")
                             .field("json", GSON.toJson(attr), "text/plain")
@@ -171,8 +188,6 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                                 response.getStatus(), response.getStatusText(), response.getBody().toString());
                     }
 
-                } else {
-                    LOG.info("found dataset: {}", jsonResponse.getBody().getArray());
                 }
             } else {
                 LOG.warn("Mesos cluster returned {}:", resp, jsonResponse.getBody().toString());
@@ -184,6 +199,32 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
             LOG.error(ex.getMessage(), ex);
         } catch (NoSuchAlgorithmException ex) {
             LOG.error(ex.getMessage(), ex);
+        }
+        return null;
+    }
+
+    private UUID findDatasetByChecksum(int checksum) throws UnirestException {
+        HttpResponse<JsonNode> jsonResponse = Unirest.get(cluster + "/datasets/find")
+                .header("accept", "application/json")
+                .queryString("checksum", checksum)
+                .asJson();
+
+        int resp = jsonResponse.getStatus();
+        if (resp == 200) {
+            LOG.info("searching for datasets: {}", jsonResponse.getBody().toString());
+            //no dataset found
+            Iterator it = jsonResponse.getBody().getArray().iterator();
+            if (it.hasNext()) {
+                JSONObject data = (JSONObject) it.next();
+                if (data.has("uuid")) {
+                    LOG.info("found dataset: {}", data.toString());
+                    return UUID.fromString(data.getString("uuid"));
+                } else {
+                    LOG.warn("unexpected response, uuid expected: {}", data.toString());
+                }
+            }
+        } else {
+            LOG.warn("Mesos cluster returned {}:", resp, jsonResponse.getBody().toString());
         }
         return null;
     }
