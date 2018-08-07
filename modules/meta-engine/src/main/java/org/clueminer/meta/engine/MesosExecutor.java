@@ -123,24 +123,21 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
+        LOG.info("tmp file: {}", file.getAbsolutePath());
         return file;
     }
 
     private UUID uploadDataset(Dataset<E> dataset, Props params) {
         String sha1 = params.get(PropType.RUNTIME, "sha1", null);
         File file = null;
-        // fallback
-        if (sha1 == null) {
-            try {
+        try {
+            // fallback
+            if (sha1 == null) {
                 file = writeTmpDataset(dataset);
                 sha1 = computeSha1(file);
-            } catch (IOException | NoSuchAlgorithmException ex) {
-                Exceptions.printStackTrace(ex);
             }
-        }
-        LOG.info("dataset sha1: {}", sha1);
+            LOG.info("dataset sha1: {}", sha1);
 
-        try {
             HttpResponse<JsonNode> jsonResponse = Unirest.get(cluster + "/datasets/find")
                     .header("accept", "application/json")
                     .queryString("sha1", sha1)
@@ -150,6 +147,10 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
                 //no dataset found
                 if (jsonResponse.getBody().getArray().isNull(0)) {
                     LOG.info("no dataset found, uploading");
+                    if (file == null) {
+                        file = writeTmpDataset(dataset);
+                        sha1 = computeSha1(file);
+                    }
 
                     HttpResponse<JsonNode> response = Unirest.post(cluster + "/datasets")
                             .header("accept", "application/json")
@@ -169,6 +170,10 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
 
         } catch (UnirestException ex) {
             LOG.error("failed to connect to a Mesos cluster: {}", ex.getMessage());
+        } catch (IOException ex) {
+            LOG.error(ex.getMessage(), ex);
+        } catch (NoSuchAlgorithmException ex) {
+            LOG.error(ex.getMessage(), ex);
         }
         return null;
     }
