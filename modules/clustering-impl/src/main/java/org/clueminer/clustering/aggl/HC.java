@@ -166,13 +166,7 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
             pq = new PriorityQueue<>(items);
         } else {
             //inverse sorting - biggest values first
-            Comparator<Element> comp = new Comparator<Element>() {
-
-                @Override
-                public int compare(Element o1, Element o2) {
-                    return o2.compareTo(o1);
-                }
-            };
+            Comparator<Element> comp = (Element o1, Element o2) -> o2.compareTo(o1);
             pq = new PriorityQueue<>(items, comp);
         }
         return pq;

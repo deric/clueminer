@@ -109,4 +109,10 @@ public class NMIsqrtTest extends ExternalTest {
         assertEquals(2, c.size());
         assertEquals(0.14039740914097984, subject.score(c), delta);
     }
+
+    @Test
+    public void testHandle() {
+        assertEquals("nmi_sqrt", subject.getHandle());
+    }
+
 }

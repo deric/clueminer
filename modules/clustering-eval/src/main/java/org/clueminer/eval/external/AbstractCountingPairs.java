@@ -47,6 +47,14 @@ public abstract class AbstractCountingPairs<E extends Instance, C extends Cluste
         return score(clusters, new Props());
     }
 
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        return h;
+    }
+
     /**
      * Once matching classes <-> clusters are found result will be stored in
      * clustering lookup

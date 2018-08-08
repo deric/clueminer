@@ -36,6 +36,13 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
     String getName();
 
     /**
+     * A DB-friendly name without spaces and special characters
+     *
+     * @return lower case short name
+     */
+    String getHandle();
+
+    /**
      * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
@@ -48,8 +55,8 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * Returns score for given clustering.
      *
      * @param clusters - clustering to be evaluated
-     * @param params   a HashMap with parameter settings (many criterion does
-     *                 not take parameters)
+     * @param params a HashMap with parameter settings (many criterion does not
+     * take parameters)
      * @return criterion value obtained on this particular clustering
      * @throws org.clueminer.clustering.api.ScoreException
      */
@@ -61,7 +68,7 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      *
      * @param clusters
      * @param proximity matrix of distances between all points
-     * @param params    optional parameters evaluation metric
+     * @param params optional parameters evaluation metric
      * @return
      * @throws org.clueminer.clustering.api.ScoreException
      */
@@ -75,7 +82,7 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
      * @param score1 - the first score
      * @param score2 - the second score
      * @return true if the first score is better than the second, false in all
-     *         other cases
+     * other cases
      */
     boolean isBetter(double score1, double score2);
 
@@ -99,8 +106,8 @@ public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
     /**
      * Value is used for sorting results.
      *
-     * When true: Arrays.sort(a) -> [10, 9, 8, ... ]
-     * When false: Arrays.sort(a) -> [8, 9, 10]
+     * When true: Arrays.sort(a) -> [10, 9, 8, ... ] When false: Arrays.sort(a)
+     * -> [8, 9, 10]
      *
      * @return true when bigger is better
      */

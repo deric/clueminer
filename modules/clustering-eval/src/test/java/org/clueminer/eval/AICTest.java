@@ -62,4 +62,9 @@ public class AICTest {
         assertEquals(false, subject.isMaximized());
     }
 
+    @Test
+    public void testHandle() {
+        assertEquals("aic", subject.getHandle());
+    }
+
 }

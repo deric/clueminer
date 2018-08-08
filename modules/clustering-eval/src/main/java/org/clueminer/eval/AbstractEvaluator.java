@@ -56,6 +56,14 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         this.dm = dm;
     }
 
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        return h;
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -194,7 +202,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
      * Mean attribute value
      *
      * @param clusters
-     * @param d        attribute index
+     * @param d attribute index
      * @return
      */
     public double attrMean(Clustering<E, C> clusters, int d) {
@@ -410,7 +418,8 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         }
         /**
          * TODO: some matrix operations might not be necessary
-         * */
+         *
+         */
         Matrix ZT = Z.transpose();
         // cluster sizes on diagonal -- inverse
         Matrix TIZ = ZT.times(Z).inverse();

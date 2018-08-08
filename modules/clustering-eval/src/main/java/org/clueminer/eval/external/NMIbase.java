@@ -42,9 +42,17 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
 
     private static final long serialVersionUID = -480979241137671097L;
 
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        return h;
+    }
+
     /**
      *
-     * @param count    total number of elements N (in whole dataset)
+     * @param count total number of elements N (in whole dataset)
      * @param elements
      * @return
      */

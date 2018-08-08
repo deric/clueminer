@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends AbstractExecutor<E, C> implements Executor<E, C> {
 
-    private String cluster;
+    private final String cluster;
     private ColorGenerator cg;
     private static final Logger LOG = LoggerFactory.getLogger(MesosExecutor.class);
     private static final Gson GSON = new Gson();
@@ -261,6 +261,11 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
     @Override
     public HierarchicalResult hclustRows(Dataset<E> dataset, Props params) {
         UUID uuid = uploadDataset(dataset, params);
+
+        //use precomputed results
+        if (params.getBoolean(PropType.RUNTIME, "cache", true)) {
+
+        }
 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }

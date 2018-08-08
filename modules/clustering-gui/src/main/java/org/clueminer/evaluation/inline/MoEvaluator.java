@@ -108,4 +108,13 @@ public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements Cl
         this.objectives = objectives;
     }
 
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        h = h.replace("&", "_");
+        return h;
+    }
+
 }

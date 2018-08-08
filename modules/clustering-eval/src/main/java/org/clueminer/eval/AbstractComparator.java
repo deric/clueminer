@@ -32,6 +32,14 @@ public abstract class AbstractComparator<E extends Instance, C extends Cluster<E
 
     protected static final double EPS = 1e-8;
 
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        return h;
+    }
+
     /**
      * 0 when arguments are the same (within EPS range). 1 when score1 is worser
      * than score2. -1 when score1 is better than score2. This behaviour is
