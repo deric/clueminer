@@ -36,10 +36,12 @@ import java.util.Iterator;
 import java.util.UUID;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
+import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -293,6 +295,60 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
     @Override
     public void findCutoff(HierarchicalResult result, Props params) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean syncDB() {
+        ClusterEvaluation[] evals = EvaluationFactory.getInstance().getAllArray();
+
+        try {
+            for (ClusterEvaluation eval : evals) {
+                if (!evaluationExists(eval.getHandle())) {
+                    createEvaluation(eval);
+                }
+            }
+        } catch (UnirestException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+
+        return true;
+    }
+
+    private boolean evaluationExists(String handle) throws UnirestException {
+        HttpResponse<JsonNode> jsonResponse = Unirest.get(cluster + "/evaluations/find")
+                .header("accept", "application/json")
+                .queryString("handle", handle)
+                .asJson();
+        int resp = jsonResponse.getStatus();
+        if (resp == 200) {
+            LOG.info("searching for evaluation metric: {}", jsonResponse.getBody().toString());
+            //no dataset found
+            Iterator it = jsonResponse.getBody().getArray().iterator();
+            if (it.hasNext()) {
+                JSONObject data = (JSONObject) it.next();
+                LOG.info("found evaluation: {}", data.toString());
+                return true;
+            } else {
+                LOG.info("evaluation {} wasn't found", handle);
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private void createEvaluation(ClusterEvaluation eval) throws UnirestException {
+        HttpResponse<JsonNode> response = Unirest.post(cluster + "/evaluations")
+                .header("accept", "application/json")
+                .field("name", eval.getName())
+                .field("handle", eval.getHandle())
+                .field("type", eval.isExternal() ? "external" : "internal")
+                .asJson();
+        if (response.getStatus() == 200) {
+            LOG.info("evaluation created: {}", response.getBody().toString());
+        } else {
+            LOG.warn("code: {} {}. Failed to create a evaluation. reason: {}",
+                    response.getStatus(), response.getStatusText(), response.getBody().toString());
+        }
     }
 
 }
