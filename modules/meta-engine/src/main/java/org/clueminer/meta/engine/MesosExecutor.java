@@ -337,11 +337,14 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
     }
 
     private void createEvaluation(ClusterEvaluation eval) throws UnirestException {
+        HashMap<String, Object> evaluation = new HashMap<>();
+        evaluation.put("name", eval.getName());
+        evaluation.put("handle", eval.getHandle());
+        evaluation.put("evaluationType", eval.isExternal() ? 2 : 1);
         HttpResponse<JsonNode> response = Unirest.post(cluster + "/evaluations")
                 .header("accept", "application/json")
-                .field("name", eval.getName())
-                .field("handle", eval.getHandle())
-                .field("type", eval.isExternal() ? "external" : "internal")
+                .header("Content-Type", "application/json")
+                .body(evaluation)
                 .asJson();
         if (response.getStatus() == 200) {
             LOG.info("evaluation created: {}", response.getBody().toString());
