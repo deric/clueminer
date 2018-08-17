@@ -269,6 +269,8 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
 
         }
 
+        runClustering(uuid, params);
+
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -352,6 +354,26 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
             LOG.warn("code: {} {}. Failed to create a evaluation. reason: {}",
                     response.getStatus(), response.getStatusText(), response.getBody().toString());
         }
+    }
+
+    private Clustering<E, Cluster<E>> runClustering(UUID datasetUuid, Props params) throws UnirestException {
+        HashMap<String, Object> request = new HashMap<>();
+        request.put("uuid", datasetUuid.toString());
+        request.put("result", "hierarchical");
+        request.put("params", params.toJson());
+        HttpResponse<JsonNode> response = Unirest.post(cluster + "/jobs")
+                .header("accept", "application/json")
+                .header("Content-Type", "application/json")
+                .body(request)
+                .asJson();
+        if (response.getStatus() == 200) {
+            LOG.info("Job created: {}", response.getBody().toString());
+        } else {
+            LOG.warn("code: {} {}. Failed to create a job. reason: {}",
+                    response.getStatus(), response.getStatusText(), response.getBody().toString());
+        }
+
+        return null;
     }
 
 }
