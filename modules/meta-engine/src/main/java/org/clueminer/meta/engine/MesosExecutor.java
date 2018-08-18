@@ -269,7 +269,11 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
 
         }
 
-        runClustering(uuid, params);
+        try {
+            runClustering(uuid, params);
+        } catch (UnirestException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
 
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
