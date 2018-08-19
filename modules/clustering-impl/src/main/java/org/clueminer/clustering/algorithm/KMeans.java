@@ -57,11 +57,11 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
     public static final String K = "k";
 
     public static final String ITERATIONS = "iterations";
-    
+
     public static final String MAX_ITERATIONS = "max iterations";
 
     public static final String SEED = "seed";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(KMeans.class);
 
     /**
@@ -72,10 +72,10 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
      */
     @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 150)
     private int iterations = -1;
-    
+
     @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 1, max = 500)
     private int maxIterations;
-    
+
     /**
      * Random generator for this clusterer.
      */
@@ -84,7 +84,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
     //min and max values are used as limit for evolutionary algorithms
     @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 25)
     private int k;
-    
+
     //@Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
     int seed;
 
@@ -117,13 +117,13 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         if (!params.containsKey(KMeans.K)) {
             throw new RuntimeException("Number of clusters (\"" + KMeans.K + "\") must be specified");
         }
-        
+
         k = params.getInt(KMeans.K);
-        
+
         if (k <= 1) {
             throw new RuntimeException("Number of clusters should be at least 2");
         }
-        
+
         if (k > data.size()) {
             throw new RuntimeException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
         }
@@ -132,9 +132,9 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         distanceFunction = ClusterHelper.initDistance(params);
 
         iterations = params.getInt(ITERATIONS, 100);
-        
+
         maxIterations = params.getInt(MAX_ITERATIONS, 500);
-        
+
         // Place K points into the space represented by the objects that are
         // being clustered. These points represent the initial group of
         // centroids.
@@ -152,9 +152,9 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         boolean randomCentroids = true;
         double dist, minDist;
         Instance tmp = new DoubleArrayDataRow(instanceLength);
-        while ((randomCentroids || (iterationCount < this.iterations && centroidsChanged)) && iterationCount <= maxIterations) {            
+        while ((randomCentroids || (iterationCount < this.iterations && centroidsChanged)) && iterationCount <= maxIterations) {
             iterationCount++;
-            LOG.debug("Iteration: {} / {} / {}", iterationCount, this.iterations, centroidsChanged);
+            LOG.trace("Iteration: {} / {} / {}", iterationCount, this.iterations, centroidsChanged);
             // Assign each object to the group that has the closest centroid.
             int[] assignment = new int[data.size()];
             for (int i = 0; i < data.size(); i++) {
