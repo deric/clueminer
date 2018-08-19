@@ -474,7 +474,12 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected ClusteringAlgorithm parseAlgorithm(Props params) {
         String alg = params.get(AlgParams.ALG);
         if (alg == null) {
-            throw new RuntimeException("missing algorithm identifier for " + params.toString());
+            LOG.warn("Missing algorithm identifier. params given: {}", params.toString());
+            ClusteringAlgorithm[] algorithms = ClusteringFactory.getInstance().getAllArray();
+            int idx = randomInt(0, algorithms.length - 1);
+            LOG.info("Using algorithm {} instead", algorithms[idx].getName());
+            params.put(AlgParams.ALG, algorithms[idx].getName());
+            return algorithms[idx];
         }
         return ClusteringFactory.getInstance().getProvider(alg);
     }
