@@ -26,6 +26,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Dunn's index should be maximized
@@ -42,6 +44,7 @@ public class DunnIndex<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String NAME = "Dunn";
+    private static final Logger LOG = LoggerFactory.getLogger(DunnIndex.class);
 
     public DunnIndex() {
         dm = EuclideanDistance.getInstance();
@@ -70,26 +73,32 @@ public class DunnIndex<E extends Instance, C extends Cluster<E>> extends Abstrac
         ClusterLinkage<E> link = (ClusterLinkage<E>) LinkageFactory.getInstance().getProvider("Single");
         link.setDistanceMeasure(dm);
 
-        for (int i = 0; i < clusters.size(); i++) {
-            clusterX = clusters.get(i);
-            //find maximal distance in between each cluster
-            temp = maxIntraClusterDistance(clusterX);
-            if (temp > maxIntraClusterdist) {
-                maxIntraClusterdist = temp;
-            }
+        try {
 
-            for (int j = i + 1; j < clusters.size(); j++) {
-                clusterY = clusters.get(j);
-                /*
+            for (int i = 0; i < clusters.size(); i++) {
+                clusterX = clusters.get(i);
+                //find maximal distance in between each cluster
+                temp = maxIntraClusterDistance(clusterX);
+                if (temp > maxIntraClusterdist) {
+                    maxIntraClusterdist = temp;
+                }
+
+                for (int j = i + 1; j < clusters.size(); j++) {
+                    clusterY = clusters.get(j);
+                    /*
                  * finding minimal distance between objects in both clusters
                  * corresponds to single linkage distance
-                 */
-                temp = link.distance(clusterX, clusterY);
-                if (temp < minClusterDistance) {
-                    minClusterDistance = temp;
+                     */
+                    temp = link.distance(clusterX, clusterY);
+                    if (temp < minClusterDistance) {
+                        minClusterDistance = temp;
+                    }
                 }
-            }
 
+            }
+        } catch (ArithmeticException ex) {
+            LOG.warn(ex.getMessage(), ex);
+            return Double.NaN;
         }
         return minClusterDistance / maxIntraClusterdist;
     }

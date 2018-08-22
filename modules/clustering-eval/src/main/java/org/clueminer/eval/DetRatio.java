@@ -93,9 +93,8 @@ public class DetRatio<E extends Instance, C extends Cluster<E>> extends Abstract
             ratio = t.det() / wg.det();
         } catch (RuntimeException ex) {
             //LU decomposition errors
-            LOG.warn(ex.getMessage());
+            LOG.warn(ex.getMessage(), ex);
         }
-
         return ratio;
     }
 
