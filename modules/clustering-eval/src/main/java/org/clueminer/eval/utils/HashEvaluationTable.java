@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -37,9 +35,12 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Storage for evaluation metrics which are frequently very expensive to compute.
+ * Storage for evaluation metrics which are frequently very expensive to
+ * compute.
  *
  * @author Tomas Barton
  * @param <E>
@@ -51,7 +52,7 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
     private TreeMap<String, Double> scores;
-    private static final Logger LOGGER = Logger.getLogger(HashEvaluationTable.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(HashEvaluationTable.class);
 
     public HashEvaluationTable(Clustering<E, C> clustering, Dataset<E> dataset) {
         initEvaluators();
@@ -93,9 +94,9 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
             double score;
             try {
                 score = evaluator.score(clustering, params);
-            } catch (ScoreException ex) {
-                LOGGER.log(Level.WARNING, "failed to compute score {0}: {1}",
-                        new Object[]{evaluator.getName(), ex.getMessage()});
+            } catch (ArithmeticException | ScoreException ex) {
+                LOG.warn("failed to compute score {}: {}",
+                        evaluator.getName(), ex.getMessage(), ex);
                 score = Double.NaN;
             }
             scores.put(key, score);

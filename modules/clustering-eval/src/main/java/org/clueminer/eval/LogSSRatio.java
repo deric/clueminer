@@ -25,6 +25,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Similar index to Calinski-Harabasz index {@link CalinskiHarabasz}
@@ -38,6 +40,7 @@ public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends Calins
 
     private static final String NAME = "Log-SS-Ratio";
     private static final long serialVersionUID = 1027250256090361526L;
+    private static final Logger LOG = LoggerFactory.getLogger(LogSSRatio.class);
 
     public LogSSRatio() {
         dm = EuclideanDistance.getInstance();
@@ -59,11 +62,16 @@ public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends Calins
             //centroid of all data
             Instance centroid = clusters.getCentroid();
             double d;
-            for (int i = 0; i < clusters.size(); i++) {
-                C x = clusters.get(i);
-                w += sumOfSquaredError(x);
-                d = dm.measure(centroid, x.getCentroid());
-                b += (x.size()) * FastMath.pow(d, 2);
+            try {
+                for (int i = 0; i < clusters.size(); i++) {
+                    C x = clusters.get(i);
+                    w += sumOfSquaredError(x);
+                    d = dm.measure(centroid, x.getCentroid());
+                    b += (x.size()) * FastMath.pow(d, 2);
+                }
+            } catch (ArithmeticException ex) {
+                LOG.warn(ex.getMessage(), ex);
+                return Double.NaN;
             }
 
             if (w == 0.0) {
