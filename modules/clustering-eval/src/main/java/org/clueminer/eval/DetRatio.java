@@ -29,11 +29,20 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Very similar to {@link Rubin}
  *
+ * TODO: dispersion computation is unstable
+ *
+ * java.lang.ArrayIndexOutOfBoundsException: 846 at
+ * org.clueminer.math.impl.DenseVector.set(DenseVector.java:149) at
+ * org.clueminer.math.impl.AbstractDoubleVector.set(AbstractDoubleVector.java:197)
+ * at
+ * org.clueminer.eval.AbstractEvaluator.totalDispersion(AbstractEvaluator.java:272)
+ * at org.clueminer.eval.DetRatio.score(DetRatio.java:76)
+ *
  * @author deric
  * @param <E>
  * @param <C>
  */
-@ServiceProvider(service = InternalEvaluator.class)
+//@ServiceProvider(service = InternalEvaluator.class)
 public class DetRatio<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
     private static String NAME = "DetRatio";
