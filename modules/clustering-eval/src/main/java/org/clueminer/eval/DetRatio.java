@@ -25,6 +25,8 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Very similar to {@link Rubin}
@@ -42,11 +44,12 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <E>
  * @param <C>
  */
-//@ServiceProvider(service = InternalEvaluator.class)
+@ServiceProvider(service = InternalEvaluator.class)
 public class DetRatio<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
     private static String NAME = "DetRatio";
     private static final long serialVersionUID = -6861450793005245212L;
+    private static final Logger LOG = LoggerFactory.getLogger(DetRatio.class);
 
     public DetRatio() {
         dm = EuclideanDistance.getInstance();
@@ -85,7 +88,15 @@ public class DetRatio<E extends Instance, C extends Cluster<E>> extends Abstract
         Matrix t = totalDispersion(clusters);
         Matrix wg = withinGroupScatter(clusters);
 
-        return t.det() / wg.det();
+        double ratio = Double.NaN;
+        try {
+            ratio = t.det() / wg.det();
+        } catch (RuntimeException ex) {
+            //LU decomposition errors
+            LOG.warn(ex.getMessage());
+        }
+
+        return ratio;
     }
 
     @Override

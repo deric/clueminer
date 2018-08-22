@@ -27,12 +27,15 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Friedman index
  *
- * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for grouping data."
- * Journal of the American Statistical Association 62.320 (1967): 1159-1178.
+ * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for
+ * grouping data." Journal of the American Statistical Association 62.320
+ * (1967): 1159-1178.
  *
  * @author deric
  * @param <E>
@@ -43,6 +46,7 @@ public class Friedman<E extends Instance, C extends Cluster<E>> extends Abstract
 
     private static final String NAME = "Friedman";
     private static final long serialVersionUID = -1636596859242265112L;
+    private static final Logger LOG = LoggerFactory.getLogger(Friedman.class);
 
     public Friedman() {
         dm = new EuclideanDistance();
@@ -63,33 +67,42 @@ public class Friedman<E extends Instance, C extends Cluster<E>> extends Abstract
         if (dataset == null) {
             throw new RuntimeException("missing original dataset");
         }
-        Matrix X = dataset.asMatrix();
-        //a matrix d x d (d - number of attributes)
-        // T = X'X
-        Matrix TT = X.transpose().times(X);
 
-        //assign matrix - (index, cluster) = 1.0
-        Matrix Z = new JamaMatrix(dataset.size(), clusters.size());
-        int k = 0;
-        for (Cluster<E> c : clusters) {
-            for (E inst : c) {
-                Z.set(inst.getIndex(), k, 1.0);
+        double ratio = Double.NaN;
+        try {
+            Matrix X = dataset.asMatrix();
+            //a matrix d x d (d - number of attributes)
+            // T = X'X
+            Matrix TT = X.transpose().times(X);
+
+            //assign matrix - (index, cluster) = 1.0
+            Matrix Z = new JamaMatrix(dataset.size(), clusters.size());
+            int k = 0;
+            for (Cluster<E> c : clusters) {
+                for (E inst : c) {
+                    Z.set(inst.getIndex(), k, 1.0);
+                }
+                k++;
             }
-            k++;
-        }
-        /**
-         * TODO: some matrix operations might not be necessary
-         * */
-        Matrix ZT = Z.transpose();
-        Matrix xbar = ZT.times(Z).inverse().times(ZT).times(X);
-        //xbar.print(3, 3);
-        Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
+            /**
+             * TODO: some matrix operations might not be necessary
+             *
+             */
+            Matrix ZT = Z.transpose();
+            Matrix xbar = ZT.times(Z).inverse().times(ZT).times(X);
+            //xbar.print(3, 3);
+            Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
 
-        //W_q
-        Matrix Wq = TT.minus(B);
-        //solve(W) -- Inverse of A where A is a square matrix.
-        //<- sum(diag(solve(W)*B))
-        return Wq.inverse().arrayTimesEquals(B).trace();
+            //W_q
+            Matrix Wq = TT.minus(B);
+            //solve(W) -- Inverse of A where A is a square matrix.
+            //<- sum(diag(solve(W)*B))
+            ratio = Wq.inverse().arrayTimesEquals(B).trace();
+        } catch (RuntimeException ex) {
+            //LU decomposition errors
+            LOG.warn(ex.getMessage());
+        }
+        return ratio;
     }
 
     /**
