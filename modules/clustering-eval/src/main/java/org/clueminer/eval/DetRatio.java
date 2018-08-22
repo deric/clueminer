@@ -85,11 +85,10 @@ public class DetRatio<E extends Instance, C extends Cluster<E>> extends Abstract
          bg.set(i, j, dx.dot(dy));
          }
          }*/
-        Matrix t = totalDispersion(clusters);
-        Matrix wg = withinGroupScatter(clusters);
-
         double ratio = Double.NaN;
         try {
+            Matrix t = totalDispersion(clusters);
+            Matrix wg = withinGroupScatter(clusters);
             ratio = t.det() / wg.det();
         } catch (RuntimeException ex) {
             //LU decomposition errors
