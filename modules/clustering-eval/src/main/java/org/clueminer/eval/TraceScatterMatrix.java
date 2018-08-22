@@ -25,6 +25,8 @@ import org.clueminer.distance.CosineDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Trace Scatter Matrix - E_1 from the Zhao 2001 paper
@@ -41,6 +43,7 @@ public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extend
 
     private static String NAME = "TraceSM";
     private static final long serialVersionUID = -3714149292456837484L;
+    private static final Logger LOG = LoggerFactory.getLogger(TraceScatterMatrix.class);
 
     public TraceScatterMatrix() {
         dm = new CosineDistance();
@@ -72,12 +75,18 @@ public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extend
             clusterSizes[i] = clusters.get(i).size();
         }
 
-        // calculate trace of the between-cluster scatter matrix.
         double sum = 0;
-        for (int i = 0; i < clusters.size(); i++) {
-            double cos = dm.measure(clusterCentroid[i], overAllCentroid);
-            sum += cos * clusterSizes[i];
+        try {
+            // calculate trace of the between-cluster scatter matrix.
+            for (int i = 0; i < clusters.size(); i++) {
+                double cos = dm.measure(clusterCentroid[i], overAllCentroid);
+                sum += cos * clusterSizes[i];
+            }
+        } catch (ArithmeticException ex) {
+            LOG.warn(ex.getMessage(), ex);
+            return Double.NaN;
         }
+
         return sum;
     }
 

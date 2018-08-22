@@ -27,14 +27,17 @@ import org.clueminer.math.Matrix;
 import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Rubin index
  *
  * Very similar to {@link DetRatio}
  *
- * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for grouping data."
- * Journal of the American Statistical Association 62.320 (1967): 1159-1178.
+ * Friedman, Herman P., and Jerrold Rubin. "On some invariant criteria for
+ * grouping data." Journal of the American Statistical Association 62.320
+ * (1967): 1159-1178.
  *
  * @author deric
  */
@@ -43,6 +46,7 @@ public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEva
 
     private static final String NAME = "Rubin";
     private static final long serialVersionUID = -1636596859242265112L;
+    private static final Logger LOG = LoggerFactory.getLogger(Rubin.class);
 
     public Rubin() {
         dm = new EuclideanDistance();
@@ -77,21 +81,27 @@ public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEva
             }
             k++;
         }
-        /**
-         * TODO: some matrix operations might not be necessary
-         * */
-        Matrix ZT = Z.transpose();
-        // cluster sizes on diagonal -- inverse
-        Matrix TIZ = ZT.times(Z).inverse();
-        Matrix xbar = TIZ.times(ZT).times(X);
-        //xbar.print(3, 3);
-        Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
+        try {
+            /**
+             * TODO: some matrix operations might not be necessary
+             *
+             */
+            Matrix ZT = Z.transpose();
+            // cluster sizes on diagonal -- inverse
+            Matrix TIZ = ZT.times(Z).inverse();
+            Matrix xbar = TIZ.times(ZT).times(X);
+            //xbar.print(3, 3);
+            Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
 
-        //W_q
-        Matrix Wq = TT.minus(B);
+            //W_q
+            Matrix Wq = TT.minus(B);
 
-        //<- sum(diag(P))/sum(diag(W))
-        return TT.trace() / Wq.trace();
+            //<- sum(diag(P))/sum(diag(W))
+            return TT.trace() / Wq.trace();
+        } catch (RuntimeException ex) {
+            LOG.warn(ex.getMessage(), ex);
+            return Double.NaN;
+        }
     }
 
     /**
