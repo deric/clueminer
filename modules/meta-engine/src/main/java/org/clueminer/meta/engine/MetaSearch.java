@@ -226,6 +226,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
 
             Clustering<E, C> c = cluster(dataset, conf);
+            cleanUp(c);
             cnt++;
             if (isValid(c)) {
                 c.setId(gen++);
@@ -240,6 +241,22 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
             i++;
         } while (i < repeat);
+    }
+
+    /**
+     * Remove empty clusters
+     *
+     * @param clustering
+     * @return
+     */
+    private Clustering<E, C> cleanUp(Clustering<E, C> clustering) {
+        for (int i = 0; i < clustering.size(); i++) {
+            Cluster<E> c = clustering.get(i);
+            if (c.isEmpty()) {
+                clustering.remove(i);
+            }
+        }
+        return clustering;
     }
 
     private Clustering<E, C> cluster(Dataset<E> dataset, Props conf) {
