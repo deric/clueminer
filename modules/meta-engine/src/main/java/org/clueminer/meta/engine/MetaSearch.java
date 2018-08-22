@@ -464,7 +464,12 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private int randomInt(int min, int max) {
-        return rand.nextInt((max - min) + 1) + min;
+        if (max > min) {
+            return rand.nextInt((max - min) + 1) + min;
+        } else {
+            LOG.warn("Invalid bounds for random generator, min: {}, max: {}", min, max);
+            return min;
+        }
     }
 
     private boolean isBlacklisted(Props props) {
