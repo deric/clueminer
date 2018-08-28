@@ -383,6 +383,14 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
             }
             rank = j + 2;
         }
+        if (!excluded.isEmpty()) {
+            rank += 2;
+            inc = 1.0 / (double) excluded.size();
+            for (P c : excluded) {
+                res.put(rank, c);
+                rank += inc;
+            }
+        }
         return res;
     }
 
@@ -552,5 +560,9 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
 
     public ClusterEvaluation getSortingObjectives() {
         return frontSorting.getEvaluator();
+    }
+
+    public int getExcludedSize() {
+        return excluded.size();
     }
 }
