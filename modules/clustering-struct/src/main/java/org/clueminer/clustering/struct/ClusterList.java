@@ -437,15 +437,15 @@ public class ClusterList<E extends Instance, C extends Cluster<E>> implements Cl
             return false;
         }
         if (data[idx] != null) {
-            if (idx < (n - 1)) {
+            if (idx == (n - 1)) {
+                data[idx] = null;
+            } else {
                 //swap item with the last one
                 data[idx] = data[n - 1];
                 name2id.remove(data[n - 1].getName());
                 data[n - 1] = null;
                 data[idx].setClusterId(idx);
                 data[idx].setName("cluster " + (idx + 1));
-            } else {
-                data[idx] = null;
             }
             n--;
 

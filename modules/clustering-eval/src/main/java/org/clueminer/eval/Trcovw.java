@@ -25,6 +25,8 @@ import org.clueminer.distance.api.Distance;
 import org.clueminer.math.impl.MathUtil;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Trace of within clusters pooled covariance matrix
@@ -44,6 +46,7 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     private static final String NAME = "TrcovW";
     private static final long serialVersionUID = 60822019698264781L;
+    private static final Logger LOG = LoggerFactory.getLogger(Trcovw.class);
 
     public Trcovw() {
         dm = new EuclideanDistance();
@@ -62,7 +65,12 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
     public double score(Clustering<E, C> clusters, Props params) {
         // trace(W_q)
         //sc = Wq.trace();
-        return MathUtil.covariance(wqMatrix(clusters)).trace();
+        try {
+            return MathUtil.covariance(wqMatrix(clusters)).trace();
+        } catch (RuntimeException ex) {
+            LOG.warn(ex.getMessage(), ex);
+            return Double.NaN;
+        }
     }
 
     /**
