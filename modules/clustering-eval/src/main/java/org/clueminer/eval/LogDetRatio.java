@@ -55,6 +55,11 @@ public class LogDetRatio<E extends Instance, C extends Cluster<E>> extends Abstr
     public double score(Clustering<E, C> clusters, Props params) {
         int n = clusters.instancesCount();
 
+        // make sure we can compute dispersion
+        if (clusters.get(0).get(0) == null) {
+            return Double.NaN;
+        }
+
         Matrix t = totalDispersion(clusters);
         Matrix wg = withinGroupScatter(clusters);
         return n * Math.log(t.det() / wg.det());
