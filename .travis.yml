@@ -2,6 +2,7 @@ language: java
 sudo: true
 jdk:
   - oraclejdk8
+  - openjdk11
 # not supported yet
 #  - openjdk8
 before_install:
