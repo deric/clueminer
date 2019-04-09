@@ -29,7 +29,7 @@
         <netbeans.version>RELEASE82</netbeans.version>
         <brandingToken>clueminer</brandingToken>
         <project.organization>clueminer.org</project.organization>
-        <maven.compiler>3.7.0</maven.compiler>
+        <maven.compiler>3.8.0</maven.compiler>
         <clueminer.nbm-maven-plugin.version>3.14</clueminer.nbm-maven-plugin.version>
         <!--can't be easily upgraded due to dependencies of other modules -->
         <clueminer.junit.version>4.12</clueminer.junit.version>
