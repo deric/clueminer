@@ -327,54 +327,6 @@ public final class UIUtils {
         return ((xpThemeActiveOS) && (!xpThemeDisabled) && vistaOs);
     }
 
-    // Classic Windows LaF doesn't draw dotted focus rectangle inside JButton if parent is JToolBar,
-    // XP Windows LaF doesn't draw dotted focus rectangle inside JButton at all
-    // This method installs customized Windows LaF that draws dotted focus rectangle inside JButton always
-    // On JDK 1.5 the XP Windows LaF enforces special border to all buttons, overriding any custom border
-    // set by setBorder(). Class responsible for this is WindowsButtonListener. See Issue 71546.
-    // Also fixes buttons size in JToolbar.
-    /**
-     * Ensures that focus will be really painted if button is focused and fixes
-     * using custom border for JDK 1.5 & XP LaF
-     */
-    public static void fixButtonUI(AbstractButton button) {
-        // JButton
-        if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsButtonUI() {
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        } // JToggleButton
-        else if (button.getUI() instanceof com.sun.java.swing.plaf.windows.WindowsToggleButtonUI) {
-            button.setUI(new com.sun.java.swing.plaf.windows.WindowsToggleButtonUI() {
-                protected BasicButtonListener createButtonListener(AbstractButton b) {
-                    return new BasicButtonListener(b); // Fix for  Issue 71546
-                }
-
-                protected void paintFocus(Graphics g, AbstractButton b, Rectangle viewRect, Rectangle textRect,
-                        Rectangle iconRect) {
-                    int width = b.getWidth();
-                    int height = b.getHeight();
-                    g.setColor(getFocusColor());
-                    javax.swing.plaf.basic.BasicGraphicsUtils.drawDashedRect(g, dashedRectGapX, dashedRectGapY,
-                            width - dashedRectGapWidth,
-                            height - dashedRectGapHeight);
-                }
-            });
-        }
-    }
-
     private static BufferedImage createTableScreenshot(Component component) {
         Component source;
         Dimension sourceSize;
