@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,19 +49,17 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
         // number of free parameters K
-        double k = 1;
+        double k = clusters.size();
         // sampelsize N
-        double datasize = clusters.instancesCount();
+        int datasize = clusters.instancesCount();
 
         likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
         likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
         likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
         likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
-        double l = likelihood.loglikelihoodsum(clusters);
         // BIC score
-        double bic = -2 * l + Math.log10(datasize) * k;
-        return bic;
+        return -2 * likelihood.sum(clusters) + Math.log10(datasize) * k;
     }
 
     @Override

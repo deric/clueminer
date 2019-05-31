@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,16 @@
  */
 package org.clueminer.eval.utils;
 
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
+import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.impl.GammaFunction;
 
-public class LogLikelihoodFunction {
+public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
     // tuning parameters?? standard value:
 
     double alpha0 = 0.1, beta0 = 0.1, lambda0 = 0.1, mu0 = 0.0;
-    double count;
-    double sum;
-    double sum2;
 
     /**
      * Likelihood of each column in a given cluster
@@ -58,16 +57,17 @@ public class LogLikelihoodFunction {
      * @return
      */
     public double logLikelihood(Dataset cluster) {
-        double instanceLength = cluster.attributeCount();
-        this.count = instanceLength * cluster.size();
-        sum = 0;
-        sum2 = 0;
+        int instanceLength = cluster.attributeCount();
+        int count = instanceLength * cluster.size();
+        double sum = 0;
+        double sum2 = 0;
+        double val;
 
         for (int row = 0; row < cluster.size(); row++) {
             for (int column = 0; column < instanceLength; column++) {
-                sum += cluster.instance(row).value(column);
-                sum2 += cluster.instance(row).value(column)
-                        * cluster.instance(row).value(column);
+                val = cluster.instance(row).value(column);
+                sum += val;
+                sum2 += val * val;
             }
         }
 
@@ -79,35 +79,55 @@ public class LogLikelihoodFunction {
         return loglikelihood;
     }
 
+    public double logLikelihood(Cluster cluster, int attr) {
+        int dim = cluster.attributeCount();
+        int count = dim * cluster.size();
+        double sum = 0;
+        double sum2 = 0;
+        double val;
+
+        for (int row = 0; row < cluster.size(); row++) {
+            val = cluster.instance(row).value(attr);
+            sum += val;
+            sum2 += val * val;
+        }
+
+        double loglikelihood = logLikelihoodFunction(count, sum, sum2);
+        if (loglikelihood == Double.NEGATIVE_INFINITY
+                || loglikelihood == Double.POSITIVE_INFINITY) {
+            loglikelihood = 0;
+        }
+        return loglikelihood;
+    }
+
     /**
-     * Sum of loglikelihood of each column
+     * Sum of loglikelihood of each attribute
      *
      * @param cluster
      * @return
      */
-    public double logLikelihoodC(Dataset cluster) {
-        double instanceLength = cluster.attributeCount();
+    public double attrLikelihoodSum(Cluster<E> cluster) {
+        int dim = cluster.attributeCount();
         double loglikelihood = 0;
-        for (int column = 0; column < instanceLength; column++) {
-            double loglike = logLikelihood(cluster);
-            loglikelihood += loglike;
+        for (int column = 0; column < dim; column++) {
+            loglikelihood += logLikelihood(cluster, column);
         }
-        return (loglikelihood);
+        return loglikelihood;
     }
 
     /**
-     * Total likelihood of finding data for given partition
+     * Total likelihood of finding data for given clustering
      *
-     * @param clusters
+     * @param clustering
      * @return
      */
-    public double loglikelihoodsum(Clustering clusters) {
+    public double sum(Clustering<E, C> clustering) {
         double likelihood = 0;
 
-        for (int i = 0; i < clusters.size(); i++) {
-            likelihood += logLikelihoodC(clusters.get(i));
+        for (Cluster<E> clust : clustering) {
+            likelihood += attrLikelihoodSum(clust);
         }
-        return (likelihood);
+        return likelihood;
     }
 
     public double getAlpha0() {
