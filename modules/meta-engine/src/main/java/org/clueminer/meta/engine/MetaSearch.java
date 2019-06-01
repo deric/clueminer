@@ -608,21 +608,25 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         //update top solutions found
         while (it.hasNext() && n < numResults) {
             clust = it.next();
-            si = clust.getLookup().lookup(SimpleIndividual.class);
-            if (si == null) {
-                si = new SimpleIndividual(clust);
-                clust.lookupAdd(si);
-                bestIndividuals[n] = (I) si;
-                changes++;
-            } else {
-                if (!si.getClustering().equals(clust)) {
+            if (clust != null) {
+                si = clust.getLookup().lookup(SimpleIndividual.class);
+                if (si == null) {
+                    si = new SimpleIndividual(clust);
+                    clust.lookupAdd(si);
+                    bestIndividuals[n] = (I) si;
                     changes++;
+                } else {
+                    if (!si.getClustering().equals(clust)) {
+                        changes++;
+                    }
+                    bestIndividuals[n] = (I) si;
+                    //otherwise nothing has changed
                 }
-                bestIndividuals[n] = (I) si;
-                //otherwise nothing has changed
+                extScore += si.getFitness();
+                n++;
+            } else {
+                LOG.warn("front rentuned null clustering");
             }
-            extScore += si.getFitness();
-            n++;
         }
 
         if (changes > 0) {
