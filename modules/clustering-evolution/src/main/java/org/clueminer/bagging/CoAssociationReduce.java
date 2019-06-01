@@ -121,7 +121,7 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
-        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "AIC");
+        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "ALE");
         InternalEvaluator<E, C> eval = (InternalEvaluator<E, C>) InternalEvaluatorFactory.getInstance().getProvider(evalAlg);
         strategy.setEvaluator(eval);
 

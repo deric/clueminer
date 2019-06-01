@@ -59,7 +59,7 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
         likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
         // BIC score
-        return -2 * likelihood.sum(clusters) + Math.log10(datasize) * k;
+        return -2 * likelihood.attrSum(clusters) + Math.log10(datasize) * k;
     }
 
     @Override

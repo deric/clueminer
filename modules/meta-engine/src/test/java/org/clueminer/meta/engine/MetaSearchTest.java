@@ -99,10 +99,10 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
     @Test
     public void testConf() {
         Props p = new Props();
-        p.put("objectives", "AIC,BIC");
+        p.put("objectives", "ALE,BIC");
         subject.configure(p);
         List<ClusterEvaluation<E, C>> ce = subject.getObjectives();
         assertEquals(2, ce.size());
-        assertEquals("AIC", ce.get(0).getName());
+        assertEquals("ALE", ce.get(0).getName());
     }
 }

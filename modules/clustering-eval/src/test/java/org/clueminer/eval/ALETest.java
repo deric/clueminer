@@ -25,12 +25,12 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class AICTest {
+public class ALETest {
 
-    private final AIC subject;
+    private final ALE subject;
 
-    public AICTest() {
-        subject = new AIC();
+    public ALETest() {
+        subject = new ALE();
     }
 
     @Test
@@ -64,7 +64,7 @@ public class AICTest {
 
     @Test
     public void testHandle() {
-        assertEquals("aic", subject.getHandle());
+        assertEquals("ale", subject.getHandle());
     }
 
 }

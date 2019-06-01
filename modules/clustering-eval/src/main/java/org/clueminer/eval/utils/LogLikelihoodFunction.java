@@ -20,6 +20,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.math.impl.GammaFunction;
 
 public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
@@ -28,7 +29,7 @@ public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
     double alpha0 = 0.1, beta0 = 0.1, lambda0 = 0.1, mu0 = 0.0;
 
     /**
-     * Likelihood of each column in a given cluster
+     * Likelihood value
      *
      * @param N
      * @param sum
@@ -69,6 +70,30 @@ public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
                 sum += val;
                 sum2 += val * val;
             }
+        }
+
+        double loglikelihood = logLikelihoodFunction(count, sum, sum2);
+        if (loglikelihood == Double.NEGATIVE_INFINITY
+                || loglikelihood == Double.POSITIVE_INFINITY) {
+            loglikelihood = 0;
+        }
+        return loglikelihood;
+    }
+
+    public double withinCluster(Cluster<E> cluster) {
+        int dim = cluster.attributeCount();
+        int count = dim * cluster.size();
+        double sum = 0;
+        double sum2 = 0;
+        double val;
+
+        E centroid = cluster.getCentroid();
+        EuclideanDistance dist  = EuclideanDistance.getInstance();
+
+        for (E inst : cluster) {
+            val = dist.measure(centroid, inst);
+            sum += val;
+            sum2 += val * val;
         }
 
         double loglikelihood = logLikelihoodFunction(count, sum, sum2);
@@ -121,11 +146,26 @@ public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
      * @param clustering
      * @return
      */
-    public double sum(Clustering<E, C> clustering) {
+    public double attrSum(Clustering<E, C> clustering) {
         double likelihood = 0;
 
         for (Cluster<E> clust : clustering) {
             likelihood += attrLikelihoodSum(clust);
+        }
+        return likelihood;
+    }
+
+    /**
+     * Total likelihood of finding data for given clustering
+     *
+     * @param clustering
+     * @return
+     */
+    public double centroidSum(Clustering<E, C> clustering) {
+        double likelihood = 0;
+
+        for (Cluster<E> clust : clustering) {
+            likelihood += withinCluster(clust);
         }
         return likelihood;
     }

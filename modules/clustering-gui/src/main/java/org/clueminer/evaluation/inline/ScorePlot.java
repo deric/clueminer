@@ -51,7 +51,7 @@ import org.clueminer.clustering.api.factory.RankFactory;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.AIC;
+import org.clueminer.eval.ALE;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.eval.sort.NSGASort;
 import org.clueminer.eval.utils.ClusteringComparator;
@@ -115,7 +115,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         scale = new StdScale();
         this.fitToSpace = false;
         this.preserveAlpha = true;
-        compInternal = new ClusteringComparator(new AIC());
+        compInternal = new ClusteringComparator(new ALE());
         compExternal = new ClusteringComparator(new NMIsqrt());
         //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);

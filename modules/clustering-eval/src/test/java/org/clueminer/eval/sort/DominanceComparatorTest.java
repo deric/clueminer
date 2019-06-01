@@ -19,7 +19,7 @@ package org.clueminer.eval.sort;
 import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.eval.AIC;
+import org.clueminer.eval.ALE;
 import org.clueminer.eval.BIC;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -35,7 +35,7 @@ public class DominanceComparatorTest {
 
     public DominanceComparatorTest() {
         List<ClusterEvaluation> objectives = new LinkedList<>();
-        objectives.add(new AIC());
+        objectives.add(new ALE());
         objectives.add(new BIC());
         subject = new DominanceComparator(objectives);
     }

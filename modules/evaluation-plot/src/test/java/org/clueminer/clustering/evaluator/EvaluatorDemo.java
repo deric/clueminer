@@ -23,7 +23,7 @@ public class EvaluatorDemo extends JFrame {
     public EvaluatorDemo() throws IOException {
         initComponents();
 
-        evalPlot.setEvaluatorX("AIC");
+        evalPlot.setEvaluatorX("ALE");
         evalPlot.setEvaluatorY("BIC");
 
         Collection<Clustering> clusterings = new HashSet<>(4);

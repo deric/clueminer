@@ -2,7 +2,7 @@ package org.clueminer.evolution.mo;
 
 import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.AIC;
+import org.clueminer.eval.ALE;
 import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.Precision;
@@ -49,7 +49,7 @@ public class MoEvolutionTest {
         subject.setPopulationSize(5);
         //subject.setAlgorithm(new ));
         subject.addObjective(new CalinskiHarabasz());
-        subject.addObjective(new AIC());
+        subject.addObjective(new ALE());
         subject.addObjective(new Silhouette());
         ExternalEvaluator ext = new Precision();
         subject.setExternal(ext);

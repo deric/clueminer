@@ -25,10 +25,9 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Distance function is not used in this score.
+ * Attribute Likelihood Estimator - A likelihood clustering quality estimator
  *
- * @author Andreas De Rijcke
- * @author Thomas Abeel
+ * @author Tomas Barton
  * @param <E>
  * @param <C>
  *
@@ -38,11 +37,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class AIC<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
+public class ALE<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static final String NAME = "AIC";
+    private static final String NAME = "ALE";
     private static final long serialVersionUID = -8805325971847590600L;
-    private static final LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
+    private static final LogLikelihoodFunction LLF = new LogLikelihoodFunction();
 
     @Override
     public String getName() {
@@ -53,13 +52,12 @@ public class AIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
     public double score(Clustering<E, C> clusters, Props params) {
         // number of free parameters K
         double k = clusters.size();
-        likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
-        likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
-        likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
-        likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
+        LLF.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
+        LLF.setBeta0(params.getDouble("likelihood.beta", 0.1));
+        LLF.setLambda0(params.getDouble("likelihood.lambda", 0.1));
+        LLF.setMu0(params.getDouble("likelihood.mu", 0.0));
         // loglikelihood log(L)
-        // AIC score
-        return 2 * k - 2 * likelihood.sum(clusters);
+        return 2 * k - 2 * LLF.attrSum(clusters);
     }
 
     /**
