@@ -27,6 +27,8 @@ import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Sometimes called C/sqrt(k)
+ *
  * @param <E>
  * @param <C>
  * @cite Ratkowsky, D. A., and G. N. Lance. "A criterion for determining the
@@ -63,9 +65,7 @@ public class RatkowskyLance<E extends Instance, C extends Cluster<E>> extends Ab
             c += bgss(clusters, i) / tss(clusters, i);
         }
 
-        c /= dim;
-
-        return c / Math.sqrt(clusters.size());
+        return c / (Math.sqrt(clusters.size()) * dim);
     }
 
     /**
