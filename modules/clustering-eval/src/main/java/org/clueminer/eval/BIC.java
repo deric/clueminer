@@ -52,10 +52,10 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AIC<E, C> {
         int n = dataset.size();
         int k = clusters.size();
         int d = dataset.attributeCount();
-        double bic = d * Math.log(2 * Math.PI);
+        double bic = n * d * Math.log(2 * Math.PI);
 
         bic += clusteringLoglikehood(clusters, d);
-        bic += d + 2 * (k * d + k * d * (d + 1) / 2.0) * Math.log(n);
+        bic += n * d + (k * d + k * d * (d + 1) / 2.0) * Math.log(n);
         return bic;
     }
 

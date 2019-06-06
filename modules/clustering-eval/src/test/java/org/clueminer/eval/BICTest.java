@@ -37,7 +37,6 @@ public class BICTest {
     public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
         double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
-
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
