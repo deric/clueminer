@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.eval.ALE;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
@@ -46,7 +46,7 @@ public class NSGASortTest {
 
         List<ClusterEvaluation> eval = new LinkedList<>();
         eval.add(new NMIsqrt());
-        eval.add(new ALE());
+        eval.add(new AIC());
 
         Clustering[] res = NSGASort.sort(clusterings, eval);
         assertEquals(clusterings.length, res.length);

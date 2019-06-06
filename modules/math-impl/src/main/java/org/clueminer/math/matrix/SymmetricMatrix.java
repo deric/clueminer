@@ -7,8 +7,8 @@ import org.clueminer.math.Matrix;
  * This matrix should be used for saving memory in case when you compute
  * frequently symmetrical similarity matrices it could make quite a difference.
  *
- * Space used: n * (n - 1) / 2 ~ O(n^2)
- * (all values are stored in one dimensional array)
+ * Space used: n * (n - 1) / 2 ~ O(n^2) (all values are stored in one
+ * dimensional array)
  *
  * It pretends to be normal matrix, so you can perform all operations as with
  * normal matrix. We don't even consider assigning number to diagonal elements
@@ -168,7 +168,14 @@ public class SymmetricMatrix extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix transpose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SymmetricMatrixDiag T = new SymmetricMatrixDiag(n);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                T.set(j, i, get(i, j));
+            }
+        }
+        return T;
     }
 
     @Override

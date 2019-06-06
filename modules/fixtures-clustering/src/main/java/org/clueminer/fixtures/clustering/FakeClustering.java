@@ -49,6 +49,7 @@ public class FakeClustering {
     private static Clustering<Instance, Cluster<Instance>> irisWrong2;
     private static Clustering<Instance, Cluster<Instance>> irisWrong4;
     private static Clustering<Instance, Cluster<Instance>> irisWrong5;
+    private static Clustering<Instance, Cluster<Instance>> iris_VeVi_S;
     private static Clustering<Instance, Cluster<Instance>> simpleClustering;
     private static Clustering<Instance, Cluster<Instance>> simpleResponse;
     private static Clustering<Instance, Cluster<Instance>> ext100p2;
@@ -92,6 +93,37 @@ public class FakeClustering {
             irisClusters.lookupAdd(irisData);
         }
         return irisClusters;
+    }
+
+    /**
+     * Iris data as two clusters- Versicolor and vigrica together in one
+     * cluster, setosa separate cluster
+     *
+     * @return iris data clustering
+     */
+    public static Clustering irisTwoClusters() {
+        if (iris_VeVi_S == null) {
+            Dataset<? extends Instance> irisData = FakeDatasets.irisDataset();
+            iris_VeVi_S = new ClusterList(2);
+            Cluster a = new BaseCluster(50);
+            a.setName("setosa");
+            a.setAttributes(irisData.getAttributes());
+            for (int i = 0; i < 50; i++) {
+                a.add(irisData.instance(i));
+            }
+            Cluster b = new BaseCluster(100);
+            b.setName("versi-virginica");
+            b.setAttributes(irisData.getAttributes());
+            for (int i = 50; i < 150; i++) {
+                b.add(irisData.instance(i));
+            }
+
+            iris_VeVi_S.add(a);
+            iris_VeVi_S.add(b);
+            //add dataset to lookup
+            iris_VeVi_S.lookupAdd(irisData);
+        }
+        return iris_VeVi_S;
     }
 
     public static Clustering irisWrong() {

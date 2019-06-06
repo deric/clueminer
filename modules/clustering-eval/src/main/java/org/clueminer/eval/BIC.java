@@ -19,6 +19,7 @@ package org.clueminer.eval;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.utils.Props;
@@ -35,11 +36,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class BIC<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
+public class BIC<E extends Instance, C extends Cluster<E>> extends AIC<E, C> {
 
     private static final String NAME = "BIC";
-    private static final long serialVersionUID = -8771446315217152042L;
-    private static final LogLikelihoodFunction likelihood = new LogLikelihoodFunction();
+    private static final long serialVersionUID = -8771446315217152043L;
 
     @Override
     public String getName() {
@@ -48,18 +48,15 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        // number of free parameters K
-        double k = clusters.size();
-        // sampelsize N
-        int datasize = clusters.instancesCount();
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        int n = dataset.size();
+        int k = clusters.size();
+        int d = dataset.attributeCount();
+        double bic = d * Math.log(2 * Math.PI);
 
-        likelihood.setAlpha0(params.getDouble("likelihood.alpha", 0.1));
-        likelihood.setBeta0(params.getDouble("likelihood.beta", 0.1));
-        likelihood.setLambda0(params.getDouble("likelihood.lambda", 0.1));
-        likelihood.setMu0(params.getDouble("likelihood.mu", 0.0));
-        // loglikelihood log(L)
-        // BIC score
-        return -2 * likelihood.attrSum(clusters) + Math.log10(datasize) * k;
+        bic += clusteringLoglikehood(clusters, d);
+        bic += d + 2 * (k * d + k * d * (d + 1) / 2.0) * Math.log(n);
+        return bic;
     }
 
     @Override

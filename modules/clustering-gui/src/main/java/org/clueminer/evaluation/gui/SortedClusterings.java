@@ -41,7 +41,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.ALE;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.gui.BPanel;
 import org.netbeans.api.progress.ProgressHandle;
@@ -89,8 +89,8 @@ public class SortedClusterings extends BPanel implements TaskListener {
         headerFont = defaultFont.deriveFont(Font.BOLD);
         this.fitToSpace = false;
         this.preserveAlpha = true;
-        cLeft = new ClusteringComparator(new ALE());
-        cRight = new ClusteringComparator(new ALE());
+        cLeft = new ClusteringComparator(new AIC());
+        cRight = new ClusteringComparator(new AIC());
         colorScheme = new ColorSchemeImpl(Color.green, Color.BLACK, Color.RED);
         results = new Object2DoubleOpenHashMap<>();
         try {

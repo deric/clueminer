@@ -171,7 +171,14 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix transpose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SymmetricMatrixDiag T = new SymmetricMatrixDiag(n);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                T.set(j, i, get(i, j));
+            }
+        }
+        return T;
     }
 
     @Override

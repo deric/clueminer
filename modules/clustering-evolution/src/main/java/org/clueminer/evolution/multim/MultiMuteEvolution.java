@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
         extends BaseEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
-    private static final String name = "muti-mute";
+    private static final String NAME = "muti-mute";
     protected Executor<E, C> exec;
     protected List<Distance> dist;
     protected List<ClusterLinkage<E>> linkage;
@@ -103,7 +103,7 @@ public class MultiMuteEvolution<I extends Individual<I, E, C>, E extends Instanc
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

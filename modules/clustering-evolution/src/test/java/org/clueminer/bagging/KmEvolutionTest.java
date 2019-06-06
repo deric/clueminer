@@ -20,7 +20,7 @@ import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.algorithm.KMeans;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.ExternalEvaluator;
-import org.clueminer.eval.ALE;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.CalinskiHarabasz;
 import org.clueminer.eval.external.Precision;
 import org.clueminer.evolution.multim.ConsoleReporter;
@@ -68,7 +68,7 @@ public class KmEvolutionTest {
         subject.setPopulationSize(5);
         //subject.setAlgorithm(new ));
         subject.addObjective(new CalinskiHarabasz());
-        subject.addObjective(new ALE());
+        subject.addObjective(new AIC());
         Props props = new Props();
         props.put("k", 3);
         props.put("max_k", 20);

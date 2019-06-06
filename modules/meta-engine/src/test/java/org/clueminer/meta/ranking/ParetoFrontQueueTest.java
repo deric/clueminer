@@ -25,7 +25,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.ALE;
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.PointBiserial;
 import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.VMeasure;
@@ -49,7 +49,7 @@ public class ParetoFrontQueueTest<E extends Instance, C extends Cluster<E>, P ex
     @Before
     public void setUp() {
         List<ClusterEvaluation<Instance, Cluster<Instance>>> objectives = new LinkedList<>();
-        objectives.add(new ALE<>());
+        objectives.add(new AIC<>());
         objectives.add(new RatkowskyLance<>());
         subject = new ParetoFrontQueue<>(5, new HashSet<Integer>(), objectives, new PointBiserial());
 

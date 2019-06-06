@@ -88,7 +88,7 @@ public class LogLikelihoodFunction<E extends Instance, C extends Cluster<E>> {
         double val;
 
         E centroid = cluster.getCentroid();
-        EuclideanDistance dist  = EuclideanDistance.getInstance();
+        EuclideanDistance dist = EuclideanDistance.getInstance();
 
         for (E inst : cluster) {
             val = dist.measure(centroid, inst);

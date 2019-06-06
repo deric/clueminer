@@ -29,7 +29,7 @@ import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.ALE;
+import org.clueminer.eval.AIC;
 import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.*;
@@ -46,7 +46,7 @@ public class HillClimbIncTest {
     private final HCLW alg;
 
     public HillClimbIncTest() {
-        subject.setEvaluator(new ALE());
+        subject.setEvaluator(new AIC());
         dataset = FakeDatasets.schoolData();
         alg = new HCLW();
     }
