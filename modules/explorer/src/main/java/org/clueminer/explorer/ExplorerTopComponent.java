@@ -288,12 +288,8 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     @Override
     public void evaluatorChanged(ClusterEvaluation eval) {
-        //TODO implement
-        if (comparator != null) {
-            comparator.setEvaluator(eval);
-            comparator.setAscOrder(!eval.isMaximized());
-            children.setComparator(comparator);
-        }
+        comparator = new ClustComparator(eval);
+        children.setComparator(comparator);
     }
 
     @Override

@@ -22,13 +22,16 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.openide.nodes.Node;
 
 /**
+ * Note the comparator intentionally violates java compare contract. Descending
+ * order by default.
+ *
+ * Evaluators behave correctly, only GUI nodes should be sorted in inverse order
  *
  * @author Tomas Barton
  */
 public class ClustComparator implements Comparator<Node> {
 
     private ClusterEvaluation eval;
-    private boolean ascOrder = false;
 
     public ClustComparator(ClustSorted children) {
         //
@@ -36,11 +39,6 @@ public class ClustComparator implements Comparator<Node> {
 
     public ClustComparator(ClusterEvaluation eval) {
         this.eval = eval;
-    }
-
-    public ClustComparator(ClusterEvaluation eval, boolean ascendingOrder) {
-        this.eval = eval;
-        this.ascOrder = ascendingOrder;
     }
 
     /**
@@ -59,26 +57,12 @@ public class ClustComparator implements Comparator<Node> {
         EvaluationTable t1 = c1.evaluationTable(c1.getClustering());
         EvaluationTable t2 = c2.evaluationTable(c2.getClustering());
 
-        int ret = eval.compare(t1.getScore(eval), t2.getScore(eval));
-        if (ret == 0) {
-            return ret;
-        }
-        if (ascOrder) {
-            ret = (ret < 0) ? 1 : -1;
-        }
-        return ret;
+        //intentionally flip ordering nodes use somehow inversed ordering
+        return eval.compare(t2.getScore(eval), t1.getScore(eval));
     }
 
     public void setEvaluator(ClusterEvaluation eval) {
         this.eval = eval;
-    }
-
-    public boolean isAscOrder() {
-        return ascOrder;
-    }
-
-    public void setAscOrder(boolean ascOrder) {
-        this.ascOrder = ascOrder;
     }
 
 }

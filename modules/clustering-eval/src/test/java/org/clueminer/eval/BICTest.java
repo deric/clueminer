@@ -52,8 +52,10 @@ public class BICTest {
      */
     @Test
     public void testCompare() {
-        assertEquals(-1, subject.compare(-237.847, -201.928));
-        assertEquals(1, subject.compare(-201.928, -237.847));
+        //better BIC is smaller number
+        assertEquals(1, subject.compare(-237.847, -201.928));
+        assertEquals(-1, subject.compare(-201.928, -237.847));
+        assertEquals(0, subject.compare(-201.928, -201.928));
     }
 
     @Test

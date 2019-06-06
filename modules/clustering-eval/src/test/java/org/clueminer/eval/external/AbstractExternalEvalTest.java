@@ -22,7 +22,7 @@ public class AbstractExternalEvalTest {
     @Test
     public void testCompare() {
         //maximized. first one is better
-        assertEquals(-1, subject.compare(2.0, 0.1));
+        assertEquals(1, subject.compare(2.0, 0.1));
 
         assertEquals(subject.compare(0.1, 2.0), -subject.compare(2.0, 0.1));
 
@@ -31,14 +31,16 @@ public class AbstractExternalEvalTest {
         assertEquals(0, subject.compare(1e-9, 2e-9));
 
         //first one is worser
-        assertEquals(1, subject.compare(0.0, 0.9));
+        assertEquals(-1, subject.compare(0.0, 0.9));
     }
 
     @Test
     public void testCompareInfinite() {
         //maximized. first one is greater
-        assertEquals(-1, subject.compare(2.0, Double.NaN));
-        assertEquals(-1, subject.compare(2.0, Double.NEGATIVE_INFINITY));
+        assertEquals(1, subject.compare(2.0, Double.NaN));
+        assertEquals(1, subject.compare(2.0, Double.NEGATIVE_INFINITY));
+        //infinity is typically not consiedered as desired value
+        // usually a result of incorrect operation e.g. log(-1)
         assertEquals(1, subject.compare(2.0, Double.POSITIVE_INFINITY));
 
         //same
@@ -53,7 +55,7 @@ public class AbstractExternalEvalTest {
         assertEquals(0, subject.compare(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY));
 
         //first one is worser
-        assertEquals(1, subject.compare(0.0, 0.9));
+        assertEquals(-1, subject.compare(0.0, 0.9));
     }
 
     public class AbstractExternalEvalImpl<E extends Instance, C extends Cluster<E>> extends AbstractExternalEval<E, C> {

@@ -41,9 +41,8 @@ public abstract class AbstractComparator<E extends Instance, C extends Cluster<E
     }
 
     /**
-     * 0 when arguments are the same (within EPS range). 1 when score1 is worser
-     * than score2. -1 when score1 is better than score2. This behaviour is
-     * inverse to Java defaults because we use descending order by default
+     * 0 when arguments are the same (within EPS range). 1 when score1 is better
+     * than score2. -1 when score1 is worser than score2.
      *
      * @param score1
      * @param score2
@@ -61,12 +60,12 @@ public abstract class AbstractComparator<E extends Instance, C extends Cluster<E
         if (Math.abs(score1 - score2) < EPS) {
             return 0;
         }
-        if (isMaximized()) { //descending order [10, 9, 8, ...]
-            if (score1 < score2) {
+        if (isMaximized()) { //ascending order [10, 9, 8, ...]
+            if (score1 > score2) {
                 return 1;
             }
-        } else { // ascending order [1, 2, 3]
-            if (score1 > score2) {
+        } else { // descending order [1, 2, 3]
+            if (score1 < score2) {
                 return 1;
             }
         }
@@ -81,18 +80,10 @@ public abstract class AbstractComparator<E extends Instance, C extends Cluster<E
      * @return
      */
     private double replaceNaN(double v) {
-        if (Double.isNaN(v)) {
-            if (isMaximized()) {
-                return Double.MIN_VALUE;
-            } else {
-                return Double.MAX_VALUE;
-            }
+        if (isMaximized()) {
+            return Double.MIN_VALUE;
         } else {
-            if (v == Double.NEGATIVE_INFINITY) {
-                return Double.MIN_VALUE;
-            } else { // POSITIVE_INFINITY
-                return Double.MAX_VALUE;
-            }
+            return Double.MAX_VALUE;
         }
     }
 

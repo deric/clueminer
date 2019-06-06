@@ -401,7 +401,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             c = it.next();
             if (c != null) {
                 props = c.getParams();
-                LOG.debug("expanding solution#{}", n + 1, props);
+                LOG.debug("expanding solution #{}", n + 1, props);
                 expand(c, props);
                 n++;
             }
@@ -495,7 +495,8 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     protected ClusteringAlgorithm parseAlgorithm(Props params) {
         String alg = params.get(AlgParams.ALG);
-        if (alg == null) {
+        ClusteringFactory cf = ClusteringFactory.getInstance();
+        if (alg == null || !cf.hasProvider(alg)) {
             LOG.warn("Missing algorithm identifier. params given: {}", params.toString());
             ClusteringAlgorithm[] algorithms = ClusteringFactory.getInstance().getAllArray();
             int idx = randomInt(0, algorithms.length - 1);
@@ -503,7 +504,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             params.put(AlgParams.ALG, algorithms[idx].getName());
             return algorithms[idx];
         }
-        return ClusteringFactory.getInstance().getProvider(alg);
+        return cf.getProvider(alg);
     }
 
     private void printStats(ParetoFrontQueue queue) {

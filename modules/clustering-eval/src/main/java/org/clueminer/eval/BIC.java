@@ -21,7 +21,6 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.eval.utils.LogLikelihoodFunction;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -58,26 +57,4 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AIC<E, C> {
         bic += n * d + (k * d + k * d * (d + 1) / 2.0) * Math.log(n);
         return bic;
     }
-
-    @Override
-    public boolean isBetter(double score1, double score2) {
-        // should be minimzed.
-        return score1 < score2;
-    }
-
-    @Override
-    public boolean isMaximized() {
-        return false;
-    }
-
-    @Override
-    public double getMin() {
-        return Double.POSITIVE_INFINITY;
-    }
-
-    @Override
-    public double getMax() {
-        return Double.NEGATIVE_INFINITY;
-    }
-
 }

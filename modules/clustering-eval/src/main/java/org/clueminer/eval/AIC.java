@@ -122,7 +122,7 @@ public class AIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
      */
     @Override
     public boolean isBetter(double score1, double score2) {
-        return compare(score1, score2) < 0;
+        return compare(score1, score2) > 0;
     }
 
     @Override

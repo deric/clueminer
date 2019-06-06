@@ -16,8 +16,10 @@
  */
 package org.clueminer.explorer;
 
+import org.clueminer.eval.AIC;
 import org.clueminer.eval.Silhouette;
 import org.clueminer.eval.external.NMIavg;
+import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -31,17 +33,15 @@ public class ClustComparatorTest {
 
     private final ClustComparator subject = new ClustComparator(new NMIavg());
 
+    //inverse ordering (descending)
     @Test
     public void testCompare() {
         Node n1 = new ClusteringNode(FakeClustering.iris());
-        Node n2 = new ClusteringNode(FakeClustering.irisWrong());
-        subject.setAscOrder(true);
+        Node n2 = new ClusteringNode(FakeClustering.irisMostlyWrong());
         //first one is "better"
-        assertEquals(1, subject.compare(n1, n2));
-
-        subject.setAscOrder(false);
-        //first one is "better" (descending order)
         assertEquals(-1, subject.compare(n1, n2));
+        //first one is worser
+        assertEquals(1, subject.compare(n2, n1));
 
         //the very same clusterings
         assertEquals(0, subject.compare(n1, n1));
@@ -50,22 +50,40 @@ public class ClustComparatorTest {
     @Test
     public void testSetEvaluator() {
         subject.setEvaluator(new Silhouette());
-        subject.setAscOrder(true);
         Node a = new ClusteringNode(FakeClustering.irisWrong2());
         Node b = new ClusteringNode(FakeClustering.irisWrong4());
         Node c = new ClusteringNode(FakeClustering.iris());
 
         //first one is "better" DESC, A > B
-        assertEquals(1, subject.compare(a, b));
+        assertEquals(-1, subject.compare(a, b));
         //C > B
-        assertEquals(1, subject.compare(c, b));
+        assertEquals(-1, subject.compare(c, b));
+        assertEquals(-1, subject.compare(c, a));
+    }
+
+    @Test
+    public void testMaximize() {
+        subject.setEvaluator(new NMIsqrt());
+        Node a = new ClusteringNode(FakeClustering.iris());
+        Node b = new ClusteringNode(FakeClustering.iris());
+        Node c = new ClusteringNode(FakeClustering.irisMostlyWrong());
+        assertEquals(0, subject.compare(a, b));
+
         assertEquals(1, subject.compare(c, a));
     }
 
-    public void testNaN() {
-        assertEquals(true, 0.1 > Double.NaN);
-        assertEquals(false, Double.NaN > Double.NaN);
-        assertEquals(true, Double.NaN == Double.NaN);
+    /**
+     * Objective that is supposed to be minimized
+     */
+    @Test
+    public void testMinimize() {
+        subject.setEvaluator(new AIC());
+        Node a = new ClusteringNode(FakeClustering.iris());
+        Node b = new ClusteringNode(FakeClustering.iris());
+        Node c = new ClusteringNode(FakeClustering.irisMostlyWrong());
+        assertEquals(0, subject.compare(a, b));
+
+        assertEquals(1, subject.compare(c, a));
     }
 
 }
