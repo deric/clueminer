@@ -83,6 +83,7 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
     private DendroToolbar toolbar;
     private final InstanceContent content = new InstanceContent();
     private static final Logger LOG = LoggerFactory.getLogger(DendroViewTopComponent.class);
+    private boolean propagateClusteringsToLookup = false;
 
     public DendroViewTopComponent() {
         initComponents();
@@ -180,12 +181,15 @@ public final class DendroViewTopComponent<E extends Instance, C extends Cluster<
 
     @Override
     public void clusteringChanged(Clustering<E, C> clust) {
-        ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
         //add result to lookup
         //pc.getCurrentProject().add(Lookups.singleton(clust));
-        pc.getCurrentProject().add(clust);
-        LOG.info("adding to lookup clustering {} - {}", clust.size(), clust.fingerprint());
-        content.set(Collections.singleton(clust), null);
+        // clusterings found by new cutoff will be propagated to global context
+        if (propagateClusteringsToLookup) {
+            ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
+            pc.getCurrentProject().add(clust);
+            LOG.info("adding to lookup clustering {} - {}", clust.size(), clust.fingerprint());
+            content.set(Collections.singleton(clust), null);
+        }
     }
 
     @Override

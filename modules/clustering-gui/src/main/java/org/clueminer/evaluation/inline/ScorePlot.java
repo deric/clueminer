@@ -609,16 +609,17 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         int height = headerHeight;
         //elemHeight = (realSize.height - insets.top - insets.bottom) / itemsCnt();
         //if (elemHeight > lineHeight) {
-        height += elemHeight * clusterings.size();
-        //}
-        //realSize.width = width;
-        //reqSize.width = width;
-        realSize.height = height;
-        //reqSize.height = height;
-        //setMinimumSize(realSize);
-        setPreferredSize(realSize);
-        //setSize(realSize);
-
+        if (clusterings != null) {
+            height += elemHeight * clusterings.size();
+            //}
+            //realSize.width = width;
+            //reqSize.width = width;
+            realSize.height = height;
+            //reqSize.height = height;
+            //setMinimumSize(realSize);
+            setPreferredSize(realSize);
+            //setSize(realSize);
+        }
     }
 
     @Override
