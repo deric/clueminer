@@ -56,7 +56,7 @@ public abstract class AbstractExecutor<E extends Instance, C extends Cluster<E>>
         } else {
             strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
         }
-        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "ALE");
+        String evalAlg = params.get(AlgParams.CUTOFF_SCORE, "AIC");
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
         InternalEvaluator<E, C> eval = ief.getProvider(evalAlg);
         strategy.setEvaluator(eval);

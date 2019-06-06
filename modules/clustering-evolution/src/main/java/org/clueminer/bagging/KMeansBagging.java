@@ -132,7 +132,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
                 km.setDataset(dataset);
                 InternalEvaluatorFactory<E, C> eef = InternalEvaluatorFactory.getInstance();
 
-                km.addObjective(eef.getProvider(props.get("mo_1", "ALE")));
+                km.addObjective(eef.getProvider(props.get("mo_1", "AIC")));
                 km.addObjective(eef.getProvider(props.get("mo_2", "SD")));
                 if (defaultProps != null) {
                     km.setDefaultProps(defaultProps);
