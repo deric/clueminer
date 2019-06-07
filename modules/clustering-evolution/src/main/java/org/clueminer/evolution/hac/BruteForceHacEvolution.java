@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>>
         extends BaseEvolution<I, E, C> implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
-    private static final String NAME = "Brute-force HAC";
+    private static final String NAME = "HAC";
     protected final Executor exec;
     protected int gen;
     private List<Distance> dist;
@@ -68,6 +68,8 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
     private static final Logger LOG = LoggerFactory.getLogger(BruteForceHacEvolution.class);
     protected int cnt;
     protected final FakePopulation<I> population = new FakePopulation<>();
+    private boolean modifyDistance = false;
+    private int limitStates = -1;
 
     public BruteForceHacEvolution() {
         super();
@@ -99,9 +101,18 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
         int stdMethods = standartizations.size();
 
         if (ph != null) {
-            int workunits = stdMethods * 2 * dist.size() * linkage.size() * cutoff.size() * evaluators.size();
+            int workunits;
+            if (limitStates > 0) {
+                workunits = limitStates;
+            } else {
+                workunits = stdMethods * 2 * linkage.size() * cutoff.size() * evaluators.size();
+                if (modifyDistance) {
+                    workunits *= dist.size();
+                    LOG.info("distances: {}", dist.size());
+                }
+            }
+
             LOG.info("stds: {}", stdMethods);
-            LOG.info("distances: {}", dist.size());
             LOG.info("linkages: {}", linkage.size());
             LOG.info("evolution workunits: {}", workunits);
             ph.start(workunits);
@@ -122,6 +133,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
                 makeClusters(std, true, link);
             }
         }
+
         finish();
     }
 
@@ -134,7 +146,7 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
      */
     protected void makeClusters(String std, boolean logscale, ClusterLinkage link) {
         Props params = new Props();
-        Clustering<E, C> clustering;
+
         //for cophenetic correlation we need proximity matrix
         params.put(PropType.PERFORMANCE, AlgParams.KEEP_PROXIMITY, true);
         params.put(AlgParams.ALG, exec.getAlgorithm().getName());
@@ -145,20 +157,38 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
 
         for (CutoffStrategy cut : cutoff) {
             params.put(AlgParams.CUTOFF_STRATEGY, cut.getName());
-            for (Distance dm : dist) {
-                params.put(AlgParams.DIST, dm.getName());
-                for (InternalEvaluator ie : evaluators) {
-                    params.put(AlgParams.CUTOFF_SCORE, ie.getName());
-                    clustering = exec.clusterRows(dataset, params);
-                    //make sure the clustering is valid
-                    if (clustering.instancesCount() == dataset.size()) {
-                        clustering.setName("#" + cnt);
-                        individualCreated(clustering);
-                    }
-                    if (ph != null) {
-                        ph.progress(cnt++);
-                    }
+            if (modifyDistance) {
+                for (Distance dm : dist) {
+                    params.put(AlgParams.DIST, dm.getName());
+                    evals(params);
                 }
+            } else {
+                evals(params);
+            }
+        }
+    }
+
+    /**
+     * Explore different evaluators
+     *
+     * @param params
+     */
+    private void evals(Props params) {
+        Clustering<E, C> clustering;
+        for (InternalEvaluator ie : evaluators) {
+            params.put(AlgParams.CUTOFF_SCORE, ie.getName());
+            clustering = exec.clusterRows(dataset, params);
+            //make sure the clustering is valid
+            if (clustering.instancesCount() == dataset.size()) {
+                clustering.setName("#" + cnt);
+                individualCreated(clustering);
+            }
+            if (ph != null) {
+                ph.progress(cnt);
+            }
+            cnt++;
+            if (limitStates > 0 && cnt > limitStates) {
+                return;
             }
         }
     }
@@ -179,6 +209,14 @@ public class BruteForceHacEvolution<I extends Individual<I, E, C>, E extends Ins
             fireIndividualCreated(current);
             fireBestIndividual(gen++, population);
         }
+    }
+
+    public void setModifyDistance(boolean b) {
+        this.modifyDistance = b;
+    }
+
+    public void setLimitStates(int limit) {
+        this.limitStates = limit;
     }
 
     @Override
