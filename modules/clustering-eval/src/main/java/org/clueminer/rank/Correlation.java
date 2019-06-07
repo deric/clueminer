@@ -29,11 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Rank.class)
 public class Correlation implements Rank {
 
-    private static final String name = "correlation";
+    private static final String NAME = "correlation";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

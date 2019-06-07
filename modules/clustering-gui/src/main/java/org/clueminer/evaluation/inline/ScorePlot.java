@@ -147,7 +147,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 @Override
                 public void run() {
                     ph.start();
-                    Arrays.sort(internal, new ClusteringComparator(provider));
+                    Arrays.parallelSort(internal, new ClusteringComparator(provider));
                     compInternal.setEvaluator(provider);
                     clusteringChanged();
                     ph.finish();
@@ -190,7 +190,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     ph.start();
                     ClusteringComparator compare = new ClusteringComparator(provider);
                     try {
-                        Arrays.sort(external, compare);
+                        Arrays.parallelSort(external, compare);
                     } catch (IllegalArgumentException e) {
                         System.err.println("sorting error during " + provider.getName());
                         double[] score = new double[external.length];
@@ -236,8 +236,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     internal = clusters.toArray(new Clustering[clusters.size()]);
                     external = clusters.toArray(new Clustering[clusters.size()]);
                 }
-                Arrays.sort(internal, compInternal);
-                Arrays.sort(external, compExternal);
+                Arrays.parallelSort(internal, compInternal);
+                Arrays.parallelSort(external, compExternal);
                 clusterings = clusters;
                 updateExtMapping();
             }
