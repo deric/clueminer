@@ -314,14 +314,14 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     }
 
     /**
-     * Find min (leftmost) value in a sorted array which is a number
+     * Find worst value in a sorted array which is a number and could be plotted
      *
      * @param clust
      * @param comp
      * @param ref
      * @return
      */
-    private double scoreMin(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreWorst(Clustering[] clust, ClusteringComparator comp) {
         double res = Double.NaN;
         if (clust != null && clust.length > 0) {
             int i = 0;
@@ -333,14 +333,14 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     }
 
     /**
-     * Find max value in an array of clusterings which has a quality of a number
-     * (not NaN, INFINIFY, ...)
+     * Find best score value in an array of clusterings which has a quality of a
+     * number (not NaN, INFINIFY, ...)
      *
      * @param clust
      * @param comp
      * @return
      */
-    private double scoreMax(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreBest(Clustering[] clust, ClusteringComparator comp) {
         double res = Double.NaN;
 
         if (clust != null && clust.length > 0) {
@@ -356,19 +356,20 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     @Override
     public void render(Graphics2D g) {
         this.g = g;
-        double xmin, xmax, xmid, ymin, ymax, ymid;
+        double xmin, xmax, ymin, ymax, ymid;
 
         if (compInternal.getEvaluator() instanceof MoEvaluator) {
             xmin = 0;
             xmax = internal.length - 1;
         } else {
-            xmin = scoreMin(internal, compInternal);
-            xmax = scoreMax(internal, compInternal);
+            xmin = scoreBest(internal, compInternal);
+            xmax = scoreWorst(internal, compInternal);
         }
 
-        xmid = (xmax - xmin) / 2.0 + xmin;
-        ymin = scoreMin(external, compExternal);
-        ymax = scoreMax(external, compExternal);
+        //xmid = (xmax - xmin) / 2.0 + xmin;
+        ymin = scoreBest(external, compExternal);
+        ymax = scoreWorst(external, compExternal);
+        //System.out.println("ymin= " + ymin + ", ymax= " + ymax);
 
         if (crossAtMedian && external != null && external.length > 2) {
             int pos = (external.length / 2);
