@@ -24,6 +24,7 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 
 /**
+ * Sort an array using multiple objectives
  *
  * @author deric
  */
@@ -112,13 +113,15 @@ public class NSGASort {
             }
         }
 
+        //java's "natural" sorting starting from smallest value
+        //should be compatible with Arrays.sort()
         Clustering[] result = new Clustering[clusterings.length];
-        int k = 0;
+        int k = clusterings.length - 1;
         for (List<Integer> fr : front) {
             for (Integer idx : fr) {
                 result[k] = clusterings[idx];
                 result[k].getParams().put("mo-order", k);
-                k++;
+                k--;
             }
         }
         return result;
