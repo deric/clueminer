@@ -120,7 +120,7 @@ public class NSGASort {
         for (List<Integer> fr : front) {
             for (Integer idx : fr) {
                 result[k] = clusterings[idx];
-                result[k].getParams().put("mo-order", k);
+                result[k].getParams().put("mo-order", clusterings.length - k - 1);
                 k--;
             }
         }
