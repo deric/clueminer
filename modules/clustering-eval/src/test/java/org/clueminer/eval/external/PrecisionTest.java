@@ -20,12 +20,12 @@ import com.google.common.collect.Table;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.clueminer.clustering.api.ScoreException;
-import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.eval.utils.CountingPairs;
 import org.clueminer.eval.utils.PairMatch;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import static org.clueminer.eval.external.ExternalTest.DELTA;
 
 /**
  *
@@ -54,7 +54,7 @@ public class PrecisionTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class PrecisionTest extends ExternalTest {
         Precision precision = (Precision) subject;
         PairMatch pm = CountingPairs.getInstance().matchPairs(FakeClustering.irisMostlyWrong());
         pm.dump();
-        assertEquals(0.9866666666666667, precision.countScore(pm, null), delta);
+        assertEquals(0.9866666666666667, precision.countScore(pm, null), DELTA);
     }
 
     /**

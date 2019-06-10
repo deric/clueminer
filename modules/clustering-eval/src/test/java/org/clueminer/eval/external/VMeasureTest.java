@@ -25,12 +25,12 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
-import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.clueminer.eval.external.ExternalTest.DELTA;
 
 /**
  *
@@ -126,7 +126,7 @@ public class VMeasureTest extends ExternalTest {
             b.add(d.get(i + 4));
         }
         assertEquals(2, c.size());
-        assertEquals(0.18872187554086717, subject.score(c), delta);
+        assertEquals(0.18872187554086717, subject.score(c), DELTA);
     }
 
     @Test
@@ -143,7 +143,7 @@ public class VMeasureTest extends ExternalTest {
             s3.add(pmData.get(i + 10));
         }
         assertEquals(3, correct.size());
-        assertEquals(1.0, subject.score(correct), delta);
+        assertEquals(1.0, subject.score(correct), DELTA);
     }
 
     /**
@@ -181,7 +181,7 @@ public class VMeasureTest extends ExternalTest {
         assertEquals(5, s1.size());
         assertEquals(5, s2.size());
         assertEquals(5, s3.size());
-        assertEquals(0.13502647928207268, subject.score(a), delta);
+        assertEquals(0.13502647928207268, subject.score(a), DELTA);
     }
 
     /**
@@ -219,7 +219,7 @@ public class VMeasureTest extends ExternalTest {
         assertEquals(5, s1.size());
         assertEquals(5, s2.size());
         assertEquals(5, s3.size());
-        assertEquals(0.3873983807106558, subject.score(a), delta);
+        assertEquals(0.3873983807106558, subject.score(a), DELTA);
     }
 
     /**
@@ -269,7 +269,7 @@ public class VMeasureTest extends ExternalTest {
         assertEquals(2, s4.size());
         assertEquals(2, s5.size());
         assertEquals(2, s6.size());
-        assertEquals(0.3003745261967547, subject.score(a), delta);
+        assertEquals(0.3003745261967547, subject.score(a), DELTA);
     }
 
     /**
@@ -325,7 +325,7 @@ public class VMeasureTest extends ExternalTest {
         assertEquals(1, s7.size());
         assertEquals(1, s8.size());
         assertEquals(1, s9.size());
-        assertEquals(0.4128158969726665, subject.score(a), delta);
+        assertEquals(0.4128158969726665, subject.score(a), DELTA);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,12 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ExternalEvaluator.class)
 public class NMImax extends NMIbase implements ClusterEvaluation {
 
-    private static final String name = "NMI-max";
+    private static final String NAME = "NMI-max";
     private static final long serialVersionUID = 8838355537225622274L;
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override

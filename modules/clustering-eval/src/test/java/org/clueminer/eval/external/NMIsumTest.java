@@ -25,12 +25,12 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
-import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
 import org.junit.Test;
+import static org.clueminer.eval.external.ExternalTest.DELTA;
 
 /**
  *
@@ -108,7 +108,7 @@ public class NMIsumTest extends ExternalTest {
             b.add(d.get(i + 4));
         }
         assertEquals(2, c.size());
-        assertEquals(0.14039740914097984, subject.score(c), delta);
+        assertEquals(0.14039740914097984, subject.score(c), DELTA);
     }
 
 }

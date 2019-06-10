@@ -23,9 +23,9 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
-import static org.clueminer.eval.external.ExternalTest.delta;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
+import static org.clueminer.eval.external.ExternalTest.DELTA;
 
 /**
  *
@@ -103,7 +103,7 @@ public class F2MeasureTest extends ExternalTest {
         assertEquals(5, s1.size());
         assertEquals(5, s2.size());
         assertEquals(5, s3.size());
-        assertEquals(0.6, subject.score(a), delta);
+        assertEquals(0.6, subject.score(a), DELTA);
     }
 
     /**
@@ -141,7 +141,7 @@ public class F2MeasureTest extends ExternalTest {
         assertEquals(5, s1.size());
         assertEquals(5, s2.size());
         assertEquals(5, s3.size());
-        assertEquals(0.6, subject.score(a), delta);
+        assertEquals(0.6, subject.score(a), DELTA);
     }
 
     /**
@@ -191,7 +191,7 @@ public class F2MeasureTest extends ExternalTest {
         assertEquals(2, s4.size());
         assertEquals(2, s5.size());
         assertEquals(2, s6.size());
-        assertEquals(0.5, subject.score(a), delta);
+        assertEquals(0.5, subject.score(a), DELTA);
     }
 
     /**
@@ -247,7 +247,7 @@ public class F2MeasureTest extends ExternalTest {
         assertEquals(1, s7.size());
         assertEquals(1, s8.size());
         assertEquals(1, s9.size());
-        assertEquals(0.5, subject.score(a), delta);
+        assertEquals(0.5, subject.score(a), DELTA);
     }
 
 }

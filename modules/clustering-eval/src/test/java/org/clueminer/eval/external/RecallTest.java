@@ -71,7 +71,7 @@ public class RecallTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(Double.NaN, subject.score(oneClassPerCluster()), delta);
+        assertEquals(Double.NaN, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test

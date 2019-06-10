@@ -17,10 +17,10 @@
 package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ScoreException;
-import static org.clueminer.eval.external.ExternalTest.delta;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import static org.clueminer.eval.external.ExternalTest.DELTA;
 
 /**
  *
@@ -50,7 +50,7 @@ public class F1MeasureTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test

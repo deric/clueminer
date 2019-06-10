@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.external;
 
+import com.google.common.collect.Table;
 import java.io.Serializable;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -65,6 +66,65 @@ public abstract class AbstractExternalEval<E extends Instance, C extends Cluster
             return score1 > score2;
         }
         return score1 < score2;
+    }
+
+    /**
+     * Sum occurrences of given cluster in all classes
+     *
+     * @param contTable
+     * @param klass
+     * @return
+     */
+    protected double sumKlass(Table<String, String, Integer> contTable, String clust) {
+        double sum = 0.0;
+        for (String klass : contTable.columnKeySet()) {
+            sum += value(contTable, clust, klass);
+        }
+        return sum;
+    }
+
+    protected double sumCluster(Table<String, String, Integer> contTable, String klass) {
+        double sum = 0.0;
+        for (String clust : contTable.rowKeySet()) {
+            sum += value(contTable, clust, klass);
+        }
+        return sum;
+    }
+
+    /**
+     * Retrieve value from contingency table as Double
+     *
+     * @param contTable
+     * @param cluster
+     * @param klass
+     * @return
+     */
+    protected double value(Table<String, String, Integer> contTable, String cluster, String klass) {
+        Integer i = contTable.get(cluster, klass);
+        if (i == null) {
+            return 0.0;
+        }
+        return i.doubleValue();
+    }
+
+    protected double HK(Table<String, String, Integer> contTable, int n) {
+        double h_c = 0.0;
+        double skall;
+        for (String cluster : contTable.rowKeySet()) {
+            skall = sumKlass(contTable, cluster) / (double) n;
+            h_c += skall * Math.log(skall);
+        }
+        return h_c;
+    }
+
+    protected double HC(Table<String, String, Integer> contTable, int n) {
+        double h_c = 0.0;
+        double scall;
+        for (String klass : contTable.columnKeySet()) {
+            scall = sumCluster(contTable, klass) / (double) n;
+            h_c += scall * Math.log(scall);
+        }
+        return h_c;
     }
 
 }

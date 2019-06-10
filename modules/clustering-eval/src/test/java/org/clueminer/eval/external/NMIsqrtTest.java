@@ -107,7 +107,7 @@ public class NMIsqrtTest extends ExternalTest {
             b.add(d.get(i + 4));
         }
         assertEquals(2, c.size());
-        assertEquals(0.14039740914097984, subject.score(c), delta);
+        assertEquals(0.14039740914097984, subject.score(c), DELTA);
     }
 
     @Test

@@ -46,13 +46,13 @@ public class KulczynskiIndexTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(Double.NaN, subject.score(oneClassPerCluster()), delta);
+        assertEquals(Double.NaN, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test
     public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
-        assertEquals(0.6577628635346756, score, delta);
+        assertEquals(0.6577628635346756, score, DELTA);
     }
 
     /**

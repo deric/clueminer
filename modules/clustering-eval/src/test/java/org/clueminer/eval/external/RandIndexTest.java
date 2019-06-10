@@ -69,7 +69,7 @@ public class RandIndexTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class RandIndexTest extends ExternalTest {
     public void testPcaData() throws ScoreException {
         Clustering<Instance, Cluster<Instance>> clust = pcaData();
         double score = subject.score(clust);
-        assertEquals(0.71111111111111, score, delta);
+        assertEquals(0.71111111111111, score, DELTA);
     }
 
     /**

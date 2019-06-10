@@ -96,7 +96,7 @@ public class AdjustedRandTest extends ExternalTest {
         AdjustedRand rand = (AdjustedRand) subject;
         double score = rand.countScore(mat);
         System.out.println("score: " + score);
-        assertEquals(0.31257344300822565, score, delta);
+        assertEquals(0.31257344300822565, score, DELTA);
     }
 
     @Test
@@ -113,7 +113,7 @@ public class AdjustedRandTest extends ExternalTest {
         double score = rand.countScore(table);
         //value based on experiments (not verified yet) - just to verify that we didnt break the functionality
         //assertEquals(0.14754877843024122, score, delta);
-        assertEquals(0.15018942476428662, score, delta);
+        assertEquals(0.15018942476428662, score, DELTA);
         System.out.println("clust(5) = " + score);
     }
 
@@ -159,7 +159,7 @@ public class AdjustedRandTest extends ExternalTest {
     public void testAri() throws ScoreException {
         AdjustedRand ari = (AdjustedRand) subject;
         double score = ari.score(FakeClustering.iris());
-        assertEquals(1.0, score, delta);
+        assertEquals(1.0, score, DELTA);
 
         //score = ari.score(FakeClustering.irisWrong());
         //assertEquals(1.0, score, delta);
@@ -172,7 +172,7 @@ public class AdjustedRandTest extends ExternalTest {
 
         pm.dump();
         //number of pairs we can draw from 150 instances (150 \over 2)
-        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum(), delta);
+        assertEquals(CombinatoricsUtils.binomialCoefficient(150, 2), pm.sum(), DELTA);
         System.out.println("ARI: " + ari.score(pm));
     }
 
@@ -189,7 +189,7 @@ public class AdjustedRandTest extends ExternalTest {
     public void testPcaData() throws ScoreException {
         Clustering<Instance, Cluster<Instance>> clust = pcaData();
         double score = subject.score(clust);
-        assertEquals(0.3125734430082256, score, delta);
+        assertEquals(0.3125734430082256, score, DELTA);
     }
 
     @Test

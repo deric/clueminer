@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,26 +86,6 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
         return (1.0 + beta) * homogeneity * completeness / (beta * homogeneity + completeness);
     }
 
-    private double HK(Table<String, String, Integer> contTable, int n) {
-        double h_c = 0.0;
-        double skall;
-        for (String cluster : contTable.rowKeySet()) {
-            skall = sumKlass(contTable, cluster) / (double) n;
-            h_c += skall * Math.log(skall);
-        }
-        return h_c;
-    }
-
-    private double HC(Table<String, String, Integer> contTable, int n) {
-        double h_c = 0.0;
-        double scall;
-        for (String klass : contTable.columnKeySet()) {
-            scall = sumCluster(contTable, klass) / (double) n;
-            h_c += scall * Math.log(scall);
-        }
-        return h_c;
-    }
-
     private double HCK(Table<String, String, Integer> contTable, int n) {
         double h_c_k = 0.0, ack;
         for (String clust : contTable.rowKeySet()) {
@@ -132,45 +112,6 @@ public class VMeasure<E extends Instance, C extends Cluster<E>> extends Abstract
             }
         }
         return h_k_c;
-    }
-
-    /**
-     * Sum occurrences of given cluster in all classes
-     *
-     * @param contTable
-     * @param klass
-     * @return
-     */
-    private double sumKlass(Table<String, String, Integer> contTable, String clust) {
-        double sum = 0.0;
-        for (String klass : contTable.columnKeySet()) {
-            sum += value(contTable, clust, klass);
-        }
-        return sum;
-    }
-
-    private double sumCluster(Table<String, String, Integer> contTable, String klass) {
-        double sum = 0.0;
-        for (String clust : contTable.rowKeySet()) {
-            sum += value(contTable, clust, klass);
-        }
-        return sum;
-    }
-
-    /**
-     * Retrieve value from contingency table as Double
-     *
-     * @param contTable
-     * @param cluster
-     * @param klass
-     * @return
-     */
-    private double value(Table<String, String, Integer> contTable, String cluster, String klass) {
-        Integer i = contTable.get(cluster, klass);
-        if (i == null) {
-            return 0.0;
-        }
-        return i.doubleValue();
     }
 
     @Override

@@ -71,7 +71,7 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
     }
 
     /**
-     * Computes score against class label (must be provided)
+     * Computes score against class labels (must be provided)
      *
      * @param clusters
      * @param params

@@ -68,7 +68,7 @@ public class JaccardIndexTest extends ExternalTest {
 
     @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(0.0, subject.score(oneClassPerCluster()), delta);
+        assertEquals(0.0, subject.score(oneClassPerCluster()), DELTA);
     }
 
     @Test

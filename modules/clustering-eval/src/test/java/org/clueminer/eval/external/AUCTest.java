@@ -51,6 +51,6 @@ public class AUCTest extends ExternalTest {
         AUC auc = (AUC) subject;
         PairMatch pm = CountingPairs.getInstance().matchPairs(oneClassPerCluster());
         pm.dump();
-        assertEquals(Double.NaN, auc.countScore(pm, null), delta);
+        assertEquals(Double.NaN, auc.countScore(pm, null), DELTA);
     }
 }

@@ -46,13 +46,13 @@ public class PhiTest extends ExternalTest {
 
     //  @Test
     public void testOneClassPerCluster() throws ScoreException {
-        assertEquals(1.5880312862546976E-4, subject.score(oneClassPerCluster()), delta);
+        assertEquals(1.5880312862546976E-4, subject.score(oneClassPerCluster()), DELTA);
     }
 
 //    @Test
     public void testMostlyWrong() throws ScoreException {
         double score = subject.score(FakeClustering.irisMostlyWrong());
-        assertEquals(0.0, score, delta);
+        assertEquals(0.0, score, DELTA);
     }
 
     /**

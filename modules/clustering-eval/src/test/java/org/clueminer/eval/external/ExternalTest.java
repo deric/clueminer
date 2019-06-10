@@ -40,7 +40,7 @@ public class ExternalTest {
 
     protected ExternalEvaluator subject;
     //floating operation from R is according to IEEE 754, while Java isn't
-    protected static final double delta = 1e-6;
+    protected static final double DELTA = 1e-6;
     protected static Clustering ext100p2;
     protected static Clustering ext100p3;
 
@@ -54,7 +54,7 @@ public class ExternalTest {
         c1.lookupRemove(PairMatch.class);
         double score = subject.score(c1, c2, new Props());
         double end = System.currentTimeMillis();
-        assertEquals(expected, score, delta);
+        assertEquals(expected, score, DELTA);
         System.out.println(subject.getName() + " = " + score);
         System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
         c1.lookupRemove(PairMatch.class);
@@ -67,7 +67,7 @@ public class ExternalTest {
         double score = subject.score(c1);
         double end = System.currentTimeMillis();
 
-        assertEquals(expected, score, delta);
+        assertEquals(expected, score, DELTA);
         System.out.println(subject.getName() + " = " + score);
         System.out.println("measuring " + subject.getName() + " took " + (end - start) + " ms");
         c1.lookupRemove(PairMatch.class);
