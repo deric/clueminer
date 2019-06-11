@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.clueminer.clustering.api.factory.RankFactory;
+import org.clueminer.clustering.api.factory.RankEvaluatorFactory;
 
 /**
  *
@@ -69,8 +69,8 @@ public class SettingsPanel extends JPanel {
 
         c.gridy++;
         c.gridx = 0;
-        add(new JLabel("Ranking similarity:"), c);
-        comboCorrelation = new JComboBox(RankFactory.getInstance().getProvidersArray());
+        add(new JLabel("Ranking evaluation:"), c);
+        comboCorrelation = new JComboBox(RankEvaluatorFactory.getInstance().getProvidersArray());
         c.gridx = 1;
         add(comboCorrelation, c);
     }
@@ -84,7 +84,7 @@ public class SettingsPanel extends JPanel {
         plot.setUseSupervisedMetricMax(chckUseMetricsMax.isSelected());
         plot.setCrossAxisAtMedian(chckMedian.isSelected());
         plot.setShowCorrelation(chckCorrelation.isSelected());
-        plot.setRank(RankFactory.getInstance().getProvider(comboCorrelation.getSelectedItem().toString()));
+        plot.setRank(RankEvaluatorFactory.getInstance().getProvider(comboCorrelation.getSelectedItem().toString()));
         plot.updateCorrelation();
     }
 

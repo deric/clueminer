@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.eval.sort.NSGASort;
+import org.clueminer.clustering.api.Rank;
+import org.clueminer.eval.sort.MORank;
 import org.openide.nodes.Node;
 import org.openide.util.RequestProcessor;
 
@@ -32,17 +33,19 @@ public class ClustComparatorMO extends ClustComparator implements Comparator<Nod
 
     protected ClustSorted clusteringNodes;
     private List<ClusterEvaluation> objectives;
+    private Rank rank;
     private static final RequestProcessor RP = new RequestProcessor("MO sort", 5, false);
 
     public ClustComparatorMO(ClustSorted sorted) {
         super(sorted);
         this.clusteringNodes = sorted;
+        rank = new MORank();
     }
 
     public void sort() {
         Clustering[] clusterings = new Clustering[0];
         //TODO: extract array of clusterings
-        NSGASort.sort(clusterings, objectives);
+        rank.sort(clusterings, objectives);
     }
 
 }

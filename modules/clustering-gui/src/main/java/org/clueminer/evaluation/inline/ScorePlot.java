@@ -43,16 +43,16 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.Rank;
 import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.factory.Clusterings;
-import org.clueminer.clustering.api.factory.RankFactory;
+import org.clueminer.clustering.api.factory.RankEvaluatorFactory;
 import org.clueminer.clustering.gui.colors.ColorSchemeImpl;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.external.NMIsqrt;
-import org.clueminer.eval.sort.NSGASort;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.clueminer.eval.utils.HashEvaluationTable;
 import org.clueminer.gui.BPanel;
@@ -64,6 +64,7 @@ import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.clueminer.clustering.api.RankEvaluator;
+import org.clueminer.clustering.api.factory.RankFactory;
 
 /**
  *
@@ -106,7 +107,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private boolean showCorrelation = true;
     private static final String GROUND_TRUTH = "ground-truth";
     private double correlation = Double.NaN;
-    private RankEvaluator rank;
+    private RankEvaluator rankEval;
+    private Rank rank;
     private final HashMap<Integer, Integer> extMap;
 
     public ScorePlot() {
@@ -126,6 +128,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         }
         moEval = new MoEvaluator();
         rank = RankFactory.getInstance().getDefault();
+        rankEval = RankEvaluatorFactory.getInstance().getDefault();
         extMap = new HashMap<>();
     }
 
@@ -171,7 +174,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 @Override
                 public void run() {
                     ph.start();
-                    internal = NSGASort.sort(internal, objectives);
+                    internal = rank.sort(internal, objectives);
                     compInternal.setEvaluator(moEval);
                     clusteringChanged();
                     ph.finish();
@@ -263,8 +266,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      * @return
      */
     protected double updateCorrelation() {
-        if (rank != null) {
-            return rank.correlation(external, internal, extMap);
+        if (rankEval != null) {
+            return rankEval.correlation(external, internal, extMap);
         }
         return Double.NaN;
     }
@@ -657,7 +660,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     }
 
     public void setRank(RankEvaluator rank) {
-        this.rank = rank;
+        this.rankEval = rank;
         updateCorrelation();
     }
 

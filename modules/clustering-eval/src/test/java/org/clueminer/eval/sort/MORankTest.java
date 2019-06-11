@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,9 @@ import org.junit.Test;
  *
  * @author deric
  */
-public class NSGASortTest {
+public class MORankTest {
+
+    private static MORank subject = new MORank();
 
     @Test
     public void testSort() {
@@ -48,7 +50,7 @@ public class NSGASortTest {
         eval.add(new NMIsqrt());
         eval.add(new AIC());
 
-        Clustering[] res = NSGASort.sort(clusterings, eval);
+        Clustering[] res = subject.sort(clusterings, eval);
         assertEquals(clusterings.length, res.length);
         //we use supervised criterion, first solution must be "correct" clustering
         assertEquals(FakeClustering.iris(), clusterings[0]);

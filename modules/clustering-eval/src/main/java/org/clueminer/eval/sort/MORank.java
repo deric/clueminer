@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,23 @@ import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.Rank;
 
 /**
  * Sort an array using multiple objectives
  *
  * @author deric
  */
-public class NSGASort {
+public class MORank implements Rank {
 
-    public static Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
+    private static final String NAME = "MO Rank";
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    public Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
 
         int n = clusterings.length;
         List<ArrayList<Clustering>> rankedSubpopulations;
