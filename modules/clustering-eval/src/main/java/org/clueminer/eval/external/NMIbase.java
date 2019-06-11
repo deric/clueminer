@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@ package org.clueminer.eval.external;
 
 import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -56,8 +54,6 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
      * @param elements
      * @return
      */
-    //this is cool but hard to cast...
-    // private double entropy(int count, Integer... elements)
     protected double entropy(int count, int[] elements) {
         double entropy = 0;
         double pk;
@@ -84,53 +80,17 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
             return nmi;
         }
 
-        int instancesCnt = clusters.instancesCount();
-        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
-        Map<String, Integer> res;
-        double c1entropy = entropy(clusters.instancesCount(), clusters.clusterSizes());
+        int N = clusters.instancesCount();
+        CountingPairs<E, C> cp = CountingPairs.getInstance();
+        Table<String, String, Integer> table = cp.contingencyTable(clusters);
 
-        Map<String, Integer> klassSizes = new HashMap<>(table.columnKeySet().size());
+        double hc = -HC(table, N);
+        double hk = -HK(table, N);
 
-        double mutualInformation = 0;
-        int common;
-        int klassSize;
-        for (String klass : table.columnKeySet()) {
-            for (String cluster : table.rowKeySet()) {
-                //has some assignments of class to a given cluster
-                if (table.get(cluster, klass) != null) {
-                    res = CountingPairs.countAssignments(table, klass, cluster);
-                    if (klassSizes.containsKey(klass)) {
-                        klassSize = klassSizes.get(klass);
-                    } else {
-                        klassSize = res.get("tp") + res.get("fp");
-                        klassSizes.put(klass, klassSize);
-                    }
-                    //System.out.println("klass size = " + klassSize);
+        double mu = mutualInformation(table, N);
 
-                    int clusterSize = res.get("tp") + res.get("fn");
-                    //itersection is number of true positives
-                    common = res.get("tp");
-                    //System.out.println("a = " + klass + ", b = " + cluster);
-                    //System.out.println("common = " + common);
 
-                    if (common > 0) {
-                        mutualInformation += (common / (double) instancesCnt)
-                                * Math.log(instancesCnt
-                                        * common / (double) (klassSize * clusterSize));
-                    }
-                }
-
-            }
-        }
-        int[] clusterSizes = new int[klassSizes.size()];
-        int i = 0;
-        for (String key : klassSizes.keySet()) {
-            clusterSizes[i++] = klassSizes.get(key);
-        }
-
-        double classEntropy = entropy(clusters.instancesCount(), clusterSizes);
-
-        return calculate(clusters, params, mutualInformation, c1entropy, classEntropy, klassSizes.size());
+        return calculate(clusters, params, mu, hc, hk, table.columnKeySet().size());
     }
 
     protected double calculate(Clustering<E, C> clusters, Props params,

@@ -16,9 +16,7 @@
  */
 package org.clueminer.eval.external;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;

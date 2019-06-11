@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +36,12 @@ import static org.clueminer.eval.external.ExternalTest.DELTA;
  *
  * @author deric
  */
-public class NMIsumTest extends ExternalTest {
+public class NMIavgTest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
 
-    public NMIsumTest() throws FileNotFoundException, IOException {
+    public NMIavgTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
         subject = new NMIavg();

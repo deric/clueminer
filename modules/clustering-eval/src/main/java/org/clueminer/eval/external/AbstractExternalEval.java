@@ -18,12 +18,15 @@ package org.clueminer.eval.external;
 
 import com.google.common.collect.Table;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ExternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AbstractComparator;
+import org.clueminer.eval.utils.CountingPairs;
 
 /**
  *
@@ -107,24 +110,64 @@ public abstract class AbstractExternalEval<E extends Instance, C extends Cluster
         return i.doubleValue();
     }
 
-    protected double HK(Table<String, String, Integer> contTable, int n) {
+    protected double HK(Table<String, String, Integer> contTable, double n) {
         double h_c = 0.0;
         double skall;
         for (String cluster : contTable.rowKeySet()) {
-            skall = sumKlass(contTable, cluster) / (double) n;
+            skall = sumKlass(contTable, cluster) / n;
             h_c += skall * Math.log(skall);
         }
         return h_c;
     }
 
-    protected double HC(Table<String, String, Integer> contTable, int n) {
+    protected double HC(Table<String, String, Integer> contTable, double n) {
         double h_c = 0.0;
         double scall;
         for (String klass : contTable.columnKeySet()) {
-            scall = sumCluster(contTable, klass) / (double) n;
+            scall = sumCluster(contTable, klass) / n;
             h_c += scall * Math.log(scall);
         }
         return h_c;
+    }
+
+    /**
+     * Mutual Information
+     *
+     * @param contTable
+     * @param n
+     * @return
+     */
+    protected double mutualInformation(Table<String, String, Integer> contTable, double n) {
+        double mu = 0.0, common;
+        Map<String, Integer> res;
+        Map<String, Integer> klassSizes = new HashMap<>(contTable.columnKeySet().size());
+        int klassSize;
+
+        for (String klass : contTable.columnKeySet()) {
+            for (String clust : contTable.rowKeySet()) {
+                common = value(contTable, clust, klass);
+
+                if (common > 0.0) {
+
+                    res = CountingPairs.countAssignments(contTable, klass, clust);
+                    if (klassSizes.containsKey(klass)) {
+                        klassSize = klassSizes.get(klass);
+                    } else {
+                        klassSize = res.get("tp") + res.get("fp");
+                        klassSizes.put(klass, klassSize);
+                    }
+
+                    int clusterSize = res.get("tp") + res.get("fn");
+                    //itersection is number of true positives
+                    common = res.get("tp");
+
+                    mu += (common / n)
+                            * Math.log(n * common / (double) (klassSize * clusterSize));
+
+                }
+            }
+        }
+        return mu;
     }
 
 }
