@@ -44,7 +44,6 @@ public class InlineDemo extends JFrame {
         EvaluationFactory ef = EvaluationFactory.getInstance();
 
         evalPlot.setEvaluatorX(ef.getProvider("NMI-sqrt"));
-        evalPlot.setEvaluatorY(ef.getProvider("AIC"));
 
         Collection<Clustering> clusterings = new HashSet<>(6);
         //evalPlot.setGolden(FakeClustering.iris());

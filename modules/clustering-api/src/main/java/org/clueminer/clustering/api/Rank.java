@@ -17,13 +17,16 @@
 package org.clueminer.clustering.api;
 
 import java.util.List;
+import org.clueminer.dataset.api.Instance;
 
 /**
  * API for ranking clusterings according to provided evaluation measures.
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
-public interface Rank {
+public interface Rank<E extends Instance, C extends Cluster<E>> {
 
     /**
      * Method identification
@@ -39,6 +42,13 @@ public interface Rank {
      * @param objectives
      * @return
      */
-    Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives);
+    Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives);
+
+    /**
+     * Whether ranking requires multiple objectives
+     *
+     * @return
+     */
+    boolean isMultiObjective();
 
 }

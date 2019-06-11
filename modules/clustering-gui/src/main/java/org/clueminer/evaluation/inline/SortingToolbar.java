@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,11 @@ package org.clueminer.evaluation.inline;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.evaluation.gui.EvaluatorComboBox;
-import static org.clueminer.evaluation.inline.InlinePanel.NONE;
 import org.clueminer.export.api.ClusteringExport;
 import org.clueminer.export.api.ClusteringExporterFactory;
 import org.openide.DialogDescriptor;
@@ -42,9 +37,6 @@ import org.openide.util.NbBundle;
  */
 public class SortingToolbar<E extends Instance> extends JToolBar {
 
-    private JComboBox comboEvaluatorX;
-    private JComboBox comboEvaluatorY;
-    private JComboBox comboEvaluatorZ;
     private JButton export;
     private JButton btnSettings;
     private final ScorePlot plot;
@@ -59,39 +51,6 @@ public class SortingToolbar<E extends Instance> extends JToolBar {
     private void initComponents() {
         this.setFloatable(false);
         this.setRollover(true);
-
-        comboEvaluatorX = new JComboBox();
-        comboEvaluatorX.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
-        comboEvaluatorX.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorXActionPerformed(evt);
-            }
-        });
-        add(comboEvaluatorX);
-
-        comboEvaluatorY = new JComboBox();
-        comboEvaluatorY.setModel(new EvaluatorComboBox(EvaluationFactory.getInstance().getProvidersArray()));
-        comboEvaluatorY.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorYActionPerformed(evt);
-            }
-        });
-        add(comboEvaluatorY);
-
-        //MO-criterion
-        comboEvaluatorZ = new JComboBox();
-        List<String> providers = EvaluationFactory.getInstance().getProviders();
-        providers.add(0, NONE);
-        comboEvaluatorZ.setModel(new EvaluatorComboBox(providers.toArray(new String[0])));
-        comboEvaluatorZ.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                comboEvaluatorZActionPerformed(evt);
-            }
-        });
-        add(comboEvaluatorZ);
 
         btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/evaluation/gui/settings16.png", false));
         btnSettings.setToolTipText("Setup evolution");
@@ -129,34 +88,8 @@ public class SortingToolbar<E extends Instance> extends JToolBar {
         });
     }
 
-    private void comboEvaluatorXActionPerformed(java.awt.event.ActionEvent evt) {
-        String item = (String) comboEvaluatorX.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorX(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
-    private void comboEvaluatorYActionPerformed(java.awt.event.ActionEvent evt) {
-        String item = (String) comboEvaluatorY.getSelectedItem();
-        if (item != null) {
-            plot.setEvaluatorY(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
-    private void comboEvaluatorZActionPerformed(ActionEvent evt) {
-        String item = (String) comboEvaluatorZ.getSelectedItem();
-        if (item != null && !item.equals(NONE)) {
-            plot.setEvaluatorZ(EvaluationFactory.getInstance().getProvider(item));
-        }
-    }
-
     public void setEvaluatorX(ClusterEvaluation ex) {
-        comboEvaluatorX.setSelectedItem(ex.getName());
         plot.setEvaluatorX(ex);
     }
 
-    public void setEvaluatorY(ClusterEvaluation ey) {
-        comboEvaluatorY.setSelectedItem(ey.getName());
-        plot.setEvaluatorY(ey);
-    }
 }

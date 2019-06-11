@@ -79,9 +79,9 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private Clustering[] external;
     private ClusteringComparator compInternal;
     private ClusteringComparator compExternal;
-    private ClusterEvaluation<E, C> objective1;
-    private ClusterEvaluation<E, C> objective2;
+    private List<ClusterEvaluation<E, C>> objectives;
     private final MoEvaluator moEval;
+    private ClusterEvaluation<E, C> soEval;
     protected Font defaultFont;
     protected Font headerFont;
     protected int lineHeight = 12;
@@ -117,7 +117,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         scale = new StdScale();
         this.fitToSpace = false;
         this.preserveAlpha = true;
-        compInternal = new ClusteringComparator(new AIC());
         compExternal = new ClusteringComparator(new NMIsqrt());
         //colorScheme = new ColorSchemeImpl(Color.RED, Color.BLACK, Color.GREEN);
         colorScheme = new ColorSchemeImpl(Color.GREEN, Color.BLACK, Color.RED);
@@ -127,9 +126,13 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             Exceptions.printStackTrace(ex);
         }
         moEval = new MoEvaluator();
+        soEval = new AIC();
+        compInternal = new ClusteringComparator(soEval);
         rank = RankFactory.getInstance().getDefault();
         rankEval = RankEvaluatorFactory.getInstance().getDefault();
         extMap = new HashMap<>();
+        objectives = new LinkedList();
+        objectives.add(soEval);
     }
 
     private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
@@ -139,48 +142,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         //setBackground(defaults.getColor("window"));
         //this.preserveAlpha = true;
         setBackground(defaults.getColor("window"));
-    }
-
-    protected void setEvaluatorY(final ClusterEvaluation provider) {
-        objective1 = provider;
-        if (internal != null && internal.length > 1) {
-            final ProgressHandle ph = ProgressHandle.createHandle("computing " + provider.getName());
-            RP.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    ph.start();
-                    Arrays.parallelSort(internal, new ClusteringComparator(provider));
-                    compInternal.setEvaluator(provider);
-                    clusteringChanged();
-                    ph.finish();
-                }
-            });
-
-        }
-    }
-
-    protected void setEvaluatorZ(final ClusterEvaluation provider) {
-        objective2 = provider;
-
-        if (internal != null && internal.length > 1 && provider != null) {
-            final List<ClusterEvaluation> objectives = new LinkedList();
-            objectives.add(objective1);
-            objectives.add(objective2);
-            moEval.setObjectives(objectives);
-            final ProgressHandle ph = ProgressHandle.createHandle("computing " + moEval.getName());
-            RP.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    ph.start();
-                    internal = rank.sort(internal, objectives);
-                    compInternal.setEvaluator(moEval);
-                    clusteringChanged();
-                    ph.finish();
-                }
-            });
-        }
     }
 
     protected void setEvaluatorX(final ClusterEvaluation provider) {
@@ -659,9 +620,59 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         this.showCorrelation = show;
     }
 
-    public void setRank(RankEvaluator rank) {
+    public void setRankEvaluator(RankEvaluator rank) {
         this.rankEval = rank;
         updateCorrelation();
+    }
+
+    public void setRank(Rank ranking) {
+        this.rank = ranking;
+    }
+
+    public void computeRanking() {
+        if (internal != null && internal.length > 1) {
+            final ProgressHandle ph = ProgressHandle.createHandle("computing " + rank.getName() + "(" + printObjectives() + ")");
+            RP.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    ph.start();
+                    System.out.println("using " + rank.getName() + "(" + printObjectives() + ")");
+                    internal = rank.sort(internal, objectives);
+                    //compInternal.setEvaluator(moEval);
+                    if (rank.isMultiObjective()) {
+                        compInternal.setEvaluator(moEval);
+                    } else {
+                        compInternal.setEvaluator(soEval);
+                    }
+                    System.out.println("sorted@!");
+                    clusteringChanged();
+                    ph.finish();
+                }
+            });
+        }
+    }
+
+    public void setObjectives(List<ClusterEvaluation<E, C>> objectives) {
+        this.objectives = objectives;
+        if (rank.isMultiObjective()) {
+            moEval.setObjectives(objectives);
+        } else {
+            soEval = objectives.get(0);
+        }
+    }
+
+    private String printObjectives() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (ClusterEvaluation ce : objectives) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(ce.getName());
+            i++;
+        }
+        return sb.toString();
     }
 
 }

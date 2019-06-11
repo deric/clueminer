@@ -102,8 +102,4 @@ public class InlinePanel<E extends Instance, C extends Cluster<E>> extends JPane
         toolbar.setEvaluatorX(ex);
     }
 
-    public void setEvaluatorY(ClusterEvaluation ey) {
-        toolbar.setEvaluatorY(ey);
-    }
-
 }

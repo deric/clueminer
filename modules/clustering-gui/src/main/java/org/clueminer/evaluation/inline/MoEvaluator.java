@@ -25,7 +25,8 @@ import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 
 /**
- * Evaluator based on multi-objective sorting (require running {@link NSGASort})
+ * Evaluator based on multi-objective sorting (require running
+ * {@link org.clueminer.eval.sort.MORank})
  *
  * @author deric
  */

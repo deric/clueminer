@@ -20,16 +20,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.dataset.api.Instance;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Sort an array using multiple objectives
  *
  * @author deric
  */
-public class MORank implements Rank {
+@ServiceProvider(service = Rank.class)
+public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "MO Rank";
 
@@ -38,7 +42,7 @@ public class MORank implements Rank {
         return NAME;
     }
 
-    public Clustering[] sort(Clustering[] clusterings, List<ClusterEvaluation> objectives) {
+    public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
 
         int n = clusterings.length;
         List<ArrayList<Clustering>> rankedSubpopulations;
@@ -133,6 +137,11 @@ public class MORank implements Rank {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean isMultiObjective() {
+        return true;
     }
 
 }
