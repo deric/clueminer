@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ import java.util.HashMap;
  *
  * @author deric
  */
-public interface Rank {
+public interface RankEvaluator {
 
     /**
      * A unique identification of the method

@@ -18,15 +18,15 @@ package org.clueminer.clustering.api.factory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import org.clueminer.clustering.api.Rank;
 import org.clueminer.utils.ServiceFactory;
 import org.openide.util.Lookup;
+import org.clueminer.clustering.api.RankEvaluator;
 
 /**
  *
  * @author deric
  */
-public class RankFactory extends ServiceFactory<Rank> {
+public class RankFactory extends ServiceFactory<RankEvaluator> {
 
     private static RankFactory instance;
 
@@ -39,15 +39,15 @@ public class RankFactory extends ServiceFactory<Rank> {
 
     private RankFactory() {
         providers = new LinkedHashMap<>();
-        Collection<? extends Rank> list = Lookup.getDefault().lookupAll(Rank.class);
-        for (Rank c : list) {
+        Collection<? extends RankEvaluator> list = Lookup.getDefault().lookupAll(RankEvaluator.class);
+        for (RankEvaluator c : list) {
             providers.put(c.getName(), c);
         }
         sort();
     }
 
     @Override
-    public Rank[] getAllArray() {
-        return providers.values().toArray(new Rank[0]);
+    public RankEvaluator[] getAllArray() {
+        return providers.values().toArray(new RankEvaluator[0]);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
-import org.clueminer.clustering.api.Rank;
 import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.dendrogram.ColorScheme;
 import org.clueminer.clustering.api.factory.Clusterings;
@@ -64,6 +63,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.clueminer.clustering.api.RankEvaluator;
 
 /**
  *
@@ -80,7 +80,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private ClusteringComparator compExternal;
     private ClusterEvaluation<E, C> objective1;
     private ClusterEvaluation<E, C> objective2;
-    private MoEvaluator moEval;
+    private final MoEvaluator moEval;
     protected Font defaultFont;
     protected Font headerFont;
     protected int lineHeight = 12;
@@ -106,7 +106,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private boolean showCorrelation = true;
     private static final String GROUND_TRUTH = "ground-truth";
     private double correlation = Double.NaN;
-    private Rank rank;
+    private RankEvaluator rank;
     private final HashMap<Integer, Integer> extMap;
 
     public ScorePlot() {
@@ -656,7 +656,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         this.showCorrelation = show;
     }
 
-    public void setRank(Rank rank) {
+    public void setRank(RankEvaluator rank) {
         this.rank = rank;
         updateCorrelation();
     }

@@ -18,16 +18,16 @@ package org.clueminer.rank;
 
 import java.util.HashMap;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.Rank;
 import org.openide.util.lookup.ServiceProvider;
+import org.clueminer.clustering.api.RankEvaluator;
 
 /**
  * Standard correlation coefficient
  *
  * @author deric
  */
-@ServiceProvider(service = Rank.class)
-public class Correlation implements Rank {
+@ServiceProvider(service = RankEvaluator.class)
+public class Correlation implements RankEvaluator {
 
     private static final String NAME = "correlation";
 

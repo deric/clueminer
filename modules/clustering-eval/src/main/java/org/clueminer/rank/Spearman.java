@@ -18,10 +18,10 @@ package org.clueminer.rank;
 
 import java.util.HashMap;
 import org.clueminer.clustering.api.Clustering;
-import org.clueminer.clustering.api.Rank;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.clueminer.clustering.api.RankEvaluator;
 
 /**
  * Spearman's rank correlation coefficient
@@ -30,8 +30,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-@ServiceProvider(service = Rank.class)
-public class Spearman implements Rank {
+@ServiceProvider(service = RankEvaluator.class)
+public class Spearman implements RankEvaluator {
 
     private static final String NAME = "Spearman";
     private static final Logger LOG = LoggerFactory.getLogger(Spearman.class);
