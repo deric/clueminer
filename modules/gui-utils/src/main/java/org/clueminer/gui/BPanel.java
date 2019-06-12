@@ -194,7 +194,7 @@ public abstract class BPanel extends JPanel {
         }
     }
 
-    public void resetCache() {
+    public synchronized void resetCache() {
         if (parent != null) {
             parent.resetCache();
             return;
