@@ -79,7 +79,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private Collection<? extends Clustering> clusterings;
     private Clustering[] internal;
     private Clustering[] external;
-    private ClusteringComparator compInternal;
     private ClusteringComparator compExternal;
     private List<ClusterEvaluation<E, C>> objectives;
     private final MoEvaluator moEval;
@@ -129,7 +128,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         }
         moEval = new MoEvaluator();
         soEval = new AIC();
-        compInternal = new ClusteringComparator(soEval);
         rank = RankFactory.getInstance().getDefault();
         rankEval = RankEvaluatorFactory.getInstance().getDefault();
         extMap = new HashMap<>();
@@ -202,7 +200,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     internal = clusters.toArray(new Clustering[clusters.size()]);
                     external = clusters.toArray(new Clustering[clusters.size()]);
                 }
-                Arrays.parallelSort(internal, compInternal);
+                Arrays.parallelSort(internal, rank.getComparator());
                 Arrays.parallelSort(external, compExternal);
                 clusterings = clusters;
                 updateExtMapping();
@@ -286,12 +284,12 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      * @param ref
      * @return
      */
-    private double scoreWorst(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreWorst(Clustering[] clust, ClusterEvaluation<E, C> comp) throws ScoreException {
         double res = Double.NaN;
-        if (clust != null && clust.length > 0) {
+        if (comp != null && clust != null && clust.length > 0) {
             int i = 0;
             do {
-                res = comp.getScore(clust[i++]);
+                res = comp.score(clust[i++]);
             } while (!isFinite(res) && i < clust.length);
         }
         return res;
@@ -305,13 +303,13 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      * @param comp
      * @return
      */
-    private double scoreBest(Clustering[] clust, ClusteringComparator comp) {
+    private double scoreBest(Clustering[] clust, ClusterEvaluation<E, C> comp) throws ScoreException {
         double res = Double.NaN;
 
-        if (clust != null && clust.length > 0) {
+        if (comp != null && clust != null && clust.length > 0) {
             int i = clust.length - 1;
             do {
-                res = comp.getScore(clust[i--]);
+                res = comp.score(clust[i--]);
             } while (!isFinite(res) && i >= 0);
         }
 
@@ -320,108 +318,100 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     @Override
     public void render(Graphics2D g) {
-        this.g = g;
-        double xmin, xmax, ymin, ymax, ymid;
-
-        if (compInternal.getEvaluator() instanceof MoEvaluator) {
-            xmin = 0;
-            xmax = internal.length - 1;
-        } else {
-            xmin = scoreBest(internal, compInternal);
-            xmax = scoreWorst(internal, compInternal);
-        }
-
-        //xmid = (xmax - xmin) / 2.0 + xmin;
-        ymin = scoreBest(external, compExternal);
-        ymax = scoreWorst(external, compExternal);
-        //System.out.println("ymin= " + ymin + ", ymax= " + ymax);
-
-        if (crossAtMedian && external != null && external.length > 2) {
-            int pos = (external.length / 2);
-            try {
-                ymid = compExternal.getEvaluator().score(external[pos]);
-            } catch (ScoreException ex) {
-                ymid = 0.0;
-                LOG.warn("failed to compute{}: {}", compExternal.getEvaluator().getName(), ex.getMessage());
-            }
-        } else {
-            ymid = (ymax - ymin) / 2.0 + ymin;
-        }
-
-        //canvas dimensions
-        int cxMin, cxMax, cyMin, cyMax;
-        cxMin = insets.left + 20;
-        cyMin = insets.top + 15;
-        cyMax = getSize().height - insets.bottom;
-        int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
-        cxMax = drawXLabel(g, compInternal.getEvaluator().getName(), getSize().width - insets.right, cyMid);
-        int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
-        drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
-
-        //if we have clear bounds, use them
-        if (isFinite(compExternal.getEvaluator().getMin())) {
-            //for purpose of visualization min and max are reversed
-            if (!useActualMetricMax) {
-                ymax = compExternal.getEvaluator().getMin();
-            }
-        }
-        if (isFinite(compExternal.getEvaluator().getMax())) {
-            //for purpose of visualization min and max are reversed
-            if (!useActualMetricMax) {
-                ymin = compExternal.getEvaluator().getMax();
-            }
-        }
-
-        //set font for rendering rows
-        g.setFont(defaultFont);
-        double xVal, yVal, score, hypo, diff;
-        //draw
-        Rectangle2D rect;
-        Props p;
-        for (Clustering clust : external) {
-            //left clustering
-            score = compInternal.getScore(clust);
-            xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
-            score = compExternal.getScore(clust);
-
-            //color according to position difference to external score placement
-            hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
-            diff = Math.abs(xVal - hypo);
-            //last one is min rect. height
-            yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
-            p = clust.getParams();
-            if (p != null && p.get(AlgParams.ALG, "foo bar alg").equals(GROUND_TRUTH)) {
-                g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
-                g.setColor(Color.YELLOW);
+        try {
+            this.g = g;
+            double xmin, xmax, ymin, ymax, ymid;
+            if (rank.getEvaluator() instanceof MoEvaluator) {
+                xmin = 0;
+                xmax = internal.length - 1;
             } else {
-                g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-                //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
-                g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
-            }
-            if (yVal < cyMid) {
-                rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
+                xmin = scoreBest(internal, rank.getEvaluator());
+                xmax = scoreWorst(internal, rank.getEvaluator());
+            }   //xmid = (xmax - xmin) / 2.0 + xmin;
+            ymin = scoreBest(external, compExternal.getEvaluator());
+            ymax = scoreWorst(external, compExternal.getEvaluator());
+            //System.out.println("ymin= " + ymin + ", ymax= " + ymax);
+            if (crossAtMedian && external != null && external.length > 2) {
+                int pos = (external.length / 2);
+                try {
+                    ymid = compExternal.getEvaluator().score(external[pos]);
+                } catch (ScoreException ex) {
+                    ymid = 0.0;
+                    LOG.warn("failed to compute{}: {}", compExternal.getEvaluator().getName(), ex.getMessage());
+                }
             } else {
-                rect = new Rectangle2D.Double(xVal, cyMid, rectWidth, yVal - cyMid);
+                ymid = (ymax - ymin) / 2.0 + ymin;
             }
-            g.fill(rect);
-            g.draw(rect);
-            g.setComposite(AlphaComposite.SrcOver);
-            g.setColor(Color.black);
-            //drawNumberX(score, (int) xVal, (int) yVal);
-            //drawNumberX(diff, (int) xVal, (int) yVal);
-        }
-        g.setColor(fontColor);
-
-        drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
-        drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
-        if (showCorrelation) {
-            if (!Double.isNaN(correlation)) {
-                drawNumberX(correlation, cxMax, cyMin);
+            int cxMin, cxMax, cyMin, cyMax;
+            cxMin = insets.left + 20;
+            cyMin = insets.top + 15;
+            cyMax = getSize().height - insets.bottom;
+            int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
+            cxMax = drawXLabel(g, rank.getEvaluator().getName(), getSize().width - insets.right, cyMid);
+            int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
+            drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
+            //if we have clear bounds, use them
+            if (isFinite(compExternal.getEvaluator().getMin())) {
+                //for purpose of visualization min and max are reversed
+                if (!useActualMetricMax) {
+                    ymax = compExternal.getEvaluator().getMin();
+                }
             }
-        }
+            if (isFinite(compExternal.getEvaluator().getMax())) {
+                //for purpose of visualization min and max are reversed
+                if (!useActualMetricMax) {
+                    ymin = compExternal.getEvaluator().getMax();
+                }
+            }   //set font for rendering rows
+            g.setFont(defaultFont);
+            double xVal, yVal, score, hypo, diff;
+            //draw
+            Rectangle2D rect;
+            Props p;
+            for (Clustering clust : external) {
+                //left clustering
+                score = rank.getEvaluator().score(clust);
+                xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
+                score = compExternal.getScore(clust);
 
-        //average distance per item
-        g.dispose();
+                //color according to position difference to external score placement
+                hypo = scale.scaleToRange(score, ymin, ymax, cxMin, cxMax) - rectWidth / 2;
+                diff = Math.abs(xVal - hypo);
+                //last one is min rect. height
+                yVal = scale.scaleToRange(score, ymin, ymax, cyMin, cyMax);
+                p = clust.getParams();
+                if (p != null && p.get(AlgParams.ALG, "foo bar alg").equals(GROUND_TRUTH)) {
+                    g.setComposite(AlphaComposite.SrcOver.derive(0.8f));
+                    g.setColor(Color.YELLOW);
+                } else {
+                    g.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+                    //g.setColor(colorScheme.getColor(diff, ymin, ymid, ymax));
+                    g.setColor(colorScheme.getColor(diff, cxMin, cxMid, cxMax));
+                }
+                if (yVal < cyMid) {
+                    rect = new Rectangle2D.Double(xVal, yVal, rectWidth, cyMid - yVal);
+                } else {
+                    rect = new Rectangle2D.Double(xVal, cyMid, rectWidth, yVal - cyMid);
+                }
+                g.fill(rect);
+                g.draw(rect);
+                g.setComposite(AlphaComposite.SrcOver);
+                g.setColor(Color.black);
+                //drawNumberX(score, (int) xVal, (int) yVal);
+                //drawNumberX(diff, (int) xVal, (int) yVal);
+            }
+            g.setColor(fontColor);
+            drawHorizontalScale(g, cxMin, cxMax, cyMid, xmin, xmax);
+            drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
+            if (showCorrelation) {
+                if (!Double.isNaN(correlation)) {
+                    drawNumberX(correlation, cxMax, cyMin);
+                }
+            }   //average distance per item
+            g.dispose();
+        } catch (ScoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     private void drawVerticalScale(Graphics2D g, int cyMin, int cyMax, int xPos, double scMin, double scMax) {
@@ -639,12 +629,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     ph.start();
                     internal = rank.sort(internal, objectives);
 
-                    //compInternal.setEvaluator(moEval);
-                    if (rank.isMultiObjective()) {
-                        compInternal.setEvaluator(moEval);
-                    } else {
-                        compInternal.setEvaluator(soEval);
-                    }
                     correlation = updateCorrelation();
                     LOG.info("using {}({}), corr: {}", rank.getName(), printObjectives(), correlation);
                     clusteringChanged();
@@ -655,10 +639,14 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         }
     }
 
-    private void dumpInternal() {
+    protected void dumpInternal() {
         for (int i = 0; i < internal.length; i++) {
-            Clustering clustering = internal[i];
-            LOG.debug("{}: {}", clustering.fingerprint(), compInternal.getScore(clustering));
+            try {
+                Clustering clustering = internal[i];
+                LOG.debug("{}: {}", clustering.fingerprint(), rank.getEvaluator().score(clustering));
+            } catch (ScoreException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         }
     }
 

@@ -151,4 +151,9 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
         return (Comparator<Clustering<E, C>>) comp;
     }
 
+    @Override
+    public ClusterEvaluation<E, C> getEvaluator() {
+        return comp;
+    }
+
 }

@@ -66,4 +66,9 @@ public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
         return comp;
     }
 
+    @Override
+    public ClusterEvaluation<E, C> getEvaluator() {
+        return comp.getEvaluator();
+    }
+
 }

@@ -59,4 +59,10 @@ public interface Rank<E extends Instance, C extends Cluster<E>> {
      */
     Comparator<Clustering<E, C>> getComparator();
 
+    /**
+     *
+     * @return objective(s) used for evaluation
+     */
+    ClusterEvaluation<E, C> getEvaluator();
+
 }

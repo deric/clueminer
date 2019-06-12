@@ -73,4 +73,9 @@ public class MeanScore<E extends Instance, C extends Cluster<E>> implements Rank
         return comp;
     }
 
+    @Override
+    public ClusterEvaluation<E, C> getEvaluator() {
+        return comp;
+    }
+
 }
