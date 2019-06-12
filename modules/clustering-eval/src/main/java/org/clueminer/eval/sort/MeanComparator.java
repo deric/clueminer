@@ -22,10 +22,15 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.EvaluationTable;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.HashEvaluationTable;
+import org.clueminer.math.Matrix;
 import org.clueminer.std.StdScale;
+import org.clueminer.utils.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Computes mean of given objectives
@@ -34,7 +39,7 @@ import org.clueminer.std.StdScale;
  * @param <E>
  * @param <C>
  */
-public class MeanComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>> {
+public class MeanComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>>, ClusterEvaluation<E, C> {
 
     private List<ClusterEvaluation<E, C>> objectives;
 
@@ -45,6 +50,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
     //maximum value of each objective after scaling
     public static final double SCORE_MAX = 10.0;
     private final StdScale scale = new StdScale();
+    private static final Logger LOG = LoggerFactory.getLogger(MeanComparator.class);
 
     public MeanComparator(List<ClusterEvaluation<E, C>> objectives) {
         setObjectives(objectives);
@@ -55,32 +61,35 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
         double s1 = aggregatedScore(c1);
         double s2 = aggregatedScore(c2);
 
-        //minimize, smaller is better
-        if (s1 < s2) {
-            return 1;
-        } else if (s1 == s2) {
-            return 0;
-        } else {
-            return -1;
-        }
+        return compare(s1, s2);
     }
 
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
         double score = 0.0;
-        double value;
+        double value, sc;
         ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
             eval = objectives.get(i);
             value = et.getScore(eval);
+            //replace NaNs by worst known value
+            if (!Double.isFinite(value)) {
+                if (eval.isMaximized()) {
+                    value = min[i];
+                } else {
+                    value = max[i];
+                }
+            }
             //scale score to scale [0,10]
             if (eval.isMaximized()) {
                 //flip value
-                score += scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
+                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
             } else {
-                score += scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
+                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
             }
+            LOG.debug("{}: {}", eval.getName(), sc);
+            score += sc;
 
         }
         return score;
@@ -150,6 +159,86 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
         } else {
             throw new RuntimeException("no objectives were set");
         }
+    }
+
+    @Override
+    public String getName() {
+        return "mean score (" + printObjectives() + ")";
+    }
+
+    private String printObjectives() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (ClusterEvaluation ce : objectives) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(ce.getName());
+            i++;
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String getHandle() {
+        String h = getName().toLowerCase();
+        h = h.replace(" ", "_"); //space
+        h = h.replace("-", "_");
+        h = h.replace("+", "_");
+        h = h.replace("&", "_");
+        return h;
+    }
+
+    @Override
+    public double score(Clustering<E, C> clusters) throws ScoreException {
+        return aggregatedScore(clusters);
+    }
+
+    @Override
+    public double score(Clustering<E, C> clusters, Props params) throws ScoreException {
+        return score(clusters);
+    }
+
+    @Override
+    public double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException {
+        return score(clusters);
+    }
+
+    @Override
+    public boolean isBetter(double score1, double score2) {
+        return score1 < score2;
+    }
+
+    @Override
+    public int compare(double s1, double s2) {
+        //minimize, smaller is better
+        if (s1 < s2) {
+            return 1;
+        } else if (s1 == s2) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean isExternal() {
+        return true;
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return false;
+    }
+
+    @Override
+    public double getMin() {
+        return SCORE_MIN;
+    }
+
+    @Override
+    public double getMax() {
+        return objectives.size() * SCORE_MAX;
     }
 
 }
