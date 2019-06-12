@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
-import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -318,6 +317,9 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     @Override
     public void render(Graphics2D g) {
+        if (g == null) {
+            return;
+        }
         try {
             this.g = g;
             double xmin, xmax, ymin, ymax, ymid;
@@ -632,7 +634,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     correlation = updateCorrelation();
                     LOG.info("using {}({}), corr: {}", rank.getName(), printObjectives(), correlation);
                     clusteringChanged();
-                    dumpInternal();
+                    //dumpInternal();
                     ph.finish();
                 }
             });

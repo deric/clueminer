@@ -88,7 +88,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
             } else {
                 sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
             }
-            LOG.debug("{}: {}", eval.getName(), sc);
+            //LOG.debug("{}: {}", eval.getName(), sc);
             score += sc;
 
         }
@@ -157,7 +157,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
                 //System.out.println(objectives.get(i).getName() + ", min: " + min[i] + ", max: " + max[i] + ", mean: " + mean[i]);
             }
         } else {
-            throw new RuntimeException("no objectives were set");
+            LOG.error("no objectives were set");
         }
     }
 
