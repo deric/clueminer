@@ -22,11 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.eval.AbstractComparator;
 import org.clueminer.eval.utils.CountingPairs;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -69,6 +72,22 @@ public abstract class AbstractExternalEval<E extends Instance, C extends Cluster
             return score1 > score2;
         }
         return score1 < score2;
+    }
+
+    @Override
+    public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
+        try {
+            double s1 = score(c1);
+            double s2 = score(c2);
+            if (isBetter(s1, s2)) {
+                return 1;
+            } else if (s1 == s2) {
+                return 0;
+            }
+        } catch (ScoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return -1;
     }
 
     /**

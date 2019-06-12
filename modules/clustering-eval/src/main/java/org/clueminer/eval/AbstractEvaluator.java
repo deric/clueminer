@@ -36,6 +36,7 @@ import org.clueminer.math.matrix.SymmetricMatrixDiag;
 import org.clueminer.neighbor.KNNSearch;
 import org.clueminer.neighbor.KnnFactory;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 
 /**
  * Contains common methods for clustering quality evaluation.
@@ -82,6 +83,22 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     @Override
     public double score(Clustering<E, C> clusters, Matrix proximity, Props params) throws ScoreException {
         return score(clusters, params);
+    }
+
+    @Override
+    public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
+        try {
+            double s1 = score(c1);
+            double s2 = score(c2);
+            if (isBetter(s1, s2)) {
+                return 1;
+            } else if (s1 == s2) {
+                return 0;
+            }
+        } catch (ScoreException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return -1;
     }
 
     /**

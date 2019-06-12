@@ -16,6 +16,7 @@
  */
 package org.clueminer.evaluation.inline;
 
+import org.clueminer.eval.sort.MoEvaluator;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -33,8 +34,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -65,6 +65,8 @@ import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.clueminer.clustering.api.RankEvaluator;
 import org.clueminer.clustering.api.factory.RankFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -101,7 +103,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private int labelOffset = 13;
     public Clustering<E, C> goldenStd;
     private int rectWidth = 10;
-    private static final Logger LOGGER = Logger.getLogger(ScorePlot.class.getName());
     private boolean useActualMetricMax = true;
     private boolean crossAtMedian = true;
     private boolean showCorrelation = true;
@@ -110,6 +111,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private RankEvaluator rankEval;
     private Rank rank;
     private final HashMap<Integer, Integer> extMap;
+    private static final Logger LOG = LoggerFactory.getLogger(ScorePlot.class);
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -217,7 +219,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     protected void clusteringChanged() {
         if (hasData()) {
             resetCache();
-            correlation = updateCorrelation();
         }
     }
 
@@ -259,7 +260,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
                 for (E inst : dataset) {
                     if (inst.classValue() == null) {
-                        LOGGER.log(Level.SEVERE, "null class for inst {0}", inst.getIndex());
+                        LOG.error("null class for inst {}", inst.getIndex());
                     } else {
                         if (map.containsKey(inst.classValue())) {
                             assign = map.get(inst.classValue());
@@ -341,7 +342,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 ymid = compExternal.getEvaluator().score(external[pos]);
             } catch (ScoreException ex) {
                 ymid = 0.0;
-                LOGGER.log(Level.WARNING, "failed to compute{0}: {1}", new Object[]{compExternal.getEvaluator().getName(), ex.getMessage()});
+                LOG.warn("failed to compute{}: {}", compExternal.getEvaluator().getName(), ex.getMessage());
             }
         } else {
             ymid = (ymax - ymin) / 2.0 + ymin;
@@ -622,7 +623,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     public void setRankEvaluator(RankEvaluator rank) {
         this.rankEval = rank;
-        updateCorrelation();
     }
 
     public void setRank(Rank ranking) {
@@ -637,19 +637,28 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 @Override
                 public void run() {
                     ph.start();
-                    System.out.println("using " + rank.getName() + "(" + printObjectives() + ")");
                     internal = rank.sort(internal, objectives);
+
                     //compInternal.setEvaluator(moEval);
                     if (rank.isMultiObjective()) {
                         compInternal.setEvaluator(moEval);
                     } else {
                         compInternal.setEvaluator(soEval);
                     }
-                    System.out.println("sorted@!");
+                    correlation = updateCorrelation();
+                    LOG.info("using {}({}), corr: {}", rank.getName(), printObjectives(), correlation);
                     clusteringChanged();
+                    dumpInternal();
                     ph.finish();
                 }
             });
+        }
+    }
+
+    private void dumpInternal() {
+        for (int i = 0; i < internal.length; i++) {
+            Clustering clustering = internal[i];
+            LOG.debug("{}: {}", clustering.fingerprint(), compInternal.getScore(clustering));
         }
     }
 

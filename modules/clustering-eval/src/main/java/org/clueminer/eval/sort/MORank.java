@@ -17,6 +17,7 @@
 package org.clueminer.eval.sort;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "MO Rank";
+    private final MoEvaluator comp = new MoEvaluator();
 
     @Override
     public String getName() {
@@ -43,7 +45,7 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     }
 
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
-
+        comp.setObjectives(objectives);
         int n = clusterings.length;
         List<ArrayList<Clustering>> rankedSubpopulations;
 
@@ -142,6 +144,11 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     @Override
     public boolean isMultiObjective() {
         return true;
+    }
+
+    @Override
+    public Comparator<Clustering<E, C>> getComparator() {
+        return (Comparator<Clustering<E, C>>) comp;
     }
 
 }

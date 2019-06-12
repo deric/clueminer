@@ -17,6 +17,7 @@
 package org.clueminer.eval.sort;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -37,6 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "SO Rank";
+    private final ClusteringComparator comp = new ClusteringComparator();
 
     @Override
     public String getName() {
@@ -48,8 +50,8 @@ public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
         if (objectives.size() != 1) {
             throw new RuntimeException("Please provide single evaluation metric. " + objectives.size() + " was given");
         }
-
-        Arrays.parallelSort(clusterings, new ClusteringComparator(objectives.get(0)));
+        comp.setEvaluator(objectives.get(0));
+        Arrays.parallelSort(clusterings, comp);
 
         return clusterings;
     }
@@ -57,6 +59,11 @@ public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     @Override
     public boolean isMultiObjective() {
         return false;
+    }
+
+    @Override
+    public Comparator<Clustering<E, C>> getComparator() {
+        return comp;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.clueminer.evaluation.inline;
+package org.clueminer.eval.sort;
 
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
@@ -109,6 +109,7 @@ public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements Cl
         this.objectives = objectives;
     }
 
+    @Override
     public String getHandle() {
         String h = getName().toLowerCase();
         h = h.replace(" ", "_"); //space
@@ -116,6 +117,11 @@ public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements Cl
         h = h.replace("+", "_");
         h = h.replace("&", "_");
         return h;
+    }
+
+    @Override
+    public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
+        return compare(score(c1), score(c1));
     }
 
 }

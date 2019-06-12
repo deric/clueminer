@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.api;
 
+import java.util.Comparator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
@@ -27,7 +28,7 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
-public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> {
+public interface ClusterEvaluation<E extends Instance, C extends Cluster<E>> extends Comparator<Clustering<E, C>> {
 
     /**
      *

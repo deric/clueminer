@@ -139,5 +139,4 @@ public class AIC<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
     public double getMax() {
         return Double.NEGATIVE_INFINITY;
     }
-
 }

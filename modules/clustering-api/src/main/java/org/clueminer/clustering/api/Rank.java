@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.api;
 
+import java.util.Comparator;
 import java.util.List;
 import org.clueminer.dataset.api.Instance;
 
@@ -50,5 +51,12 @@ public interface Rank<E extends Instance, C extends Cluster<E>> {
      * @return
      */
     boolean isMultiObjective();
+
+    /**
+     * Comparator used for sorting/ranking.
+     *
+     * @return clustering comparator
+     */
+    Comparator<Clustering<E, C>> getComparator();
 
 }
