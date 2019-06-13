@@ -77,11 +77,9 @@ public class HarmonicMeanComparator<E extends Instance, C extends Cluster<E>> ex
         if (objectives != null) {
             min = new double[objectives.size()];
             max = new double[objectives.size()];
-            mean = new double[objectives.size()];
             for (int i = 0; i < objectives.size(); i++) {
                 min[i] = Double.MAX_VALUE;
                 max[i] = Double.MIN_VALUE;
-                mean[i] = 0.0;
             }
             double score;
             for (Clustering<E, C> clust : clusterings) {
@@ -93,13 +91,7 @@ public class HarmonicMeanComparator<E extends Instance, C extends Cluster<E>> ex
                     if (score > max[i]) {
                         max[i] = score;
                     }
-                    mean[i] += score;
                 }
-            }
-            //compute mean
-            for (int i = 0; i < objectives.size(); i++) {
-                mean[i] /= clusterings.length;
-                //System.out.println(objectives.get(i).getName() + ", min: " + min[i] + ", max: " + max[i] + ", mean: " + mean[i]);
             }
         } else {
             LOG.error("no objectives were set");

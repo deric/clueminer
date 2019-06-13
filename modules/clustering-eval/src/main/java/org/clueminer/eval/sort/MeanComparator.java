@@ -45,7 +45,6 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
 
     protected double[] min;
     protected double[] max;
-    protected double[] mean;
     //best single score value after scaling
     public static final double SCORE_MIN = 1.0;
     //maximum value of each objective after scaling
@@ -93,7 +92,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
             score += sc;
 
         }
-        return score;
+        return score / objectives.size();
     }
 
     public EvaluationTable evaluationTable(Clustering<E, C> clustering) {
@@ -133,11 +132,9 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
         if (objectives != null) {
             min = new double[objectives.size()];
             max = new double[objectives.size()];
-            mean = new double[objectives.size()];
             for (int i = 0; i < objectives.size(); i++) {
                 min[i] = Double.MAX_VALUE;
                 max[i] = Double.MIN_VALUE;
-                mean[i] = 0.0;
             }
             double score;
             for (Clustering<E, C> clust : clusterings) {
@@ -149,13 +146,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
                     if (score > max[i]) {
                         max[i] = score;
                     }
-                    mean[i] += score;
                 }
-            }
-            //compute mean
-            for (int i = 0; i < objectives.size(); i++) {
-                mean[i] /= clusterings.length;
-                //System.out.println(objectives.get(i).getName() + ", min: " + min[i] + ", max: " + max[i] + ", mean: " + mean[i]);
             }
         } else {
             LOG.error("no objectives were set");
@@ -234,12 +225,12 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double getMin() {
-        return objectives.size() * SCORE_MIN;
+        return SCORE_MIN;
     }
 
     @Override
     public double getMax() {
-        return objectives.size() * SCORE_MAX;
+        return SCORE_MAX;
     }
 
 }
