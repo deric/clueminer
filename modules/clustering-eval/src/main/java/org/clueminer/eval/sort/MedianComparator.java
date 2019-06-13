@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.sort;
 
+import java.util.Arrays;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -30,52 +31,56 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author deric
- * @param <E>
- * @param <C>
  */
-public class HarmonicMeanComparator<E extends Instance, C extends Cluster<E>> extends MeanComparator<E, C> {
+public class MedianComparator<E extends Instance, C extends Cluster<E>> extends MeanComparator<E, C> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HarmonicMeanComparator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MedianComparator.class);
 
-    public HarmonicMeanComparator(List<ClusterEvaluation<E, C>> objectives) {
+    public MedianComparator(List<ClusterEvaluation<E, C>> objectives) {
         super(objectives);
     }
 
     @Override
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
-        double score = 0.0;
-        double value, sc;
+        double score, median;
+        double[] value = new double[objectives.size()];
         ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
             eval = objectives.get(i);
-            value = et.getScore(eval);
+            score = et.getScore(eval);
             //replace NaNs by worst known value
-            if (!Double.isFinite(value)) {
+            if (!Double.isFinite(score)) {
                 if (eval.isMaximized()) {
-                    value = min[i];
+                    score = min[i];
                 } else {
-                    value = max[i];
+                    score = max[i];
                 }
             }
             //scale score to scale [1,10]
             if (eval.isMaximized()) {
                 //flip value
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
+                score = scale.scaleToRange(score, min[i], max[i], SCORE_MAX, SCORE_MIN);
             } else {
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
+                score = scale.scaleToRange(score, min[i], max[i], SCORE_MIN, SCORE_MAX);
             }
-            //LOG.debug("{}: {}", eval.getName(), sc);
-            score += 1.0 / sc;
-
+            value[i] = score;
         }
-        return objectives.size() / score;
+        Arrays.sort(value);
+
+        if (value.length % 2 == 0) {
+            median = ((double) value[value.length / 2] + (double) value[value.length / 2 - 1]) / 2;
+        } else {
+            median = (double) value[value.length / 2];
+        }
+
+        return median;
     }
 
     @Override
     public String getName() {
-        return "harmonic mean (" + printObjectives() + ")";
+        return "median (" + printObjectives() + ")";
     }
 
     @Override
