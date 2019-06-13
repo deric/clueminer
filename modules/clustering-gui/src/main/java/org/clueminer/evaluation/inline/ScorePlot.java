@@ -440,13 +440,11 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         drawNumberX(scMax, cxMax, yPos + scaleTickLength / 2 + labelOffset);
     }
 
-    private void drawNumberX(double value, int x, int y) {
+    private synchronized void drawNumberX(double value, int x, int y) {
         String lb = decimalFormat.format(value);
         int sw = stringWidth(defaultFont, g, lb);
         //center the number
-        if (lb != null) {
-            g.drawString(lb, x - sw / 2, y);
-        }
+        g.drawString(lb, x - sw / 2, y);
     }
 
     private void drawNumberY(double value, int x, int y, FontMetrics hfm) {
