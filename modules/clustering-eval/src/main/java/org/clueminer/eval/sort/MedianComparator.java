@@ -43,29 +43,11 @@ public class MedianComparator<E extends Instance, C extends Cluster<E>> extends 
     @Override
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
-        double score, median;
+        double median;
         double[] values = new double[objectives.size()];
-        ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
-            eval = objectives.get(i);
-            score = et.getScore(eval);
-            //replace NaNs by worst known value
-            if (!Double.isFinite(score)) {
-                if (eval.isMaximized()) {
-                    score = min[i];
-                } else {
-                    score = max[i];
-                }
-            }
-            //scale score to scale [1,10]
-            if (eval.isMaximized()) {
-                //flip value
-                score = scale.scaleToRange(score, min[i], max[i], SCORE_MAX, SCORE_MIN);
-            } else {
-                score = scale.scaleToRange(score, min[i], max[i], SCORE_MIN, SCORE_MAX);
-            }
-            values[i] = score;
+            values[i] = normalize(et, i);
         }
         Arrays.sort(values);
 

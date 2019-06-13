@@ -45,30 +45,9 @@ public class HarmonicMeanComparator<E extends Instance, C extends Cluster<E>> ex
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
         double score = 0.0;
-        double value, sc;
-        ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
-            eval = objectives.get(i);
-            value = et.getScore(eval);
-            //replace NaNs by worst known value
-            if (!Double.isFinite(value)) {
-                if (eval.isMaximized()) {
-                    value = min[i];
-                } else {
-                    value = max[i];
-                }
-            }
-            //scale score to scale [1,10]
-            if (eval.isMaximized()) {
-                //flip value
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
-            } else {
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
-            }
-            //LOG.debug("{}: {}", eval.getName(), sc);
-            score += 1.0 / sc;
-
+            score += 1.0 / normalize(et, i);
         }
         return objectives.size() / score;
     }

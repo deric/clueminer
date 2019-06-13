@@ -45,26 +45,9 @@ class Mean2Comparator<E extends Instance, C extends Cluster<E>> extends MeanComp
         EvaluationTable et = evaluationTable(clust);
         double score, sum = 0.0, avg;
         double[] values = new double[objectives.size()];
-        ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
-            eval = objectives.get(i);
-            score = et.getScore(eval);
-            //replace NaNs by worst known value
-            if (!Double.isFinite(score)) {
-                if (eval.isMaximized()) {
-                    score = min[i];
-                } else {
-                    score = max[i];
-                }
-            }
-            //scale score to scale [1,10]
-            if (eval.isMaximized()) {
-                //flip value
-                score = scale.scaleToRange(score, min[i], max[i], SCORE_MAX, SCORE_MIN);
-            } else {
-                score = scale.scaleToRange(score, min[i], max[i], SCORE_MIN, SCORE_MAX);
-            }
+            score = normalize(et, i);
             values[i] = score;
             sum += score;
         }

@@ -64,33 +64,32 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
         return compare(s1, s2);
     }
 
+    protected double normalize(EvaluationTable et, int i) {
+        ClusterEvaluation<E, C> eval = objectives.get(i);
+        double value = et.getScore(eval);
+        //replace NaNs by worst known value
+        if (!Double.isFinite(value)) {
+            if (eval.isMaximized()) {
+                value = min[i];
+            } else {
+                value = max[i];
+            }
+        }
+        //scale score to scale [1,10]
+        if (eval.isMaximized()) {
+            //flip value
+            return scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
+        } else {
+            return scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
+        }
+    }
+
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
         double score = 0.0;
-        double value, sc;
-        ClusterEvaluation<E, C> eval;
 
         for (int i = 0; i < objectives.size(); i++) {
-            eval = objectives.get(i);
-            value = et.getScore(eval);
-            //replace NaNs by worst known value
-            if (!Double.isFinite(value)) {
-                if (eval.isMaximized()) {
-                    value = min[i];
-                } else {
-                    value = max[i];
-                }
-            }
-            //scale score to scale [1,10]
-            if (eval.isMaximized()) {
-                //flip value
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
-            } else {
-                sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
-            }
-            //LOG.debug("{}: {}", eval.getName(), sc);
-            score += sc;
-
+            score += normalize(et, i);
         }
         return score / objectives.size();
     }
