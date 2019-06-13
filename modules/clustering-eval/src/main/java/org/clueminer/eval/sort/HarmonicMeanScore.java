@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "Harmonic Mean";
-    private MeanComparator comp;
+    private HarmonicMeanComparator comp = new HarmonicMeanComparator();
 
     @Override
     public String getName() {
@@ -51,7 +51,7 @@ public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> impleme
 
     @Override
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
-        comp = new HarmonicMeanComparator(objectives);
+        comp.setObjectives(objectives);
         //scan input values
         comp.updateStats(clusterings);
 
@@ -66,7 +66,8 @@ public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> impleme
         return false;
     }
 
-    public MeanComparator getComparator() {
+    @Override
+    public HarmonicMeanComparator getComparator() {
         return comp;
     }
 

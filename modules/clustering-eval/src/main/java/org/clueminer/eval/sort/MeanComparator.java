@@ -18,6 +18,7 @@ package org.clueminer.eval.sort;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -53,6 +54,10 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
     protected final StdScale scale = new StdScale();
     private static final Logger LOG = LoggerFactory.getLogger(MeanComparator.class);
 
+    public MeanComparator() {
+        objectives = new LinkedList<>();
+    }
+
     public MeanComparator(List<ClusterEvaluation<E, C>> objectives) {
         this.objectives = objectives;
     }
@@ -83,7 +88,6 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
         }
         return sc;
     }
-
 
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
@@ -126,6 +130,8 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
 
     public void setObjectives(List<ClusterEvaluation<E, C>> objectives) {
         this.objectives = objectives;
+        min = new double[objectives.size()];
+        max = new double[objectives.size()];
     }
 
     public void updateStats(Clustering<E, C>[] clusterings) {

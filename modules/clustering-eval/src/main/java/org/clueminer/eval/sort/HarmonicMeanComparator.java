@@ -37,6 +37,10 @@ public class HarmonicMeanComparator<E extends Instance, C extends Cluster<E>> ex
 
     private static final Logger LOG = LoggerFactory.getLogger(HarmonicMeanComparator.class);
 
+    public HarmonicMeanComparator() {
+        super();
+    }
+
     public HarmonicMeanComparator(List<ClusterEvaluation<E, C>> objectives) {
         super(objectives);
     }
