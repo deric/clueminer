@@ -321,7 +321,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
 
     @Override
     public void render(Graphics2D g) {
-        if (g == null) {
+        if (g == null || rank.getEvaluator() == null) {
             return;
         }
         try {
@@ -348,18 +348,13 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             } else {
                 ymid = (ymax - ymin) / 2.0 + ymin;
             }
-            int cxMin, cxMax = 0, cyMin, cyMax;
+            int cxMin, cxMax, cyMin, cyMax;
             cxMin = insets.left + 20;
             cyMin = insets.top + 15;
             cyMax = getSize().height - insets.bottom;
             int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
-            if (rank == null) {
-                return;
-            }
             LOG.info("rank {}, eval: {}", rank.getName(), rank.getEvaluator());
-            if (rank.getEvaluator() != null) {
-                cxMax = drawXLabel(g, rank.getEvaluator().getName(), getSize().width - insets.right, cyMid);
-            }
+            cxMax = drawXLabel(g, rank.getEvaluator().getName(), getSize().width - insets.right, cyMid);
             int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
             drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
             //if we have clear bounds, use them
