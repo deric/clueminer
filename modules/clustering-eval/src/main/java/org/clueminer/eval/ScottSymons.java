@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
+import org.clueminer.math.Matrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,9 +53,15 @@ public class ScottSymons<E extends Instance, C extends Cluster<E>> extends Abstr
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        double score = 0.0;
+        double score = 0.0, det;
+        Matrix W;
         for (Cluster clust : clusters) {
-            score += clust.size() * Math.log(wgScatter(clust).times(1.0 / (double) clust.size()).det());
+            W = wgScatter(clust);
+            det = W.times(1.0 / (double) clust.size()).det();
+            //avoid NaNs
+            if (det > 0) {
+                score += clust.size() * Math.log(det);
+            }
         }
 
         return score;
