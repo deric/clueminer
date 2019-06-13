@@ -30,9 +30,9 @@ import static org.junit.Assert.*;
  *
  * @author deric
  */
-public class MeanScoreTest {
+public class HarmonicMeanScoreTest {
 
-    private static final MeanScore subject = new MeanScore();
+    private static final HarmonicMeanScore subject = new HarmonicMeanScore();
 
     private static final double DELTA = 1e-9;
 

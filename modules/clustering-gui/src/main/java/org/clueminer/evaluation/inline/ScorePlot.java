@@ -444,7 +444,9 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         String lb = decimalFormat.format(value);
         int sw = stringWidth(defaultFont, g, lb);
         //center the number
-        g.drawString(lb, x - sw / 2, y);
+        if (lb != null) {
+            g.drawString(lb, x - sw / 2, y);
+        }
     }
 
     private void drawNumberY(double value, int x, int y, FontMetrics hfm) {

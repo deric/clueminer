@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Computes mean of given objectives
+ * Computes mean of given objectives for each clustering
  *
  * @author deric
  * @param <E>
@@ -41,19 +41,20 @@ import org.slf4j.LoggerFactory;
  */
 public class MeanComparator<E extends Instance, C extends Cluster<E>> implements Comparator<Clustering<E, C>>, ClusterEvaluation<E, C> {
 
-    private List<ClusterEvaluation<E, C>> objectives;
+    protected List<ClusterEvaluation<E, C>> objectives;
 
-    private double[] min;
-    private double[] max;
-    private double[] mean;
-    public static final double SCORE_MIN = 0.0;
+    protected double[] min;
+    protected double[] max;
+    protected double[] mean;
+    //best single score value after scaling
+    public static final double SCORE_MIN = 1.0;
     //maximum value of each objective after scaling
     public static final double SCORE_MAX = 10.0;
-    private final StdScale scale = new StdScale();
+    protected final StdScale scale = new StdScale();
     private static final Logger LOG = LoggerFactory.getLogger(MeanComparator.class);
 
     public MeanComparator(List<ClusterEvaluation<E, C>> objectives) {
-        setObjectives(objectives);
+        this.objectives = objectives;
     }
 
     @Override
@@ -81,7 +82,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
                     value = max[i];
                 }
             }
-            //scale score to scale [0,10]
+            //scale score to scale [1,10]
             if (eval.isMaximized()) {
                 //flip value
                 sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
@@ -163,10 +164,10 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public String getName() {
-        return "mean score (" + printObjectives() + ")";
+        return "mean (" + printObjectives() + ")";
     }
 
-    private String printObjectives() {
+    protected String printObjectives() {
         StringBuilder sb = new StringBuilder();
         int i = 0;
         for (ClusterEvaluation ce : objectives) {
@@ -233,7 +234,7 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double getMin() {
-        return SCORE_MIN;
+        return objectives.size() * SCORE_MIN;
     }
 
     @Override

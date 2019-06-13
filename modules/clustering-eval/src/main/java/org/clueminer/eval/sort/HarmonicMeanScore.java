@@ -26,9 +26,9 @@ import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Mean score ranking strategy
+ * Harmonic Mean score ranking strategy
  *
- * Based on: Vendramin, L.; Jaskowiak, P. A.; Campello, R. J. On the combination
+ * Based on: Vendramin, L.; Jaskowiak, P.A.; Campello, R.J. On the combination
  * of relative clustering validity criteria. In Proceedings of the 25th
  * International Conference on Scientific and Statistical Database Management,
  * ACM, 2013, pp. 4–15.
@@ -38,9 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @param <C>
  */
 @ServiceProvider(service = Rank.class)
-public class MeanScore<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
+public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
-    private static final String NAME = "Mean";
+    private static final String NAME = "Harmonic Mean";
     private MeanComparator comp;
 
     @Override
@@ -54,7 +54,7 @@ public class MeanScore<E extends Instance, C extends Cluster<E>> implements Rank
             throw new RuntimeException("Please provide at least two evaluation metrics. " + objectives.size() + " was given");
         }
 
-        comp = new MeanComparator(objectives);
+        comp = new HarmonicMeanComparator(objectives);
         //scan input values
         comp.updateStats(clusterings);
 
