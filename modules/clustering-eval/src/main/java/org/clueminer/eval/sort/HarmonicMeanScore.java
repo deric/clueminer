@@ -22,6 +22,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -50,10 +51,6 @@ public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> impleme
 
     @Override
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
-        if (objectives.size() < 2) {
-            throw new RuntimeException("Please provide at least two evaluation metrics. " + objectives.size() + " was given");
-        }
-
         comp = new HarmonicMeanComparator(objectives);
         //scan input values
         comp.updateStats(clusterings);
@@ -76,6 +73,13 @@ public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> impleme
     @Override
     public ClusterEvaluation<E, C> getEvaluator() {
         return comp;
+    }
+
+    @Override
+    public void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException {
+        if (objectives.size() < 2) {
+            throw new ConfigException("Please provide at least two evaluation metrics. " + objectives.size() + " was given");
+        }
     }
 
 }

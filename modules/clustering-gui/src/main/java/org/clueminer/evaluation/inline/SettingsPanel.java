@@ -28,10 +28,14 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusterEvaluation;
+import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.RankEvaluatorFactory;
 import org.clueminer.clustering.api.factory.RankFactory;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  *
@@ -86,7 +90,6 @@ public class SettingsPanel extends JPanel {
         c.gridx = 1;
         add(comboCorrelation, c);
 
-
         c.gridy++;
         c.gridx = 0;
         add(new JLabel("External evaluation:"), c);
@@ -132,12 +135,18 @@ public class SettingsPanel extends JPanel {
         plot.setCrossAxisAtMedian(chckMedian.isSelected());
         plot.setShowCorrelation(chckCorrelation.isSelected());
         plot.setRankEvaluator(RankEvaluatorFactory.getInstance().getProvider(comboCorrelation.getSelectedItem().toString()));
-        plot.setRank(RankFactory.getInstance().getProvider(comboRanking.getSelectedItem().toString()));
+        Rank rank = RankFactory.getInstance().getProvider(comboRanking.getSelectedItem().toString());
+        plot.setRank(rank);
         plot.setEvaluatorX(ExternalEvaluatorFactory.getInstance().getProvider(comboExternal.getSelectedItem().toString()));
         List<ClusterEvaluation> objectives = getObjectives();
-        //TODO: validate number of objectives
-        plot.setObjectives(objectives);
-        plot.computeRanking();
+        try {
+            rank.validate(objectives);
+            plot.setObjectives(objectives);
+            plot.computeRanking();
+        } catch (ConfigException ex) {
+            NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            DialogDisplayer.getDefault().notify(msg);
+        }
     }
 
     private List<ClusterEvaluation> getObjectives() {

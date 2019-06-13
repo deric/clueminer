@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,9 +48,6 @@ public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
 
     @Override
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
-        if (objectives.size() != 1) {
-            throw new RuntimeException("Please provide single evaluation metric. " + objectives.size() + " was given");
-        }
         comp.setEvaluator(objectives.get(0));
         Arrays.parallelSort(clusterings, comp);
 
@@ -69,6 +67,13 @@ public class SORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     @Override
     public ClusterEvaluation<E, C> getEvaluator() {
         return comp.getEvaluator();
+    }
+
+    @Override
+    public void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException {
+        if (objectives.size() != 1) {
+            throw new ConfigException("Please provide just one validation metric. " + objectives.size() + " were given");
+        }
     }
 
 }

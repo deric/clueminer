@@ -25,6 +25,7 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -154,6 +155,13 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     @Override
     public ClusterEvaluation<E, C> getEvaluator() {
         return comp;
+    }
+
+    @Override
+    public void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException {
+        if (objectives.size() < 2) {
+            throw new ConfigException("Please provide at least two evaluation metrics. " + objectives.size() + " was given");
+        }
     }
 
 }

@@ -18,6 +18,7 @@ package org.clueminer.clustering.api;
 
 import java.util.Comparator;
 import java.util.List;
+import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
 
 /**
@@ -64,5 +65,7 @@ public interface Rank<E extends Instance, C extends Cluster<E>> {
      * @return objective(s) used for evaluation
      */
     ClusterEvaluation<E, C> getEvaluator();
+
+    void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException;
 
 }
