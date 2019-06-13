@@ -39,15 +39,21 @@ public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements Cl
         if (objectives == null) {
             return "(none)";
         } else {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < objectives.size(); i++) {
-                if (i > 0) {
-                    sb.append(" & ");
-                }
-                sb.append(objectives.get(i).getName());
-            }
-            return sb.toString();
+            return "MO Rank (" + printObjectives() + ")";
         }
+    }
+
+    protected String printObjectives() {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (ClusterEvaluation ce : objectives) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(ce.getName());
+            i++;
+        }
+        return sb.toString();
     }
 
     @Override

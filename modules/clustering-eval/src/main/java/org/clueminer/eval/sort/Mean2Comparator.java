@@ -69,7 +69,7 @@ class Mean2Comparator<E extends Instance, C extends Cluster<E>> extends MeanComp
 
     @Override
     public String getName() {
-        return "median (" + printObjectives() + ")";
+        return "mean-2 (" + printObjectives() + ")";
     }
 
     @Override
