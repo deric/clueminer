@@ -32,18 +32,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-public class MedianComparator<E extends Instance, C extends Cluster<E>> extends MeanComparator<E, C> {
+class Mean2Comparator<E extends Instance, C extends Cluster<E>> extends MeanComparator<E, C> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MedianComparator.class);
 
-    public MedianComparator(List<ClusterEvaluation<E, C>> objectives) {
+    public Mean2Comparator(List<ClusterEvaluation<E, C>> objectives) {
         super(objectives);
     }
 
     @Override
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
-        double score, median;
+        double score, sum = 0.0, avg;
         double[] values = new double[objectives.size()];
         ClusterEvaluation<E, C> eval;
 
@@ -66,16 +66,22 @@ public class MedianComparator<E extends Instance, C extends Cluster<E>> extends 
                 score = scale.scaleToRange(score, min[i], max[i], SCORE_MIN, SCORE_MAX);
             }
             values[i] = score;
+            sum += score;
         }
         Arrays.sort(values);
-
-        if (values.length % 2 == 0) {
-            median = ((double) values[values.length / 2] + (double) values[values.length / 2 - 1]) / 2;
+        avg = sum / (double) objectives.size();
+        double d1 = avg - values[0];
+        double d2 = values[values.length - 1] - avg;
+        //remove the most discrepant evaluation
+        //it should be either the largest or smallest value
+        if (d1 > d2) {
+            sum -= values[0];
         } else {
-            median = (double) values[values.length / 2];
+            sum -= values[values.length - 1];
         }
 
-        return median;
+        //at least 3 objectives are needed
+        return sum / (objectives.size() - 1.0);
     }
 
     @Override
