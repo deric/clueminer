@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval.sort;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import org.clueminer.clustering.api.Cluster;
@@ -67,22 +68,22 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
     protected double normalize(EvaluationTable et, int i) {
         ClusterEvaluation<E, C> eval = objectives.get(i);
         double value = et.getScore(eval);
+        double sc;
         //replace NaNs by worst known value
         if (!Double.isFinite(value)) {
-            if (eval.isMaximized()) {
-                value = min[i];
-            } else {
-                value = max[i];
-            }
+            return SCORE_MAX;
         }
+
         //scale score to scale [1,10]
         if (eval.isMaximized()) {
             //flip value
-            return scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
+            sc = scale.scaleToRange(value, min[i], max[i], SCORE_MAX, SCORE_MIN);
         } else {
-            return scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
+            sc = scale.scaleToRange(value, min[i], max[i], SCORE_MIN, SCORE_MAX);
         }
+        return sc;
     }
+
 
     public double aggregatedScore(Clustering<E, C> clust) {
         EvaluationTable et = evaluationTable(clust);
@@ -139,11 +140,13 @@ public class MeanComparator<E extends Instance, C extends Cluster<E>> implements
             for (Clustering<E, C> clust : clusterings) {
                 for (int i = 0; i < objectives.size(); i++) {
                     score = getScore(clust, objectives.get(i));
-                    if (score < min[i]) {
-                        min[i] = score;
-                    }
-                    if (score > max[i]) {
-                        max[i] = score;
+                    if (Double.isFinite(score)) {
+                        if (score < min[i]) {
+                            min[i] = score;
+                        }
+                        if (score > max[i]) {
+                            max[i] = score;
+                        }
                     }
                 }
             }

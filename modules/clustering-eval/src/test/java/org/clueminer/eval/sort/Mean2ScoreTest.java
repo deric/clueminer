@@ -23,6 +23,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.CIndex;
 import org.clueminer.eval.CalinskiHarabasz;
+import org.clueminer.eval.ScottSymons;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -68,6 +69,41 @@ public class Mean2ScoreTest {
 
         Clustering best = res[res.length - 1];
         assertEquals(FakeClustering.iris(), best);
+        // in this case it's 2.0, but it doesn't have to be
+        assertEquals(comp.getMin(), comp.aggregatedScore(best), DELTA);
+    }
+
+    @Test
+    public void testIris() {
+        Clustering[] clusterings = new Clustering[6];
+        int i = 0;
+
+        clusterings[i++] = FakeClustering.iris();
+        clusterings[i++] = FakeClustering.irisMostlyWrong();
+        clusterings[i++] = FakeClustering.irisWrong4();
+        clusterings[i++] = FakeClustering.irisWrong();
+        clusterings[i++] = FakeClustering.irisWrong2();
+        clusterings[i++] = FakeClustering.irisWrong5();
+
+        List<ClusterEvaluation> eval = new LinkedList<>();
+        eval.add(new CalinskiHarabasz());
+        eval.add(new AIC());
+        eval.add(new ScottSymons());
+
+        Clustering[] res = subject.sort(clusterings, eval);
+        assertEquals(clusterings.length, res.length);
+        //we use supervised criterion, first solution must be "correct" clustering
+
+        Mean2Comparator comp = subject.getComparator();
+        double value;
+        for (int j = 0; j < res.length; j++) {
+            value = comp.aggregatedScore(res[j]);
+            assertTrue("given two objectives, the value can't be worser: " + value, value <= 10 * eval.size());
+            System.out.println(j + ": " + res[j].fingerprint() + " = " + comp.aggregatedScore(res[j]));
+        }
+
+        Clustering best = res[res.length - 1];
+        //assertEquals(FakeClustering.iris(), best);
         // in this case it's 2.0, but it doesn't have to be
         assertEquals(comp.getMin(), comp.aggregatedScore(best), DELTA);
     }

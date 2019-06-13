@@ -86,7 +86,7 @@ public class InlinePanel<E extends Instance, C extends Cluster<E>> extends JPane
             for (Clustering c : clusterings) {
                 c.setId(i++);
             }
-            plot.setClusterings((Collection<Clustering>) clusterings);
+            plot.setClusterings(clusterings);
         }
     }
 

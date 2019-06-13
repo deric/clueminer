@@ -39,12 +39,17 @@ public class ScottSymonsTest {
         double s1 = subject.score(FakeClustering.iris());
         double s2 = subject.score(FakeClustering.irisMostlyWrong());
         double s3 = subject.score(FakeClustering.irisWrong5());
-        assertEquals(false, subject.isBetter(s1, s2));
-        assertEquals(false, subject.isBetter(s1, s3));
+        assertEquals(true, subject.isBetter(s1, s2));
+        assertEquals(true, subject.isBetter(s1, s3));
 
         // value according to R's NbClust package
         //assertEquals(1294.41449050555, s1, DELTA);
         //TODO: current value: -1655.558816645169
+    }
+
+    @Test
+    public void testNaN() throws ScoreException {
+        assertEquals(true, Double.isFinite(subject.score(FakeClustering.irisMostlyWrong())));
     }
 
     @Test

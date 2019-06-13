@@ -18,14 +18,13 @@ package org.clueminer.evaluation.inline;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Rank;
@@ -34,8 +33,12 @@ import org.clueminer.clustering.api.factory.ExternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.clustering.api.factory.RankEvaluatorFactory;
 import org.clueminer.clustering.api.factory.RankFactory;
+import org.clueminer.eval.sort.MeanComparator;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.windows.WindowManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -52,6 +55,8 @@ public class SettingsPanel extends JPanel {
     private JComboBox comboRanking;
     private JComboBox comboExternal;
     private JCheckBox[] chckEvals;
+    private static final Logger LOG = LoggerFactory.getLogger(SettingsPanel.class);
+
 
     public SettingsPanel() {
         initComponents();
@@ -144,6 +149,7 @@ public class SettingsPanel extends JPanel {
             plot.setObjectives(objectives);
             plot.computeRanking();
         } catch (ConfigException ex) {
+            LOG.info("ranking validation failed: {}", ex.getMessage());
             NotifyDescriptor.Message msg = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notify(msg);
         }

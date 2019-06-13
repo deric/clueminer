@@ -225,6 +225,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
      * @return
      */
     protected double updateCorrelation() {
+        LOG.debug("updating correlation");
         if (rankEval != null) {
             return rankEval.correlation(external, internal, extMap);
         }
@@ -344,12 +345,15 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             } else {
                 ymid = (ymax - ymin) / 2.0 + ymin;
             }
-            int cxMin, cxMax, cyMin, cyMax;
+            int cxMin, cxMax = 0, cyMin, cyMax;
             cxMin = insets.left + 20;
             cyMin = insets.top + 15;
             cyMax = getSize().height - insets.bottom;
             int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
-            cxMax = drawXLabel(g, rank.getEvaluator().getName(), getSize().width - insets.right, cyMid);
+            String evaluator = rank.getEvaluator().getName();
+            if (evaluator != null) {
+                cxMax = drawXLabel(g, evaluator, getSize().width - insets.right, cyMid);
+            }
             int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
             drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
             //if we have clear bounds, use them
@@ -407,6 +411,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
             if (showCorrelation) {
                 if (!Double.isNaN(correlation)) {
+                    LOG.debug("drawing correlation: {}", correlation);
                     drawNumberX(correlation, cxMax, cyMin);
                 }
             }   //average distance per item
@@ -447,7 +452,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         g.drawString(lb, x - sw / 2, y);
     }
 
-    private void drawNumberY(double value, int x, int y, FontMetrics hfm) {
+    private synchronized void drawNumberY(double value, int x, int y, FontMetrics hfm) {
         String lb = decimalFormat.format(value);
 
         //center the number
