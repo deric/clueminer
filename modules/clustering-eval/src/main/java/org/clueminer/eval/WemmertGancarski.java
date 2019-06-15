@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Wemmert Gancarski criterion
@@ -31,9 +32,10 @@ import org.clueminer.utils.Props;
  * @param <E>
  * @param <C>
  */
+@ServiceProvider(service = InternalEvaluator.class)
 public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
-    private static final String name = "Wemmert-Gancarski";
+    private static final String NAME = "Wemmert-Gancarski";
     private static final long serialVersionUID = -1206250158135544566L;
 
     public WemmertGancarski() {
@@ -46,7 +48,7 @@ public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends 
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends 
             sr = 0.0;
             c = clust.getCentroid();
             for (int j = 0; j < clust.size(); j++) {
-                inst = clust.get(i);
+                inst = clust.get(j);
                 sr += r(clusters, inst, c, i);
             }
             sr /= clust.size();
@@ -80,9 +82,11 @@ public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends 
         for (int i = 0; i < clusters.size(); i++) {
             if (i != id) {
                 c = clusters.get(i).getCentroid();
-                d = dm.measure(c, inst);
-                if (d < min) {
-                    min = d;
+                if (c.size() > 1) {
+                    d = dm.measure(c, inst);
+                    if (d < min) {
+                        min = d;
+                    }
                 }
             }
         }

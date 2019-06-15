@@ -28,7 +28,7 @@ import org.junit.Test;
 public class WemmertGancarskiTest {
 
     private final WemmertGancarski subject;
-    private static final double delta = 1e-9;
+    private static final double DELTA = 1e-9;
 
     public WemmertGancarskiTest() {
         subject = new WemmertGancarski();
@@ -40,6 +40,10 @@ public class WemmertGancarskiTest {
         double scoreWorser = subject.score(FakeClustering.irisWrong4());
 
         //should recognize better clustering
+        assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+
+        scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
+        scoreBetter = subject.score(FakeClustering.irisTwoClusters());
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
     }
 
@@ -54,7 +58,6 @@ public class WemmertGancarskiTest {
     public void testClusterCrit() throws ScoreException {
         double score = subject.score(FakeClustering.int100p4());
         //clustCrit: 0.877070546494266
-        //TODO: check implementation
-        //assertEquals(0.877070546494266, score, delta);
+        assertEquals(0.8770705464942659, score, DELTA);
     }
 }
