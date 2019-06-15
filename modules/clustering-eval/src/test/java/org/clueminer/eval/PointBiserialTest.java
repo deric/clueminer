@@ -43,33 +43,27 @@ public class PointBiserialTest {
     @Test
     public void testIris() throws ScoreException {
         double scoreBetter = subject.score(FakeClustering.iris());
-        double scoreWorser = subject.score(FakeClustering.irisWrong4());
+        double scoreWorser = subject.score(FakeClustering.irisMostlyWrong());
 
         System.out.println("better: " + scoreBetter);
         System.out.println("worser: " + scoreWorser);
 
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+        //NbClust
+        //assertEquals(0.680019167896978, scoreBetter, DELTA);
+    }
 
+    @Test
+    public void testClusterCrit() throws ScoreException {
+        double score = subject.score(FakeClustering.int100p4());
+        assertEquals(2.0604126177213273, score, DELTA);
     }
 
     @Test
     public void testIsMaximized() {
-        assertEquals(false, subject.isMaximized());
+        assertEquals(true, subject.isMaximized());
     }
 
-    /**
-     * Check against definition (and tests in R package clusterCrit)
-     * https://cran.r-project.org/web/packages/clusterCrit/index.html
-     *
-     * NOTE: There's a small problem with precision of floating point
-     * operations. First 7 decimal digits seems to match.
-     */
-    @Test
-    public void testClusterCrit() throws ScoreException {
-        double score = subject.score(FakeClustering.int100p4());
-        //clustCrit: -1.6928719863069
-        assertEquals(-1.6928719274027788, score, DELTA);
-    }
 
 }

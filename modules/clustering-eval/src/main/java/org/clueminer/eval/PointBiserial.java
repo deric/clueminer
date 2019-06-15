@@ -16,6 +16,7 @@
  */
 package org.clueminer.eval;
 
+import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
@@ -31,12 +32,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * Adapted from point biserial correlation evaluator (Brogden 1949)
  *
- * @param <E>
- * @param <C>
  * @cite Mitligan, G. W. (1981a). A Monte Carlo study of thirty internal
  * criterion measures for cluster analysis. Psychometrika, 46, 187-199.
- *
- * @author Tomas Barton
+ * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
 public class PointBiserial<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
@@ -58,7 +58,8 @@ public class PointBiserial<E extends Instance, C extends Cluster<E>> extends Abs
     }
 
     /**
-     * Simplified computation of PointBiserial index
+     * Normalized version by stddev - not necessary when comparing clusterings
+     * on the same dataset
      *
      * @param clusters
      * @param params
@@ -66,34 +67,82 @@ public class PointBiserial<E extends Instance, C extends Cluster<E>> extends Abs
      */
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        double nw = numW(clusters);
-        double nt = numT(clusters);
-        double nb = nt - nw;
-        double sw = 0.0, sb;
+        double sw = 0, nw = 0;
+        double sb = 0, nb = 0;
+        double nt, sd, pb;
 
-        //sum of within cluster distances
-        for (Cluster<E> clust : clusters) {
-            sw += sumWithin(clust);
+        C first, second;
+        E x, y;
+        for (int i = 0; i < clusters.size(); i++) {
+            first = clusters.get(i);
+            for (int j = 0; j < first.size(); j++) {
+                x = first.instance(j);
+                // calculate sum of intra cluster distances dw and count their
+                // number.
+                for (int k = j + 1; k < first.size(); k++) {
+                    y = first.instance(k);
+                    sw += dm.measure(x, y);
+                    nw++;
+                }
+                // calculate sum of inter cluster distances dw and count their
+                // number.
+                for (int k = i + 1; k < clusters.size(); k++) {
+                    second = clusters.get(k);
+                    for (int l = 0; l < second.size(); l++) {
+                        y = second.instance(l);
+                        sb += dm.measure(x, y);
+                        nb++;
+                    }
+                }
+            }
         }
-        //sum of between cluster distances
-        sb = sumBetween(clusters);
-
-        return (sw / nw - sb / nb) * Math.sqrt(nw * nb) / nt;
+        // calculate total number of distances
+        nt = nw + nb;
+        // calculate mean dw and db
+        double meanSw = sw / nw;
+        double meanSb = sb / nb;
+        // calculate standard deviation of all distances (sum inter and intra)
+        double tmpSdw = 0, tmpSdb = 0;
+        double distance;
+        for (int i = 0; i < clusters.size(); i++) {
+            first = clusters.get(i);
+            for (int j = 0; j < first.size(); j++) {
+                x = first.instance(j);
+                for (int k = j + 1; k < first.size(); k++) {
+                    y = first.instance(k);
+                    distance = dm.measure(x, y);
+                    tmpSdw += FastMath.pow(distance - meanSw, 2);
+                }
+                for (int k = i + 1; k < clusters.size(); k++) {
+                    second = clusters.get(k);
+                    for (int l = 0; l < second.size(); l++) {
+                        y = second.instance(l);
+                        distance = dm.measure(x, y);
+                        tmpSdb += FastMath.pow(distance - meanSb, 2);
+                    }
+                }
+            }
+        }
+        //standard deviation of all distances
+        sd = Math.sqrt((tmpSdw + tmpSdb) / nt);
+        // calculate point biserial score
+        pb = (meanSb - meanSw) * Math.sqrt(((nw * nb) / (nt * nt))) / sd;
+        return pb;
     }
 
     @Override
     public boolean isBetter(double score1, double score2) {
-        return score1 < score2;
+        return score1 > score2;
     }
 
     @Override
     public boolean isMaximized() {
-        return false;
+        return true;
     }
 
     @Override
     public double getMin() {
-        return Double.NEGATIVE_INFINITY;
+        return 0;
     }
 
     @Override
