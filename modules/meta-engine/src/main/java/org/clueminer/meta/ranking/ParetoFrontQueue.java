@@ -17,6 +17,7 @@
 package org.clueminer.meta.ranking;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -386,8 +387,12 @@ public class ParetoFrontQueue<E extends Instance, C extends Cluster<E>, P extend
         if (!excluded.isEmpty()) {
             rank += 2;
             inc = 1.0 / (double) excluded.size();
-            for (P c : excluded) {
-                res.put(rank, c);
+
+            P[] exc = excluded.toArray((P[]) new Clustering[0]);
+
+            Arrays.sort(exc, frontSorting);
+            for (int i = 0; i < excluded.size(); i++) {
+                res.put(rank, exc[i]);
                 rank += inc;
             }
         }
