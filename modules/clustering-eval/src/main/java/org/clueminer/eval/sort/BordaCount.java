@@ -56,7 +56,13 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
         ClusteringComparator soComp = new ClusteringComparator();
         comp.setObjectives(objectives);
         double rank;
+        double contrib;
         Clustering<E, C> clust;
+
+        for (int j = 0; j < clusterings.length; j++) {
+            //anulate ranks
+            clusterings[j].getParams().putDouble(RANK_PROP, 0.0);
+        }
 
         for (int i = 0; i < objectives.size(); i++) {
             soComp.setEvaluator(objectives.get(i));
@@ -65,7 +71,8 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
             for (int j = 0; j < clusterings.length; j++) {
                 clust = clusterings[j];
                 rank = clust.getParams().getDouble(RANK_PROP, 0);
-                rank += (clusterings.length - j) / (double) objectives.size(); // avg rank
+                contrib = (clusterings.length - j) / (double) objectives.size(); // avg rank
+                rank += contrib;
                 clust.getParams().putDouble(RANK_PROP, rank);
             }
         }
@@ -75,7 +82,6 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
 
         return clusterings;
     }
-
 
     @Override
     public boolean isMultiObjective() {
