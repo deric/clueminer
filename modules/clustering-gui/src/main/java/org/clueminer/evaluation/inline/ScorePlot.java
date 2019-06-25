@@ -64,7 +64,6 @@ import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.clueminer.clustering.api.RankEvaluator;
 import org.clueminer.clustering.api.factory.RankFactory;
-import org.clueminer.eval.sort.MeanComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,8 +132,6 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
         extMap = new HashMap<>();
         objectives = new LinkedList();
         objectives.add(soEval);
-        MeanComparator comp = (MeanComparator) rank.getComparator();
-        comp.setObjectives(objectives);
     }
 
     private void initialize() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
@@ -353,7 +350,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             cyMin = insets.top + 15;
             cyMax = getSize().height - insets.bottom;
             int cyMid = (int) scale.scaleToRange(ymid, ymin, ymax, cyMin, cyMax);
-            LOG.info("rank {}, eval: {}", rank.getName(), rank.getEvaluator());
+            //LOG.info("rank {}, eval: {}", rank.getName(), rank.getEvaluator());
             cxMax = drawXLabel(g, rank.getEvaluator().getName(), getSize().width - insets.right, cyMid);
             int cxMid = (int) ((cxMax - cxMin) / 2) + cxMin;
             drawYLabel(g, compExternal.getEvaluator().getName(), cyMin, cxMid);
