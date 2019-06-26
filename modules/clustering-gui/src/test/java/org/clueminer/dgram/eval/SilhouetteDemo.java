@@ -16,6 +16,7 @@
  */
 package org.clueminer.dgram.eval;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -25,9 +26,12 @@ import javax.swing.SwingUtilities;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
+import org.clueminer.clustering.api.dendrogram.DendrogramMapping;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.fixtures.clustering.FakeDatasets;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
 import org.openide.util.RequestProcessor;
@@ -41,23 +45,34 @@ import org.slf4j.LoggerFactory;
 public class SilhouetteDemo extends JFrame {
 
     private static final long serialVersionUID = 579590462477351303L;
-    private SilhouettePlot sPanel;
+    private static SilhouettePlot sPanel;
     private static final RequestProcessor RP = new RequestProcessor("non-interruptible tasks", 1, false);
     private static final Logger LOG = LoggerFactory.getLogger(SilhouetteDemo.class);
+    private static final Insets WEST_INSETS = new Insets(5, 0, 5, 5);
 
     public SilhouetteDemo() throws IOException, CloneNotSupportedException {
         setLayout(new GridBagLayout());
         sPanel = new SilhouettePlot(true);
+        //sPanel.setMinimumSize(new Dimension(800, 600));
 
         Props props = new Props();
-        final Clustering<Instance, Cluster<Instance>> data = FakeClustering.irisWrong();
-        HClustResult hres = new HClustResult(data.getLookup().lookup(Dataset.class), props);
-        hres.setClustering(data);
-        hres.createMapping();
 
-        sPanel.setClustering(hres, data);
-        LOG.info("loaded data {} of size {}", data.getName(), data.size());
-        add(sPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+        ClusteringExecutorCached exec = new ClusteringExecutorCached();
+        DendrogramMapping map = exec.clusterAll(FakeDatasets.irisDataset(), props);
+
+        sPanel.setClustering(map.getRowsResult(), map.getRowsClustering());
+
+        GridBagConstraints c = new GridBagConstraints();
+        c.weightx = 1.0;
+        c.weighty = 1.0;
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.insets = WEST_INSETS;
+
+        this.getContentPane().add(sPanel, c);
+        this.pack();
     }
 
     // this function will be run from the EDT

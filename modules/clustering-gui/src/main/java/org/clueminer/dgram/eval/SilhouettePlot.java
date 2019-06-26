@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Visualization of Silhoulette coefficient
  *
  * @author Tomas Barton
  */
@@ -255,8 +256,8 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
     @Override
     public void clusteringChanged(Clustering clust) {
         HierarchicalResult hres = clust.getLookup().lookup(HierarchicalResult.class);
-        if (hierarchicalResult != null) {
-            setClustering(hres, clust);
+        if (hres != null) {
+            // setClustering(hres, clust);
         } else {
             LOG.debug("got clustering without hierarchical data");
         }
