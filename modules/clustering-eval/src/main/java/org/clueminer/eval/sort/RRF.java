@@ -24,6 +24,7 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
 import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
+import static org.clueminer.eval.sort.BordaCount.RANK_PROP;
 import org.clueminer.eval.utils.ClusteringComparator;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,7 +46,7 @@ public class RRF<E extends Instance, C extends Cluster<E>> implements Rank<E, C>
 
     public RRF() {
         comp = new RankComparator();
-        comp.setBaseName(NAME);
+        comp.configure(NAME, RANK_PROP);
     }
 
     @Override
@@ -60,13 +61,18 @@ public class RRF<E extends Instance, C extends Cluster<E>> implements Rank<E, C>
         double rank;
         Clustering<E, C> clust;
 
+        for (int j = 0; j < clusterings.length; j++) {
+            //anulate ranks
+            clusterings[j].getParams().putDouble(RANK_PROP, 0.0);
+        }
+
         for (int i = 0; i < objectives.size(); i++) {
             soComp.setEvaluator(objectives.get(i));
             //sort by single objective
             Arrays.parallelSort(clusterings, soComp);
             for (int j = 0; j < clusterings.length; j++) {
                 clust = clusterings[j];
-                rank = clust.getParams().getDouble(RANK_PROP, 0);
+                rank = clust.getParams().getDouble(RANK_PROP);
                 rank += 1.0 / (EPS + clusterings.length - j);
                 clust.getParams().putDouble(RANK_PROP, rank);
             }

@@ -127,7 +127,7 @@ public class MoEvaluator<E extends Instance, C extends Cluster<E>> implements Cl
 
     @Override
     public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
-        return compare(score(c1), score(c1));
+        return compare(score(c1), score(c2));
     }
 
 }

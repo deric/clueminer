@@ -17,7 +17,14 @@
 package org.clueminer.eval.sort;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import static java.util.stream.Collectors.*;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -38,12 +45,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class BordaCount<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "Borda";
-    public static final String RANK_PROP = "rank";
-    private final RankComparator comp;
+    public static final String RANK_PROP = "borda-rank";
+    private RankComparator comp;
 
     public BordaCount() {
-        comp = new RankComparator();
-        comp.setBaseName(NAME);
+
     }
 
     @Override
@@ -54,6 +60,8 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
     @Override
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
         ClusteringComparator soComp = new ClusteringComparator();
+        comp = new RankComparator();
+        comp.configure(NAME, RANK_PROP);
         comp.setObjectives(objectives);
         double rank;
         double contrib;
@@ -63,11 +71,12 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
             //anulate ranks
             clusterings[j].getParams().putDouble(RANK_PROP, 0.0);
         }
+        //dump(clusterings, "anulated");
 
         for (int i = 0; i < objectives.size(); i++) {
             soComp.setEvaluator(objectives.get(i));
             //sort by single objective
-            Arrays.parallelSort(clusterings, soComp);
+            Arrays.sort(clusterings, soComp);
             for (int j = 0; j < clusterings.length; j++) {
                 clust = clusterings[j];
                 rank = clust.getParams().getDouble(RANK_PROP, 0);
@@ -78,9 +87,15 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
         }
 
         //sort by aggregated rank
-        Arrays.parallelSort(clusterings, comp);
-
+        Arrays.sort(clusterings, comp);
         return clusterings;
+    }
+
+    protected void dump(Clustering<E, C>[] clust, String comment) {
+        System.out.println("=== " + comment);
+        for (int i = 0; i < clust.length; i++) {
+            System.out.println(i + ": " + clust[i].fingerprint() + " = " + clust[i].getParams().getDouble(RANK_PROP));
+        }
     }
 
     @Override

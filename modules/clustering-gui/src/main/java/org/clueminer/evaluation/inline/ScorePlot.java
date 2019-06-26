@@ -34,6 +34,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -110,6 +112,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
     private Rank rank;
     private final HashMap<Integer, Integer> extMap;
     private static final Logger LOG = LoggerFactory.getLogger(ScorePlot.class);
+    private Lock internalLock = new ReentrantLock();
 
     public ScorePlot() {
         defaultFont = new Font("verdana", Font.PLAIN, fontSize);
@@ -199,7 +202,8 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                     internal = clusters.toArray(new Clustering[clusters.size()]);
                     external = clusters.toArray(new Clustering[clusters.size()]);
                 }
-                Arrays.parallelSort(internal, rank.getComparator());
+                //race condition, needs to be sorted individually
+                //Arrays.parallelSort(internal, rank.getComparator());
                 Arrays.parallelSort(external, compExternal);
                 clusterings = clusters;
                 updateExtMapping();
@@ -330,6 +334,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             } else {
                 xmin = scoreBest(internal, rank.getEvaluator());
                 xmax = scoreWorst(internal, rank.getEvaluator());
+                //LOG.info("worst value: {}", xmax);
             }   //xmid = (xmax - xmin) / 2.0 + xmin;
             ymin = scoreBest(external, compExternal.getEvaluator());
             ymax = scoreWorst(external, compExternal.getEvaluator());
@@ -409,7 +414,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             drawVerticalScale(g, cyMin, cyMax, cxMid, ymin, ymax);
             if (showCorrelation) {
                 if (!Double.isNaN(correlation)) {
-                    LOG.debug("drawing correlation: {}", correlation);
+                    //LOG.debug("drawing correlation: {}", correlation);
                     drawNumberX(correlation, cxMax, cyMin);
                 }
             }   //average distance per item
@@ -632,9 +637,13 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
                 @Override
                 public void run() {
                     ph.start();
-                    internal = rank.sort(internal, objectives);
-
-                    correlation = updateCorrelation();
+                    internalLock.lock();
+                    try {
+                        internal = rank.sort(internal, objectives);
+                        correlation = updateCorrelation();
+                    } finally {
+                        internalLock.unlock();
+                    }
                     LOG.info("using {}({}), corr: {}", rank.getName(), printObjectives(), correlation);
                     clusteringChanged();
                     //dumpInternal();

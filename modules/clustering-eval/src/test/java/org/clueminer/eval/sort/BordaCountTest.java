@@ -55,9 +55,14 @@ public class BordaCountTest {
         assertEquals(clusterings.length, res.length);
         //we use supervised criterion, first solution must be "correct" clustering
         double value;
+        double prev = -1;
         for (int j = 0; j < res.length; j++) {
             value = subject.getEvaluator().score(res[j]);
+            if (prev > -1) {
+                assertTrue("clusterings are not sorted, " + prev + " !>= " + value, prev >= value);
+            }
             System.out.println(j + ": " + res[j].fingerprint() + " = " + value);
+            prev = value;
         }
         assertEquals(FakeClustering.iris(), res[clusterings.length - 1]);
     }

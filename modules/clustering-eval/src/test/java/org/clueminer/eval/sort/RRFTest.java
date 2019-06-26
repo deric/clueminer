@@ -22,12 +22,9 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.eval.AIC;
+import org.clueminer.eval.BIC;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.fixtures.clustering.FakeClustering;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -54,6 +51,7 @@ public class RRFTest {
         List<ClusterEvaluation> eval = new LinkedList<>();
         eval.add(new NMIsqrt());
         eval.add(new AIC());
+        eval.add(new BIC());
 
         Clustering[] res = subject.sort(clusterings, eval);
         assertEquals(clusterings.length, res.length);
@@ -63,6 +61,6 @@ public class RRFTest {
             value = subject.getEvaluator().score(res[j]);
             System.out.println(j + ": " + res[j].fingerprint() + " = " + value);
         }
-        assertEquals(FakeClustering.iris(), res[clusterings.length - 1]);
+        assertEquals(FakeClustering.iris(), res[0]);
     }
 }

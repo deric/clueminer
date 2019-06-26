@@ -33,12 +33,13 @@ import org.clueminer.utils.Props;
  */
 public class RankComparator<E extends Instance, C extends Cluster<E>> implements ClusterEvaluation<E, C> {
 
-    private List<ClusterEvaluation> objectives;
-    private String name = "Rank";
-    private static String PROP_NAME = "rank";
+    protected List<ClusterEvaluation> objectives;
+    protected String name = "Rank";
+    protected String propName = "rank";
 
-    public void setBaseName(String name) {
+    public void configure(String name, String propName) {
         this.name = name;
+        this.propName = propName;
     }
 
     @Override
@@ -65,17 +66,17 @@ public class RankComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double score(Clustering<E, C> clusters) {
-        return clusters.getParams().getDouble(PROP_NAME, -1);
+        return clusters.getParams().getDouble(propName);
     }
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        return clusters.getParams().getDouble(PROP_NAME, -1);
+        return clusters.getParams().getDouble(propName);
     }
 
     @Override
     public double score(Clustering<E, C> clusters, Matrix proximity, Props params) {
-        return clusters.getParams().getDouble(PROP_NAME, -1);
+        return clusters.getParams().getDouble(propName);
     }
 
     @Override
@@ -84,14 +85,14 @@ public class RankComparator<E extends Instance, C extends Cluster<E>> implements
     }
 
     @Override
-    public int compare(double score1, double score2) {
-        double diff = score1 - score2;
-        if (diff == 0.0) {
+    public int compare(double s1, double s2) {
+        if (s1 < s2) {
+            return 1;
+        } else if (s1 == s2) {
             return 0;
-        } else if (diff < 0.0) {
+        } else {
             return -1;
         }
-        return 1;
     }
 
     @Override
@@ -106,12 +107,12 @@ public class RankComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public double getMin() {
-        return 0.0;
+        return Double.MAX_VALUE;
     }
 
     @Override
     public double getMax() {
-        return Double.MAX_VALUE;
+        return 0.0;
     }
 
     public List<ClusterEvaluation> getObjectives() {
@@ -134,7 +135,7 @@ public class RankComparator<E extends Instance, C extends Cluster<E>> implements
 
     @Override
     public int compare(Clustering<E, C> c1, Clustering<E, C> c2) {
-        return compare(score(c1), score(c1));
+        return compare(score(c1), score(c2));
     }
 
 }
