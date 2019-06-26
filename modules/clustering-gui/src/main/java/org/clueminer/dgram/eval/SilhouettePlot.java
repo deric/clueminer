@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,12 +73,12 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
         int x = 0, k, prev = -1;
         double value, s;
         Dataset<? extends Instance> dataset;
-            //Instance inst;
+        //Instance inst;
         // String str;
         int mapped;
         if (hierarchicalResult != null) {
             dataset = hierarchicalResult.getDataset();
-                //Dump.array(hierarchicalResult.getMapping(), "sil mapping");
+            //Dump.array(hierarchicalResult.getMapping(), "sil mapping");
             //System.out.println("clusters size: " + clustering.size());
             //System.out.println("hres clusters size: " + hierarchicalResult.getClustering().size());
             //System.out.println("equals = " + clustering.equals(hierarchicalResult.getClustering()));
@@ -90,7 +90,7 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
                         s = -1.0;
                     }
                     value = scale.scaleToRange(s, -1.0, 1.0, 0.0, plotMax());
-                        //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
+                    //inst = dataset.get(hierarchicalResult.getMappedIndex(i));
                     //System.out.println(i + " -> " + hierarchicalResult.getMappedIndex(i) + " : " + inst.getIndex() + " " + inst.classValue() + " sc = " + s);
                     k = clustering.assignedCluster(hierarchicalResult.getMappedIndex(i));
 
@@ -254,8 +254,12 @@ public class SilhouettePlot<E extends Instance, C extends Cluster<E>> extends BP
 
     @Override
     public void clusteringChanged(Clustering clust) {
-        //setClustering(clust);
-        LOG.info("got clustering without hierarchical data");
+        HierarchicalResult hres = clust.getLookup().lookup(HierarchicalResult.class);
+        if (hierarchicalResult != null) {
+            setClustering(hres, clust);
+        } else {
+            LOG.debug("got clustering without hierarchical data");
+        }
     }
 
     @Override
