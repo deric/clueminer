@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,9 +197,7 @@ public class MesosExecutor<E extends Instance, C extends Cluster<E>> extends Abs
 
         } catch (UnirestException ex) {
             LOG.error("failed to connect to a Mesos cluster: {}", ex.getMessage());
-        } catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (IOException | NoSuchAlgorithmException ex) {
             LOG.error(ex.getMessage(), ex);
         }
         return null;

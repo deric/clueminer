@@ -16,7 +16,6 @@
  */
 package org.clueminer.meta.engine;
 
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
@@ -31,7 +30,6 @@ import java.util.concurrent.Callable;
 import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
-import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
@@ -41,14 +39,9 @@ import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
-import org.clueminer.distance.api.Distance;
-import org.clueminer.eval.BIC;
-import org.clueminer.eval.McClainRao;
-import org.clueminer.eval.RatkowskyLance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.evolution.BaseEvolution;
 import org.clueminer.evolution.api.Evolution;
@@ -61,7 +54,6 @@ import org.clueminer.meta.api.CostMeasure;
 import org.clueminer.meta.api.DataStats;
 import org.clueminer.meta.api.DataStatsFactory;
 import org.clueminer.meta.api.MetaStorage;
-import org.clueminer.meta.ranking.ParetoFrontQueue;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
@@ -92,23 +84,21 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     protected int gen;
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
-    protected List<InternalEvaluator<E, C>> evaluators;
     protected int cnt;
     private HashMap<String, Double> meta;
     private int ndRepeat = 5;
-    protected List<ClusterEvaluation<E, C>> objectives;
-    protected ClusterEvaluation<E, C> sortObjective;
     private double clusteringTime;
     private int clusteringsEvaluated;
     private int clusteringsRejected;
-    private I[] bestIndividuals;
-    private int numResults = 15;
+    private ArrayList<I> bestIndividuals;
+    private int numResults = -1;
     private boolean useMetaDB = false;
     private Random rand;
     private ObjectOpenHashSet<String> blacklist;
     private int maxRetries = 5;
     //maximum number of explored states, use -1 to use unlimited search
-    private int maxStates = 200;
+    private int maxStates = -1;
+    private int maxPerAlg = -1;
     private List<Clustering<E, C>> results;
     private NMIsqrt cmp;
     private static final DecimalFormat df = new DecimalFormat("#,##0.00");
@@ -116,26 +106,11 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     public Explore() {
         super();
         exec = new ClusteringExecutorCached();
-        this.objectives = Lists.newLinkedList();
-        objectives.add(new BIC<>());
-        objectives.add(new RatkowskyLance<>());
-        sortObjective = new McClainRao<>();
         cmp = new NMIsqrt();
     }
 
     public void configure(Props p) {
-        // comma separated objectives
-        EvaluationFactory ef = EvaluationFactory.getInstance();
-        String obj = p.get("objectives", "");
-        if (!obj.isEmpty()) {
-            objectives.clear();
-            String[] objs = obj.split(",");
-            for (String str : objs) {
-                objectives.add(ef.getProvider(str));
-            }
-        }
-        numResults = p.getInt("results", 15);
-        sortObjective = ef.getProvider(p.get("sort-objective", "McClain-Rao"));
+        numResults = p.getInt("results", 100);
         useMetaDB = p.getBoolean("use-metadb", false);
         maxStates = p.getInt("max-states", 200);
     }
@@ -192,16 +167,31 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         Map<ClusteringAlgorithm, Double> sortedMap = MapUtils.sortByValue(estTime);
 
         LOG.info("available algorithms: {}", printAlg(sortedMap));
-        int perAlg = maxStates / sortedMap.keySet().size();
+        int perAlg = countMaxPerAlg(algs.size());
+
         for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
             conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
             conf.put(AlgParams.ALG, alg.getKey().getName());
-            LOG.debug("expanding #{} config of alg: {}", perAlg, alg.getKey().getName());
+            LOG.debug("expanding #{} configs of alg: {}", perAlg, alg.getKey().getName());
             for (int i = 0; i < perAlg; i++) {
                 expand(res, conf);
                 //execute(res, dataset, alg.getKey(), conf);
             }
         }
+    }
+
+    private int countMaxPerAlg(int numAlgs) {
+        int perAlg;
+        if (maxStates > 0) {
+            perAlg = maxStates / numAlgs;
+        } else {
+            if (maxPerAlg > 0) {
+                perAlg = maxPerAlg;
+            } else {
+                perAlg = 20;
+            }
+        }
+        return perAlg;
     }
 
     private void execute(List<Clustering<E, C>> res, Dataset<E> dataset, ClusteringAlgorithm alg, Props conf) {
@@ -293,18 +283,18 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         clusteringsRejected = 0;
         int workunits = 0;
 
-        LOG.info("Starting {} . Objectives: {}", getName(), printObjectives());
+        LOG.info("Starting {}", getName());
 
         evolutionStarted(this);
         prepare();
-        InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
-        evaluators = ief.getAll();
-        //TODO: make sure that numResults < population
-        bestIndividuals = (I[]) new SimpleIndividual[numResults];
+
+        bestIndividuals = new ArrayList<>(numResults > 0 ? numResults : 200);
+
         if (cg != null) {
             exec.setColorGenerator(cg);
         }
-        blacklist = new ObjectOpenHashSet<>(maxStates);
+
+        blacklist = new ObjectOpenHashSet<>(maxStates > 0 ? maxStates : 200);
 
         if (ph != null) {
 
@@ -348,7 +338,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         }
         return res;
     }
-
 
     /**
      * Random exploration strategy
@@ -517,12 +506,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         return df.format(d);
     }
 
-    public void clearObjectives() {
-        if (objectives != null && !objectives.isEmpty()) {
-            objectives.clear();
-        }
-    }
-
     /**
      * Count number of clustering runs for single meta-search.
      *
@@ -531,62 +514,42 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     private int countClusteringJobs() {
         ClusteringFactory cf = ClusteringFactory.getInstance();
         int total = 0;
-        for (ClusteringAlgorithm alg : cf.getAll()) {
+        List<ClusteringAlgorithm> algs = cf.getAll();
+        int perAlg = countMaxPerAlg(algs.size());
+        for (ClusteringAlgorithm alg : algs) {
             if (alg.isDeterministic()) {
-                total += 1;
+                total += perAlg;
             } else {
-                total += ndRepeat;
+                total += ndRepeat * perAlg;
             }
         }
         return total;
     }
 
     private void fireResult(List<Clustering<E, C>> res) {
-        Iterator<Clustering<E, C>> it = res.iterator();
-        int n = 0;
-        Clustering<E, C> clust;
+        I[] update = (I[]) new SimpleIndividual[res.size()];
+
         SimpleIndividual si;
-        int changes = 0;
-        double extScore = 0.0;
-        //update top solutions found
-        while (it.hasNext() && n < numResults) {
-            clust = it.next();
+        int n = 0;
+        for (Clustering<E, C> clust : res) {
             if (clust != null) {
                 si = clust.getLookup().lookup(SimpleIndividual.class);
                 if (si == null) {
                     si = new SimpleIndividual(clust);
                     clust.lookupAdd(si);
-                    bestIndividuals[n] = (I) si;
-                    changes++;
+                    update[n] = (I) si;
                 } else {
-                    if (!si.getClustering().equals(clust)) {
-                        changes++;
-                    }
-                    bestIndividuals[n] = (I) si;
+                    update[n] = (I) si;
                     //otherwise nothing has changed
                 }
-                extScore += si.getFitness();
                 n++;
-            } else {
-                LOG.warn("front rentuned null clustering");
             }
         }
 
-        if (changes > 0) {
-            LOG.info("{} changes in top population, avg fitness = {}", changes, extScore / n);
-            I[] update;
-            if (n < bestIndividuals.length) {
-                update = (I[]) new SimpleIndividual[n];
-                System.arraycopy(bestIndividuals, 0, update, 0, n);
-            } else {
-                update = bestIndividuals;
-            }
-            for (EvolutionListener listener : evoListeners) {
-                listener.resultUpdate(update, true);
-            }
-        } else {
-            LOG.debug("no changes in top population, population size: {}", res.size());
+        for (EvolutionListener listener : evoListeners) {
+            listener.resultUpdate(update, true);
         }
+
     }
 
     public HashMap<String, Double> getMeta() {
@@ -607,32 +570,12 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void addObjective(ClusterEvaluation eval) {
-        objectives.add(eval);
-    }
-
-    public void removeObjective(ClusterEvaluation eval) {
-        objectives.remove(eval);
-    }
-
-    public void setSortObjective(ClusterEvaluation eval) {
-        this.sortObjective = eval;
-    }
-
-    public ClusterEvaluation getObjective(int idx) {
-        return objectives.get(idx);
-    }
-
-    public List<ClusterEvaluation<E, C>> getObjectives() {
-        return objectives;
-    }
-
-    public int getNumObjectives() {
-        return objectives.size();
-    }
-
     public void setNumResults(int numResults) {
         this.numResults = numResults;
+    }
+
+    public void setMaxPerAlg(int maxPerAlg) {
+        this.maxPerAlg = maxPerAlg;
     }
 
     public void setUseMetaDB(boolean b) {
@@ -641,23 +584,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
     public void setMaxSolutions(int maxSolutions) {
         this.maxStates = maxSolutions;
-    }
-
-    private String printObjectives() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        int i = 0;
-        for (ClusterEvaluation<E, C> ce : objectives) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-
-            sb.append(ce.getName());
-            i++;
-        }
-        sb.append("]");
-
-        return sb.toString();
     }
 
     private String printAlg(Map<ClusteringAlgorithm, Double> estTime) {
