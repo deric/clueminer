@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.annotation.Param;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
+import org.clueminer.clustering.api.factory.CutoffStrategyFactory;
+import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.hclust.DLeaf;
@@ -384,7 +386,29 @@ public class HC<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        HierarchicalResult hres = hierarchy(dataset, props);
+        CutoffStrategy strategy = getCutoffStrategy(props);
+        double cutoff = hres.findCutoff(strategy);
+        LOG.info("found cutoff at {} using {}", cutoff, strategy.getName());
+        return hres.getClustering();
+    }
+
+    public CutoffStrategy<E, C> getCutoffStrategy(Props params) {
+        CutoffStrategy<E, C> strategy;
+        String cutoffAlg = params.get(AlgParams.CUTOFF_STRATEGY, "(none)");
+
+        if (cutoffAlg.equals("(none)")) {
+            strategy = CutoffStrategyFactory.getInstance().getDefault();
+        } else {
+            strategy = CutoffStrategyFactory.getInstance().getProvider(cutoffAlg);
+        }
+        if (params.containsKey(AlgParams.CUTOFF_SCORE)) {
+            String evalAlg = params.get(AlgParams.CUTOFF_SCORE);
+            InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
+            InternalEvaluator<E, C> eval = ief.getProvider(evalAlg);
+            strategy.setEvaluator(eval);
+        }
+        return strategy;
     }
 
     @Override

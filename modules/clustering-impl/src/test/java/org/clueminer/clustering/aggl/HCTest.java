@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@ import org.clueminer.cluster.FakeClustering;
 import org.clueminer.clustering.aggl.linkage.CompleteLinkage;
 import org.clueminer.clustering.aggl.linkage.SingleLinkage;
 import org.clueminer.clustering.api.AlgParams;
+import org.clueminer.clustering.api.Cluster;
+import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringType;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.dendrogram.DendroNode;
@@ -32,13 +34,14 @@ import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
  *
  * @author deric
  */
-public class HCTest {
+public class HCTest<E extends Instance, C extends Cluster<E>> {
 
     private static final HC subject = new HC();
     private static final double DELTA = 1e-9;
@@ -53,7 +56,7 @@ public class HCTest {
 
     @Test
     public void testColumnClustering() throws IOException {
-        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        Dataset<E> dataset = (Dataset<E>) FakeClustering.schoolData();
         Props pref = new Props();
         pref.put(AlgParams.LINKAGE, SingleLinkage.name);
         pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.COLUMNS_CLUSTERING);
@@ -75,7 +78,7 @@ public class HCTest {
 
     @Test
     public void testSingleLinkage() {
-        Dataset<? extends Instance> dataset = FakeClustering.kumarData();
+        Dataset<E> dataset = (Dataset<E>) FakeClustering.kumarData();
         assertEquals(6, dataset.size());
         Props pref = new Props();
         pref.put(AlgParams.LINKAGE, SingleLinkage.name);
@@ -101,7 +104,7 @@ public class HCTest {
 
     @Test
     public void testSingleLinkageSchool() {
-        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        Dataset<E> dataset = (Dataset<E>) FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AlgParams.LINKAGE, SingleLinkage.name);
@@ -121,7 +124,7 @@ public class HCTest {
 
     @Test
     public void testCompleteLinkageSchool() {
-        Dataset<? extends Instance> dataset = FakeClustering.schoolData();
+        Dataset<E> dataset = (Dataset<E>) FakeClustering.schoolData();
         assertEquals(17, dataset.size());
         Props pref = new Props();
         pref.put(AlgParams.LINKAGE, CompleteLinkage.name);
@@ -158,6 +161,18 @@ public class HCTest {
 
         assertEquals(5, tree.distinctHeights());
         assertEquals(4, tree.treeLevels());
+    }
+
+    @Test
+    public void testClusterSchool() {
+        Dataset<E> dataset = (Dataset<E>) FakeClustering.schoolData();
+        assertEquals(17, dataset.size());
+        Props pref = new Props();
+        pref.put(AlgParams.LINKAGE, SingleLinkage.name);
+        pref.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
+        Clustering<E, C> clust = subject.cluster(dataset, pref);
+        assertNotNull(clust);
+        assertTrue(clust.size() > 1);
     }
 
 }
