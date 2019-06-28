@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ public class ExplorerToolbar extends JToolBar {
                 evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
                 evolution.setConfig(props);
                 listener.evolutionAlgorithmChanged(evt);
+                evoPanel = null;
             }
         });
         add(comboEvolution);
@@ -138,15 +139,21 @@ public class ExplorerToolbar extends JToolBar {
         btnSettings = new JButton(ImageUtilities.loadImageIcon("org/clueminer/explorer/settings16.png", false));
         btnSettings.setToolTipText("Setup algorithm search");
         btnSettings.addActionListener((ActionEvent e) -> {
+            Evolution ev1 = evolution;
+            evolution = getEvolution();
+            evolution.setConfig(props);
+            if (ev1 != evolution) {
+                listener.evolutionAlgorithmChanged(null);
+                evoPanel = null;
+            }
+
             if (evoPanel == null || !evoPanel.isUIfor(evolution)) {
                 if (functionPanel == null) {
                     functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
-                    evolution = EvolutionFactory.getInstance().getProvider(comboEvolution.getSelectedItem().toString());
-                    evolution.setConfig(props);
-                    listener.evolutionAlgorithmChanged(null);
                 }
                 EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
                 for (EvolutionUI ui1 : factory.getAll()) {
+                    LOG.debug("ui {} is compatible? ", ui1.getName(), ui1.isUIfor(evolution));
                     if (ui1.isUIfor(evolution)) {
                         evoPanel = ui1;
                     }

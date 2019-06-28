@@ -57,6 +57,10 @@ public class StopWatch {
         return (int) (total() / BY_MILISECONDS);
     }
 
+    public double currentTimeInSec() {
+        return ((System.nanoTime() - startTime) / BY_SECONDS);
+    }
+
     /**
      *
      * @return time in seconds

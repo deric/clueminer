@@ -61,7 +61,7 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
 
     @Test
     public void testIris() throws Exception {
-        subject.setDataset((Dataset<E>) FakeDatasets.irisDataset());
+        subject.setDataset((Dataset<E>) FakeDatasets.schoolData());
         subject.setGenerations(1);
         subject.setPopulationSize(15);
 

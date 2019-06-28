@@ -26,7 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -34,12 +42,11 @@ import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
+import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Executor;
-import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.config.Parameter;
-import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.external.NMIsqrt;
@@ -87,21 +94,25 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     protected int cnt;
     private HashMap<String, Double> meta;
     private int ndRepeat = 5;
-    private double clusteringTime;
     private int clusteringsEvaluated;
     private int clusteringsRejected;
-    private ArrayList<I> bestIndividuals;
     private int numResults = -1;
     private boolean useMetaDB = false;
     private Random rand;
     private ObjectOpenHashSet<String> blacklist;
     private int maxRetries = 5;
+    private int execPool = 5;
     //maximum number of explored states, use -1 to use unlimited search
     private int maxStates = -1;
     private int maxPerAlg = -1;
     private List<Clustering<E, C>> results;
     private NMIsqrt cmp;
     private static final DecimalFormat df = new DecimalFormat("#,##0.00");
+    private ExecutorService pool;
+    private BlockingQueue<ClusteringTask<E, C>> queue;
+    private int jobs;
+    //in miliseconds
+    private long timePerTask = 1000;
 
     public Explore() {
         super();
@@ -129,6 +140,132 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         }
     }
 
+    @Override
+    public List<Clustering<E, C>> call() throws Exception {
+        rand = new Random();
+        clusteringsEvaluated = 0;
+        clusteringsRejected = 0;
+        jobs = 0;
+
+        StopWatch st = new StopWatch();
+
+        LOG.info("Starting {}", getName());
+
+        evolutionStarted(this);
+        prepare();
+
+        if (cg != null) {
+            exec.setColorGenerator(cg);
+        }
+
+        blacklist = new ObjectOpenHashSet<>(maxStates > 0 ? maxStates : 200);
+
+        if (maxStates < 0) {
+            maxStates = countClusteringJobs();
+        }
+        LOG.info("search workunits: {}", maxStates);
+        if (ph != null) {
+            ph.start(maxStates);
+        }
+
+        if (!config.containsKey(AlgParams.STD)) {
+            config.put(AlgParams.STD, "z-score");
+        }
+        //config.putInt("k", 5);
+        Dataset<E> data = standartize(config);
+        meta = computeMeta(data, config);
+        LOG.info("got {} meta parameters", meta.size());
+        List<Clustering<E, C>> res = new ArrayList<>(maxStates);
+        cnt = 0;
+        MetaStorage storage = null;
+
+        if (useMetaDB) {
+            storage = MetaStore.fetchStorage();
+            LOG.info("using {} meta-storage", storage.getName());
+        }
+        queue = new LinkedBlockingQueue<>(maxStates);
+        results = new ArrayList<>(maxStates);
+        // a to-do list
+        explore(dataset);
+        LOG.info("created {} jobs", queue.size());
+
+        runClusterings();
+
+        finish();
+
+        double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
+
+        st.endMeasure();
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, results: {}",
+                st.timeInSec(), clusteringsEvaluated, clusteringsRejected, results.size());
+
+        LOG.info("acceptance rate: {}%", df.format(acceptRate));
+        printStats(res);
+        /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
+        } */
+        if (useMetaDB) {
+            storage.close();
+        }
+        return res;
+    }
+
+    private void runClusterings() throws InterruptedException {
+        pool = Executors.newFixedThreadPool(execPool);
+        ExecutorService managers = Executors.newFixedThreadPool(execPool);
+
+        //watch running jobs with preconfigured timeout
+        for (int i = 0; i < execPool; i++) {
+            managers.submit(() -> {
+                Clustering<E, C> c;
+                ClusteringTask<E, C> task;
+                Future<Clustering<E, C>> future;
+
+                while (!queue.isEmpty()) {
+                    try {
+
+                        if (maxStates > 0 && cnt >= maxStates) {
+                            LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
+                            return;
+                        }
+
+                        task = queue.take();
+                        future = pool.submit(task);
+                        c = future.get(task.getTimeLimit(), TimeUnit.SECONDS);
+                        processResult(c, results);
+
+                    } catch (InterruptedException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (ExecutionException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (TimeoutException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                }
+            });
+        }
+        long timeLimit = maxStates * timePerTask;
+        LOG.info("settting time limit: {}", timeLimit);
+        pool.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
+        managers.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
+    }
+
+    private void processResult(Clustering<E, C> c, List<Clustering<E, C>> res) {
+        LOG.info("processing clustering {}, queue: {}", c.fingerprint(), queue.size());
+        cnt++;
+        if (isValid(c)) {
+            c.setId(gen++);
+            clusteringsEvaluated++;
+            res.add(c);
+            fireResult(res);
+        } else {
+            clusteringsRejected++;
+        }
+
+        if (ph != null) {
+            ph.progress(cnt);
+        }
+    }
+
     private HashMap<String, Double> computeMeta(Dataset<E> data, Props config) {
         DataStatsFactory dsf = DataStatsFactory.getInstance();
         HashMap<String, Double> res = new HashMap<>();
@@ -144,7 +281,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
      * @param dataset
      * @param queue
      */
-    private void explore(List<Clustering<E, C>> res, Dataset<E> dataset) {
+    private void explore(Dataset<E> dataset) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
         List<ClusteringAlgorithm> algs = cf.getAll();
         Props conf;
@@ -169,13 +306,12 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         LOG.info("available algorithms: {}", printAlg(sortedMap));
         int perAlg = countMaxPerAlg(algs.size());
 
-        for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
-            conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
-            conf.put(AlgParams.ALG, alg.getKey().getName());
-            LOG.debug("expanding #{} configs of alg: {}", perAlg, alg.getKey().getName());
-            for (int i = 0; i < perAlg; i++) {
-                expand(res, conf);
-                //execute(res, dataset, alg.getKey(), conf);
+        for (int i = 0; i < perAlg; i++) {
+            for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
+                conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
+                conf.put(AlgParams.ALG, alg.getKey().getName());
+                LOG.debug("expanding {}. config of alg: {}", perAlg, alg.getKey().getName());
+                expand(conf);
             }
         }
     }
@@ -194,65 +330,20 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         return perAlg;
     }
 
-    private void execute(List<Clustering<E, C>> res, Dataset<E> dataset, ClusteringAlgorithm alg, Props conf) {
+    private void createTasks(Dataset<E> dataset, ClusteringAlgorithm alg, Props conf, long timeLimit) {
         int repeat = 1;
-        int i = 0;
         if (!alg.isDeterministic()) {
             //repeat non-deterministic algorithms
             repeat = ndRepeat;
         }
-        do {
-            if (maxStates > 0 && cnt >= maxStates) {
-                LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
-                if (ph != null) {
-                    ph.finish();
-                }
-                return;
-            }
 
-            Clustering<E, C> c = cluster(dataset, conf);
-            cleanUp(c);
-            cnt++;
-            if (isValid(c)) {
-                c.setId(gen++);
-                res.add(c);
-                fireResult(res);
-            } else {
-                clusteringsRejected++;
-            }
-
-            if (ph != null) {
-                ph.progress(cnt);
-            }
-            i++;
-        } while (i < repeat);
-    }
-
-    /**
-     * Remove empty clusters
-     *
-     * @param clustering
-     * @return
-     */
-    private Clustering<E, C> cleanUp(Clustering<E, C> clustering) {
-        for (int i = 0; i < clustering.size(); i++) {
-            Cluster<E> c = clustering.get(i);
-            if (c.isEmpty()) {
-                clustering.remove(i);
+        for (int j = 0; j < repeat; j++) {
+            ClusteringTask<E, C> clb = new ClusteringTask(exec, dataset, conf, timeLimit);
+            if (jobs < maxStates) {
+                jobs++;
+                queue.add(clb);
             }
         }
-        return clustering;
-    }
-
-    private Clustering<E, C> cluster(Dataset<E> dataset, Props conf) {
-        StopWatch time = new StopWatch(true);
-        Clustering<E, C> c = exec.clusterRows(dataset, conf);
-        time.endMeasure();
-        blacklist.add(c.getParams().toJson());
-        clusteringTime += time.timeInSec();
-        clusteringsEvaluated++;
-        c.lookupAdd(time);
-        return c;
     }
 
     private boolean isValid(Clustering<E, C> c) {
@@ -275,77 +366,13 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         return true;
     }
 
-    @Override
-    public List<Clustering<E, C>> call() throws Exception {
-        rand = new Random();
-        clusteringTime = 0.0;
-        clusteringsEvaluated = 0;
-        clusteringsRejected = 0;
-        int workunits = 0;
-
-        LOG.info("Starting {}", getName());
-
-        evolutionStarted(this);
-        prepare();
-
-        bestIndividuals = new ArrayList<>(numResults > 0 ? numResults : 200);
-
-        if (cg != null) {
-            exec.setColorGenerator(cg);
-        }
-
-        blacklist = new ObjectOpenHashSet<>(maxStates > 0 ? maxStates : 200);
-
-        if (ph != null) {
-
-            if (maxStates > -1) {
-                workunits = maxStates;
-            } else {
-                workunits = countClusteringJobs();
-            }
-            LOG.info("search workunits: {}", workunits);
-            ph.start(workunits);
-        }
-
-        if (!config.containsKey(AlgParams.STD)) {
-            config.put(AlgParams.STD, "z-score");
-        }
-        //config.putInt("k", 5);
-        Dataset<E> data = standartize(config);
-        meta = computeMeta(data, config);
-        LOG.info("got {} meta parameters", meta.size());
-        List<Clustering<E, C>> res = new ArrayList<>(workunits);
-        cnt = 0;
-        MetaStorage storage = null;
-
-        if (useMetaDB) {
-            storage = MetaStore.fetchStorage();
-            LOG.info("using {} meta-storage", storage.getName());
-        }
-
-        explore(res, dataset);
-
-        finish();
-        double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings",
-                df.format(clusteringTime), clusteringsEvaluated, clusteringsRejected);
-        LOG.info("acceptance rate: {}%", df.format(acceptRate));
-        printStats(res);
-        /* for (String str : blacklist) {            LOG.debug("blacklist: {}", str);
-        } */
-        if (useMetaDB) {
-            storage.close();
-        }
-        return res;
-    }
-
     /**
      * Random exploration strategy
      *
      * @param c
      * @param base
      */
-    private void expand(List<Clustering<E, C>> res, Props base) {
+    private void expand(Props base) {
         ClusteringAlgorithm alg;
         Props props = null;
         Parameter[] params;
@@ -401,7 +428,10 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             LOG.warn("failed to find an unique config for {}", alg.getName());
         }
         if (props != null) {
-            execute(res, dataset, alg, props);
+            Configurator conf = alg.getConfigurator();
+            //in relative units, give some grace period
+            long time = (long) (conf.estimateRunTime(dataset, props) * 10);
+            createTasks(dataset, alg, props, time);
         } else {
             LOG.error("missing props!");
         }
@@ -540,7 +570,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                     update[n] = (I) si;
                 } else {
                     update[n] = (I) si;
-                    //otherwise nothing has changed
+                    //otherwise nothing has changedq
                 }
                 n++;
             }
@@ -600,6 +630,15 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         sb.append("]");
 
         return sb.toString();
+    }
+
+    /**
+     * Set time per clustering in miliseconds
+     *
+     * @param limit
+     */
+    public void setTimePerTask(long limit) {
+        this.timePerTask = limit;
     }
 
 }
