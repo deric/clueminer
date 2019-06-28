@@ -85,7 +85,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         implements Runnable, Evolution<I, E, C>, Lookup.Provider, Callable<List<Clustering<E, C>>> {
 
     private static final String NAME = "Explore";
-    private static final Logger LOG = LoggerFactory.getLogger(MetaSearch.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Explore.class);
 
     protected final Executor exec;
     protected int gen;

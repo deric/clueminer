@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,24 +138,15 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
         return totalDistance;
     }
 
-    /**
-     * TODO: make an interface from this (maybe we could use different
-     * estimations methods)
-     *
-     * @param dataset
-     * @return
-     */
-    public int guessK(Dataset<E> dataset) {
-        return (int) Math.sqrt(dataset.size() / 2);
-    }
-
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         SeedSelectionFactory sf = SeedSelectionFactory.getInstance();
         SeedSelection<E> seed = sf.getProvider(props.get(SEED_SELECTION, "random"));
 
         distanceFunction = ClusterHelper.initDistance(props);
-        int k = guessK(dataset);
+        Configurator<E> config = getConfigurator();
+        //set K unless it's already defined
+        config.configure(dataset, props);
         Clustering<E, C> clustering = (Clustering<E, C>) Clusterings.newList(k, dataset);
         if (colorGenerator != null) {
             colorGenerator.reset();
@@ -165,7 +156,7 @@ public class PAM<E extends Instance, C extends Cluster<E>> extends KClustererBas
         double dist = cluster(dataset, prototypes, clustering);
         props.put(AlgParams.ALG, getName());
         clustering.setParams(props);
-        LOG.debug("total distane = {}", dist);
+        LOG.debug("total distance = {}", dist);
         return clustering;
     }
 

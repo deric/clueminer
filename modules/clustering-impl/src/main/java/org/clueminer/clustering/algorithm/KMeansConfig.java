@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 
 /**
+ * Guess configuration for k-means (a naive approach)
  *
  * @author deric
  * @param <E>
@@ -43,12 +44,14 @@ public class KMeansConfig<E extends Instance> implements Configurator<E> {
 
     @Override
     public void configure(Dataset<E> dataset, Props params) {
-        int k = (int) Math.sqrt(dataset.size() / 2);
-        if (k < 2) {
-            //smaller k doesn't make sense
-            k = 2;
+        if (params.containsKey(KMeans.K)) {
+            int k = (int) Math.sqrt(dataset.size() / 2);
+            if (k < 2) {
+                //smaller k doesn't make sense
+                k = 2;
+            }
+            params.putInt(KMeans.K, k);
         }
-        params.putInt(KMeans.K, k);
     }
 
     /**
