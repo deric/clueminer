@@ -42,9 +42,15 @@ public class KMeansConfig<E extends Instance> implements Configurator<E> {
         return instance;
     }
 
+    /**
+     * Set parameter K, unless already defined
+     *
+     * @param dataset
+     * @param params
+     */
     @Override
     public void configure(Dataset<E> dataset, Props params) {
-        if (params.containsKey(KMeans.K)) {
+        if (!params.containsKey(KMeans.K)) {
             int k = (int) Math.sqrt(dataset.size() / 2);
             if (k < 2) {
                 //smaller k doesn't make sense
