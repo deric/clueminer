@@ -96,6 +96,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     private int ndRepeat = 5;
     private int clusteringsEvaluated;
     private int clusteringsRejected;
+    private int clusteringsFailed;
     private int numResults = -1;
     private boolean useMetaDB = false;
     private Random rand;
@@ -145,6 +146,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         rand = new Random();
         clusteringsEvaluated = 0;
         clusteringsRejected = 0;
+        clusteringsFailed = 0;
         jobs = 0;
 
         StopWatch st = new StopWatch();
@@ -196,8 +198,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
 
         st.endMeasure();
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, results: {}",
-                st.timeInSec(), clusteringsEvaluated, clusteringsRejected, results.size());
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, failed: {}, results: {}",
+                st.timeInSec(), clusteringsEvaluated, clusteringsRejected, clusteringsFailed, results.size());
 
         LOG.info("acceptance rate: {}%", df.format(acceptRate));
         printStats(res);
@@ -233,12 +235,14 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                         c = future.get(task.getTimeLimit(), TimeUnit.SECONDS);
                         processResult(c, results);
 
-                    } catch (InterruptedException ex) {
+                    } catch (InterruptedException | ExecutionException ex) {
                         Exceptions.printStackTrace(ex);
-                    } catch (ExecutionException ex) {
-                        Exceptions.printStackTrace(ex);
+                        //terminate current thread
+                        clusteringsFailed++;
+                        Thread.currentThread().interrupt();
                     } catch (TimeoutException ex) {
                         Exceptions.printStackTrace(ex);
+                        clusteringsFailed++;
                     }
                 }
             });
