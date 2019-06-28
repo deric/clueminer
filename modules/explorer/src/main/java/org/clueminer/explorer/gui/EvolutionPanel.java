@@ -36,12 +36,18 @@ import org.openide.util.lookup.ServiceProvider;
 public class EvolutionPanel<E extends Instance, C extends Cluster<E>> extends javax.swing.JPanel implements EvolutionUI {
 
     private static final long serialVersionUID = -8908500509479257849L;
+    private static final String NAME = "Evolution";
 
     /**
      * Creates new form EvolutionPanel
      */
     public EvolutionPanel() {
         initComponents();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     private String[] initExternal() {

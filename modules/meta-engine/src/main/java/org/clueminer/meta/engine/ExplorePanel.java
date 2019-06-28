@@ -42,9 +42,15 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
     private JCheckBox chckLimitSolutions;
     private JCheckBox chckLimitResults;
     private JCheckBox chckLimitPerAlg;
+    private static final String NAME = "Explore";
 
     public ExplorePanel() {
         initialize();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     private void initialize() {

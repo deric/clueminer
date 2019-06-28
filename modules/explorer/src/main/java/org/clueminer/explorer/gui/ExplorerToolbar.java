@@ -18,6 +18,7 @@ package org.clueminer.explorer.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -66,11 +67,13 @@ public class ExplorerToolbar extends JToolBar {
     private EvolutionUI evoPanel;
     private Evolution evolution;
     private Props props;
+    private EvolutionUIFactory uiFactory;
     private static final Logger LOG = LoggerFactory.getLogger(ExplorerToolbar.class);
 
     public ExplorerToolbar() {
         super(SwingConstants.HORIZONTAL);
         props = new Props();
+        uiFactory = EvolutionUIFactory.getInstance();
         initComponents();
     }
 
@@ -151,9 +154,10 @@ public class ExplorerToolbar extends JToolBar {
                 if (functionPanel == null) {
                     functionPanel = new EvalFuncPanel(listener.getSortedClusterings());
                 }
-                EvolutionUIFactory factory = EvolutionUIFactory.getInstance();
-                for (EvolutionUI ui1 : factory.getAll()) {
-                    LOG.debug("ui {} is compatible? ", ui1.getName(), ui1.isUIfor(evolution));
+
+                LOG.info("uis: {}", Arrays.toString(uiFactory.getProvidersArray()));
+                for (EvolutionUI ui1 : uiFactory.getAll()) {
+                    LOG.debug("ui {} is compatible? {}", ui1.getName(), ui1.isUIfor(evolution));
                     if (ui1.isUIfor(evolution)) {
                         evoPanel = ui1;
                     }

@@ -38,9 +38,15 @@ public class HACPanel extends JPanel implements EvolutionUI {
     private JTextField tfNumStates;
     private JCheckBox chckDistance;
     private JCheckBox chckLimitSolutions;
+    private static final String NAME = "HAC";
 
     public HACPanel() {
         initialize();
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
     }
 
     private void initialize() {
@@ -72,7 +78,6 @@ public class HACPanel extends JPanel implements EvolutionUI {
         tfNumStates.setPreferredSize(new Dimension(50, 22));
         c.gridx = 1;
         add(tfNumStates, c);
-
 
     }
 
