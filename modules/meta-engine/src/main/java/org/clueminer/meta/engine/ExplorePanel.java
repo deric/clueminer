@@ -21,6 +21,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.clueminer.evolution.api.Evolution;
@@ -38,7 +39,7 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
     private JTextField tfResults;
     private JTextField tfNumStates;
     private JTextField tfMaxPerAlg;
-    private JCheckBox chckUseMetaDB;
+    private JTextField tfNumThreads;
     private JCheckBox chckLimitSolutions;
     private JCheckBox chckLimitResults;
     private JCheckBox chckLimitPerAlg;
@@ -98,6 +99,16 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
         c.gridx = 1;
         add(tfMaxPerAlg, c);
 
+        c.gridx = 0;
+        c.gridy++;
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        add(new JLabel("Clustering threads"), c);
+        tfNumThreads = new JTextField("5");
+        tfNumThreads.setPreferredSize(new Dimension(50, 22));
+        c.gridx = 1;
+        add(tfNumThreads, c);
+
 
     }
 
@@ -121,6 +132,7 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
         } else {
             exp.setMaxPerAlg(-1);
         }
+        exp.setExecPool(Integer.parseInt(tfNumThreads.getText()));
     }
 
     public double getCrossover() {

@@ -51,7 +51,7 @@ public class MetaSearchPanel extends JPanel implements EvolutionUI {
     private JCheckBox chckEnforceDiversity;
     private JCheckBox chckLimitSolutions;
     private JCheckBox chckExpandOnlyTop;
-    private static final String NAME = "HAC";
+    private static final String NAME = "Meta-search";
 
     public MetaSearchPanel() {
         initialize();

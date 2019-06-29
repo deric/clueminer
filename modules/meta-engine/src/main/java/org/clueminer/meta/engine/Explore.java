@@ -92,7 +92,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     protected int clusteringsFailed;
     private int numResults = -1;
     private Random rand;
-    private ObjectOpenHashSet<String> blacklist;
+    protected ObjectOpenHashSet<String> blacklist;
     private int maxRetries = 5;
     private int execPool = 5;
     //maximum number of explored states, use -1 to use unlimited search
@@ -632,6 +632,10 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
      */
     public void setTimePerTask(long limit) {
         this.timePerTask = limit;
+    }
+
+    public void setExecPool(int size) {
+        this.execPool = size;
     }
 
 }
