@@ -262,15 +262,17 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         return evalTable;
     }
 
-    private void internalSheet(Clustering<E, C> clustering, Sheet sheet) {
+    private synchronized void internalSheet(Clustering<E, C> clustering, Sheet sheet) {
         Sheet.Set set = new Sheet.Set();
         EvaluationTable<E, C> evalTable = evaluationTable(clustering);
         set.setName("Internal Evaluation");
         set.setDisplayName("Internal Evaluation");
+
         for (final Entry<String, Double> score : evalTable.getInternal().entrySet()) {
             Property evalProp = new EvaluatorProperty(score.getKey(), score.getValue());
             set.put(evalProp);
         }
+
         sheet.put(set);
     }
 
