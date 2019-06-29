@@ -98,12 +98,6 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
         c.gridx = 1;
         add(tfMaxPerAlg, c);
 
-        c.gridx = 0;
-        c.gridy++;
-        chckUseMetaDB = new JCheckBox("Use Meta DB", false);
-        c.weightx = 1.0;
-        c.gridwidth = 2;
-        add(chckUseMetaDB, c);
 
     }
 
@@ -117,7 +111,6 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
         } else {
             exp.setNumResults(-1);
         }
-        exp.setUseMetaDB(chckUseMetaDB.isSelected());
         if (chckLimitSolutions.isSelected()) {
             exp.setMaxSolutions(Integer.parseInt(tfNumStates.getText()));
         } else {

@@ -66,21 +66,11 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         subject.setPopulationSize(15);
 
         mem.startClock();
-        ParetoFrontQueue<E, C, Clustering<E, C>> q = subject.call();
-        SortedMap<Double, Clustering<E, C>> ranking = q.computeRanking();
-        assertNotNull(ranking);
-        //there should be always 1.0 key (best solution)
-        q.printRanking(new NMIavg());
-        assertTrue("there should be always 1.0 key", ranking.containsKey(1.0));
-        HashSet<Integer> ids = new HashSet<>(q.size());
-        for (Clustering<E, C> c : ranking.values()) {
-            //for computing ranking correlations we need unique id's
-            ids.add(c.getId());
-        }
-        //make sure each clustering has unique ID
+        List<Clustering<E, C>> res = subject.call();
+        assertNotNull(res);
+
         //TODO: findout why this fails
         //assertEquals(q.size(), ids.size());
-
         mem.report();
     }
 
