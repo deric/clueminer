@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,12 +54,10 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> {
 
-    private AdjListGraph graph;
-
     public static final String MAX_ITERATIONS = "max_iterations";
 
     @Param(name = ChineseWhispers.MAX_ITERATIONS, description = "Maximum number of iterations")
-    private int maxIterations;
+    protected int maxIterations;
 
     public static final String EDGE_THRESHOLD = "edge_threshold";
     @Param(name = ChineseWhispers.EDGE_THRESHOLD, description = "Minimum distance for edge initialization")
@@ -84,12 +82,12 @@ public class ChineseWhispers<E extends Instance, C extends Cluster<E>> extends A
         if (colorGenerator != null) {
             colorGenerator.reset();
         }
-        graph = new AdjListGraph();
+        AdjListGraph graph = new AdjListGraph();
         String dist = props.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
         props.put("algorithm", getName());
         int iter = (int) (2 * Math.sqrt(dataset.size()));
-        maxIterations = props.getInt(MAX_ITERATIONS, iter);
+        int maxIterations = props.getInt(MAX_ITERATIONS, iter);
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
         String initializer = props.get(GRAPH_CONV, "k-NNG");

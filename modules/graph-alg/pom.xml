@@ -20,6 +20,8 @@
                         <publicPackage>org.clueminer.ap</publicPackage>
                         <publicPackage>org.clueminer.chinesewhispers</publicPackage>
                         <publicPackage>org.clueminer.fastcommunity</publicPackage>
+                        <publicPackage>smile.netlib.*</publicPackage>
+                        <publicPackage>com.github.fommil.netlib.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -132,6 +134,16 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>core-lib-wrapper</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-netlib</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.netlib-java</groupId>
+            <artifactId>netlib-java</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
     <properties>
