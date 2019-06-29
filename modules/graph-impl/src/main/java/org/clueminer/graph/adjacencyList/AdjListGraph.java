@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
     private final transient InstanceContent instanceContent;
     private final transient AbstractLookup lookup;
 
-    private final HashMap<Node, Set<Neighbor>> adjList;
+    private final HashMap<Long, Set<Neighbor>> adjList;
 
     public AdjListGraph() {
         nodes = new HashMap<>();
@@ -111,8 +111,8 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
         }
         AdjListNode source = (AdjListNode) edge.getSource();
         AdjListNode target = (AdjListNode) edge.getTarget();
-        if (adjList.get(source).add(new Neighbor(edge, target))
-                && adjList.get(target).add(new Neighbor(edge, source))) {
+        if (adjList.get(source.getId()).add(new Neighbor(edge, target))
+                && adjList.get(target.getId()).add(new Neighbor(edge, source))) {
             edges.put(edge.getId(), (AdjListEdge) edge);
         } else {
             return false;
@@ -127,7 +127,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
             return false;
         }
         idToIndex.put(node.getId(), nodes.size());
-        adjList.put(node, new TreeSet<Neighbor>());
+        adjList.put(node.getId(), new TreeSet<Neighbor>());
         nodes.put(node.getId(), (AdjListNode) node);
         return true;
     }
@@ -162,9 +162,9 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
         AdjListNode source = (AdjListNode) edge.getSource();
         AdjListNode target = (AdjListNode) edge.getTarget();
         Neighbor n = new Neighbor(edge, target);
-        adjList.get(source).remove(n);
+        adjList.get(source.getId()).remove(n);
         n = new Neighbor(edge, source);
-        adjList.get(target).remove(n);
+        adjList.get(target.getId()).remove(n);
         return true;
     }
 
@@ -174,9 +174,9 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
             return false;
         }
         Neighbor self = new Neighbor(null, node);
-        for (Neighbor neighbor : adjList.get(node)) {
+        for (Neighbor neighbor : adjList.get(node.getId())) {
             edges.remove(neighbor.edge.getId());
-            adjList.get(neighbor.node).remove(self);
+            adjList.get(neighbor.node.getId()).remove(self);
         }
         return true;
     }
@@ -225,7 +225,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public Edge getEdge(Node node1, Node node2) {
-        for (Neighbor n : adjList.get(node1)) {
+        for (Neighbor n : adjList.get(node1.getId())) {
             if (n.node == node2) {
                 return n.edge;
             }
@@ -255,7 +255,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public NodeIterable getNeighbors(Node node) {
-        return new NeighborNodeIterable(adjList.get(node));
+        return new NeighborNodeIterable(adjList.get(node.getId()));
     }
 
     @Override
@@ -265,7 +265,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public EdgeIterable getEdges(Node node) {
-        return new NeighborEdgeIterable(adjList.get(node));
+        return new NeighborEdgeIterable(adjList.get(node.getId()));
     }
 
     @Override
@@ -295,7 +295,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
 
     @Override
     public int getDegree(Node node) {
-        return adjList.get(node).size();
+        return adjList.get(node.getId()).size();
     }
 
     @Override
@@ -311,7 +311,7 @@ public class AdjListGraph<E extends Instance> implements Graph<E> {
     @Override
     public boolean isAdjacent(Node node1, Node node2) {
         Neighbor n = new Neighbor(null, node2);
-        return adjList.get(node1).contains(n);
+        return adjList.get(node1.getId()).contains(n);
     }
 
     @Override

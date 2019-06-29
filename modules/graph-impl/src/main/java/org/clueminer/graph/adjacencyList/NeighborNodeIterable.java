@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,27 +29,27 @@ import org.clueminer.graph.api.NodeIterable;
  */
 public class NeighborNodeIterable implements NodeIterable {
 
-    private final Set<Neighbor> neighbors;
+    private final Neighbor[] neighbors;
 
     public NeighborNodeIterable(Set<Neighbor> set) {
-        this.neighbors = set;
+        //iterating over collection is not thread safe
+        //need to copy the data
+        this.neighbors = set.toArray(new Neighbor[0]);
     }
 
     @Override
     public Iterator<Node> iterator() {
         return new Iterator<Node>() {
-
-            private Iterator<Neighbor> it = neighbors.iterator();
+            private int i = 0;
 
             @Override
             public boolean hasNext() {
-                return it.hasNext();
+                return i < neighbors.length;
             }
 
             @Override
             public Node next() {
-                Neighbor n = it.next();
-                return n.node;
+                return neighbors[i++].node;
             }
 
         };
@@ -57,7 +57,7 @@ public class NeighborNodeIterable implements NodeIterable {
 
     @Override
     public Node[] toArray() {
-        Node[] res = new Node[neighbors.size()];
+        Node[] res = new Node[neighbors.length];
         int i = 0;
         for (Neighbor n : neighbors) {
             res[i++] = n.node;
@@ -67,7 +67,7 @@ public class NeighborNodeIterable implements NodeIterable {
 
     @Override
     public Collection<Node> toCollection() {
-        ArrayList<Node> res = new ArrayList<>(neighbors.size());
+        ArrayList<Node> res = new ArrayList<>(neighbors.length);
         for (Neighbor n : neighbors) {
             res.add(n.node);
         }
@@ -76,7 +76,7 @@ public class NeighborNodeIterable implements NodeIterable {
 
     @Override
     public int size() {
-        return neighbors.size();
+        return neighbors.length;
     }
 
     @Override
