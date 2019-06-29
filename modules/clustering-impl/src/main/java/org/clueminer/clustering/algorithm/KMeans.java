@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ import org.clueminer.clustering.api.factory.Clusterings;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.row.DoubleArrayDataRow;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.DatasetTools;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
@@ -71,27 +72,18 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
      *
      */
     @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 100, max = 150)
-    private int iterations = -1;
+    protected int iterations = -1;
 
     @Param(name = KMeans.ITERATIONS, description = "number of k-means iterations", required = false, min = 1, max = 500)
-    private int maxIterations;
+    protected int maxIterations;
 
-    /**
-     * Random generator for this clusterer.
-     */
-    private Random random;
 
     //min and max values are used as limit for evolutionary algorithms
     @Param(name = KMeans.K, description = "expected number of clusters", required = true, min = 2, max = 25)
-    private int k;
+    protected int k;
 
     //@Param(name = KMeans.SEED, description = "random seeed", required = false, min = 1, max = Integer.MAX_VALUE)
     int seed;
-
-    /**
-     * The centroids of the different clusters.
-     */
-    private Instance[] centroids;
 
     public KMeans() {
 
@@ -117,8 +109,8 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         if (!params.containsKey(KMeans.K)) {
             throw new RuntimeException("Number of clusters (\"" + KMeans.K + "\") must be specified");
         }
-
-        k = params.getInt(KMeans.K);
+        //local variables in order to avoid concurrency issues (with multiple runs)
+        int k = params.getInt(KMeans.K);
 
         if (k <= 1) {
             throw new RuntimeException("Number of clusters should be at least 2");
@@ -128,23 +120,23 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             throw new RuntimeException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
         }
 
-        random = ClusterHelper.initSeed(params);
-        distanceFunction = ClusterHelper.initDistance(params);
+        Random random = ClusterHelper.initSeed(params);
+        Distance distanceFunction = ClusterHelper.initDistance(params);
 
-        iterations = params.getInt(ITERATIONS, 100);
+        int iterations = params.getInt(ITERATIONS, 100);
 
-        maxIterations = params.getInt(MAX_ITERATIONS, 500);
+        int maxIterations = params.getInt(MAX_ITERATIONS, 500);
 
         // Place K points into the space represented by the objects that are
         // being clustered. These points represent the initial group of
         // centroids.
         Instance min = DatasetTools.minAttributes(data);
         Instance max = DatasetTools.maxAttributes(data);
-        this.centroids = new Instance[k];
+        E[] centroids = (E[]) new Instance[k];
         int instanceLength = data.attributeCount();
         for (int j = 0; j < k; j++) {
             double[] randomInstance = DatasetTools.getRandomInstance(data, random);
-            this.centroids[j] = new DoubleArrayDataRow(randomInstance);
+            centroids[j] = (E) new DoubleArrayDataRow(randomInstance);
         }
 
         int iterationCount = 0;
@@ -152,9 +144,9 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
         boolean randomCentroids = true;
         double dist, minDist;
         Instance tmp = new DoubleArrayDataRow(instanceLength);
-        while ((randomCentroids || (iterationCount < this.iterations && centroidsChanged)) && iterationCount <= maxIterations) {
+        while ((randomCentroids || (iterationCount < iterations && centroidsChanged)) && iterationCount <= maxIterations) {
             iterationCount++;
-            LOG.trace("Iteration: {} / {} / {}", iterationCount, this.iterations, centroidsChanged);
+            LOG.trace("Iteration: {} / {} / {}", iterationCount, iterations, centroidsChanged);
             // Assign each object to the group that has the closest centroid.
             int[] assignment = new int[data.size()];
             for (int i = 0; i < data.size(); i++) {
@@ -174,8 +166,8 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             // the K centroids and start over.
             // The new position of the centroid is the weighted center of the
             // current cluster.
-            double[][] sumPosition = new double[this.k][instanceLength];
-            int[] countPosition = new int[this.k];
+            double[][] sumPosition = new double[k][instanceLength];
+            int[] countPosition = new int[k];
             for (int i = 0; i < data.size(); i++) {
                 E in = data.instance(i);
                 for (int j = 0; j < instanceLength; j++) {
@@ -185,7 +177,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
             }
             centroidsChanged = false;
             randomCentroids = false;
-            for (int i = 0; i < this.k; i++) {
+            for (int i = 0; i < k; i++) {
                 if (countPosition[i] > 0) {
                     for (int j = 0; j < instanceLength; j++) {
                         tmp.set(j, sumPosition[i][j] / (double) countPosition[i]);
@@ -193,7 +185,7 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
                     if (distanceFunction.measure(tmp, centroids[i]) > 0.0001) {
                         centroidsChanged = true;
                         //in order to avoid unnecessary memory allocation tmp variable is shared
-                        centroids[i] = tmp.copy();
+                        centroids[i] = (E) tmp.copy();
                     }
                 } else {
                     for (int j = 0; j < instanceLength; j++) {
@@ -236,10 +228,6 @@ public class KMeans<E extends Instance, C extends Cluster<E>> extends Algorithm<
 
         }
         return output;
-    }
-
-    public void setRandom(Random rand) {
-        this.random = rand;
     }
 
     @Override
