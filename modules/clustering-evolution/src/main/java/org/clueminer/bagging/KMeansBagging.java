@@ -60,7 +60,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
     public static final String MAX_K = "max_k";
 
     @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
-    private int bagging;
+    protected int bagging;
 
     private static final Logger LOG = LoggerFactory.getLogger(KMeansBagging.class);
 
@@ -73,7 +73,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
         return name;
     }
 
-    private Clustering[] randClusters(Algorithm alg, Dataset<? extends Instance> dataset, Props props) {
+    private Clustering[] randClusters(Algorithm alg, Dataset<? extends Instance> dataset, Props props, int bagging) {
         Clustering[] clusts = new Clustering[bagging];
         int maxK = (int) Math.sqrt(dataset.size());
         for (int i = 0; i < bagging; i++) {
@@ -105,7 +105,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        bagging = props.getInt(BAGGING, 5);
+        int bagging = props.getInt(BAGGING, 5);
         String initSet = props.get(INIT_METHOD, "RANDOM");
         //String initSet = props.get("init_set", "MO");
         KMeans alg = new KMeans();
@@ -122,7 +122,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
         switch (initSet) {
             case "RANDOM":
                 //map
-                clusts = randClusters(alg, dataset, props);
+                clusts = randClusters(alg, dataset, props, bagging);
                 //reduce
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
                 break;

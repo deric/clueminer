@@ -52,7 +52,7 @@ public class KMeansBaggingTest {
         Props params = new Props();
         params.putInt("k", 5);
         params.putInt(KMeansBagging.BAGGING, 5);
-        params.put(KMeansBagging.CONSENSUS, CoAssociationReduce.name);
+        params.put(KMeansBagging.CONSENSUS, CoAssociationReduce.NAME);
         Clustering c = subject.cluster(data, params);
 
     }

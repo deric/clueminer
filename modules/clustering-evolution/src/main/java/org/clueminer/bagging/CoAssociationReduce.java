@@ -54,12 +54,12 @@ import org.slf4j.LoggerFactory;
 @ServiceProvider(service = Consensus.class)
 public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> extends CoAssocMatrix<E, C> implements Consensus<E, C> {
 
-    private static final Logger logger = LoggerFactory.getLogger(CoAssociationReduce.class);
-    public static final String name = "co-association HAC";
+    private static final Logger LOG = LoggerFactory.getLogger(CoAssociationReduce.class);
+    public static final String NAME = "co-association HAC";
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
     }
 
     @Override
@@ -85,8 +85,8 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
         props.put(AlgParams.CLUSTERING_TYPE, ClusteringType.ROWS_CLUSTERING);
         //props.put(AlgParams.CUTOFF_STRATEGY, "hill-climb inc");
         props.put(AlgParams.CUTOFF_STRATEGY, "hill-climb cutoff");
-        //props.put(AlgParams.LINKAGE, CompleteLinkage.name);
-        //props.put(AlgParams.LINKAGE, MedianLinkage.name);
+        //props.put(AlgParams.LINKAGE, CompleteLinkage.NAME);
+        //props.put(AlgParams.LINKAGE, MedianLinkage.NAME);
         hac.setColorGenerator(cg);
         Dataset<E> dataset = clusts[0].getLookup().lookup(Dataset.class);
 
@@ -107,9 +107,9 @@ public class CoAssociationReduce<E extends Instance, C extends Cluster<E>> exten
 
     public void findCutoff(HierarchicalResult result, Props params) {
         CutoffStrategy strategy = getCutoffStrategy(params);
-        logger.debug("cutting dendrogram with {}", strategy.getName());
+        LOG.debug("cutting dendrogram with {}", strategy.getName());
         double cut = result.findCutoff(strategy);
-        logger.debug("found cutoff {}, resulting clusters {}", cut, result.getClustering().size());
+        LOG.debug("found cutoff {}, resulting clusters {}", cut, result.getClustering().size());
     }
 
     protected CutoffStrategy getCutoffStrategy(Props params) {
