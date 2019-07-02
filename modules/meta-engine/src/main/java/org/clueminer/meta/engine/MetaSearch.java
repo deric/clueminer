@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected List<InternalEvaluator<E, C>> evaluators;
     protected int cnt;
     private HashMap<String, Double> meta;
-    private int ndRepeat = 5;
     protected List<ClusterEvaluation<E, C>> objectives;
     protected ClusterEvaluation<E, C> sortObjective;
     private I[] bestIndividuals;
@@ -161,30 +160,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     protected void prepare() {
         super.prepare();
 
-        rand = new Random();
-        clusteringsEvaluated = 0;
-        clusteringsRejected = 0;
-        clusteringsFailed = 0;
-        jobs = 0;
-
-        if (cg != null) {
-            exec.setColorGenerator(cg);
-        }
-
-        blacklist = new ObjectOpenHashSet<>(numFronts * numResults);
-
         if (enforceDiversity) {
             LOG.info("Starting meta-search. Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
         } else {
             LOG.info("Starting meta-search. Objectives: {}", printObjectives());
-        }
-
-        if (maxStates < 0) {
-            maxStates = countClusteringJobs();
-        }
-        LOG.info("search workunits: {}", maxStates);
-        if (ph != null) {
-            ph.start(maxStates);
         }
 
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -199,16 +178,24 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         Dataset<E> data = standartize(config);
         meta = computeMeta(data, config);
         LOG.info("got {} meta parameters", meta.size());
-        cnt = 0;
         storage = null;
 
-        results = new ArrayList<>(maxStates);
         front = new ParetoFrontQueue(numFronts, objectives, sortObjective);
 
         if (useMetaDB) {
             storage = MetaStore.fetchStorage();
             LOG.info("using {} meta-storage", storage.getName());
         }
+    }
+
+    protected void algorithmInit() {
+        blacklist = new ObjectOpenHashSet<>(numFronts * numResults);
+
+        if (maxStates < 0) {
+            maxStates = countClusteringJobs();
+        }
+
+        results = new ArrayList<>(maxStates);
     }
 
     protected void finish(StopWatch st) {
@@ -234,6 +221,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param dataset
      * @param queue
      */
+    @Override
     protected void explore(Dataset<E> dataset, BlockingQueue<ClusteringTask<E, C>> queue) {
 
         ClusteringFactory cf = ClusteringFactory.getInstance();
@@ -280,6 +268,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param topN
      */
     private void exploit(int topN, BlockingQueue<ClusteringTask<E, C>> queue) {
+        LOG.info("expling phase, pareto front size: {}", front.size());
         Iterator<Clustering<E, C>> it = front.iterator();
         Clustering<E, C> c;
         int n = 0;
@@ -325,7 +314,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     @Override
     protected void clusteringFound(Clustering<E, C> c) {
+        LOG.debug("adding clustering to pareto front, size: {}", front.size());
         front.add(c);
+        //queue is not used
+        exploit(topN, null);
     }
 
     /**
@@ -340,6 +332,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     private void resultUpdate(ParetoFrontQueue front) {
+        LOG.debug("result update, front: {}", front.size());
         Iterator<Clustering<E, C>> it = front.iterator();
         int n = 0;
         Clustering<E, C> clust;
@@ -389,15 +382,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public HashMap<String, Double> getMeta() {
         return meta;
-    }
-
-    /**
-     * Set how many times should be non-deterministic algorithms repeated.
-     *
-     * @param repeat
-     */
-    public void setNumNdRepeat(int repeat) {
-        this.ndRepeat = repeat;
     }
 
     @Override

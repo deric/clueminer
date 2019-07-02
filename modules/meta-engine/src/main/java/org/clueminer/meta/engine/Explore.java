@@ -86,7 +86,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
     protected int cnt;
-    private int ndRepeat = 5;
+    protected int ndRepeat = 5;
     protected int clusteringsEvaluated;
     protected int clusteringsRejected;
     protected int clusteringsFailed;
@@ -146,20 +146,18 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             exec.setColorGenerator(cg);
         }
 
+        if (!config.containsKey(AlgParams.STD)) {
+            config.put(AlgParams.STD, "z-score");
+        }
+        cnt = 0;
+    }
+
+    protected void algorithmInit() {
         blacklist = new ObjectOpenHashSet<>(maxStates > 0 ? maxStates : 200);
 
         if (maxStates < 0) {
             maxStates = countClusteringJobs();
         }
-        LOG.info("search workunits: {}", maxStates);
-        if (ph != null) {
-            ph.start(maxStates);
-        }
-
-        if (!config.containsKey(AlgParams.STD)) {
-            config.put(AlgParams.STD, "z-score");
-        }
-        cnt = 0;
 
         results = new ArrayList<>(maxStates);
     }
@@ -171,6 +169,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
         evolutionStarted(this);
         prepare();
+        algorithmInit();
 
         BlockingQueue<ClusteringTask<E, C>> queue = new LinkedBlockingQueue<>(maxStates);
         pool = Executors.newFixedThreadPool(execPool + 1);
@@ -203,6 +202,11 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     }
 
     private void runClusterings(BlockingQueue<ClusteringTask<E, C>> queue) throws InterruptedException {
+
+        LOG.info("search workunits: {}", maxStates);
+        if (ph != null) {
+            ph.start(maxStates);
+        }
 
         ExecutorService managers = Executors.newFixedThreadPool(execPool);
 
