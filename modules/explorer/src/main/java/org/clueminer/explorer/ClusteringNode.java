@@ -171,15 +171,17 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
         return true;
     }
 
-    private void computeClusterProperties(final Sheet sheet, final Clustering<E, C> clustering, final ReentrantLock lock) {
+    private void computeClusterProperties(final Clustering<E, C> clustering, final ReentrantLock lock) {
 
         final ProgressHandle ph = ProgressHandle.createHandle("Computing properties of " + clustering.getName());
+        sheet = Sheet.createDefault();
 
         final RequestProcessor.Task taskMetrics = RP.create(new Runnable() {
             @Override
             public void run() {
                 //acquire lock in the same thread
-                propertiesLock.lock();
+                lock.lock();
+
                 Sheet.Set set = sheet.get(Sheet.PROPERTIES);
                 if (set == null) {
                     set = Sheet.createPropertiesSet();
@@ -202,12 +204,11 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
                     ph.progress(2);
                     externalSheet(clustering, sheet);
                     ph.progress(3);
-                    ph.finish();
-
                 } catch (NoSuchMethodException ex) {
                     Exceptions.printStackTrace(ex);
                 } finally {
                     lock.unlock();
+                    ph.finish();
                 }
             }
         });
@@ -228,18 +229,23 @@ public class ClusteringNode<E extends Instance, C extends Cluster<E>> extends Ab
 
     @Override
     protected Sheet createSheet() {
-        if (sheet != null) {
-            return sheet;
-        }
-        if (!propertiesLock.isLocked()) {
-            sheet = Sheet.createDefault();
-            Clustering<E, C> clustering = getClustering();
-            if (clustering != null) {
-                computeClusterProperties(sheet, clustering, propertiesLock);
+        if (sheet == null) {
+            if (!propertiesLock.isLocked()) {
+                Clustering<E, C> clustering = getClustering();
+                if (clustering != null) {
+                    computeClusterProperties(clustering, propertiesLock);
+                } else {
+                    propertiesLock.unlock();
+                }
             } else {
-                propertiesLock.unlock();
+                try {
+                    propertiesLock.wait();
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         }
+
         return sheet;
     }
 
