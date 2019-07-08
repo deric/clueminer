@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -158,6 +159,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         if (maxStates < 0) {
             maxStates = countClusteringJobs();
         }
+        LOG.debug("max states updated: {}", maxStates);
 
         results = new ArrayList<>(maxStates);
     }
@@ -165,11 +167,12 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     @Override
     public List<Clustering<E, C>> call() throws Exception {
         StopWatch st = new StopWatch();
+        CountDownLatch countDownLatch = new CountDownLatch(execPool + 1);
         LOG.info("Starting {}", getName());
-
         evolutionStarted(this);
         prepare();
         algorithmInit();
+        LOG.info("max states: {}, time limit per task", maxStates, timePerTask);
 
         BlockingQueue<ClusteringTask<E, C>> queue = new LinkedBlockingQueue<>(maxStates);
         pool = Executors.newFixedThreadPool(execPool + 1);
@@ -179,16 +182,17 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             explore(dataset, queue);
             LOG.info("created {} jobs", queue.size());
             producerRunning = false;
+            countDownLatch.countDown();
         });
 
-        runClusterings(queue);
-
-        finish(st);
+        runClusterings(queue, countDownLatch);
+        finish(st, countDownLatch);
 
         return results;
     }
 
-    protected void finish(StopWatch st) {
+    protected void finish(StopWatch st, CountDownLatch cdl) throws InterruptedException {
+        cdl.await();
         super.finish();
 
         double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
@@ -201,9 +205,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         printStats(results);
     }
 
-    private void runClusterings(BlockingQueue<ClusteringTask<E, C>> queue) throws InterruptedException {
-
-        LOG.info("search workunits: {}", maxStates);
+    private void runClusterings(BlockingQueue<ClusteringTask<E, C>> queue, CountDownLatch cdl) throws InterruptedException {
+        LOG.info("Search workunits: {}", maxStates);
         if (ph != null) {
             ph.start(maxStates);
         }
@@ -233,7 +236,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
                             task = queue.take();
                             future = pool.submit(task);
-                            c = future.get(task.getTimeLimit(), TimeUnit.SECONDS);
+                            LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
+                            c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
                             processResult(c, results, queue);
                         }
                     } catch (InterruptedException ex) {
@@ -245,12 +249,16 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                         Exceptions.printStackTrace(ex);
                         clusteringsFailed++;
                     } catch (TimeoutException ex) {
+                        LOG.debug("running task reached timeout");
                         Exceptions.printStackTrace(ex);
                         clusteringsFailed++;
+                    } finally {
+                        cdl.countDown();
                     }
 
                 }
-                LOG.info("worker terminating");
+                LOG.info("worker terminating, current pool size: {}", cdl.getCount());
+
             });
 
         }
@@ -262,7 +270,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             timeLimit = maxStates * timePerTask;
         }
 
-        LOG.info("settting time limit: {}", timeLimit);
+        LOG.info("Waiting for pool to finish for: {} ms", timeLimit);
         pool.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
         managers.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
     }

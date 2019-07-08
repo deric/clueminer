@@ -188,16 +188,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
     }
 
-    protected void algorithmInit() {
-        blacklist = new ObjectOpenHashSet<>(numFronts * numResults);
-
-        if (maxStates < 0) {
-            maxStates = countClusteringJobs();
-        }
-
-        results = new ArrayList<>(maxStates);
-    }
-
     protected void finish(StopWatch st) {
         super.finish();
 
