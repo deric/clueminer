@@ -65,7 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Top component which displays something.
+ * Display various data partitionings
  *
  * @param <E>
  * @param <C>
@@ -95,7 +95,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
     private Lookup.Result<Clustering> result = null;
     private AbstractNode root;
     private Dataset<E> dataset;
-    private static final RequestProcessor RP = new RequestProcessor("Evolution", 100, false, true);
+    private RequestProcessor reqProc;
     private volatile RequestProcessor.Task task;
     private static final Logger LOG = LoggerFactory.getLogger(ExplorerTopComponent.class);
     private ExplorerToolbar toolbar;
@@ -225,7 +225,7 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
 
     @Override
     public void taskFinished(Task task) {
-        LOG.info("evolution finished");
+        LOG.info("Clustering finished");
         if (!task.isFinished()) {
             LOG.warn("task should have been already finished");
         }
@@ -271,8 +271,9 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
                 }
                 //childern node will get all clustering results
                 //ClusteringChildren children = new ClusteringChildren(alg);
-                LOG.info("starting evolution...");
-                task = RP.create(alg);
+                LOG.info("Starting {}", alg.getName());
+                reqProc = new RequestProcessor(alg.getName(), 10, false, true);
+                task = reqProc.create(alg);
                 task.addTaskListener(this);
                 task.schedule(0);
             }
@@ -298,7 +299,8 @@ public final class ExplorerTopComponent<E extends Instance, C extends Cluster<E>
         if (data == null) {
             throw new RuntimeException("missing dataset");
         }
-        task = RP.create(new Runnable() {
+        reqProc = new RequestProcessor(alg.getName(), 1, false, true);
+        task = reqProc.create(new Runnable() {
 
             @Override
             public void run() {
