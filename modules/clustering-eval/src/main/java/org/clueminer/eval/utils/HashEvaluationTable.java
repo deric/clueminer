@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -35,6 +36,7 @@ import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
+import org.openide.util.Exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +53,7 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     private Clustering<E, C> clustering;
     protected static Object2ObjectMap<String, ClusterEvaluation> internalMap;
     protected static Object2ObjectMap<String, ClusterEvaluation> externalMap;
+    private ReentrantLock initLock = new ReentrantLock();
     private TreeMap<String, Double> scores;
     private static final Logger LOG = LoggerFactory.getLogger(HashEvaluationTable.class);
 
@@ -106,6 +109,13 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
 
     @Override
     public double getScore(String evaluator, Props params) {
+        if (initLock.isLocked()) {
+            try {
+                initLock.wait();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
         if (internalMap.containsKey(evaluator)) {
             return getScore(internalMap.get(evaluator), params);
         } else if (externalMap.containsKey(evaluator)) {
@@ -140,12 +150,26 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     }
 
     @Override
-    public Map<String, Double> getInternal() {
+    public synchronized Map<String, Double> getInternal() {
+        if (initLock.isLocked()) {
+            try {
+                initLock.wait();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
         return evalToScoreMap(internalMap);
     }
 
     @Override
     public Map<String, Double> getExternal() {
+        if (initLock.isLocked()) {
+            try {
+                initLock.wait();
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
         return evalToScoreMap(externalMap);
     }
 
@@ -161,20 +185,21 @@ public class HashEvaluationTable<E extends Instance, C extends Cluster<E>> imple
     }
 
     private void initEvaluators() {
-        if (internalMap == null) {
+        if (internalMap == null || externalMap == null) {
+            initLock.lock();
             InternalEvaluatorFactory<E, C> inf = InternalEvaluatorFactory.getInstance();
             internalMap = new Object2ObjectOpenHashMap<>();
 
             for (InternalEvaluator<E, C> eval : inf.getAll()) {
                 internalMap.put(eval.getName(), eval);
             }
-        }
-        if (externalMap == null) {
+
             externalMap = new Object2ObjectOpenHashMap<>();
             ExternalEvaluatorFactory extf = ExternalEvaluatorFactory.getInstance();
             for (ExternalEvaluator eval : extf.getAll()) {
                 externalMap.put(eval.getName(), eval);
             }
+            initLock.unlock();
         }
     }
 
