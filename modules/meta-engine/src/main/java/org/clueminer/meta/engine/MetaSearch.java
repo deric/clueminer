@@ -17,9 +17,7 @@
 package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

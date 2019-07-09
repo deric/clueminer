@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,7 +164,7 @@ public class ClusteringExecutorCached<E extends Instance, C extends Cluster<E>> 
                 config.configure(dataset, params);
                 LOG.info("estimated parameters: {} for {}", params.toJson(), algorithm.getName());
             } else {
-                LOG.trace("skipping parameters estimation. all required parameters were specified");
+                LOG.debug("skipping parameters estimation. all required parameters were specified: {}", params.toString());
             }
 
             clustering = algorithm.cluster(dataset, params);

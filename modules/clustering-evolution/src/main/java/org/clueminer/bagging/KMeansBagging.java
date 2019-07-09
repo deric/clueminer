@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.uma.jmetal.solution.Solution;
 
 /**
+ * Simple clustering ensemble
  *
  * @author deric
  * @param <E>
@@ -59,7 +60,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
 
     public static final String MAX_K = "max_k";
 
-    @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false)
+    @Param(name = KMeansBagging.BAGGING, description = "number of independent k-means runs", required = false, min = 2)
     protected int bagging;
 
     private static final Logger LOG = LoggerFactory.getLogger(KMeansBagging.class);
@@ -106,6 +107,10 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
         int bagging = props.getInt(BAGGING, 5);
+        if (bagging < 1) {
+            LOG.error("invalid bagging value: {}", bagging);
+            return null;
+        }
         String initSet = props.get(INIT_METHOD, "RANDOM");
         //String initSet = props.get("init_set", "MO");
         KMeans alg = new KMeans();
@@ -122,6 +127,7 @@ public class KMeansBagging<E extends Instance, C extends Cluster<E>> extends Alg
         switch (initSet) {
             case "RANDOM":
                 //map
+                LOG.debug("using bagging: {}", bagging);
                 clusts = randClusters(alg, dataset, props, bagging);
                 //reduce
                 res = reducer.reduce(clusts, alg, colorGenerator, props);
