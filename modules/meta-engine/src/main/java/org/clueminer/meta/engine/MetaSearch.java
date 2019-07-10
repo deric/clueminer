@@ -79,7 +79,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     private static final String NAME = "Meta search";
     private static final Logger LOG = LoggerFactory.getLogger(MetaSearch.class);
 
-    protected final Executor exec;
     protected int gen;
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
@@ -107,7 +106,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
 
     public MetaSearch() {
         super();
-        exec = new ClusteringExecutorCached();
         this.objectives = Lists.newLinkedList();
         objectives.add(new BIC<>());
         objectives.add(new RatkowskyLance<>());
@@ -301,7 +299,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     @Override
-    protected void clusteringFound(Clustering<E, C> c) {
+    protected void clusteringFound(Executor exec, Clustering<E, C> c) {
         LOG.debug("adding clustering to pareto front, size: {}", front.size());
         front.add(c);
         //queue is not used

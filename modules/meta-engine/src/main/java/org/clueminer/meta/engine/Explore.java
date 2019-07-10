@@ -82,7 +82,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     private static final String NAME = "Explore";
     private static final Logger LOG = LoggerFactory.getLogger(Explore.class);
 
-    protected final Executor exec;
     protected int gen;
     protected List<ClusterLinkage> linkage;
     protected List<CutoffStrategy> cutoff;
@@ -110,7 +109,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
     public Explore() {
         super();
-        exec = new ClusteringExecutorCached();
         cmp = new NMIsqrt();
     }
 
@@ -142,10 +140,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         clusteringsRejected = 0;
         clusteringsFailed = 0;
         jobs = 0;
-
-        if (cg != null) {
-            exec.setColorGenerator(cg);
-        }
 
         if (!config.containsKey(AlgParams.STD)) {
             config.put(AlgParams.STD, "z-score");
@@ -219,6 +213,10 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                 Clustering<E, C> c;
                 ClusteringTask<E, C> task;
                 Future<Clustering<E, C>> future;
+                Executor exec = new ClusteringExecutorCached();
+                if (cg != null) {
+                    exec.setColorGenerator(cg);
+                }
 
                 while (producerRunning || !queue.isEmpty()) {
                     try {
@@ -235,10 +233,11 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                             }
 
                             task = queue.take();
+                            task.setExecutor(exec);
                             future = pool.submit(task);
                             LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
                             c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
-                            processResult(c, results, queue);
+                            processResult(exec, c, results, queue);
                         }
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
@@ -275,14 +274,14 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         managers.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
     }
 
-    private void processResult(Clustering<E, C> c, List<Clustering<E, C>> res, BlockingQueue<ClusteringTask<E, C>> queue) {
+    private void processResult(Executor exec, Clustering<E, C> c, List<Clustering<E, C>> res, BlockingQueue<ClusteringTask<E, C>> queue) {
         LOG.info("processing clustering {}, queue: {}", c.fingerprint(), queue.size());
         cnt++;
         if (isValid(c)) {
             c.setId(gen++);
             clusteringsEvaluated++;
             res.add(c);
-            clusteringFound(c);
+            clusteringFound(exec, c);
             fireResult(res);
         } else {
             clusteringsRejected++;
@@ -293,7 +292,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         }
     }
 
-    protected void clusteringFound(Clustering<E, C> c) {
+    protected void clusteringFound(Executor exec, Clustering<E, C> c) {
         //TODO: process result?
     }
 
@@ -343,7 +342,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         return perAlg;
     }
 
-    protected void createTasks(Dataset<E> dataset, ClusteringAlgorithm alg, Props conf, long timeLimit, BlockingQueue<ClusteringTask<E, C>> queue) {
+    protected void createTasks(Dataset<E> dataset, ClusteringAlgorithm alg,
+            Props conf, long timeLimit, BlockingQueue<ClusteringTask<E, C>> queue) {
         int repeat = 1;
         if (!alg.isDeterministic()) {
             //repeat non-deterministic algorithms
@@ -351,7 +351,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         }
         blacklist.add(conf.toJson());
         for (int j = 0; j < repeat; j++) {
-            ClusteringTask<E, C> clb = new ClusteringTask(exec, dataset, conf, timeLimit);
+            ClusteringTask<E, C> clb = new ClusteringTask(dataset, conf, timeLimit);
             if (jobs < maxStates) {
                 jobs++;
                 queue.add(clb);

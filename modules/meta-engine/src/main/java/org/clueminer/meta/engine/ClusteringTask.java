@@ -32,16 +32,15 @@ import org.clueminer.utils.StopWatch;
  */
 public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements Callable<Clustering<E, C>> {
 
-    private final Executor exec;
+    private Executor exec;
     private final Dataset<E> dataset;
     private final Props conf;
     private final long timeLimit;
 
 
-    public ClusteringTask(Executor exec, Dataset<E> dataset, Props conf, long timeLimit) {
+    public ClusteringTask(Dataset<E> dataset, Props conf, long timeLimit) {
         this.dataset = dataset;
         this.conf = conf;
-        this.exec = exec;
         this.timeLimit = timeLimit;
     }
 
@@ -76,6 +75,10 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
 
     public long getTimeLimit() {
         return timeLimit;
+    }
+
+    public void setExecutor(Executor executor) {
+        this.exec = executor;
     }
 
 }
