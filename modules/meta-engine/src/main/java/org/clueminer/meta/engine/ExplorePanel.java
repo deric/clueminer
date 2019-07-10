@@ -43,6 +43,7 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
     private JCheckBox chckLimitSolutions;
     private JCheckBox chckLimitResults;
     private JCheckBox chckLimitPerAlg;
+    private JCheckBox chckModifyStd;
     private static final String NAME = "Explore";
 
     public ExplorePanel() {
@@ -109,6 +110,13 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
         c.gridx = 1;
         add(tfNumThreads, c);
 
+        c.gridx = 0;
+        c.gridy++;
+        chckModifyStd = new JCheckBox("Modify standardizations", true);
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        add(chckModifyStd, c);
+
 
     }
 
@@ -133,6 +141,7 @@ public class ExplorePanel extends JPanel implements EvolutionUI {
             exp.setMaxPerAlg(-1);
         }
         exp.setExecPool(Integer.parseInt(tfNumThreads.getText()));
+        exp.setModifyStd(chckModifyStd.isSelected());
     }
 
     public double getCrossover() {

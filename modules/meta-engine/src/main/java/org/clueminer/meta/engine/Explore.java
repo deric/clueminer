@@ -56,6 +56,7 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.hac.SimpleIndividual;
+import org.clueminer.math.StandardisationFactory;
 import org.clueminer.utils.MapUtils;
 import org.clueminer.utils.PropType;
 import org.clueminer.utils.Props;
@@ -98,6 +99,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
     //maximum number of explored states, use -1 to use unlimited search
     private int maxStates = -1;
     private int maxPerAlg = -1;
+    private boolean modifyStd = true;
     protected List<Clustering<E, C>> results;
     private NMIsqrt cmp;
     private static final DecimalFormat df = new DecimalFormat("#,##0.00");
@@ -314,6 +316,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             estTime.put(alg, time);
         }
         Map<ClusteringAlgorithm, Double> sortedMap = MapUtils.sortByValue(estTime);
+        StandardisationFactory sf = StandardisationFactory.getInstance();
+        List<String> standartizations = sf.getProviders();
 
         LOG.info("available algorithms: {}", printAlg(sortedMap));
         int perAlg = countMaxPerAlg(algs.size());
@@ -323,7 +327,15 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
                 conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
                 conf.put(AlgParams.ALG, alg.getKey().getName());
                 LOG.debug("expanding {}. config of alg: {}", perAlg, alg.getKey().getName());
-                expand(conf, queue);
+                if (modifyStd) {
+                    for (String std : standartizations) {
+                        conf.put(AlgParams.STD, std);
+                        expand(conf, queue);
+                    }
+                } else {
+                    expand(conf, queue);
+                }
+
             }
         }
     }
@@ -648,6 +660,10 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
     public void setExecPool(int size) {
         this.execPool = size;
+    }
+
+    public void setModifyStd(boolean b) {
+        this.modifyStd = b;
     }
 
 }
