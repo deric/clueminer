@@ -25,27 +25,25 @@ import org.clueminer.distance.api.Distance;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Simplified Silhoulette index
+ * Alternate Simplified Silhoulette index
  *
  * Hruschka, Eduardo R and de Castro, Leandro Nunes and Campello, Ricardo JGB.
  * Evolutionary algorithms for clustering gene-expression data. In Fourth IEEE
  * Inter- national Conference on Data Mining (ICDM’04), IEEE, 2004, pp. 403–406.
  *
  * @author deric
- * @param <E>
- * @param <C>
  */
 @ServiceProvider(service = InternalEvaluator.class)
-public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
+public class SilhouetteSimplAlt<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
-    private static String NAME = "Silhouette-simpl";
-    private static final long serialVersionUID = 2679542818862912390L;
+    private static String NAME = "Silhouette-simpl-alt";
+    private static final double EPS = 10e-6;
 
-    public SilhouetteSimpl() {
+    public SilhouetteSimplAlt() {
         dm = new EuclideanDistance();
     }
 
-    public SilhouetteSimpl(Distance dist) {
+    public SilhouetteSimplAlt(Distance dist) {
         this.dm = dist;
     }
 
@@ -54,30 +52,15 @@ public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends S
         return NAME;
     }
 
-    /**
-     * Instead of computing average distance in cluster, distance to centroid is
-     * used
-     *
-     * @param clust
-     * @param clusters
-     * @param i index of cluster
-     * @param x
-     * @return
-     */
     @Override
     public double instanceScore(C clust, Clustering<E, C> clusters, int i, E x) {
-        double a, b, denom;
+        double a, b;
 
         //find minimal distance to other clusters
         b = minDistance(x, clusters, i);
         //distance to a centroid
         a = dm.measure(x, clust.getCentroid());
-        denom = Math.max(b, a);
-        //avoid NaN, if possible
-        if (denom == 0.0) {
-            return 0.0;
-        }
-        return (b - a) / denom;
+        return b / (a + EPS);
     }
 
 }
