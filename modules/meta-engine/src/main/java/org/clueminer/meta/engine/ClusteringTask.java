@@ -86,4 +86,12 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
         this.exec = executor;
     }
 
+    public Props getConf() {
+        return conf;
+    }
+
+    public String getAlgName() {
+        return conf.get(AlgParams.ALG);
+    }
+
 }

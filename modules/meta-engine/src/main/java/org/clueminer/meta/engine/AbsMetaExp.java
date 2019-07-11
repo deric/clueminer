@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.SortedMap;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -34,6 +35,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.clueminer.exec.ClusteringExecutorCached;
@@ -102,7 +105,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     protected int jobs;
     //in miliseconds
     protected long timePerTask = 1000;
-    protected ExecutorService pool;
+    protected ThreadPoolExecutor pool;
     protected volatile boolean producerRunning = true;
     protected boolean modifyStd = true;
     protected Rank<E, C> raking;
@@ -151,7 +154,17 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         LOG.info("max states: {}, time limit per task: {}", maxStates, timePerTask);
 
         BlockingQueue<ClusteringTask<E, C>> queue = new LinkedBlockingQueue<>(maxStates);
-        pool = Executors.newFixedThreadPool(execPool + 1);
+
+        //creating the ThreadPoolExecutor
+        pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(execPool + 2);
+
+        /*        pool = new ThreadPoolExecutor(2, 4, 10,
+                TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(2), threadFactory, rejectionHandler);*/
+        //start the monitoring thread
+        MonitorThread monitor = new MonitorThread(pool, 2);
+        Thread monitorThread = new Thread(monitor);
+        monitorThread.start();
+
         //a "producer" thread
         pool.submit(() -> {
             // a to-do list
@@ -221,7 +234,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                         if (task != null) {
                             task.setExecutor(exec);
                             future = pool.submit(task);
-                            LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
+                            LOG.debug("running {} with time limit: {}ms", task.getAlgName(), task.getTimeLimit());
                             c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
                             processResult(exec, c, results, queue);
                         }
@@ -415,7 +428,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         if (props != null) {
             Configurator conf = alg.getConfigurator();
             //in relative units, give some grace period
-            long time = (long) (conf.estimateRunTime(dataset, props) * 10);
+            long time = (long) (conf.estimateRunTime(dataset, props) * 2);
             createTasks(dataset, alg, props, time, queue);
         } else {
             LOG.error("missing props!");
