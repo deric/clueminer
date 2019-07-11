@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -46,6 +47,7 @@ import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.EvaluationTable;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.clustering.api.Rank;
 import org.clueminer.clustering.api.config.Parameter;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
@@ -103,6 +105,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     protected ExecutorService pool;
     protected volatile boolean producerRunning = true;
     protected boolean modifyStd = true;
+    protected Rank<E, C> raking;
 
     public AbsMetaExp() {
         super();
@@ -271,7 +274,15 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         }
     }
 
+    /**
+     * Called when new valid paritioning is found
+     *
+     * @param exec
+     * @param c
+     */
     public abstract void clusteringFound(Executor exec, Clustering<E, C> c);
+
+    public abstract SortedMap<Double, Clustering<E, C>> computeRanking();
 
     /**
      * Iterates over various algorithm configuration

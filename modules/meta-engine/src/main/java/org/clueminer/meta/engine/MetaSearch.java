@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
@@ -431,6 +432,14 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         sb.append("]");
 
         return sb.toString();
+    }
+
+    @Override
+    public SortedMap<Double, Clustering<E, C>> computeRanking() {
+        if (front == null) {
+            throw new RuntimeException("missing parto front, need to run search first");
+        }
+        return front.computeRanking();
     }
 
 }

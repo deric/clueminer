@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.SortedMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import org.clueminer.clustering.api.AlgParams;
@@ -29,6 +30,8 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.Executor;
+import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.factory.RankFactory;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.external.NMIsqrt;
@@ -89,6 +92,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             config.put(AlgParams.STD, "z-score");
         }
         cnt = 0;
+        RankFactory rf = RankFactory.getInstance();
+        //ranking = rf.getDefault();
     }
 
 
@@ -163,6 +168,11 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             listener.resultUpdate(update, true);
         }
 
+    }
+
+    @Override
+    public SortedMap<Double, Clustering<E, C>> computeRanking() {
+        return null;
     }
 
 }
