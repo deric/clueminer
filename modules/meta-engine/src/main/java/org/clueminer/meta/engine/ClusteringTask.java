@@ -56,7 +56,7 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
         c = exec.clusterRows(dataset, conf);
         time.endMeasure();
         c.lookupAdd(time);
-        LOG.info("{} clustering finished in {}", conf.get(AlgParams.ALG), time.formatSec());
+        LOG.info("{} clustering finished in {}ms", conf.get(AlgParams.ALG), time.formatMs());
         cleanUp(c);
 
         return c;

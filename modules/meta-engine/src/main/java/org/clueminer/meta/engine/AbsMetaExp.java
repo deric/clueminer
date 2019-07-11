@@ -188,11 +188,9 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
             ph.start(maxStates);
         }
 
-        ExecutorService managers = Executors.newFixedThreadPool(execPool);
-
         //watch running jobs with preconfigured timeout
         for (int i = 0; i < execPool; i++) {
-            managers.submit(() -> {
+            pool.submit(() -> {
                 Clustering<E, C> c;
                 ClusteringTask<E, C> task;
                 Future<Clustering<E, C>> future;
@@ -201,28 +199,31 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                     exec.setColorGenerator(cg);
                 }
 
-                while (producerRunning || !queue.isEmpty()) {
-                    try {
-                        //wait for queue to fill up
-                        if (queue.isEmpty()) {
-                            LOG.debug("waiting for work. producer: {}, queue: {}", producerRunning, queue.size());
-                            Thread.sleep(500L);
-                            LOG.debug("just woke up, queue: {}", queue.size());
-                        } else {
+                try {
+                    if (queue.isEmpty()) {
+                        LOG.debug("waiting for work. producer: {}, queue: {}", producerRunning, queue.size());
+                        Thread.sleep(500L);
+                        LOG.debug("just woke up, queue: {}", queue.size());
+                    }
+                } catch (InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
 
-                            if (maxStates > 0 && cnt >= maxStates) {
-                                LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
-                                return;
-                            }
-                            //make sure worker won't wait on empty queue
-                            task = queue.poll(500L, TimeUnit.MILLISECONDS);
-                            if (task != null) {
-                                task.setExecutor(exec);
-                                future = pool.submit(task);
-                                LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
-                                c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
-                                processResult(exec, c, results, queue);
-                            }
+                while (!queue.isEmpty() && cnt < maxStates) {
+                    try {
+
+                        if (maxStates > 0 && cnt >= maxStates) {
+                            LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
+                            return;
+                        }
+                        //make sure worker won't wait on empty queue
+                        task = queue.poll(500L, TimeUnit.MILLISECONDS);
+                        if (task != null) {
+                            task.setExecutor(exec);
+                            future = pool.submit(task);
+                            LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
+                            c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
+                            processResult(exec, c, results, queue);
                         }
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
@@ -246,6 +247,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
             });
 
         }
+
         Thread.sleep(timePerTask);
         long timeLimit;
         if (!producerRunning) {
@@ -256,7 +258,6 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
 
         LOG.info("Waiting for pool to finish for: {} ms", timeLimit);
         pool.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
-        managers.awaitTermination(timeLimit, TimeUnit.MILLISECONDS);
     }
 
     private void processResult(Executor exec, Clustering<E, C> c, List<Clustering<E, C>> res, BlockingQueue<ClusteringTask<E, C>> queue) {
@@ -333,7 +334,8 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
             }
             return false;
         }
-        Dataset<E> d = c.getLookup().lookup(Dataset.class);
+        Dataset<E> d = c.getLookup().lookup(Dataset.class
+        );
         if (c.instancesCount() != d.size()) {
             LOG.debug("rejecting incomplete clustering {}, params: {}", c.fingerprint(), c.getParams());
             return false;
@@ -353,6 +355,9 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
      * @param queue job queue
      */
     protected void expand(Props base, BlockingQueue<ClusteringTask<E, C>> queue) {
+        if (queue.size() > maxStates) {
+            return;
+        }
         ClusteringAlgorithm alg;
         Props props = null;
         Parameter[] params;
@@ -549,7 +554,8 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         int n = 0;
         for (Clustering<E, C> clust : res) {
             if (clust != null) {
-                si = clust.getLookup().lookup(SimpleIndividual.class);
+                si = clust.getLookup().lookup(SimpleIndividual.class
+                );
                 if (si == null) {
                     si = new SimpleIndividual(clust);
                     clust.lookupAdd(si);

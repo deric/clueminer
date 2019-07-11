@@ -59,6 +59,7 @@ public class MetaSearchTest<I extends Individual<I, E, C>, E extends Instance, C
         subject.setDataset((Dataset<E>) FakeDatasets.schoolData());
         subject.setGenerations(1);
         subject.setPopulationSize(15);
+        subject.setMaxSolutions(20);
 
         mem.startClock();
         List<Clustering<E, C>> res = subject.call();
