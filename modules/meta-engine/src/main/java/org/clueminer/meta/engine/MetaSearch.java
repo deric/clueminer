@@ -47,6 +47,7 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.hac.SimpleIndividual;
+import org.clueminer.math.StandardisationFactory;
 import org.clueminer.meta.api.CostFunction;
 import org.clueminer.meta.api.CostFunctionFactory;
 import org.clueminer.meta.api.CostMeasure;
@@ -224,6 +225,9 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             estTime.put(alg, time);
         }
         Map<ClusteringAlgorithm, Double> sortedMap = MapUtils.sortByValue(estTime);
+
+        StandardisationFactory sf = StandardisationFactory.getInstance();
+        List<String> standartizations = sf.getProviders();
         /**
          * LANDMARKING
          */
@@ -232,7 +236,15 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
             conf.put(AlgParams.ALG, alg.getKey().getName());
             LOG.debug("expanding {}", alg.getKey().getName());
-            expand(conf, queue);
+
+            if (modifyStd) {
+                for (String std : standartizations) {
+                    conf.put(AlgParams.STD, std);
+                    expand(conf, queue);
+                }
+            } else {
+                expand(conf, queue);
+            }
         }
         LOG.debug("stats: {}", front.stats());
         front.printRanking(new NMIsqrt());

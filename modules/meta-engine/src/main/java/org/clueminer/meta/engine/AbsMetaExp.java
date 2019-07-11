@@ -55,6 +55,8 @@ import org.clueminer.evolution.api.Evolution;
 import org.clueminer.evolution.api.EvolutionListener;
 import org.clueminer.evolution.api.Individual;
 import org.clueminer.evolution.hac.SimpleIndividual;
+import org.clueminer.math.Standardisation;
+import org.clueminer.math.StandardisationFactory;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.ServiceFactory;
 import org.clueminer.utils.StopWatch;
@@ -271,7 +273,6 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
 
     public abstract void clusteringFound(Executor exec, Clustering<E, C> c);
 
-
     /**
      * Iterates over various algorithm configuration
      *
@@ -279,7 +280,6 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
      * @param queue
      */
     public abstract void explore(Dataset<E> dataset, BlockingQueue<ClusteringTask<E, C>> queue);
-
 
     protected int countMaxPerAlg(int numAlgs) {
         int perAlg;
@@ -511,12 +511,18 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         ClusteringFactory cf = ClusteringFactory.getInstance();
         int total = 0;
         List<ClusteringAlgorithm> algs = cf.getAll();
+        int stdSize = 1;
+        if (modifyStd) {
+            StandardisationFactory sf = StandardisationFactory.getInstance();
+            List<Standardisation> stds = sf.getAll();
+            stdSize = stds.size();
+        }
         int perAlg = countMaxPerAlg(algs.size());
         for (ClusteringAlgorithm alg : algs) {
             if (alg.isDeterministic()) {
-                total += perAlg;
+                total += perAlg * stdSize;
             } else {
-                total += ndRepeat * perAlg;
+                total += ndRepeat * perAlg * stdSize;
             }
         }
         return total;
