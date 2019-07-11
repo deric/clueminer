@@ -17,6 +17,7 @@
 package org.clueminer.meta.engine;
 
 import java.util.concurrent.Callable;
+import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Executor;
@@ -24,6 +25,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.utils.Props;
 import org.clueminer.utils.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Container for task execution
@@ -36,6 +39,7 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
     private final Dataset<E> dataset;
     private final Props conf;
     private final long timeLimit;
+    private static final Logger LOG = LoggerFactory.getLogger(ClusteringTask.class);
 
 
     public ClusteringTask(Dataset<E> dataset, Props conf, long timeLimit) {
@@ -52,6 +56,7 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
         c = exec.clusterRows(dataset, conf);
         time.endMeasure();
         c.lookupAdd(time);
+        LOG.info("{} clustering finished in {}", conf.get(AlgParams.ALG), time.formatSec());
         cleanUp(c);
 
         return c;

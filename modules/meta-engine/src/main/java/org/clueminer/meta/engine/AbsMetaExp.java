@@ -159,6 +159,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
             LOG.info("created {} jobs", queue.size());
             producerRunning = false;
             countDownLatch.countDown();
+            LOG.info("producer finished,pool size: ", countDownLatch.getCount());
         });
 
         runClusterings(queue, countDownLatch);
@@ -213,13 +214,15 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                                 LOG.info("exhaused search limit {}. Stopping meta search.", maxStates);
                                 return;
                             }
-
-                            task = queue.take();
-                            task.setExecutor(exec);
-                            future = pool.submit(task);
-                            LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
-                            c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
-                            processResult(exec, c, results, queue);
+                            //make sure worker won't wait on empty queue
+                            task = queue.poll(500L, TimeUnit.MILLISECONDS);
+                            if (task != null) {
+                                task.setExecutor(exec);
+                                future = pool.submit(task);
+                                LOG.debug("running clustering with time limit: {}ms", task.getTimeLimit());
+                                c = future.get(task.getTimeLimit(), TimeUnit.MILLISECONDS);
+                                processResult(exec, c, results, queue);
+                            }
                         }
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
