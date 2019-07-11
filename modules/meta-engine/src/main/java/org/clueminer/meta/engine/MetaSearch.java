@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
-import org.clueminer.exec.ClusteringExecutorCached;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
@@ -73,33 +72,22 @@ import org.slf4j.LoggerFactory;
  * @param <C>
  */
 @ServiceProvider(service = Evolution.class)
-public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends Explore<I, E, C>
+public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C extends Cluster<E>> extends AbsMetaExp<I, E, C>
         implements Runnable, Evolution<I, E, C>, Lookup.Provider {
 
     private static final String NAME = "Meta search";
     private static final Logger LOG = LoggerFactory.getLogger(MetaSearch.class);
 
-    protected int gen;
-    protected List<ClusterLinkage> linkage;
-    protected List<CutoffStrategy> cutoff;
     protected List<InternalEvaluator<E, C>> evaluators;
-    protected int cnt;
     private HashMap<String, Double> meta;
     protected List<ClusterEvaluation<E, C>> objectives;
     protected ClusterEvaluation<E, C> sortObjective;
     private I[] bestIndividuals;
-    private int numResults = 15;
     private int numFronts = 10;
     private int topN = 10;
     private boolean useMetaDB = false;
-    private Random rand;
-    private int maxRetries = 5;
-    //maximum number of explored states, use -1 to use unlimited search
-    private int maxStates = 200;
     private ParetoFrontQueue front;
-    private NMIsqrt cmp;
     private double diversityThreshold = 0.2;
-    private static final DecimalFormat df = new DecimalFormat("#,##0.00");
     private boolean expandOnlyTop = false;
     private boolean enforceDiversity = false;
     private MetaStorage storage;
@@ -153,13 +141,20 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     @Override
-    protected void prepare() {
-        super.prepare();
-
+    public void prepare() {
+        LOG.info("Starting {}", getName());
+        rand = new Random();
+        clusteringsEvaluated = 0;
+        clusteringsRejected = 0;
+        clusteringsFailed = 0;
+        jobs = 0;
         if (enforceDiversity) {
-            LOG.info("Starting meta-search. Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
+            LOG.info("Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
         } else {
-            LOG.info("Starting meta-search. Objectives: {}", printObjectives());
+            LOG.info("Objectives: {}", printObjectives());
+        }
+        if (numResults < 0) {
+            numResults = 15;
         }
 
         InternalEvaluatorFactory<E, C> ief = InternalEvaluatorFactory.getInstance();
@@ -208,11 +203,10 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param queue
      */
     @Override
-    protected void explore(Dataset<E> dataset, BlockingQueue<ClusteringTask<E, C>> queue) {
-
+    public void explore(Dataset<E> dataset, BlockingQueue<ClusteringTask<E, C>> queue) {
         ClusteringFactory cf = ClusteringFactory.getInstance();
         List<ClusteringAlgorithm> algs = cf.getAll();
-        Props conf;
+        Props conf = new Props();
         Map<ClusteringAlgorithm, Double> estTime = new HashMap<>();
         double time;
         CostFunctionFactory cff = CostFunctionFactory.getInstance();
@@ -225,7 +219,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
             //in case that we're not using meta db, or estimation failed
             if (time < 0) {
-                time = alg.getConfigurator().estimateRunTime(dataset, config);
+                time = alg.getConfigurator().estimateRunTime(dataset, conf);
             }
             estTime.put(alg, time);
         }
@@ -254,7 +248,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
      * @param topN
      */
     private void exploit(int topN, BlockingQueue<ClusteringTask<E, C>> queue) {
-        LOG.info("expling phase, pareto front size: {}", front.size());
+        LOG.info("expoiting phase, pareto front size: {}", front.size());
         Iterator<Clustering<E, C>> it = front.iterator();
         Clustering<E, C> c;
         int n = 0;
@@ -278,20 +272,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         }
     }
 
-    protected ClusteringAlgorithm parseAlgorithm(Props params) {
-        String alg = params.get(AlgParams.ALG);
-        ClusteringFactory cf = ClusteringFactory.getInstance();
-        if (alg == null || !cf.hasProvider(alg)) {
-            LOG.warn("Missing algorithm identifier. params given: {}", params.toString());
-            ClusteringAlgorithm[] algorithms = ClusteringFactory.getInstance().getAllArray();
-            int idx = randomInt(0, algorithms.length - 1);
-            LOG.info("Using algorithm {} instead", algorithms[idx].getName());
-            params.put(AlgParams.ALG, algorithms[idx].getName());
-            return algorithms[idx];
-        }
-        return cf.getProvider(alg);
-    }
-
     public void clearObjectives() {
         if (objectives != null && !objectives.isEmpty()) {
             objectives.clear();
@@ -299,7 +279,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     }
 
     @Override
-    protected void clusteringFound(Executor exec, Clustering<E, C> c) {
+    public void clusteringFound(Executor exec, Clustering<E, C> c) {
         LOG.debug("adding clustering to pareto front, size: {}", front.size());
         front.add(c);
         //queue is not used
@@ -399,20 +379,12 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return objectives.size();
     }
 
-    public void setNumResults(int numResults) {
-        this.numResults = numResults;
-    }
-
     public void setNumFronts(int numFronts) {
         this.numFronts = numFronts;
     }
 
     public void setUseMetaDB(boolean b) {
         this.useMetaDB = b;
-    }
-
-    public void setMaxSolutions(int maxSolutions) {
-        this.maxStates = maxSolutions;
     }
 
     public void setExpandOnlyTop(boolean expandOnlyTop) {
@@ -442,22 +414,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             }
 
             sb.append(ce.getName());
-            i++;
-        }
-        sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printAlg(Map<ClusteringAlgorithm, Double> estTime) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        int i = 0;
-        for (Entry<ClusteringAlgorithm, Double> alg : estTime.entrySet()) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(alg.getKey().getName()).append(":").append(alg.getValue());
             i++;
         }
         sb.append("]");
