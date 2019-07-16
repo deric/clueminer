@@ -23,9 +23,11 @@ import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.ScoreException;
+import org.clueminer.dataset.api.Attribute;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.api.StatsNum;
+import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
 import org.clueminer.math.Vector;
@@ -261,7 +263,9 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     /**
-     * We use centered column vectors of the matrix
+     * We use centered column vectors of the matrix (T matrix)
+     *
+     * T = W + B
      *
      * @param clusters
      * @return
@@ -322,7 +326,9 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     /**
-     * Within-group (cluster) scatter
+     * Within-group (cluster) scatter matrix W for given cluster
+     *
+     * T = W + B
      *
      * @param clust
      * @return
@@ -361,6 +367,53 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
             }
         }
         return wg;
+    }
+
+    /**
+     * Between-group matrix B
+     *
+     * T = W + B
+     *
+     * @param clusters
+     * @return
+     */
+    public Matrix bgMatrix(Clustering<E, C> clusters) {
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing original dataset");
+        }
+
+        int k = clusters.size();
+        int d = dataset.attributeCount();
+
+        //dataset mean
+        E mu = (E) new DoubleArrayDataRow(k);
+        double mean;
+        for (int g = 0; g < d; g++) {
+            Attribute attr = dataset.getAttribute(g);
+            mean = attr.statistics(StatsNum.MEAN);
+            mu.set(g, mean);
+        }
+
+        // between scatter matrix (d x d)
+        Matrix B = new JamaMatrix(d, d);
+
+        E c;
+        E u;
+        C clust;
+        for (int i = 0; i < k; i++) {
+            clust = clusters.get(i);
+            c = clust.getCentroid();
+
+            u = (E) c.minus(mu);
+            // vector times transposed vector
+            for (int j = 0; j < u.size(); j++) {
+                for (int l = 0; l < u.size(); l++) {
+                    B.set(j, l, B.get(j, l) + clust.size() * u.get(j) * u.get(l));
+                }
+            }
+        }
+        return B;
     }
 
     /**
