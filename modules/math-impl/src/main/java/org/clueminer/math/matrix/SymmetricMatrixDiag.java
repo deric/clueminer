@@ -270,7 +270,13 @@ public class SymmetricMatrixDiag extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix minus(Matrix B) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Matrix A = new JamaMatrix(n, n);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                A.set(i, j, get(i, j) - B.get(i, j));
+            }
+        }
+        return A;
     }
 
     @Override
