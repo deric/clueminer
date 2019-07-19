@@ -280,6 +280,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
                 n++;
             }
         }
+        LOG.debug("exploiting completed, front size: ", front.size());
     }
 
     public void clearObjectives() {
