@@ -130,7 +130,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
             for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
                 conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
                 conf.put(AlgParams.ALG, alg.getKey().getName());
-                LOG.debug("expanding {}. config of alg: {}", perAlg, alg.getKey().getName());
+                LOG.debug("expanding {} configs of alg: {}", perAlg, alg.getKey().getName());
                 if (modifyStd) {
                     for (String std : standartizations) {
                         conf.put(AlgParams.STD, std);

@@ -17,7 +17,6 @@
 package org.clueminer.meta.engine;
 
 import com.google.common.collect.Lists;
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,11 +28,9 @@ import java.util.concurrent.BlockingQueue;
 import org.clueminer.clustering.api.AlgParams;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
-import org.clueminer.clustering.api.ClusterLinkage;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
-import org.clueminer.clustering.api.CutoffStrategy;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
@@ -278,7 +275,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
             c = it.next();
             if (c != null) {
                 props = c.getParams();
-                LOG.debug("expanding solution #{}", n + 1, props);
+                LOG.debug("expanding {}", props.toString());
                 expand(props, queue);
                 n++;
             }

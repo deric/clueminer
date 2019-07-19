@@ -93,5 +93,4 @@ public class ClusteringTask<E extends Instance, C extends Cluster<E>> implements
     public String getAlgName() {
         return conf.get(AlgParams.ALG);
     }
-
 }

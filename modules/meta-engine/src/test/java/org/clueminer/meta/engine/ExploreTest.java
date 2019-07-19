@@ -51,7 +51,8 @@ public class ExploreTest<I extends Individual<I, E, C>, E extends Instance, C ex
     @Test
     public void testIris() throws Exception {
         subject.setDataset((Dataset<E>) FakeDatasets.schoolData());
-        subject.setMaxSolutions(15);
+        subject.setMaxSolutions(30);
+        subject.setNumNdRepeat(2);
         subject.setTimePerTask(100L);
 
         mem.startClock();

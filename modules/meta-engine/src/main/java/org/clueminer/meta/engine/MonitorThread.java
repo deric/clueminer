@@ -43,25 +43,37 @@ public class MonitorThread implements Runnable {
     @Override
     public void run() {
         while (run) {
-            LOG.info(
-                    String.format("[monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s",
-                            this.executor.getPoolSize(),
-                            this.executor.getCorePoolSize(),
-                            this.executor.getActiveCount(),
-                            this.executor.getCompletedTaskCount(),
-                            this.executor.getTaskCount(),
-                            this.executor.isShutdown(),
-                            this.executor.isTerminated()));
+            poolState();
             try {
                 Thread.sleep(seconds * 1000);
-                if (this.executor.getActiveCount() == 0) {
-                    LOG.info("Nicely asking to shutdown");
-                    executor.shutdown();
+                if (this.executor.getPoolSize() == 0) {
+                    if (!executor.isShutdown()) {
+                        LOG.info("Nicely asking to shutdown");
+                        executor.shutdown();
+                    }
                 }
+                if (executor.isShutdown() && executor.isTerminated()) {
+                    LOG.debug("nothing to monitor");
+                    poolState();
+                    this.run = false;
+                }
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
+    }
+
+    private void poolState() {
+        LOG.info(
+                String.format("[%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s",
+                        this.executor.getPoolSize(),
+                        this.executor.getCorePoolSize(),
+                        this.executor.getActiveCount(),
+                        this.executor.getCompletedTaskCount(),
+                        this.executor.getTaskCount(),
+                        this.executor.isShutdown(),
+                        this.executor.isTerminated()));
     }
 }
