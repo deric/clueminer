@@ -51,7 +51,7 @@ public class FakeClustering {
     private static Clustering<Instance, Cluster<Instance>> irisWrong5;
     private static Clustering<Instance, Cluster<Instance>> iris_VeVi_S;
     private static Clustering<Instance, Cluster<Instance>> simpleClustering;
-    private static Clustering<Instance, Cluster<Instance>> simpleResponse;
+    private static Clustering<Instance, Cluster<Instance>> wineClustering;
     private static Clustering<Instance, Cluster<Instance>> ext100p2;
     private static Clustering<Instance, Cluster<Instance>> ext100p3;
     private static Clustering<Instance, Cluster<Instance>> int100p4;
@@ -380,6 +380,7 @@ public class FakeClustering {
             simpleClustering.add(a);
             simpleClustering.add(b);
             simpleClustering.add(c);
+            simpleClustering.lookupAdd(data);
         }
 
         return simpleClustering;
@@ -392,8 +393,8 @@ public class FakeClustering {
      */
     public static Clustering wineClustering() {
 
-        if (simpleResponse == null) {
-            simpleResponse = new ClusterList(3);
+        if (wineClustering == null) {
+            wineClustering = new ClusterList(3);
             Cluster a = new BaseCluster(13);
             a.setName("cluster A");
             a.attributeBuilder().create("x", BasicAttrType.INTEGER);
@@ -406,7 +407,7 @@ public class FakeClustering {
             c.attributeBuilder().create("x", BasicAttrType.INTEGER);
 
             Dataset<Instance> data = wine();
-            System.out.println("dataset size " + data.size());
+            //System.out.println("dataset size " + data.size());
             // cabernet 9x -> a
             for (int i = 0; i < 9; i++) {
                 a.add(data.instance(i));
@@ -440,14 +441,14 @@ public class FakeClustering {
             // pinot -> cabernet cluster
             b.add(data.instance(26));
 
-            simpleResponse.add(a);
-            simpleResponse.add(b);
-            simpleResponse.add(c);
+            wineClustering.add(a);
+            wineClustering.add(b);
+            wineClustering.add(c);
             //add dataset to lookup
-            simpleResponse.lookupAdd(data);
+            wineClustering.lookupAdd(data);
         }
 
-        return simpleResponse;
+        return wineClustering;
     }
 
     private static Dataset<? extends Instance> loadExtData(File fixture) {
