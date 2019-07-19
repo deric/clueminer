@@ -157,7 +157,6 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
 
         //creating the ThreadPoolExecutor
         //pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(execPool + 2);
-
         pool = Executors.newWorkStealingPool(execPool + 2);
         //start the monitoring thread, with 5s interval
 
@@ -259,6 +258,9 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                         } else {
                             LOG.debug("running task reached timeout");
                         }
+                    } catch (Exception ex) {
+                        Exceptions.printStackTrace(ex);
+                        clusteringsFailed++;
                     }
                     LOG.debug("finished clustering #{}", cnt);
                     cnt++;
@@ -281,9 +283,9 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
 
         long timeLimit;
         if (!producerRunning) {
-            timeLimit = queue.size() * timePerTask;
+            timeLimit = queue.size() * timePerTask / execPool;
         } else {
-            timeLimit = maxStates * timePerTask;
+            timeLimit = maxStates * timePerTask / execPool;
         }
 
         LOG.info("Waiting for pool to finish for: {} ms", timeLimit);
@@ -318,6 +320,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     public abstract SortedMap<Double, Clustering<E, C>> computeRanking();
 
     protected abstract void fireResult(List<Clustering<E, C>> res);
+
     /**
      * Iterates over various algorithm configuration
      *
