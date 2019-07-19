@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,15 +54,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ClusteringAlgorithm.class)
 public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Algorithm<E, C> implements AgglomerativeClustering<E, C> {
 
-    private AdjListGraph graph;
-    private PriorityQueue<ReverseElement> pq;
-    private CommunityNetwork network;
-    DeltaQMatrix dQ;
+    //private CommunityNetwork network;
 
     public static final String GRAPH_CONV = "graph_conv";
     /* @Param(name = FastCommunity.GRAPH_CONV,           factory = "org.clueminer.graph.api.GraphConvertorFactory",
            type = org.clueminer.clustering.params.ParamType.STRING) */
-    private GraphConvertor graphCon;
 
     @Override
     public String getName() {
@@ -71,14 +67,14 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
 
     @Override
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
-        graph = new AdjListGraph();
+        AdjListGraph graph = new AdjListGraph();
         String dist = pref.get("distance", "Euclidean");
         this.distanceFunction = DistanceFactory.getInstance().getProvider(dist);
         pref.put("algorithm", getName());
 
         Long[] mapping = AdjListFactory.getInstance().createNodesFromInput(dataset, graph);
         String initializer = pref.get(GRAPH_CONV, "k-NNG");
-        graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
+        GraphConvertor graphCon = GraphConvertorFactory.getInstance().getProvider(initializer);
         graphCon.setDistanceMeasure(distanceFunction);
         graphCon.createEdges(graph, dataset, mapping, pref);
 
@@ -86,10 +82,10 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
         pref.put(AlgParams.ALG, getName());
         int n = dataset.size();
         int items = triangleSize(n);
-        pq = new PriorityQueue<>(items);
-        dQ = new DeltaQMatrix(pq);
+        PriorityQueue<ReverseElement> pq = new PriorityQueue<>(items);
+        DeltaQMatrix dQ = new DeltaQMatrix(pq);
 
-        DendroTreeData treeData = computeLinkage(dataset, n);
+        DendroTreeData treeData = computeLinkage(dataset, n, dQ, graph, pq);
 
         treeData.createMapping(n, treeData.getRoot());
         result.setTreeData(treeData);
@@ -102,9 +98,8 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
     }
 
     private Map<Integer, Community> initialAssignment(int n, Dataset<? extends Instance> dataset,
-            DendroNode[] nodes) {
+            DendroNode[] nodes, AdjListGraph graph, CommunityNetwork network) {
         Map<Integer, Community> clusterAssignment = new HashMap<>(n);
-        network = new CommunityNetwork(dQ, graph.getEdgeCount());
 
         int i = 0;
         for (Node node : graph.getNodes()) {
@@ -119,14 +114,16 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
         return clusterAssignment;
     }
 
-    private DendroTreeData computeLinkage(Dataset<? extends Instance> dataset, int n) {
+    private DendroTreeData computeLinkage(Dataset<? extends Instance> dataset, int n,
+            DeltaQMatrix dQ, AdjListGraph graph, PriorityQueue<ReverseElement> pq) {
         DendroNode[] nodes = new DendroNode[(2 * n - 1)];
+        CommunityNetwork network = new CommunityNetwork(dQ, graph.getEdgeCount());
 
-        Map<Integer, Community> assignments = initialAssignment(n, dataset, nodes);
+        Map<Integer, Community> assignments = initialAssignment(n, dataset, nodes, graph, network);
 
         dQ.build(graph);
 
-        populatePriorityQueue(dQ);
+        populatePriorityQueue(dQ, graph, pq);
 
         ReverseElement current;
         DendroNode node = null;
@@ -196,7 +193,7 @@ public class FastCommunity<E extends Instance, C extends Cluster<E>> extends Alg
         return ((n - 1) * n) >>> 1;
     }
 
-    private void populatePriorityQueue(DeltaQMatrix dQ) {
+    private void populatePriorityQueue(DeltaQMatrix dQ, AdjListGraph graph, PriorityQueue<ReverseElement> pq) {
         for (int i = 0; i < graph.getNodeCount(); i++) {
             for (int j = 0; j < graph.getNodeCount(); j++) {
                 ReverseElement element = dQ.get(i, j);
