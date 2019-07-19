@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,10 @@ import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.InternalEvaluator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.dataset.api.StatsNum;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -67,36 +67,37 @@ public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEva
         if (dataset == null) {
             throw new RuntimeException("missing original dataset");
         }
+        try {
+            Matrix Wq = withinGroupScatter(clusters);
+
+            return tss(clusters) / Wq.trace();
+        } catch (RuntimeException ex) {
+            LOG.warn(ex.getMessage(), ex);
+            return Double.NaN;
+        }
+    }
+
+    public double scoreOld(Clustering<E, C> clusters, Props params) {
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        if (dataset == null) {
+            throw new RuntimeException("missing original dataset");
+        }
         Matrix X = dataset.asMatrix();
+
+        //Matrix X is expected to be formed by centered vectors (substracted mean for each column vector - attribute)
+        Matrix Xc = X.copy();
+        for (int j = 0; j < X.columnsCount(); j++) {
+            for (int i = 0; i < X.rowsCount(); i++) {
+                Xc.set(i, j, Xc.get(i, j) - dataset.getAttribute(j).statistics(StatsNum.MEAN));
+            }
+        }
+
         //a matrix d x d (d - number of attributes)
         // T = X'X
-        Matrix TT = X.transpose().times(X);
-
-        //assign matrix - (index, cluster) = 1.0
-        Matrix Z = new JamaMatrix(dataset.size(), clusters.size());
-        int k = 0;
-        for (Cluster<E> c : clusters) {
-            for (E inst : c) {
-                Z.set(inst.getIndex(), k, 1.0);
-            }
-            k++;
-        }
+        Matrix TT = Xc.transpose().times(Xc);
         try {
-            /**
-             * TODO: some matrix operations might not be necessary
-             *
-             */
-            Matrix ZT = Z.transpose();
-            // cluster sizes on diagonal -- inverse
-            Matrix TIZ = ZT.times(Z).inverse();
-            Matrix xbar = TIZ.times(ZT).times(X);
-            //xbar.print(3, 3);
-            Matrix B = xbar.transpose().times(ZT).times(Z).times(xbar);
-
-            //W_q
-            Matrix Wq = TT.minus(B);
-
-            //<- sum(diag(P))/sum(diag(W))
+            Matrix Wq = withinGroupScatter(clusters);
+            //System.out.println("TT trace = " + TT.trace());
             return TT.trace() / Wq.trace();
         } catch (RuntimeException ex) {
             LOG.warn(ex.getMessage(), ex);

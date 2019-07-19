@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,6 +218,26 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
     }
 
     /**
+     * Total scattering = Tr(T)
+     *
+     *
+     * @param clusters
+     * @return
+     */
+    public double tss(Clustering<E, C> clusters) {
+        double tss = 0.0;
+        Dataset<? extends Instance> dataset = clusters.getLookup().lookup(Dataset.class);
+        int d = dataset.attributeCount();
+
+        for (int i = 0; i < d; i++) {
+            // in order to match with X.transpose().times(X).trace()
+            // we're using variance without (n - 1) correction
+            tss += dataset.getAttribute(i).statistics(StatsNum.BVAR);
+        }
+        return dataset.size() * tss;
+    }
+
+    /**
      * Mean attribute value
      *
      * @param clusters
@@ -330,6 +350,7 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
      *
      * T = W + B
      *
+     *
      * @param clust
      * @return
      */
@@ -365,6 +386,23 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
                 value = cols[i].dot(cols[j]);
                 wg.set(i, j, value);
             }
+        }
+        return wg;
+    }
+
+    /**
+     * Computes within group (cluster) scatter matrix
+     *
+     * @param clusters
+     * @return
+     */
+    public Matrix withinGroupScatter(Clustering<E, C> clusters) {
+        //number of dimensions
+        Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
+        int m = dataset.attributeCount();
+        Matrix wg = new JamaMatrix(m, m);
+        for (Cluster<E> clust : clusters) {
+            wg.plusEquals(wgScatter(clust));
         }
         return wg;
     }
@@ -449,22 +487,6 @@ public abstract class AbstractEvaluator<E extends Instance, C extends Cluster<E>
         }
 
         return trace;
-    }
-
-    /**
-     * Computes within group (cluster) scatter matrix
-     *
-     * @param clusters
-     * @return
-     */
-    public Matrix withinGroupScatter(Clustering<E, C> clusters) {
-        //number of dimensions
-        int m = clusters.get(0).attributeCount();
-        Matrix wg = new JamaMatrix(m, m);
-        for (Cluster<E> clust : clusters) {
-            wg.plusEquals(wgScatter(clust));
-        }
-        return wg;
     }
 
     public Matrix wqMatrix(Clustering<E, C> clusters) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@ package org.clueminer.eval;
 
 import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.fixtures.clustering.FakeClustering;
+import org.clueminer.utils.Props;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -42,7 +43,26 @@ public class RubinTest {
         //should recognize better clustering
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
         // value according to R's NbClust package
-        assertEquals(106.826066604402, scoreBetter, DELTA);
+        // appears to be using uncentered column vectors
+        // assertEquals(106.826066604402, scoreBetter, DELTA);
+        double sc2 = subject.scoreOld(FakeClustering.iris(), new Props());
+        assertEquals(sc2, scoreBetter, DELTA);
+    }
+
+    @Test
+    public void testSpeed1() throws ScoreException {
+        long start = System.currentTimeMillis();
+        double sc1 = subject.score(FakeClustering.wineCorrect());
+        long end = System.currentTimeMillis();
+        System.out.println("rubin took " + (end - start) + " ms, score " + sc1);
+    }
+
+    @Test
+    public void testSpeed2() throws ScoreException {
+        long start = System.currentTimeMillis();
+        double sc2 = subject.scoreOld(FakeClustering.wineCorrect(), new Props());
+        long end = System.currentTimeMillis();
+        System.out.println("rubin-matrix took " + (end - start) + " ms, score " + sc2);
     }
 
 }
