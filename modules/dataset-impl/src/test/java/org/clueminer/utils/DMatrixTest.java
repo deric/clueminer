@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import org.junit.Test;
 public class DMatrixTest {
 
     private static double[][] data = new double[][]{{1, 2, 3, 4, 5}, {6, 7, 8, 9, 10}};
+    private static final double DELTA = 1e-9;
 
     double[][] square = {{166., 188., 210.}, {188., 214., 240.}, {210., 240., 270.}};
     double[][] A = {
@@ -49,7 +50,6 @@ public class DMatrixTest {
 
     private static double[][] B = new double[][]{{2, 1}, {4, 5}, {3, 7}};
     private static DMatrix subject;
-    private static final double DELTA = 1e-9;
 
     public DMatrixTest() {
         Dataset<? extends Instance> dataset = new ArrayDataset(data);
@@ -88,6 +88,16 @@ public class DMatrixTest {
         Matrix m = t.times(dm);
         //m.print(3, 2);
         assertEquals(104.0, m.trace(), DELTA);
+    }
+
+    @Test
+    public void testCopy() {
+        Matrix copy = subject.copy();
+        for (int i = 0; i < subject.rowsCount(); i++) {
+            for (int j = 0; j < subject.columnsCount(); j++) {
+                assertEquals(subject.get(i, j), copy.get(i, j), DELTA);
+            }
+        }
     }
 
 }

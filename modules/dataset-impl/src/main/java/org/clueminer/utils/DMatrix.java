@@ -51,7 +51,14 @@ public class DMatrix extends AbstractMatrix implements Matrix {
 
     @Override
     public Matrix copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Matrix X = new JamaMatrix(rowsCount(), columnsCount());
+        double[][] C = X.getArray();
+        for (int i = 0; i < rowsCount(); i++) {
+            for (int j = 0; j < columnsCount(); j++) {
+                C[i][j] = get(i, j);
+            }
+        }
+        return X;
     }
 
     @Override
