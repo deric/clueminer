@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SilhoutetteSqrt<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
     private static final String NAME = "Silhouette-sqrt";
+    private static final String CALLSIGN = "siq";
     private static final long serialVersionUID = -6749580294703273126L;
 
     public SilhoutetteSqrt() {
@@ -43,6 +44,11 @@ public class SilhoutetteSqrt<E extends Instance, C extends Cluster<E>> extends S
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
 }

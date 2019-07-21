@@ -37,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SilhouetteSimplAlt<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
     private static String NAME = "Silhouette-simpl-alt";
+    private static String CALLSIGN = "ssa";
     private static final double EPS = 10e-6;
 
     public SilhouetteSimplAlt() {
@@ -50,6 +51,11 @@ public class SilhouetteSimplAlt<E extends Instance, C extends Cluster<E>> extend
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

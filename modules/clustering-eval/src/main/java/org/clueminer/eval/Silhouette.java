@@ -43,7 +43,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class Silhouette<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -2195054290041907628L;
-    private static String name = "Silhouette";
+    private static String NAME = "Silhouette";
+    private static String CALLSIGN = "sil";
 
     public Silhouette() {
         dm = new EuclideanDistance();
@@ -57,7 +58,12 @@ public class Silhouette<E extends Instance, C extends Cluster<E>> extends Abstra
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

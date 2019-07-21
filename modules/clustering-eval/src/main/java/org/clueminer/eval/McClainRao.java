@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class McClainRao<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "McClain-Rao";
+    private static String CALLSIGN = "McR";
     private static final long serialVersionUID = -3222061698654228829L;
 
     public McClainRao() {
@@ -53,6 +54,11 @@ public class McClainRao<E extends Instance, C extends Cluster<E>> extends Abstra
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

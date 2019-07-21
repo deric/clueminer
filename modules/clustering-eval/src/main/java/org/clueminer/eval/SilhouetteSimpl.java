@@ -39,6 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends Silhouette<E, C> {
 
     private static String NAME = "Silhouette-simpl";
+    private static String CALLSIGN = "ss";
     private static final long serialVersionUID = 2679542818862912390L;
 
     public SilhouetteSimpl() {
@@ -52,6 +53,11 @@ public class SilhouetteSimpl<E extends Instance, C extends Cluster<E>> extends S
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class RatkowskyLance<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 3195054290041907628L;
-    private static String name = "Ratkowsky-Lance";
+    private static String NAME = "Ratkowsky-Lance";
+    private static String CALLSIGN = "RL";
 
     public RatkowskyLance() {
         dm = new EuclideanDistance();
@@ -53,7 +54,12 @@ public class RatkowskyLance<E extends Instance, C extends Cluster<E>> extends Ab
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,9 @@ import org.clueminer.utils.Props;
 /**
  * Density-Based Clustering Validation
  *
- * @cite Moulavi, Davoud, Pablo A. Jaskowiak, Ricardo JGB Campello,
- * Arthur Zimek, and Jörg Sander. "Density-Based Clustering Validation."
- * In SDM, pp. 839-847. 2014.
+ * @cite Moulavi, Davoud, Pablo A. Jaskowiak, Ricardo JGB Campello, Arthur
+ * Zimek, and Jörg Sander. "Density-Based Clustering Validation." In SDM, pp.
+ * 839-847. 2014.
  *
  * @TODO work in progress - not complete implementation
  * @author deric
@@ -44,6 +44,7 @@ import org.clueminer.utils.Props;
 public class DBCV<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "DBCV";
+    private static final String CALLSIGN = "DBV";
 
     public DBCV() {
         dm = EuclideanDistance.getInstance();
@@ -56,6 +57,11 @@ public class DBCV<E extends Instance, C extends Cluster<E>> extends AbstractEval
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override
@@ -127,7 +133,6 @@ public class DBCV<E extends Instance, C extends Cluster<E>> extends AbstractEval
         double dsc;
 
         //nom = min - sparseness;
-
         return nom / denom;
     }
 

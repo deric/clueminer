@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,17 @@ import org.openide.util.lookup.ServiceProvider;
 public class SDbw<E extends Instance, C extends Cluster<E>> extends SDindex<E, C> implements InternalEvaluator<E, C>, ClusterEvaluation<E, C> {
 
     private static final String NAME = "S_Dbw";
+    private static final String CALLSIGN = "SDb";
     private static final long serialVersionUID = 2687565191321472835L;
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     public SDbw() {

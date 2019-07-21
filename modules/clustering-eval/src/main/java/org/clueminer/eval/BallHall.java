@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @param <E>
  * @param <C>
- * @cite
- * Ball, Geoffrey H., and David J. Hall. ISODATA, a novel method of data
+ * @cite Ball, Geoffrey H., and David J. Hall. ISODATA, a novel method of data
  * analysis and pattern classification. STANFORD RESEARCH INST MENLO PARK CA,
  * 1965.
  *
@@ -42,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class BallHall<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Ball-Hall";
+    private static final String CALLSIGN = "BH";
     private static final long serialVersionUID = -7672134423406888310L;
 
     public BallHall() {
@@ -51,6 +51,11 @@ public class BallHall<E extends Instance, C extends Cluster<E>> extends Abstract
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     public double score(Clustering<E, C> clusters, Props params) {

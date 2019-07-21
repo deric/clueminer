@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Rubin";
+    private static final String CALLSIGN = "rub";
     private static final long serialVersionUID = -1636596859242265112L;
     private static final Logger LOG = LoggerFactory.getLogger(Rubin.class);
 
@@ -59,6 +60,11 @@ public class Rubin<E extends Instance, C extends Cluster<E>> extends AbstractEva
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "PBM";
+    private static final String CALLSIGN = "PBM";
     private static final long serialVersionUID = -8947980448201668614L;
 
     public PBM() {
@@ -48,6 +49,11 @@ public class PBM<E extends Instance, C extends Cluster<E>> extends AbstractEvalu
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

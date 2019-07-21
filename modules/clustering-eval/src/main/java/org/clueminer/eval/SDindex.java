@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ public class SDindex<E extends Instance, C extends Cluster<E>> extends AbstractE
 
     private static final long serialVersionUID = 4323522308319865590L;
     private static final String NAME = "SD";
+    private static final String CALLSIGN = "SD";
 
     public SDindex() {
         dm = EuclideanDistance.getInstance();
@@ -64,6 +65,11 @@ public class SDindex<E extends Instance, C extends Cluster<E>> extends AbstractE
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,17 @@ public class Connectivity<E extends Instance, C extends Cluster<E>> extends Abst
 
     private static final long serialVersionUID = 5416705978468100914L;
     private static final String NAME = "Connectivity";
+    private static final String CALLSIGN = "con";
     private static final String PARAM = "connectivity.L";
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

@@ -46,6 +46,11 @@ public class BIC<E extends Instance, C extends Cluster<E>> extends AIC<E, C> {
     }
 
     @Override
+    public String getCallsign() {
+        return NAME;
+    }
+
+    @Override
     public double score(Clustering<E, C> clusters, Props params) {
         Dataset<E> dataset = clusters.getLookup().lookup(Dataset.class);
         int n = dataset.size();

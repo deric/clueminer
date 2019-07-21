@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class Gamma<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Gamma";
+    private static final String CALLSIGN = "bhg";
     private static final long serialVersionUID = 4782242459481724512L;
     public static final String S_PLUS = "s+";
     public static final String S_MINUS = "s-";
@@ -64,6 +65,11 @@ public class Gamma<E extends Instance, C extends Cluster<E>> extends AbstractEva
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class DaviesBouldin<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = -6973489229802690101L;
-    private static final String name = "Davies-Bouldin";
+    private static final String NAME = "Davies-Bouldin";
+    private static final String CALLSIGN = "DB";
 
     public DaviesBouldin() {
         dm = EuclideanDistance.getInstance();
@@ -54,7 +55,12 @@ public class DaviesBouldin<E extends Instance, C extends Cluster<E>> extends Abs
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

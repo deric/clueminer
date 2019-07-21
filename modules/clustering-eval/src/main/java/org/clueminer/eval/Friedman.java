@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class Friedman<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Friedman";
+    private static final String CALLSIGN = "fri";
     private static final long serialVersionUID = -1636596859242265112L;
     private static final Logger LOG = LoggerFactory.getLogger(Friedman.class);
 
@@ -59,6 +60,11 @@ public class Friedman<E extends Instance, C extends Cluster<E>> extends Abstract
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

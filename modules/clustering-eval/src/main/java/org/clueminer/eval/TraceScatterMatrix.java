@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "TraceSM";
+    private static String CALLSIGN = "tsm";
     private static final long serialVersionUID = -3714149292456837484L;
     private static final Logger LOG = LoggerFactory.getLogger(TraceScatterMatrix.class);
 
@@ -56,6 +57,11 @@ public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extend
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

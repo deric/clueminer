@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,16 @@ import org.openide.util.lookup.ServiceProvider;
 public class BanfieldRaftery<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Banfield-Raftery";
+    private static final String CALLSIGN = "BH";
     private static final long serialVersionUID = -6474798417487400001L;
 
     public BanfieldRaftery() {
         dm = EuclideanDistance.getInstance();
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

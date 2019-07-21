@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ public class SumOfAveragePairwiseSimilarities<E extends Instance, C extends Clus
 
     private static final long serialVersionUID = 3813005489221333305L;
     private static String NAME = "SAPS";
+    private static String CALLSIGN = "SAS";
 
     public SumOfAveragePairwiseSimilarities() {
         dm = EuclideanDistance.getInstance();
@@ -50,6 +51,11 @@ public class SumOfAveragePairwiseSimilarities<E extends Instance, C extends Clus
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

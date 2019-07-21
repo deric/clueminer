@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,8 @@ import org.openide.util.lookup.ServiceProvider;
  * multiobjective clustering." Evolutionary Computation, IEEE Transactions on
  * 11.1 (2007): 56-76.
  *
- * @see similar index {@link TraceW}, {@link SumOfSquaredErrors}, {@link BallHall}
+ * @see similar index
+ * {@link TraceW}, {@link SumOfSquaredErrors}, {@link BallHall}
  *
  * @author Tomas Barton
  */
@@ -44,6 +45,7 @@ public class Deviation<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     private static final long serialVersionUID = -1456624325537837873L;
     private static final String NAME = "Deviation";
+    private static final String CALLSIGN = "dev";
 
     public Deviation() {
         dm = EuclideanDistance.getInstance();
@@ -52,6 +54,11 @@ public class Deviation<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ public class CalinskiHarabasz<E extends Instance, C extends Cluster<E>> extends 
 
     private static final long serialVersionUID = -2699019526373205522L;
     private static final String NAME = "Calinski-Harabasz";
+    private static final String CALLSIGN = "VRC";
 
     public CalinskiHarabasz() {
         dm = EuclideanDistance.getInstance();
@@ -64,6 +65,11 @@ public class CalinskiHarabasz<E extends Instance, C extends Cluster<E>> extends 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

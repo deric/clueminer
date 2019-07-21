@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends CalinskiHarabasz<E, C> implements InternalEvaluator<E, C> {
 
     private static final String NAME = "Log-SS-Ratio";
+    private static final String CALLSIGN = "lsr";
     private static final long serialVersionUID = 1027250256090361526L;
     private static final Logger LOG = LoggerFactory.getLogger(LogSSRatio.class);
 
@@ -53,6 +54,11 @@ public class LogSSRatio<E extends Instance, C extends Cluster<E>> extends Calins
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

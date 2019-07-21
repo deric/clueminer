@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = InternalEvaluator.class)
 public class XieBeni<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
-    private static String name = "Xie-Beni";
+    private static String NAME = "Xie-Beni";
+    private static String CALLSIGN = "XB";
     private static final long serialVersionUID = -1556797441498915591L;
 
     public XieBeni() {
@@ -51,7 +52,12 @@ public class XieBeni<E extends Instance, C extends Cluster<E>> extends AbstractE
 
     @Override
     public String getName() {
-        return name;
+        return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

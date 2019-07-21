@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "min-max-cut";
+    private static final String CALLSIGN = "mmc";
     private static final long serialVersionUID = -4963722097900153865L;
 
     public MinMaxCut() {
@@ -50,6 +51,11 @@ public class MinMaxCut<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

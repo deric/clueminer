@@ -36,6 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> implements InternalEvaluator<E, C> {
 
     private static final String NAME = "Wemmert-Gancarski";
+    private static final String CALLSIGN = "WG";
     private static final long serialVersionUID = -1206250158135544566L;
 
     public WemmertGancarski() {
@@ -49,6 +50,11 @@ public class WemmertGancarski<E extends Instance, C extends Cluster<E>> extends 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

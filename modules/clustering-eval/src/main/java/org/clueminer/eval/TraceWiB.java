@@ -27,7 +27,6 @@ import org.clueminer.dataset.row.DoubleArrayDataRow;
 import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.math.Matrix;
-import org.clueminer.math.matrix.JamaMatrix;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ public class TraceWiB<E extends Instance, C extends Cluster<E>> extends Abstract
 
     private static final long serialVersionUID = 6195054290041907628L;
     private static final String NAME = "TraceWiB";
+    private static final String CALLSIGN = "twb";
     private static final Logger LOG = LoggerFactory.getLogger(TraceWiB.class);
 
     public TraceWiB() {
@@ -60,6 +60,11 @@ public class TraceWiB<E extends Instance, C extends Cluster<E>> extends Abstract
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

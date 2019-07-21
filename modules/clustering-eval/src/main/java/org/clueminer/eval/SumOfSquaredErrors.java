@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class SumOfSquaredErrors<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static String NAME = "SSE";
+    private static String CALLSIGN = "SSE";
     private static final long serialVersionUID = 7246192305561714193L;
 
     public SumOfSquaredErrors() {
@@ -51,6 +52,11 @@ public class SumOfSquaredErrors<E extends Instance, C extends Cluster<E>> extend
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override

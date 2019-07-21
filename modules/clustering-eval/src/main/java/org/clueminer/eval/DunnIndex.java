@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public class DunnIndex<E extends Instance, C extends Cluster<E>> extends Abstrac
 
     private static final long serialVersionUID = -6973489229802690101L;
     private static final String NAME = "Dunn";
+    private static final String CALLSIGN = "dun";
     private static final Logger LOG = LoggerFactory.getLogger(DunnIndex.class);
 
     public DunnIndex() {
@@ -57,6 +58,11 @@ public class DunnIndex<E extends Instance, C extends Cluster<E>> extends Abstrac
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String getCallsign() {
+        return CALLSIGN;
     }
 
     @Override
