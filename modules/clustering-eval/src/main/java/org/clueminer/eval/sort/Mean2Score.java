@@ -81,4 +81,9 @@ public class Mean2Score<E extends Instance, C extends Cluster<E>> implements Ran
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 3;
+    }
+
 }

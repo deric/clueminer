@@ -106,4 +106,9 @@ public class RRF<E extends Instance, C extends Cluster<E>> implements Rank<E, C>
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 2;
+    }
+
 }

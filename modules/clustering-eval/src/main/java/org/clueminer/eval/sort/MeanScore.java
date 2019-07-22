@@ -82,4 +82,9 @@ public class MeanScore<E extends Instance, C extends Cluster<E>> implements Rank
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 2;
+    }
+
 }

@@ -83,4 +83,9 @@ public class HarmonicMeanScore<E extends Instance, C extends Cluster<E>> impleme
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 2;
+    }
+
 }

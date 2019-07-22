@@ -164,4 +164,9 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 2;
+    }
+
 }

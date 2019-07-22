@@ -82,4 +82,9 @@ public class MedianScore<E extends Instance, C extends Cluster<E>> implements Ra
         }
     }
 
+    @Override
+    public int getMinObjectives() {
+        return 3;
+    }
+
 }

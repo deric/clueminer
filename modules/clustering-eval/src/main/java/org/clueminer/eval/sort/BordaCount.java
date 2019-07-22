@@ -17,14 +17,7 @@
 package org.clueminer.eval.sort;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.*;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -118,6 +111,11 @@ public class BordaCount<E extends Instance, C extends Cluster<E>> implements Ran
         if (objectives.size() < 3) {
             throw new ConfigException("Please provide at least three evaluation metrics. " + objectives.size() + " was given");
         }
+    }
+
+    @Override
+    public int getMinObjectives() {
+        return 3;
     }
 
 }

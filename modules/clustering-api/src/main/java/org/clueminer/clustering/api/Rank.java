@@ -68,4 +68,11 @@ public interface Rank<E extends Instance, C extends Cluster<E>> {
 
     void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException;
 
+    /**
+     * Minimal objectives needed
+     *
+     * @return number of required objectives
+     */
+    int getMinObjectives();
+
 }

@@ -278,7 +278,6 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                 LOG.info("worker terminating, current pool size: {}", cdl.getCount());
 
             });
-
         }
 
         long timeLimit;
