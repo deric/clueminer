@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,10 +83,16 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
         return NAME;
     }
 
+    /**
+     * Class variables can't be used in order to have thread-safe execution
+     *
+     * @param dataset
+     * @param props
+     * @return
+     */
     @Override
     public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        int[] y = scan(dataset, props);
-        int n = dataset.size();
+        DBSCANconf conf = scan(dataset, props);
         Clustering res = Clusterings.newList();
         int avgSize = (int) Math.sqrt(dataset.size());
         Cluster curr;
@@ -94,11 +100,11 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
         if (colorGenerator != null) {
             colorGenerator.reset();
         }
-        for (int i = 0; i < n; i++) {
-            if (y[i] == OUTLIER) {
+        for (int i = 0; i < conf.n; i++) {
+            if (conf.y[i] == OUTLIER) {
                 clustIdx = k;
             } else {
-                clustIdx = y[i];
+                clustIdx = conf.y[i];
             }
             if (!res.hasAt(clustIdx)) {
                 curr = res.createCluster(clustIdx, avgSize);
@@ -118,12 +124,98 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
         return res;
     }
 
+    private class DBSCANconf {
+
+        protected int k;
+        protected int n;
+        protected int minPts;
+        protected double radius;
+        protected int[] y;
+        protected RNNSearch<E> nns;
+
+        public DBSCANconf() {
+
+        }
+    }
+
+    /**
+     * Configure required parameters
+     *
+     * @param dataset
+     * @param props
+     * @return
+     */
+    public DBSCANconf scan(Dataset<E> dataset, Props props) {
+        DBSCANconf conf = new DBSCANconf();
+        if (!props.containsKey(MIN_PTS)) {
+            throw new RuntimeException("missing parameter " + MIN_PTS + ", got: " + props.toJson());
+        }
+        conf.minPts = props.getInt(MIN_PTS);
+        if (conf.minPts < 1) {
+            throw new IllegalArgumentException("Invalid minPts: " + conf.minPts);
+        }
+
+        if (!props.containsKey(EPS)) {
+            throw new RuntimeException("missing parameter " + EPS + ", got: " + props.toJson());
+        }
+        conf.radius = props.getDouble(EPS);
+        if (conf.radius <= 0.0) {
+            throw new IllegalArgumentException("Invalid radius: " + conf.radius);
+        }
+
+        conf.k = 0;
+
+        String rnnProvider = props.get(RNN_ALG, "linear RNN");
+        conf.nns = RnnFactory.getInstance().getProvider(rnnProvider);
+        if (conf.nns == null) {
+            throw new RuntimeException("RNN provider was not found");
+        }
+        conf.nns.setDataset(dataset);
+
+        conf.n = dataset.size();
+        conf.y = new int[conf.n];
+        Arrays.fill(conf.y, UNCLASSIFIED);
+
+        for (int i = 0; i < conf.n; i++) {
+            if (conf.y[i] == UNCLASSIFIED) {
+                //expand cluster
+                List<Neighbor<E>> seeds = new ArrayList<>();
+                conf.nns.range(dataset.get(i), conf.radius, seeds);
+                //no core points
+                if (seeds.size() < conf.minPts) {
+                    conf.y[i] = OUTLIER;
+                } else {
+                    //all points in seeds are density-reachable from Point y[i]
+                    conf.y[i] = k;
+                    for (int j = 0; j < seeds.size(); j++) {
+                        if (conf.y[seeds.get(j).index] == UNCLASSIFIED) {
+                            conf.y[seeds.get(j).index] = conf.k;
+                            Neighbor<E> neighbor = seeds.get(j);
+                            List<Neighbor<E>> secondaryNeighbors = new ArrayList<>();
+                            conf.nns.range(neighbor.key, conf.radius, secondaryNeighbors);
+
+                            if (secondaryNeighbors.size() >= conf.minPts) {
+                                seeds.addAll(secondaryNeighbors);
+                            }
+                        }
+
+                        if (conf.y[seeds.get(j).index] == OUTLIER) {
+                            conf.y[seeds.get(j).index] = conf.k;
+                        }
+                    }
+                    conf.k++;
+                }
+            }
+        }
+        return conf;
+    }
+
     public ArrayList<Instance> findNoise(Dataset<E> dataset, Props props) {
-        int[] y = scan(dataset, props);
+        DBSCANconf conf = scan(dataset, props);
         int n = dataset.size();
         ArrayList<Instance> result = null;
         for (int i = 0; i < n; i++) {
-            if (y[i] == OUTLIER) {
+            if (conf.y[i] == OUTLIER) {
                 if (result == null) {
                     result = new ArrayList<>();
                 }
@@ -131,70 +223,6 @@ public class DBSCAN<E extends Instance, C extends Cluster<E>> extends Algorithm<
             }
         }
         return result;
-    }
-
-    private int[] scan(Dataset<E> dataset, Props props) {
-        if (!props.containsKey(MIN_PTS)) {
-            throw new RuntimeException("missing parameter " + MIN_PTS + ", got: " + props.toJson());
-        }
-        minPts = props.getInt(MIN_PTS);
-        if (minPts < 1) {
-            throw new IllegalArgumentException("Invalid minPts: " + minPts);
-        }
-
-        if (!props.containsKey(EPS)) {
-            throw new RuntimeException("missing parameter " + EPS + ", got: " + props.toJson());
-        }
-        radius = props.getDouble(EPS);
-        if (radius <= 0.0) {
-            throw new IllegalArgumentException("Invalid radius: " + radius);
-        }
-
-        k = 0;
-
-        String rnnProvider = props.get(RNN_ALG, "linear RNN");
-        nns = RnnFactory.getInstance().getProvider(rnnProvider);
-        if (nns == null) {
-            throw new RuntimeException("RNN provider was not found");
-        }
-        nns.setDataset(dataset);
-
-        int n = dataset.size();
-        int[] y = new int[n];
-        Arrays.fill(y, UNCLASSIFIED);
-
-        for (int i = 0; i < n; i++) {
-            if (y[i] == UNCLASSIFIED) {
-                //expand cluster
-                List<Neighbor<E>> seeds = new ArrayList<>();
-                nns.range(dataset.get(i), radius, seeds);
-                //no core points
-                if (seeds.size() < minPts) {
-                    y[i] = OUTLIER;
-                } else {
-                    //all points in seeds are density-reachable from Point y[i]
-                    y[i] = k;
-                    for (int j = 0; j < seeds.size(); j++) {
-                        if (y[seeds.get(j).index] == UNCLASSIFIED) {
-                            y[seeds.get(j).index] = k;
-                            Neighbor<E> neighbor = seeds.get(j);
-                            List<Neighbor<E>> secondaryNeighbors = new ArrayList<>();
-                            nns.range(neighbor.key, radius, secondaryNeighbors);
-
-                            if (secondaryNeighbors.size() >= minPts) {
-                                seeds.addAll(secondaryNeighbors);
-                            }
-                        }
-
-                        if (y[seeds.get(j).index] == OUTLIER) {
-                            y[seeds.get(j).index] = k;
-                        }
-                    }
-                    k++;
-                }
-            }
-        }
-        return y;
     }
 
     public RNNSearch<E> getNns() {

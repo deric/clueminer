@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public class DBSCANTest {
         Props pref = new Props();
 
         pref.putInt(DBSCAN.MIN_PTS, 2);
-        pref.putDouble(DBSCAN.EPS, 20);
+        pref.putDouble(DBSCAN.EPS, 8);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
         assertEquals(2, c.size());
     }
@@ -107,8 +107,9 @@ public class DBSCANTest {
         pref.putInt(DBSCAN.MIN_PTS, 2);
         pref.putDouble(DBSCAN.EPS, 5);
         Clustering<Instance, Cluster<Instance>> c = subject.cluster(dataset, pref);
-        assertEquals(4, c.size());
+        assertEquals(3, c.size());
         System.out.println(c.toString());
+
     }
 
     @Test
