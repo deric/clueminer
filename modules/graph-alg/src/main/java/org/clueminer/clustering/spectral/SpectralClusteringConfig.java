@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,6 @@ public class SpectralClusteringConfig<E extends Instance> implements Configurato
 
     @Override
     public double estimateRunTime(Dataset<E> dataset, Props params) {
-        return FastMath.pow(dataset.size(), 4) * dataset.attributeCount();
+        return FastMath.pow(dataset.size(), 3) * dataset.attributeCount() / 1E4;
     }
 }
