@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@ package org.clueminer.clustering.algorithm.cure;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import java.util.Iterator;
-import java.util.Random;
 import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.algorithm.HClustResult;
 import org.clueminer.clustering.api.Algorithm;
@@ -27,7 +26,6 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.Configurator;
 import org.clueminer.clustering.api.HierarchicalResult;
 import org.clueminer.clustering.api.config.annotation.Param;
-import org.clueminer.clustering.api.dendrogram.DendroNode;
 import org.clueminer.clustering.api.dendrogram.DendroTreeData;
 import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
@@ -74,9 +72,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
     public static final String REPRESENTATION_PROBABILITY = "representation_probablity";
     @Param(name = REPRESENTATION_PROBABILITY,
-           description = "required representation probablity",
-           min = 0.0, max = 1.0)
-    private double representationProbablity;
+            description = "required representation probablity",
+            min = 0.0, max = 1.0)
+    protected double representationProbablity;
 
     /**
      * For performance only. When clustering large datasets it is recommended to
@@ -84,17 +82,14 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      */
     public static final String NUM_PARTITIONS = "num_partitions";
     @Param(name = NUM_PARTITIONS, description = "number of partitions", min = 1, max = 500)
-    private int numPartitions;
+    protected int numPartitions;
 
     /**
      * Minimal cluster size for not being considered as an outlier
      */
     public static final String REDUCE_FACTOR = "reduce_factor";
     @Param(name = REDUCE_FACTOR, description = "reduce factor for each partition", min = 1, max = 1000)
-    private int reduceFactor;
-
-    private static int currentRepAdditionCount;
-    private IntOpenHashSet blacklist;
+    protected int reduceFactor;
 
     /**
      * Whether allow sub-sampling or not. If true clustering is performed on
@@ -104,11 +99,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
 
     public static final String NAME = "CURE";
 
-    private Random random;
-    private int clusterCnt;
-    protected DendroNode[] nodes;
-
-    static final Logger LOG = LoggerFactory.getLogger(CURE.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CURE.class);
 
     public CURE() {
 
@@ -119,96 +110,107 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
         return NAME;
     }
 
-    @Override
-    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
-        distanceFunction = ClusterHelper.initDistance(props);
-        n = dataset.size();
-        if (n < 2) {
-            throw new RuntimeException("no data to cluster, dataset of size: " + n);
+    private CUREConfig configure(Dataset<E> dataset, Props props) {
+        CUREConfig conf = new CUREConfig();
+        conf.distanceFunction = ClusterHelper.initDistance(props);
+        conf.n = dataset.size();
+        if (conf.n < 2) {
+            throw new RuntimeException("no data to cluster, dataset of size: " + conf.n);
         }
-        k = props.getInt(K);
-        representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
-        numPartitions = props.getInt(NUM_PARTITIONS, 1);
-        int sqrtN = (int) (2 * Math.sqrt(n));
-        if (numPartitions > sqrtN) {
-            LOG.warn("overriding num_partitions to {} (was too large: {})", sqrtN, numPartitions);
-            numPartitions = sqrtN;
-            props.putInt(NUM_PARTITIONS, numPartitions);
+        conf.k = props.getInt(K);
+        conf.representationProbablity = props.getDouble(REPRESENTATION_PROBABILITY, 0.1);
+        conf.numPartitions = props.getInt(NUM_PARTITIONS, 1);
+        int sqrtN = (int) (2 * Math.sqrt(conf.n));
+        if (conf.numPartitions > sqrtN) {
+            LOG.warn("overriding num_partitions to {} (was too large: {})", sqrtN, conf.numPartitions);
+            conf.numPartitions = sqrtN;
+            props.putInt(NUM_PARTITIONS, conf.numPartitions);
         }
         reduceFactor = props.getInt(REDUCE_FACTOR, 3);
 
-        currentRepAdditionCount = n;
-        blacklist = new IntOpenHashSet(dataset.size());
-        CureCluster<E> outliers = new CureCluster<>(dataset);
-        clusterCnt = 0;
-        if (colorGenerator != null) {
-            colorGenerator.reset();
+        conf.currentRepAdditionCount = conf.n;
+        conf.blacklist = new IntOpenHashSet(dataset.size());
+        conf.outliers = new CureCluster<>(dataset);
+        conf.clusterCnt = 0;
+        conf.colorGenerator = colorGenerator;
+        if (conf.colorGenerator != null) {
+            conf.colorGenerator.reset();
         }
 
+        return conf;
+    }
+
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props, CUREConfig conf) {
         //final clustering to be returned
         Clustering<E, C> clustering = new ClusterList<>(k);
         clustering.lookupAdd(dataset);
         //use part of dataset to create initial clustering
         if (props.getBoolean(SAMPLING, true)) {
-            sampleData(dataset, clustering, outliers, props);
-            labelRemainingDataPoints(dataset, clustering);
+            sampleData(dataset, clustering, conf, props);
+            labelRemainingDataPoints(dataset, clustering, conf);
         } else {
-            clusterPartition(dataset, clustering, outliers, props);
+            clusterPartition(dataset, clustering, conf, props);
         }
 
-        LOG.info("left {} outliers", outliers.size());
+        LOG.info("left {} outliers", conf.outliers.size());
 
-        if (!outliers.isEmpty()) {
-            outliers.setName(Algorithm.OUTLIER_LABEL);
-            outliers.setClusterId(clustering.size());
-            if (colorGenerator != null) {
-                outliers.setColor(colorGenerator.next());
+        if (!conf.outliers.isEmpty()) {
+            conf.outliers.setName(Algorithm.OUTLIER_LABEL);
+            conf.outliers.setClusterId(clustering.size());
+            if (conf.colorGenerator != null) {
+                conf.outliers.setColor(colorGenerator.next());
             }
-            clustering.add((C) outliers);
+            clustering.add((C) conf.outliers);
         }
         clustering.setParams(props);
         return clustering;
     }
 
-    private void sampleData(Dataset<E> dataset, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
-        int sampleSize = calculateSampleSize();
+    @Override
+    public Clustering<E, C> cluster(Dataset<E> dataset, Props props) {
+        CUREConfig conf = configure(dataset, props);
+        return cluster(dataset, props, conf);
+    }
+
+    private void sampleData(Dataset<E> dataset, Clustering<E, C> clustering, CUREConfig conf, Props props) {
+        int sampleSize = calculateSampleSize(conf);
         LOG.info("using sample size {}", sampleSize);
-        random = ClusterHelper.initSeed(props);
-        Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize);
+        conf.random = ClusterHelper.initSeed(props);
+        Dataset<E> randomPointSet = selectRandomPoints(dataset, sampleSize, conf);
         Dataset<E> partition;
 
         Iterator<E> iter = randomPointSet.iterator();
-        for (int i = 0; i < numPartitions; i++) {
-            partition = new ArrayDataset<>(randomPointSet.size() / numPartitions, dataset.attributeCount());
+        for (int i = 0; i < conf.numPartitions; i++) {
+            partition = new ArrayDataset<>(randomPointSet.size() / conf.numPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
             int pointIndex = 0;
-            while (pointIndex < randomPointSet.size() / numPartitions) {
+            while (pointIndex < randomPointSet.size() / conf.numPartitions) {
                 partition.add(iter.next());
                 pointIndex++;
             }
             LOG.info("partition {} size = {}", i, partition.size());
-            clusterPartition(partition, clustering, outliers, props);
+            clusterPartition(partition, clustering, conf, props);
         }
 
         if (iter.hasNext()) {
-            partition = new ArrayDataset<>(randomPointSet.size() / numPartitions, dataset.attributeCount());
+            partition = new ArrayDataset<>(randomPointSet.size() / conf.numPartitions, dataset.attributeCount());
             partition.setAttributes(dataset.getAttributes());
             while (iter.hasNext()) {
                 partition.add(iter.next());
             }
             if (!partition.isEmpty()) {
-                clusterPartition(partition, clustering, outliers, props);
+                clusterPartition(partition, clustering, conf, props);
             }
         }
     }
 
     public HierarchicalResult hierarchy(Dataset<E> dataset, Props pref) {
         HierarchicalResult result = new HClustResult(dataset, pref);
+        CUREConfig conf = configure(dataset, pref);
+        Clustering<E, C> clustering = cluster(dataset, pref, conf);
 
-        Clustering<E, C> clustering = cluster(dataset, pref);
-
-        DendroTreeData treeData = new DynamicClusterTreeData(nodes[2 * k - 2]);
-        treeData.createMapping(dataset.size(), treeData.getRoot(), nodes[2 * k - 1]);
+        DendroTreeData treeData = new DynamicClusterTreeData(conf.nodes[2 * k - 2]);
+        treeData.createMapping(dataset.size(), treeData.getRoot(), conf.nodes[2 * k - 1]);
         result.setTreeData(treeData);
         result.setClustering(clustering);
         return result;
@@ -218,12 +220,12 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
         return false;
     }
 
-    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CureCluster<E> outliers, Props props) {
+    private void clusterPartition(Dataset<E> partition, Clustering<E, C> clustering, CUREConfig conf, Props props) {
         //int numPartition = n / (numberOfPartitions * reducingFactor * k);
         //logger.log(Level.INFO, "clustering partititon, exp: {0}", numPartition);
-        ClusterSet<E, C> clusterSet = new ClusterSet(partition, k, props, distanceFunction, colorGenerator);
+        ClusterSet<E, C> clusterSet = new ClusterSet(partition, props, conf);
 
-        eliminateOutliers(clusterSet, clustering, outliers);
+        eliminateOutliers(clusterSet, clustering, conf);
     }
 
     /**
@@ -232,11 +234,11 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      *
      * @return int The Sample Data Size to be worked on
      */
-    private int calculateSampleSize() {
-        return (int) ((0.5 * n)
-                + (k * Math.log10(1 / representationProbablity))
-                + (k * Math.sqrt(Math.pow(Math.log10(1 / representationProbablity), 2)
-                        + (n / k) * Math.log10(1 / representationProbablity))));
+    private int calculateSampleSize(CUREConfig conf) {
+        return (int) ((0.5 * conf.n)
+                + (conf.k * Math.log10(1 / conf.representationProbablity))
+                + (conf.k * Math.sqrt(Math.pow(Math.log10(1 / conf.representationProbablity), 2)
+                        + (conf.n / conf.k) * Math.log10(1 / conf.representationProbablity))));
     }
 
     /**
@@ -245,19 +247,19 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      * @param sampleSize The sample size selected
      * @return ArrayList The Selected Random Points
      */
-    private Dataset<E> selectRandomPoints(Dataset<E> dataset, int sampleSize) {
+    private Dataset<E> selectRandomPoints(Dataset<E> dataset, int sampleSize, CUREConfig conf) {
         if (dataset.size() == sampleSize) {
             return dataset;
         }
         Dataset<E> randomPointSet = new ArrayDataset<>(sampleSize, dataset.attributeCount());
         randomPointSet.setAttributes(dataset.getAttributes());
         for (int i = 0; i < sampleSize; i++) {
-            int index = random.nextInt(n);
-            if (blacklist.contains(index)) {
+            int index = conf.random.nextInt(conf.n);
+            if (conf.blacklist.contains(index)) {
                 i--;
             } else {
                 randomPointSet.add(dataset.get(index));
-                blacklist.add(index);
+                conf.blacklist.add(index);
             }
         }
         return randomPointSet;
@@ -266,23 +268,22 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
     /**
      * Eliminates outliers after pre-clustering
      *
-     * @param clusters Clusters present
-     *                 cluster
+     * @param clusters Clusters present cluster
      */
-    private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CureCluster<E> outliers) {
+    private void eliminateOutliers(ClusterSet<E, C> clusterSet, Clustering<E, C> clustering, CUREConfig conf) {
         LOG.info("cluster set with {} clusters", clusterSet.size());
         C cluster;
         while (clusterSet.hasClusters()) {
             cluster = clusterSet.remove();
-            if (cluster.size() >= reduceFactor) {
-                cluster.setClusterId(clusterCnt++);
-                cluster.setName("cluster " + clusterCnt);
-                if (colorGenerator != null) {
-                    cluster.setColor(colorGenerator.next());
+            if (cluster.size() >= conf.reduceFactor) {
+                cluster.setClusterId(conf.clusterCnt++);
+                cluster.setName("cluster " + conf.clusterCnt);
+                if (conf.colorGenerator != null) {
+                    cluster.setColor(conf.colorGenerator.next());
                 }
                 clustering.add(cluster);
             } else {
-                outliers.addAll(cluster);
+                conf.outliers.addAll(cluster);
             }
         }
     }
@@ -294,9 +295,9 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
      * @param clusters Set of clusters
      * @return ArrayList Modified clusters
      */
-    private Clustering<E, C> labelRemainingDataPoints(Dataset<E> dataset, Clustering<E, C> clusters) {
+    private Clustering<E, C> labelRemainingDataPoints(Dataset<E> dataset, Clustering<E, C> clusters, CUREConfig conf) {
         for (E inst : dataset) {
-            if (blacklist.contains(inst.getIndex())) {
+            if (conf.blacklist.contains(inst.getIndex())) {
                 continue;
             }
             double smallestDistance = Double.POSITIVE_INFINITY;
@@ -304,7 +305,7 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
             double distance;
             for (int i = 0; i < clusters.size(); i++) {
                 for (E other : clusters.get(i).rep) {
-                    distance = distanceFunction.measure(inst, other);
+                    distance = conf.distanceFunction.measure(inst, other);
                     if (distance < smallestDistance) {
                         smallestDistance = distance;
                         nearestClusterIndex = i;
@@ -316,16 +317,6 @@ public class CURE<E extends Instance, C extends CureCluster<E>> extends Algorith
             }
         }
         return clusters;
-    }
-
-    /**
-     * Gets the current representative count so that the new points added do not
-     * conflict with older KD Tree indices
-     *
-     * @return int Next representative count
-     */
-    public static int incCurrentRepCount() {
-        return ++currentRepAdditionCount;
     }
 
     @Override

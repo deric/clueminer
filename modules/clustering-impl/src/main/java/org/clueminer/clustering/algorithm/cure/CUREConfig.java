@@ -16,10 +16,15 @@
  */
 package org.clueminer.clustering.algorithm.cure;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import java.util.Random;
 import org.apache.commons.math3.util.FastMath;
 import org.clueminer.clustering.api.Configurator;
+import org.clueminer.clustering.api.dendrogram.DendroNode;
+import org.clueminer.dataset.api.ColorGenerator;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 
 /**
@@ -31,7 +36,24 @@ public class CUREConfig<E extends Instance> implements Configurator<E> {
 
     private static CUREConfig instance;
 
-    private CUREConfig() {
+    protected Distance distanceFunction;
+    protected int n;
+    protected int k;
+    protected int minRepresentativeCount;
+    protected double shrinkFactor;
+    protected double representationProbablity;
+    protected int numPartitions;
+    protected int reduceFactor;
+
+    protected int currentRepAdditionCount;
+    protected IntOpenHashSet blacklist;
+    protected Random random;
+    protected int clusterCnt;
+    protected DendroNode[] nodes;
+    protected ColorGenerator colorGenerator;
+    protected CureCluster<E> outliers;
+
+    public CUREConfig() {
 
     }
 

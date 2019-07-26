@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -86,11 +87,15 @@ public class CURETest<E extends Instance, C extends CureCluster<E>> {
         params.putInt(CURE.K, 2);
         //cluster all data, no subsets
         params.putBoolean(CURE.SAMPLING, true);
-        Clustering<E, C> clustering = subject.cluster(dataset, params);
-        assertNotNull(clustering);
-        assertEquals(2, clustering.size());
-        printClustering(clustering);
-        assertEquals(17, clustering.instancesCount());
+        try {
+            Clustering<E, C> clustering = subject.cluster(dataset, params);
+            assertNotNull(clustering);
+            assertEquals(2, clustering.size());
+            printClustering(clustering);
+            assertEquals(17, clustering.instancesCount());
+        } catch (Exception ex) {
+            Exceptions.printStackTrace(ex);
+        }
 
     }
 

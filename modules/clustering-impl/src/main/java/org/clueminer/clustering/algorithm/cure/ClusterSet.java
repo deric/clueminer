@@ -33,6 +33,8 @@ import org.clueminer.kdtree.KeyMissingException;
 import org.clueminer.kdtree.KeySizeException;
 import org.clueminer.utils.Props;
 import org.openide.util.Exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Creates a set of clusters for a given number of data points or reduces the
@@ -68,19 +70,22 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private Clustering<E, C> clustering;
     private static int clusterCnt;
     private ColorGenerator cg;
+    private CUREConfig conf;
+    private static final Logger LOG = LoggerFactory.getLogger(ClusterSet.class);
 
-    public ClusterSet(Dataset<E> dataset, int numberOfClusters, Props props, Distance dist, ColorGenerator cg) {
+    public ClusterSet(Dataset<E> dataset, Props props, CUREConfig conf) {
         numberofRepInCluster = props.getInt(CURE.NUM_REPRESENTATIVES, 10);
         shrinkFactor = props.getDouble(CURE.SHRINK_FACTOR, 0.3);
         clusterCnt = 0;
-        dm = dist;
+        dm = conf.distanceFunction;
         cc = new CureComparator<>();
-        k = numberOfClusters;
-        this.cg = cg;
-        CURE.LOG.debug("|dataset| = {}, k = {}", dataset.size(), k);
+        k = conf.k;
+        this.conf = conf;
+        this.cg = conf.colorGenerator;
+        LOG.debug("|dataset| = {}, k = {}", dataset.size(), k);
         int maxRepCnt = (int) (2 * Math.sqrt(dataset.size()));
         if (numberofRepInCluster > maxRepCnt) {
-            CURE.LOG.warn("number of representatives was too large: {}, using {} instead (otherwise algorithm is not guaranteed to finish)", numberofRepInCluster, maxRepCnt);
+            LOG.warn("number of representatives was too large: {}, using {} instead (otherwise algorithm is not guaranteed to finish)", numberofRepInCluster, maxRepCnt);
             numberofRepInCluster = maxRepCnt;
             props.put(CURE.NUM_REPRESENTATIVES, numberofRepInCluster);
         }
@@ -167,7 +172,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      * Find k-th nearest neighbors
      *
      * @param needle
-     * @param k      with 1 retrieves the nearest neighbor
+     * @param k with 1 retrieves the nearest neighbor
      * @return
      */
     private C nearest(E needle, int k) {
@@ -219,7 +224,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     private void startClustering() {
         C u, v, w;
         while (heap.size() > k) {
-            CURE.LOG.trace("heap size = {}", heap.size());
+            LOG.trace("heap size = {}", heap.size());
             try {
                 //extract_min(Q)
                 u = heap.remove();
@@ -230,7 +235,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 }
                 heap.remove(v);
                 w = merge(u, v);
-                CURE.LOG.trace("merged {} with {}", u.getClusterId(), v.getClusterId());
+                LOG.trace("merged {} with {}", u.getClusterId(), v.getClusterId());
 
                 deleteRep(u);
                 deleteRep(v);
@@ -244,7 +249,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 Exceptions.printStackTrace(ex);
             }
         }
-        CURE.LOG.debug("finished, heap size = {}, k = {}", heap.size(), k);
+        LOG.debug("finished, heap size = {}, k = {}", heap.size(), k);
     }
 
     private void updateHeap(C u, C v, C w) {
@@ -291,7 +296,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
      *
      * @param x
      * @param maxDist distance to another cluster which will be considered as
-     *                closest if we don't find closer cluster
+     * closest if we don't find closer cluster
      * @return null if neighbor can't be found in maxDist (Euclidean distance)
      */
     private CureCluster<E> closestCluster(C x, double maxDist) {
@@ -342,7 +347,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
     /**
      * Computes the min distance of a point from the group of points
      *
-     * @param p       Point p
+     * @param p Point p
      * @param cluster Group of points
      * @return double The Minimum Euclidean Distance
      */
@@ -450,7 +455,7 @@ public class ClusterSet<E extends Instance, C extends CureCluster<E>> {
                 rep.set(j, p.get(j) + shrinkFactor * (mean.get(j) - p.get(j)));
             }
             //rep.index = newPointCount++;
-            rep.setIndex(CURE.incCurrentRepCount());
+            rep.setIndex(conf.currentRepAdditionCount++);
             w.rep.add(rep);
         }
 //        clustering.remove((C) u);
