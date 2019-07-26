@@ -352,6 +352,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         blacklist.add(conf.toJson());
         for (int j = 0; j < repeat; j++) {
             ClusteringTask<E, C> clb = new ClusteringTask(dataset, conf, timeLimit);
+            LOG.debug("created task {} with time limit: {}s", conf.toString(), timeLimit / 1000.0);
             if (jobs < maxStates) {
                 jobs++;
 
@@ -456,7 +457,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         if (props != null) {
             Configurator conf = alg.getConfigurator();
             //in relative units, give some grace period
-            long time = (long) (conf.estimateRunTime(dataset, props) * 2);
+            long time = (long) (conf.estimateRunTime(dataset, props));
             createTasks(dataset, alg, props, time, queue);
         } else {
             LOG.error("missing props!");

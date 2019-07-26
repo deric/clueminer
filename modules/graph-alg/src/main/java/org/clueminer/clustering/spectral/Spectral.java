@@ -39,6 +39,7 @@ import smile.math.matrix.EVD;
 import smile.math.matrix.Matrix;
 
 /**
+ * Spectral Clustering with native ARPACK support
  *
  * @author deric
  */

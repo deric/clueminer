@@ -36,9 +36,9 @@
                         <publicPackage>smile.stat.*</publicPackage>
                         <publicPackage>smile.stat.distribution.*</publicPackage>
                         <publicPackage>smile.neighbor.*</publicPackage>
-                        <publicPackage>smile.*</publicPackage>
                         <publicPackage>smile.netlib.*</publicPackage>
                         <publicPackage>com.github.fommil.netlib.*</publicPackage>
+                        <publicPackage>org.netlib.*</publicPackage>
                     </publicPackages>
                 </configuration>
             </plugin>
@@ -120,6 +120,11 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-math</artifactId>
             <version>1.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.netlib-java</groupId>
+            <artifactId>netlib-java</artifactId>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
