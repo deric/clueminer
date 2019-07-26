@@ -33,7 +33,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class BanfieldRaftery<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final String NAME = "Banfield-Raftery";
-    private static final String CALLSIGN = "BH";
+    private static final String CALLSIGN = "BR";
     private static final long serialVersionUID = -6474798417487400001L;
 
     public BanfieldRaftery() {
