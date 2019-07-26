@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author deric
  */
-@ServiceProvider(service = InternalEvaluator.class)
+//@ServiceProvider(service = InternalEvaluator.class)
 public class TraceWiB<E extends Instance, C extends Cluster<E>> extends AbstractEvaluator<E, C> {
 
     private static final long serialVersionUID = 6195054290041907628L;
