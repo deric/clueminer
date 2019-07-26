@@ -80,7 +80,42 @@ public class Spectral<E extends Instance, C extends Cluster<E>> extends Algorith
 
     @Override
     public Clustering<E, C> cluster(Dataset<E> data, Props params) {
-        basicChecksAndInits(data, params);
+        if (data == null || data.isEmpty()) {
+            throw new IllegalArgumentException("The dataset should not be empty");
+        }
+
+        //number of clusters is required
+        if (!params.containsKey(SpectralClustering.K)) {
+            throw new IllegalArgumentException("Number of clusters (\"" + SpectralClustering.K + "\") must be specified");
+        }
+
+        String matrixConv = params.get(SpectralClustering.MATRIX_CONV, "epsilon-neighborhood matrix");
+
+        String spAlg = params.get(SpectralClustering.SP_ALG, "Unnormalized SP");
+
+        int k = params.getInt(SpectralClustering.K, 2);
+
+        if (k < 2) {
+            throw new IllegalArgumentException("Number of clusters should be at least 2, got " + k);
+        }
+
+        if (k > data.size()) {
+            throw new IllegalArgumentException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
+        }
+
+        distanceFunction = ClusterHelper.initDistance(params);
+
+        double sigma = params.getDouble(SpectralClustering.SIGMA, 2);
+
+        if (sigma <= 0.0) {
+            throw new IllegalArgumentException("Invalid standard deviation of Gaussian kernel '" + sigma + "' can not be less than 0.0");
+        }
+
+        int kmeansIterations = params.getInt(SpectralClustering.KMEANS_ITERATIONS, 100);
+
+        if (kmeansIterations <= 0) {
+            throw new IllegalArgumentException("K-means iteration value should be at least 1");
+        }
         LOG.info("1) Pre-processing - construct a matrix representation of the graph");
         LOG.debug("computing similarity matrix");
         int n = data.size();
@@ -129,7 +164,7 @@ public class Spectral<E extends Instance, C extends Cluster<E>> extends Algorith
         LOG.debug("Y dimensions: {}x{}", data.size(), data.attributeCount());
         LOG.info("3) Grouping - assign points to two or more clusters, based on the new representation");
         LOG.debug("computing K-means");
-        Clustering kmeansResult = computeKmeans(dataY);
+        Clustering kmeansResult = computeKmeans(dataY, k, kmeansIterations);
 
         LOG.info("Spectral cluster summary:");
         for (int i = 0; i < kmeansResult.size(); i++) {
@@ -141,50 +176,11 @@ public class Spectral<E extends Instance, C extends Cluster<E>> extends Algorith
         return getFinalOutputClusters(kmeansResult, data);
     }
 
-    private void basicChecksAndInits(Dataset<E> data, Props params) {
-        if (data == null || data.isEmpty()) {
-            throw new IllegalArgumentException("The dataset should not be empty");
-        }
-
-        //number of clusters is required
-        if (!params.containsKey(SpectralClustering.K)) {
-            throw new IllegalArgumentException("Number of clusters (\"" + SpectralClustering.K + "\") must be specified");
-        }
-
-        matrixConv = params.get(SpectralClustering.MATRIX_CONV, "epsilon-neighborhood matrix");
-
-        spAlg = params.get(SpectralClustering.SP_ALG, "Unnormalized SP");
-
-        k = params.getInt(SpectralClustering.K, 2);
-
-        if (k < 2) {
-            throw new IllegalArgumentException("Number of clusters should be at least 2");
-        }
-
-        if (k > data.size()) {
-            throw new IllegalArgumentException("k(" + k + ") can't be larger than dataset size (" + data.size() + ")");
-        }
-
-        distanceFunction = ClusterHelper.initDistance(params);
-
-        sigma = params.getDouble(SpectralClustering.SIGMA, 2);
-
-        if (sigma <= 0.0) {
-            throw new IllegalArgumentException("Invalid standard deviation of Gaussian kernel '" + sigma + "' can not be less than 0.0");
-        }
-
-        kmeansIterations = params.getInt(SpectralClustering.KMEANS_ITERATIONS, 100);
-
-        if (kmeansIterations <= 0) {
-            throw new IllegalArgumentException("K-means iteration value should be at least 1");
-        }
-    }
-
-    private Clustering computeKmeans(Dataset<? extends Instance> eigDataset) {
+    private Clustering computeKmeans(Dataset<? extends Instance> eigDataset, int k, int iter) {
         KMeans kMeans = new KMeans();
         Props kMeansParams = new Props();
         kMeansParams.putInt(KMeans.K, k);
-        kMeansParams.putInt(KMeans.MAX_ITERATIONS, kmeansIterations);
+        kMeansParams.putInt(KMeans.MAX_ITERATIONS, iter);
         return kMeans.cluster(eigDataset, kMeansParams);
     }
 
