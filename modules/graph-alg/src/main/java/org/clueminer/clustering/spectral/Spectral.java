@@ -16,6 +16,7 @@
  */
 package org.clueminer.clustering.spectral;
 
+import java.util.concurrent.locks.ReentrantLock;
 import org.clueminer.clustering.ClusterHelper;
 import org.clueminer.clustering.algorithm.KMeans;
 import static org.clueminer.clustering.api.AlgParams.CLUSTERING_TYPE;
@@ -73,6 +74,8 @@ public class Spectral<E extends Instance, C extends Cluster<E>> extends Algorith
     @Param(name = KMEANS_ITERATIONS, description = "K-means iterations", required = false, min = 1)
     private int kmeansIterations;
 
+    private static ReentrantLock lock = new ReentrantLock();
+
     @Override
     public String getName() {
         return NAME;
@@ -123,44 +126,53 @@ public class Spectral<E extends Instance, C extends Cluster<E>> extends Algorith
 
         double gamma = -0.5 / (sigma * sigma);
         double dist;
-        DenseMatrix W = Matrix.zeros(n, n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                dist = Math.exp(gamma * distanceFunction.measure(data.get(i), data.get(j)));
-                W.set(i, j, dist);
-                W.set(j, i, dist);
-            }
-        }
+        Dataset<E> dataY;
 
-        double[] D = new double[n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                D[i] += W.get(i, j);
-            }
-
-            if (D[i] < 1E-5) {
-                LOG.error(String.format("Small D[%d] = %f. The data may contain outliers.", i, D[i]));
+        //avoid race conditions in (possibly) calling native backed
+        lock.lock();
+        try {
+            DenseMatrix W = Matrix.zeros(n, n);
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < i; j++) {
+                    dist = Math.exp(gamma * distanceFunction.measure(data.get(i), data.get(j)));
+                    W.set(i, j, dist);
+                    W.set(j, i, dist);
+                }
             }
 
-            D[i] = 1.0 / Math.sqrt(D[i]);
-        }
+            double[] D = new double[n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    D[i] += W.get(i, j);
+                }
 
-        DenseMatrix L = W;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < i; j++) {
-                double l = D[i] * W.get(i, j) * D[j];
-                L.set(i, j, l);
-                L.set(j, i, l);
+                if (D[i] < 1E-5) {
+                    LOG.error(String.format("Small D[%d] = %f. The data may contain outliers.", i, D[i]));
+                }
+
+                D[i] = 1.0 / Math.sqrt(D[i]);
             }
+
+            DenseMatrix L = W;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < i; j++) {
+                    double l = D[i] * W.get(i, j) * D[j];
+                    L.set(i, j, l);
+                    L.set(j, i, l);
+                }
+            }
+
+            L.setSymmetric(true);
+            EVD eigen = L.eigen(k);
+            double[][] Y = eigen.getEigenVectors().array();
+            for (int i = 0; i < n; i++) {
+                smile.math.Math.unitize2(Y[i]);
+            }
+            dataY = new ArrayDataset(Y);
+        } finally {
+            lock.unlock();
         }
 
-        L.setSymmetric(true);
-        EVD eigen = L.eigen(k);
-        double[][] Y = eigen.getEigenVectors().array();
-        for (int i = 0; i < n; i++) {
-            smile.math.Math.unitize2(Y[i]);
-        }
-        Dataset<E> dataY = new ArrayDataset(Y);
         LOG.debug("Y dimensions: {}x{}", data.size(), data.attributeCount());
         LOG.info("3) Grouping - assign points to two or more clusters, based on the new representation");
         LOG.debug("computing K-means");
