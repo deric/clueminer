@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2018 clueminer.org
+ * Copyright (C) 2011-2019 clueminer.org
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -32,6 +34,8 @@ import org.openide.util.Lookup;
  * @param <C>
  */
 public class Clusterings<E extends Instance, C extends Cluster<E>> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Clusterings.class);
 
     /**
      * Allows creating new clusterings without declaring direct dependency on
@@ -47,9 +51,11 @@ public class Clusterings<E extends Instance, C extends Cluster<E>> {
         Class c = Lookup.getDefault().lookup(Clustering.class).getClass();
         Clustering<? extends Instance, ? extends Cluster> res = null;
         try {
-            res = (Clustering<? extends Instance, ? extends Cluster>) c.newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
-            Exceptions.printStackTrace(ex);
+            res = (Clustering<? extends Instance, ? extends Cluster>) c.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException
+                | NoSuchMethodException | SecurityException
+                | IllegalArgumentException | InvocationTargetException ex) {
+            LOG.error(ex.getMessage(), ex);
         }
         return res;
     }
