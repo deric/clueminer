@@ -89,7 +89,7 @@ public class TraceScatterMatrix<E extends Instance, C extends Cluster<E>> extend
                 sum += cos * clusterSizes[i];
             }
         } catch (ArithmeticException ex) {
-            LOG.warn(ex.getMessage(), ex);
+            LOG.error("Failed to compute distance for clustering {}", clusters.getParams().toString(), ex);
             return Double.NaN;
         }
 

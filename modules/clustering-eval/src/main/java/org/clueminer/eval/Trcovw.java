@@ -69,12 +69,10 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
 
     @Override
     public double score(Clustering<E, C> clusters, Props params) {
-        // trace(W_q)
-        //sc = Wq.trace();
         try {
-            return MathUtil.covariance(wqMatrix(clusters)).trace();
+            return MathUtil.covariance(withinGroupScatter(clusters)).trace();
         } catch (RuntimeException ex) {
-            LOG.warn(ex.getMessage(), ex);
+            LOG.error("Failed to compute distance for clustering {}", clusters.getParams().toString(), ex);
             return Double.NaN;
         }
     }
@@ -86,7 +84,7 @@ public class Trcovw<E extends Instance, C extends Cluster<E>> extends AbstractEv
      * @return
      */
     public double score2(Clustering<E, C> clusters) {
-        return MathUtil.covariance(withinGroupScatter(clusters)).trace();
+        return MathUtil.covariance(wqMatrix(clusters)).trace();
     }
 
     @Override

@@ -24,6 +24,8 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.distance.api.Distance;
 import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Silhouette score
@@ -45,6 +47,7 @@ public class Silhouette<E extends Instance, C extends Cluster<E>> extends Abstra
     private static final long serialVersionUID = -2195054290041907628L;
     private static String NAME = "Silhouette";
     private static String CALLSIGN = "sil";
+    private static final Logger LOG = LoggerFactory.getLogger(Silhouette.class);
 
     public Silhouette() {
         dm = new EuclideanDistance();
@@ -150,18 +153,22 @@ public class Silhouette<E extends Instance, C extends Cluster<E>> extends Abstra
         double minDist = Double.MAX_VALUE;
         double clusterDist;
         E y;
-        for (Cluster<E> clust : clusters) {
-            if (clust.getClusterId() != i) {
-                clusterDist = 0;
-                for (int j = 0; j < clust.size(); j++) {
-                    y = clust.instance(j);
-                    clusterDist += dm.measure(x, y);
-                }
-                clusterDist /= clust.size();
-                if (clusterDist < minDist) {
-                    minDist = clusterDist;
+        try {
+            for (Cluster<E> clust : clusters) {
+                if (clust.getClusterId() != i) {
+                    clusterDist = 0;
+                    for (int j = 0; j < clust.size(); j++) {
+                        y = clust.instance(j);
+                        clusterDist += dm.measure(x, y);
+                    }
+                    clusterDist /= clust.size();
+                    if (clusterDist < minDist) {
+                        minDist = clusterDist;
+                    }
                 }
             }
+        } catch (ArithmeticException ex) {
+            LOG.error("Failed to compute distance for clustering {}", clusters.getParams().toString(), ex);
         }
         return minDist;
     }
