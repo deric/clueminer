@@ -18,7 +18,7 @@ package org.clueminer.explorer;
 
 import org.clueminer.eval.AIC;
 import org.clueminer.eval.Silhouette;
-import org.clueminer.eval.external.NMIavg;
+import org.clueminer.eval.external.NMIsum;
 import org.clueminer.eval.external.NMIsqrt;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.*;
@@ -31,7 +31,7 @@ import org.openide.nodes.Node;
  */
 public class ClustComparatorTest {
 
-    private final ClustComparator subject = new ClustComparator(new NMIavg());
+    private final ClustComparator subject = new ClustComparator(new NMIsum());
 
     //inverse ordering (descending)
     @Test

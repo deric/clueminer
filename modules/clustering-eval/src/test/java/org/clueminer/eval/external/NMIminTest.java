@@ -25,58 +25,48 @@ import org.clueminer.clustering.struct.ClusterList;
 import org.clueminer.dataset.api.Dataset;
 import org.clueminer.dataset.api.Instance;
 import org.clueminer.dataset.impl.ArrayDataset;
-import org.clueminer.fixtures.clustering.FakeClustering;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
-import org.junit.Test;
 import static org.clueminer.eval.external.ExternalTest.DELTA;
+import org.clueminer.fixtures.clustering.FakeClustering;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
  * @author deric
  */
-public class NMIavgTest extends ExternalTest {
+public class NMIminTest extends ExternalTest {
 
     private static Clustering irisCorrect;
     private static Clustering irisWrong;
 
-    public NMIavgTest() throws FileNotFoundException, IOException {
+    public NMIminTest() throws FileNotFoundException, IOException {
         irisCorrect = FakeClustering.iris();
         irisWrong = FakeClustering.irisWrong2();
-        subject = new NMIavg();
+        subject = new NMImin();
     }
 
-    /**
-     * Test of score method, of class NMI.
-     */
     @Test
     public void testScore_Clustering_Clustering() throws ScoreException {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, irisCorrect, 0.6496820278112178);
+        double score = measure(irisWrong, irisCorrect, 0.7394007551385607);
 
-        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
+        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.18617390920950178);
         assertTrue(score2 < score);
     }
 
-    /**
-     * Test of score method, of class NMI.
-     */
     @Test
     public void testScore_Clustering_Dataset() throws ScoreException {
         measure(FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, 0.6496820278112178);
-        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
+        double score = measure(irisWrong, 0.7394007551385607);
+        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.18617390920950178);
 
         assertTrue(score2 < score);
     }
 
-    /**
-     * Test of isBetter method, of class NMI.
-     */
     @Test
     public void testCompareScore() {
         //one is better than zero
