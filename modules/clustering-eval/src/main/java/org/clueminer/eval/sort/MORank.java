@@ -163,10 +163,12 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
                 rankedSubpopulations.get(j).add(clusterings[it1.next()]);
             }
             //sort front
-            try {
-                Collections.sort(rankedSubpopulations.get(j), sortObj);
-            } catch (IllegalArgumentException ex) {
-                LOG.error("failed to sort using {}", sortObj.getName(), ex);
+            if (rankedSubpopulations.get(j).size() > 1) {
+                try {
+                    Collections.sort(rankedSubpopulations.get(j), sortObj);
+                } catch (IllegalArgumentException ex) {
+                    LOG.error("failed to sort using {}", sortObj.getName(), ex);
+                }
             }
         }
         return rankedSubpopulations;

@@ -24,6 +24,7 @@ import org.clueminer.distance.EuclideanDistance;
 import org.clueminer.fixtures.clustering.FakeClustering;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -53,6 +54,17 @@ public class SDindexTest {
 
         //should recognize "better" clustering (hand made clustering based on labels)
         assertEquals(true, subject.isBetter(scoreBetter, scoreWorser));
+    }
+
+    @Test
+    public void testTransitivity() throws ScoreException {
+        double a = subject.score(FakeClustering.irisTwoClusters());
+        double b = subject.score(FakeClustering.iris());
+        double c = subject.score(FakeClustering.irisWrong4());
+
+        assertTrue(a + " > " + b, subject.isBetter(a, b));
+        assertTrue(b + " > " + c, subject.isBetter(b, c));
+        assertTrue(a + " > " + c, subject.isBetter(a, c));
     }
 
     @Test
