@@ -17,6 +17,7 @@
 package org.clueminer.eval.sort;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -25,19 +26,25 @@ import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
 import org.clueminer.clustering.api.Rank;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.config.ConfigException;
 import org.clueminer.dataset.api.Instance;
+import org.clueminer.eval.external.NMIsqrt;
+import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Sort an array using multiple objectives
+ * Sort an array using multiple objectives (at least 3 are needed)
  *
  * @author deric
+ * @param <E>
+ * @param <C>
  */
 @ServiceProvider(service = Rank.class)
 public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E, C> {
 
     private static final String NAME = "MO Rank";
+    public static final String PROP_RANK = "mo-order";
     private final MoEvaluator comp = new MoEvaluator();
 
     @Override
@@ -46,9 +53,37 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     }
 
     public Clustering<E, C>[] sort(Clustering<E, C>[] clusterings, List<ClusterEvaluation<E, C>> objectives) {
-        comp.setObjectives(objectives);
+        //last objective is used for front sorting
+        ClusterEvaluation<E, C> sortObj = objectives.get(objectives.size() - 1);
+        List<ClusterEvaluation<E, C>> moObj = new LinkedList<>();
+
+        validate(objectives);
+        for (int i = 0; i < objectives.size() - 1; i++) {
+            moObj.add(objectives.get(i));
+        }
+
+        List<ArrayList<Clustering<E, C>>> rankedSubpopulations = computeRankings(clusterings, moObj, sortObj);
+
+        //java's "natural" sorting starting from smallest value
+        //should be compatible with Arrays.sort()
+        // flatten array lists
+        Clustering[] result = new Clustering[clusterings.length];
+        int k = clusterings.length - 1;
+        for (ArrayList<Clustering<E, C>> fr : rankedSubpopulations) {
+            for (int i = fr.size() - 1; i >= 0; i--) {
+                result[k] = fr.get(i);
+                result[k].getParams().put(PROP_RANK, clusterings.length - k - 1);
+                k--;
+            }
+        }
+        return result;
+    }
+
+    protected List<ArrayList<Clustering<E, C>>> computeRankings(Clustering<E, C>[] clusterings,
+            List<ClusterEvaluation<E, C>> moObj, ClusterEvaluation<E, C> sortObj) {
+        comp.setObjectives(moObj);
         int n = clusterings.length;
-        List<ArrayList<Clustering>> rankedSubpopulations;
+        List<ArrayList<Clustering<E, C>>> rankedSubpopulations;
 
         // dominateMe[i] contains the number of solutions dominating i
         int[] dominateMe = new int[n];
@@ -65,14 +100,13 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
         }
 
         // Fast non dominated sorting algorithm
-        // Contribution of Guillaume Jacquenot
         for (int p = 0; p < n; p++) {
             // Initialize the list of individuals that i dominate and the number
             // of individuals that dominate me
             iDominate[p] = new LinkedList<>();
             dominateMe[p] = 0;
         }
-        DominanceComparator comparator = new DominanceComparator(objectives);
+        DominanceComparator comparator = new DominanceComparator(moObj);
 
         int flagDominate;
         for (int p = 0; p < (n - 1); p++) {
@@ -91,7 +125,6 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
 
         for (int i = 0; i < n; i++) {
             if (dominateMe[i] == 0) {
-
                 front[0].add(i);
                 //RankingAndCrowdingAttr.getAttributes(solutionSet.get(0)).setRank(0);
                 clusterings[i].getParams().put("rank", 0);
@@ -126,20 +159,10 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
             while (it1.hasNext()) {
                 rankedSubpopulations.get(j).add(clusterings[it1.next()]);
             }
+            //sort front
+            Collections.sort(rankedSubpopulations.get(j), sortObj);
         }
-
-        //java's "natural" sorting starting from smallest value
-        //should be compatible with Arrays.sort()
-        Clustering[] result = new Clustering[clusterings.length];
-        int k = clusterings.length - 1;
-        for (List<Integer> fr : front) {
-            for (Integer idx : fr) {
-                result[k] = clusterings[idx];
-                result[k].getParams().put("mo-order", clusterings.length - k - 1);
-                k--;
-            }
-        }
-        return result;
+        return rankedSubpopulations;
     }
 
     @Override
@@ -159,14 +182,63 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
 
     @Override
     public void validate(List<ClusterEvaluation<E, C>> objectives) throws ConfigException {
-        if (objectives.size() < 2) {
+        if (objectives.size() < 3) {
             throw new ConfigException("Please provide at least two evaluation metrics. " + objectives.size() + " was given");
         }
     }
 
     @Override
     public int getMinObjectives() {
-        return 2;
+        return 3;
+    }
+
+    protected void printFronts(List<ArrayList<Clustering<E, C>>> fronts) {
+        StringBuilder sb = new StringBuilder("mo-ranking [\n");
+        ClusterEvaluation eval = new NMIsqrt();
+        for (int i = 0; i < fronts.size(); i++) {
+            if (i > 0) {
+                sb.append(",\n");
+            }
+            ArrayList<Clustering<E, C>> front = fronts.get(i);
+            sb.append("\t#").append(i).append("(").append(front.size()).append(") [");
+
+            //fronts are sorted from worst value
+            for (int j = front.size() - 1; j >= 0; j--) {
+                try {
+                    if (j < front.size() - 1) {
+                        sb.append(",");
+                    }
+                    sb.append(front.get(j).fingerprint()).append(" = ").append(eval.score(front.get(j)));
+                } catch (ScoreException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+            sb.append("]");
+        }
+        sb.append("\n]");
+        System.out.println(sb.toString());
+    }
+
+    protected void printFlatten(Clustering<E, C>[] res) {
+        StringBuilder sb = new StringBuilder("mo-ranking [\n");
+        ClusterEvaluation eval = new NMIsqrt();
+        for (int i = 0; i < res.length; i++) {
+            try {
+                if (i > 0) {
+                    sb.append(",\n");
+                }
+                int rank = res[i].getParams().getInt(PROP_RANK);
+                sb.append("\t#").append(rank).append("(")
+                        .append(res[i].fingerprint()).append(") = ")
+                        .append(eval.score(res[i]));
+
+                sb.append("]");
+            } catch (ScoreException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        sb.append("\n]");
+        System.out.println(sb.toString());
     }
 
 }
