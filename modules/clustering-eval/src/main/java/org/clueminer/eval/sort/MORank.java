@@ -32,6 +32,8 @@ import org.clueminer.dataset.api.Instance;
 import org.clueminer.eval.external.NMIsqrt;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Sort an array using multiple objectives (at least 3 are needed)
@@ -46,6 +48,7 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
     private static final String NAME = "MO Rank";
     public static final String PROP_RANK = "mo-order";
     private final MoEvaluator comp = new MoEvaluator();
+    private static final Logger LOG = LoggerFactory.getLogger(MORank.class);
 
     @Override
     public String getName() {
@@ -160,7 +163,11 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
                 rankedSubpopulations.get(j).add(clusterings[it1.next()]);
             }
             //sort front
-            Collections.sort(rankedSubpopulations.get(j), sortObj);
+            try {
+                Collections.sort(rankedSubpopulations.get(j), sortObj);
+            } catch (IllegalArgumentException ex) {
+                LOG.error("failed to sort using {}", sortObj.getName(), ex);
+            }
         }
         return rankedSubpopulations;
     }
