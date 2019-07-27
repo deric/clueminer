@@ -54,9 +54,9 @@ public class NMIsqrtTest extends ExternalTest {
         //this is fixed clustering which correspods to true classes in dataset
         measure(FakeClustering.iris(), FakeClustering.iris(), 1.0);
 
-        double score = measure(irisWrong, irisCorrect, 0.6496820278112178);
+        double score = measure(irisWrong, irisCorrect, 0.6545182434318744);
 
-        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
+        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.08795125619873);
         assertTrue(score2 < score);
     }
 
@@ -68,7 +68,7 @@ public class NMIsqrtTest extends ExternalTest {
         measure(FakeClustering.iris(), 1.0);
 
         double score = measure(irisWrong, 0.6545182434318744);
-        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.06793702240876041);
+        double score2 = measure(FakeClustering.irisWrong(), irisCorrect, 0.08795125619873);
 
         assertTrue(score2 < score);
     }

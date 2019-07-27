@@ -16,9 +16,7 @@
  */
 package org.clueminer.eval.external;
 
-import com.google.common.collect.Sets;
 import com.google.common.collect.Table;
-import java.util.Set;
 import org.clueminer.clustering.api.Cluster;
 import org.clueminer.clustering.api.ClusterEvaluation;
 import org.clueminer.clustering.api.Clustering;
@@ -135,41 +133,25 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
      * @return
      */
     @Override
-    public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) {
+    public double score(Clustering<E, C> c1, Clustering<E, C> c2, Props params) throws ScoreException {
         double nmi = 0.0;
         if (c1.isEmpty() || c2.isEmpty()) {
             return nmi;
         }
-        int instancesCnt = c1.instancesCount();
+        int n = c1.instancesCount();
 
-        if (c1.instancesCount() != c2.instancesCount()) {
+        if (n != c2.instancesCount()) {
             throw new RuntimeException("clusterings have different numbers of instances");
         }
 
-        double c1entropy = entropy(c1.instancesCount(), c1.clusterSizes());
-        double c2entropy = entropy(c2.instancesCount(), c2.clusterSizes());
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(c1, c2);
 
-        double mutualInformation = 0;
-        int common;
-        for (Cluster<E> a : c1) {
-            final int clusterSize = a.size();
-            for (Cluster<E> b : c2) {
-                Set<E> intersection = Sets.intersection(a, b);
-                common = intersection.size();
-                //System.out.println("a = " + a.getName() + ", b = " + b.getName());
-                //System.out.println("common = " + common);
+        double hc = -HC(table, n);
+        double hk = -HK(table, n);
 
-                if (common > 0) {
-                    mutualInformation += (common / (double) instancesCnt)
-                            * Math.log(instancesCnt
-                                    * common / (double) (clusterSize * b.size()));
-                }
-            }
-        }
+        double mu = mutualInformation(table, n);
 
-        nmi = mutualInformation / ((c1entropy + c2entropy) / 2);
-
-        return nmi;
+        return calculate(c1, params, mu, hc, hk, table.columnKeySet().size());
     }
 
     @Override
