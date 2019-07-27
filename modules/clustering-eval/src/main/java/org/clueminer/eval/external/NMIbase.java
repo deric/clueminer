@@ -81,8 +81,7 @@ public abstract class NMIbase<E extends Instance, C extends Cluster<E>>
         }
 
         int N = clusters.instancesCount();
-        CountingPairs<E, C> cp = CountingPairs.getInstance();
-        Table<String, String, Integer> table = cp.contingencyTable(clusters);
+        Table<String, String, Integer> table = CountingPairs.contingencyTable(clusters);
 
         double hc = -HC(table, N);
         double hk = -HK(table, N);

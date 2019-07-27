@@ -17,22 +17,19 @@
 package org.clueminer.eval.external;
 
 import org.clueminer.clustering.api.ExternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
+import org.clueminer.utils.Props;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Normalized mutual information used by Strehl and Ghosh
- *
- * A. Strehl and J. Ghosh. Cluster ensembles - a knowledge reuse framework for
- * combining multiple partitions. Journal of Machine Learning Research,
- * 3:583–617, 2002.
+ * TODO: fully implement expected mutual information
  *
  * @author deric
  */
-@ServiceProvider(service = ExternalEvaluator.class)
-public class NMIsqrt extends NMIbase {
+//@ServiceProvider(service = ExternalEvaluator.class)
+public class AMImax extends AMIbase {
 
-    private static final String NAME = "NMI-sqrt";
-    private static final long serialVersionUID = 5298781790787789513L;
+    private static final String NAME = "AMI-max";
 
     @Override
     public String getName() {
@@ -40,8 +37,9 @@ public class NMIsqrt extends NMIbase {
     }
 
     @Override
-    public double countNMI(double mutualInformation, double ent1, double ent2) {
-        return mutualInformation / Math.sqrt(ent1 * ent2);
+    public double calculate(Props params, double mi, double emi, double ent1, double ent2, int klassesSize) throws ScoreException {
+        return mi / Math.max(ent1, ent2);
     }
+
 
 }

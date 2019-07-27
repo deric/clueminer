@@ -178,7 +178,7 @@ public abstract class AbstractExternalEval<E extends Instance, C extends Cluster
 
                     int clusterSize = res.get("tp") + res.get("fn");
                     //itersection is number of true positives
-                    common = res.get("tp");
+                    //common = res.get("tp");
 
                     mu += (common / n)
                             * Math.log(n * common / (double) (klassSize * clusterSize));
