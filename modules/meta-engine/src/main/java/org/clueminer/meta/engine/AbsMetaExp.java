@@ -158,6 +158,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         //creating the ThreadPoolExecutor
         //pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(execPool + 2);
         pool = Executors.newWorkStealingPool(execPool + 2);
+        LOG.info("starting pool with {} threads", (execPool + 2));
         //start the monitoring thread, with 5s interval
 
         //a "producer" thread
@@ -254,7 +255,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                     } catch (TimeoutException ex) {
                         clusteringsFailed++;
                         if (task != null) {
-                            LOG.debug("running {} reached {}ms timeout", task.getAlgName(), task.getTimeLimit());
+                            LOG.debug("alg {} reached {}ms timeout", task.getAlgName(), task.getTimeLimit());
                         } else {
                             LOG.debug("running task reached timeout");
                         }

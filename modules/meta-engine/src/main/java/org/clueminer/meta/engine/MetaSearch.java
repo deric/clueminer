@@ -33,6 +33,7 @@ import org.clueminer.clustering.api.ClusteringAlgorithm;
 import org.clueminer.clustering.api.ClusteringFactory;
 import org.clueminer.clustering.api.Executor;
 import org.clueminer.clustering.api.InternalEvaluator;
+import org.clueminer.clustering.api.ScoreException;
 import org.clueminer.clustering.api.factory.EvaluationFactory;
 import org.clueminer.clustering.api.factory.InternalEvaluatorFactory;
 import org.clueminer.dataset.api.Dataset;
@@ -135,7 +136,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         return res;
     }
 
-    private double diversity(Clustering<E, C> a, Clustering<E, C> b) {
+    private double diversity(Clustering<E, C> a, Clustering<E, C> b) throws ScoreException {
         return 1 - cmp.score(a, b, config);
     }
 

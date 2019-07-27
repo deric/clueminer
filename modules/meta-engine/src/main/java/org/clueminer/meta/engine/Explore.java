@@ -68,9 +68,11 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         cmp = new NMIsqrt();
     }
 
+    @Override
     public void configure(Props p) {
         numResults = p.getInt("results", 100);
         maxStates = p.getInt("max-states", 200);
+        execPool = p.getInt("pool", 5);
     }
 
     @Override
@@ -87,6 +89,8 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         clusteringsRejected = 0;
         clusteringsFailed = 0;
         jobs = 0;
+
+        timePerTask = (long) (dataset.size() * dataset.attributeCount() * Math.PI);
 
         if (!config.containsKey(AlgParams.STD)) {
             config.put(AlgParams.STD, "z-score");
