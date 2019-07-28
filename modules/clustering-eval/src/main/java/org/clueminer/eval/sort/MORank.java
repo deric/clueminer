@@ -65,20 +65,28 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
             moObj.add(objectives.get(i));
         }
 
-        List<ArrayList<Clustering<E, C>>> rankedSubpopulations = computeRankings(clusterings, moObj, sortObj);
+        List<ArrayList<Clustering<E, C>>> fronts = computeRankings(clusterings, moObj, sortObj);
 
         //java's "natural" sorting starting from smallest value
         //should be compatible with Arrays.sort()
         // flatten array lists
         Clustering[] result = new Clustering[clusterings.length];
-        int k = clusterings.length - 1;
-        for (ArrayList<Clustering<E, C>> fr : rankedSubpopulations) {
-            for (int i = fr.size() - 1; i >= 0; i--) {
-                result[k] = fr.get(i);
-                result[k].getParams().put(PROP_RANK, clusterings.length - k - 1);
-                k--;
+        int k = 0;
+        Clustering clust;
+        ArrayList<Clustering<E, C>> front;
+        //best solution is the at the end of the array
+        for (int i = 0; i < fronts.size(); i++) {
+            //start from last front
+            front = fronts.get(fronts.size() - 1 - i);
+            for (int j = 0; j < front.size(); j++) {
+                clust = front.get(j);
+                clust.getParams().put(PROP_RANK, result.length - k - 1);
+                result[k++] = clust;
             }
         }
+
+        //printFronts(fronts);
+        //printFlatten(result);
         return result;
     }
 
@@ -237,7 +245,7 @@ public class MORank<E extends Instance, C extends Cluster<E>> implements Rank<E,
                     sb.append(",\n");
                 }
                 int rank = res[i].getParams().getInt(PROP_RANK);
-                sb.append("\t#").append(rank).append("(")
+                sb.append("\t#").append(rank).append(" @ ").append(res[i].getParams().getInt("rank")).append("(")
                         .append(res[i].fingerprint()).append(") = ")
                         .append(eval.score(res[i]));
 

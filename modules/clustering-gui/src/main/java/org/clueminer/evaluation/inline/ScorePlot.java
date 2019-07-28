@@ -380,6 +380,7 @@ public class ScorePlot<E extends Instance, C extends Cluster<E>> extends BPanel 
             for (Clustering clust : external) {
                 //left clustering
                 score = rank.getEvaluator().score(clust);
+
                 xVal = scale.scaleToRange(score, xmin, xmax, cxMin, cxMax) - rectWidth / 2;
                 score = compExternal.getScore(clust);
 
