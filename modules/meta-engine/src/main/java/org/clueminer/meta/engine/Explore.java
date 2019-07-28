@@ -80,7 +80,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         return NAME;
     }
 
-
     @Override
     public void prepare() {
         LOG.info("Starting {}", getName());
@@ -95,7 +94,6 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         RankFactory rf = RankFactory.getInstance();
         //ranking = rf.getDefault();
     }
-
 
     public void clusteringFound(Executor exec, Clustering<E, C> c) {
         //TODO: process result?
@@ -128,6 +126,10 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
 
         for (int i = 0; i < perAlg; i++) {
             for (Entry<ClusteringAlgorithm, Double> alg : sortedMap.entrySet()) {
+                if (queue.size() > maxStates) {
+                    LOG.debug("reached maximum states: {}", maxStates);
+                    return;
+                }
                 conf = getConfig().copy(PropType.PERFORMANCE, PropType.VISUAL);
                 conf.put(AlgParams.ALG, alg.getKey().getName());
                 LOG.debug("expanding {} configs of alg: {}", perAlg, alg.getKey().getName());

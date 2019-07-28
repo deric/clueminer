@@ -110,6 +110,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     protected volatile boolean producerRunning = true;
     protected boolean modifyStd = true;
     protected Rank<E, C> raking;
+    protected BlockingQueue<ClusteringTask<E, C>> taskQueue;
 
     public AbsMetaExp() {
         super();
@@ -159,7 +160,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         algorithmInit();
         LOG.info("max states: {}, time limit per task: {}", maxStates, timePerTask);
 
-        BlockingQueue<ClusteringTask<E, C>> queue = new LinkedBlockingQueue<>(maxStates);
+        taskQueue = new LinkedBlockingQueue<>(maxStates);
 
         //creating the ThreadPoolExecutor
         //pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(execPool + 2);
@@ -170,14 +171,14 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         //a "producer" thread
         pool.submit(() -> {
             // a to-do list
-            explore(dataset, queue);
-            LOG.info("created {} jobs", queue.size());
+            explore(dataset, taskQueue);
+            LOG.info("created {} jobs", taskQueue.size());
             producerRunning = false;
             countDownLatch.countDown();
             LOG.info("producer finished,pool size: {}", countDownLatch.getCount());
         });
 
-        runClusterings(queue, countDownLatch);
+        runClusterings(taskQueue, countDownLatch);
 
         pool.shutdown();
         finish(st, countDownLatch);
@@ -404,7 +405,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
      * @param queue job queue
      */
     protected void expand(Props base, BlockingQueue<ClusteringTask<E, C>> queue) {
-        if (cnt > maxStates) {
+        if (queue.size() > maxStates) {
             LOG.debug("reached maximum states: {}", maxStates);
             return;
         }

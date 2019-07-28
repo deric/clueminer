@@ -291,7 +291,7 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
         LOG.debug("adding clustering to pareto front, size: {}", front.size());
         front.add(c);
         //queue is not used
-        exploit(topN, null);
+        exploit(topN, taskQueue);
     }
 
     /**
