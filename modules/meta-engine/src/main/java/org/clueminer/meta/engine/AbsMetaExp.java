@@ -91,6 +91,7 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     protected int clusteringsEvaluated;
     protected int clusteringsRejected;
     protected int clusteringsFailed;
+    protected int clusteringsTimeouted;
     protected int numResults = -1;
     protected Random rand;
     protected ObjectOpenHashSet<String> blacklist;
@@ -133,6 +134,11 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
     public abstract void prepare();
 
     protected void algorithmInit() {
+        clusteringsTimeouted = 0;
+        clusteringsEvaluated = 0;
+        clusteringsRejected = 0;
+        clusteringsFailed = 0;
+        jobs = 0;
         blacklist = new ObjectOpenHashSet<>(maxStates > 0 ? maxStates : 200);
 
         if (maxStates < 0) {
@@ -188,8 +194,8 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
         double acceptRate = (1.0 - (clusteringsRejected / (double) clusteringsEvaluated)) * 100;
 
         st.endMeasure();
-        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, failed: {}, results: {}",
-                st.timeInSec(), clusteringsEvaluated, clusteringsRejected, clusteringsFailed, results.size());
+        LOG.info("total time {}s, evaluated {} clusterings, rejected {} clusterings, failed: {}, timeouted: {}",
+                st.timeInSec(), clusteringsEvaluated, clusteringsRejected, clusteringsFailed, clusteringsTimeouted);
 
         LOG.info("acceptance rate: {}%", df.format(acceptRate));
         printStats(results);
@@ -253,9 +259,10 @@ public abstract class AbsMetaExp<I extends Individual<I, E, C>, E extends Instan
                         Exceptions.printStackTrace(ex);
                         clusteringsFailed++;
                     } catch (TimeoutException ex) {
-                        clusteringsFailed++;
+                        clusteringsTimeouted++;
                         if (task != null) {
                             LOG.debug("alg {} reached {}ms timeout", task.getAlgName(), task.getTimeLimit());
+                            LOG.debug("alg config: {}", task.getConf().toString());
                         } else {
                             LOG.debug("running task reached timeout");
                         }

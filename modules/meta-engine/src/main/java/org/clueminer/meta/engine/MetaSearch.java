@@ -144,10 +144,6 @@ public class MetaSearch<I extends Individual<I, E, C>, E extends Instance, C ext
     public void prepare() {
         LOG.info("Starting {}", getName());
         rand = new Random();
-        clusteringsEvaluated = 0;
-        clusteringsRejected = 0;
-        clusteringsFailed = 0;
-        jobs = 0;
         if (enforceDiversity) {
             LOG.info("Objectives: {}, Min diversity: {}", printObjectives(), diversityThreshold);
         } else {
