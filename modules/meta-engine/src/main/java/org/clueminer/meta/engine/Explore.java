@@ -90,7 +90,7 @@ public class Explore<I extends Individual<I, E, C>, E extends Instance, C extend
         clusteringsFailed = 0;
         jobs = 0;
 
-        timePerTask = (long) (dataset.size() * dataset.attributeCount() * Math.PI);
+        timePerTask = (long) (dataset.size() * dataset.attributeCount() * 10);
 
         if (!config.containsKey(AlgParams.STD)) {
             config.put(AlgParams.STD, "z-score");
