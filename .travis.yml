@@ -3,10 +3,8 @@ sudo: true
 jdk:
   - openjdk11
   - openjdk14
-# not supported yet
-#  - openjdk8
 before_install:
-  - "sh -e /etc/init.d/xvfb start"
+  #  - "sh -e /etc/init.d/xvfb start"
   - "mvn --version"
   - "export CLASSPATH=.:/usr/lib/R/site-library/rJava/jri/"
   - "export R_HOME=/usr/lib/R"
