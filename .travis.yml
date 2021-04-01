@@ -9,6 +9,9 @@ before_install:
   - "mvn --version"
   - "export CLASSPATH=.:/usr/lib/R/site-library/rJava/jri/"
   - "export R_HOME=/usr/lib/R"
+matrix:
+  allow_failures:
+    - jdk: openjdk14
 addons:
   apt:
     packages:
