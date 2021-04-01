@@ -64,7 +64,7 @@
         <repository>
             <id>netbeans</id>
             <name>NetBeans</name>
-            <url>http://bits.netbeans.org/nexus/content/groups/netbeans/</url>
+            <url>http://netbeans.apidesign.org/maven2/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
