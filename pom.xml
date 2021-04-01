@@ -35,7 +35,9 @@
         <clueminer.junit.version>4.12</clueminer.junit.version>
         <clueminer.guava.version>29.0-jre</clueminer.guava.version>
         <clueminer.gson.version>2.8.1</clueminer.gson.version>
-        <clueminer.maven-jar.version>2.6</clueminer.maven-jar.version>
+        <clueminer.maven-jar.version>3.1.0</clueminer.maven-jar.version>
+        <clueminer.maven-enforcer.version>3.0.0-M3</clueminer.maven-enforcer.version>
+        <clueminer.maven-minimum.version>3.1.0</clueminer.maven-minimum.version>
         <clueminer.maven-surefire.version>2.21.0</clueminer.maven-surefire.version>
         <clueminer.slf4j.version>1.7.25</clueminer.slf4j.version>
     </properties>
@@ -91,21 +93,21 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0-M3</version>
+                    <version>${clueminer.maven-enforcer.version}</version>
                     <executions>
-                      <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                          <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                          <rules>
-                            <requireMavenVersion>
-                              <version>3.1.0</version>
-                            </requireMavenVersion>
-                          </rules>
-                        </configuration>
-                      </execution>
+                        <execution>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>${clueminer.maven-minimum.version}</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
                     </executions>
                 </plugin>
                 <plugin>
@@ -135,8 +137,9 @@
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${clueminer.maven-jar.version}</version>
                     <configuration>
-                        <!-- to have the jar plugin pickup the nbm generated manifest -->
-                        <useDefaultManifestFile>true</useDefaultManifestFile>
+                        <archive>
+                            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        </archive>
                     </configuration>
                 </plugin>
                 <plugin>
