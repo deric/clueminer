@@ -54,7 +54,7 @@
             <id>central</id>
             <name>Maven Repository Switchboard</name>
             <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -89,6 +89,26 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M3</version>
+                    <executions>
+                      <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                          <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                          <rules>
+                            <requireMavenVersion>
+                              <version>3.1.0</version>
+                            </requireMavenVersion>
+                          </rules>
+                        </configuration>
+                      </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
                     <version>${clueminer.nbm-maven-plugin.version}</version>
@@ -106,8 +126,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler}</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <source>11</source>
+                        <target>11</target>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -192,6 +212,8 @@
                 <version>${maven.compiler}</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -267,8 +289,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
             <plugin>
