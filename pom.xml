@@ -69,14 +69,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>oss</id>
-            <name>oss nexus</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
     </repositories>
 
     <build>
